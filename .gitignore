@@ -16,6 +16,8 @@ Icon
 
 
 ### Xcode ###
+*.xcodeproj
+*.xcworkspace
 # Build generated
 build/
 DerivedData/
