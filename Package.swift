@@ -14,8 +14,7 @@ let package = Package(
             name: "needle",
             dependencies: [
                 "SourceKittenFramework",
-            ],
-            path: "Needle"
+            ]
         )
     ],
     swiftLanguageVersions: [4]
