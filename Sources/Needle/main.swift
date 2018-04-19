@@ -15,26 +15,33 @@
 //  limitations under the License.
 //
 
+import Commander
 import Foundation
 import QuartzCore
 import SourceKittenFramework
 
-guard CommandLine.argc >= 2 else {
-    print("Usage :", CommandLine.arguments[0], "<folder_to_scan>")
-    exit(1)
-}
+func ScanFiles(atPath folderPath: String, withSuffix suffix: String) {
+    let enumerator = FileManager.default.enumerator(atPath: folderPath)
 
-let folderPath = CommandLine.arguments[1]
-let enumerator = FileManager.default.enumerator(atPath: folderPath)
+    while let fileName = enumerator?.nextObject() as? String {
+        guard fileName.hasSuffix(".swift") else { continue }
 
-while let fileName = enumerator?.nextObject() as? String {
-    guard fileName.hasSuffix(".swift") else { continue }
-
-    if let file = File(path: folderPath + fileName) {
-        let start = CACurrentMediaTime()
-        let _ = try Structure(file: file)
-        let stop = CACurrentMediaTime()
-        print(fileName, 1000.0*(stop-start))
+        if let file = File(path: folderPath + fileName) {
+            let start = CACurrentMediaTime()
+            let _ = try? Structure(file: file)
+            let stop = CACurrentMediaTime()
+            print(fileName, 1000.0*(stop-start))
+        }
     }
 }
 
+Group {
+    let scanCommand = command(Argument<String>("path", description: "Directory to scan"),
+                              Option<String>("suffix", default: "", description: "Filename suffix (not including extension)")
+    ) { (path, suffix) in
+        print(path, suffix)
+        ScanFiles(atPath: path, withSuffix: suffix)
+    }
+
+    $0.addCommand("scan", "Scan's all swift files in the directory specified", scanCommand)
+}.run()
