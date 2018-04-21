@@ -15,12 +15,13 @@
 //  limitations under the License.
 //
 
-import Commander
+import Basic
 import Foundation
 import QuartzCore
 import SourceKittenFramework
+import Utility
 
-func ScanFiles(atPath folderPath: String, withSuffix suffix: String) {
+func ScanFiles(atPath folderPath: String, withSuffix suffix: String?) {
     let enumerator = FileManager.default.enumerator(atPath: folderPath)
 
     while let fileName = enumerator?.nextObject() as? String {
@@ -35,13 +36,47 @@ func ScanFiles(atPath folderPath: String, withSuffix suffix: String) {
     }
 }
 
-Group {
-    let scanCommand = command(Argument<String>("path", description: "Directory to scan"),
-                              Option<String>("suffix", default: "", description: "Filename suffix (not including extension)")
-    ) { (path, suffix) in
-        print(path, suffix)
-        ScanFiles(atPath: path, withSuffix: suffix)
+protocol Command {
+    var name: String { get }
+    init(parser: ArgumentParser)
+    func run(with arguments: ArgumentParser.Result)
+}
+
+struct ScanCommand: Command {
+    let name = "scan"
+
+    private let overview = "Scan's all swift files in the directory specified"
+    private let dir: PositionalArgument<String>
+    private let suffix: OptionArgument<String>
+
+    init(parser: ArgumentParser) {
+        let subparser = parser.add(subparser: name, overview: overview)
+        dir = subparser.add(positional: "directory", kind: String.self)
+        suffix = subparser.add(option: "--suffix", shortName: "-s", kind: String.self, usage: "Filename suffix (not including extension)", completion: .filename)
     }
 
-    $0.addCommand("scan", "Scan's all swift files in the directory specified", scanCommand)
-}.run()
+    func run(with arguments: ArgumentParser.Result) {
+        if let path = arguments.get(dir) {
+            let suffix = arguments.get(self.suffix)
+            ScanFiles(atPath: path, withSuffix: suffix)
+        }
+    }
+}
+
+func main() {
+    let parser = ArgumentParser(usage: "<command> <options>", overview: "needle DI code generator")
+    let commandsTypes = [ScanCommand.self]
+    let commands = commandsTypes.map { $0.init(parser: parser) }
+    let arguments = Array(CommandLine.arguments.dropFirst())
+    let result = try? parser.parse(arguments)
+    if let result = result {
+        let subparserName = result.subparser(parser)
+        for command in commands {
+            if subparserName == command.name {
+                command.run(with: result)
+            }
+        }
+    }
+}
+
+main()
