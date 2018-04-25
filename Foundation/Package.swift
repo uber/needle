@@ -2,20 +2,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "NeedleFramework",
+    name: "NeedleFoundation",
     products: [
         .library(
-            name: "NeedleFramework",
-            targets: ["NeedleFramework"]),
+            name: "NeedleFoundation",
+            targets: ["NeedleFoundation"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "NeedleFramework",
+            name: "NeedleFoundation",
             dependencies: []),
         .testTarget(
-            name: "NeedleFrameworkTests",
-            dependencies: ["NeedleFramework"]),
+            name: "NeedleFoundationTests",
+            dependencies: ["NeedleFoundation"]),
     ],
     swiftLanguageVersions: [4]
 )

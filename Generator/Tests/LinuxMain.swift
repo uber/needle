@@ -1,5 +1,5 @@
 import XCTest
-@testable import NeedleTests
+@testable import NeedleFrameworkTests
 
 XCTMain([
     testCase(StubTests.allTests),
