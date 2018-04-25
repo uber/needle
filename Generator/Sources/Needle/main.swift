@@ -24,11 +24,19 @@ import Utility
 
 func ScanFiles(atPath folderPath: String, withSuffix suffix: String?) {
     let scanner = DirectoryScanner(path: folderPath)
-    let filePaths = scanner.scan()
+    let allSwiftPaths = scanner.scan()
 
-    filePaths.forEach { url in
+    allSwiftPaths.forEach { url in
         let fileScanner = FileScanner(url: url)
-        let _ = fileScanner.scan()
+        if fileScanner.shouldScan() {
+            print("Parse:", url.path)
+            if let contents = fileScanner.contents {
+                let parser = FileParser(contents: contents, path: url.path)
+                if let (c, d) = parser.parse() {
+                    print(c.count, d.count)
+                }
+            }
+        }
     }
 }
 
