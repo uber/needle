@@ -22,18 +22,12 @@ import SourceKittenFramework
 import Utility
 
 func ScanFiles(atPath folderPath: String, withSuffix suffix: String?) {
-    let scanner = FileScanner(path: folderPath)
+    let scanner = DirectoryScanner(path: folderPath)
     let filePaths = scanner.scan()
 
     filePaths.forEach { url in
-        let path = url.path
-
-        if let file = File(path: path) {
-            let start = CACurrentMediaTime()
-            let _ = try? Structure(file: file)
-            let stop = CACurrentMediaTime()
-            print(path, 1000.0*(stop-start))
-        }
+        let fileScanner = FileScanner(url: url)
+        let _ = fileScanner.scan()
     }
 }
 

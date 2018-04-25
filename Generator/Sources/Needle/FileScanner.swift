@@ -15,25 +15,34 @@
 //
 
 import Foundation
+import SourceKittenFramework
 
 class FileScanner {
-    private let directoryURL: URL
+    private let filePath: String
+    private let componentString = "Component"
+    private let componentExpression = RegEx("Component *<")
 
-    init(path: String) {
-        directoryURL = URL(fileURLWithPath: path)
+    init(url: URL) {
+        filePath = url.path
     }
 
-    func scan() -> [URL] {
-        let errorHandler: (URL, Error) -> Bool = { (url, error) -> Bool in
-            print("Directory traversal error at \(url): ", error)
-            return true
+    func scan() -> Structure? {
+        guard let file = File(path: filePath) else {
+            return nil
         }
-        if let enumerator = FileManager.default.enumerator(at: directoryURL,
-                                                           includingPropertiesForKeys: nil,
-                                                           options: [.skipsHiddenFiles],
-                                                           errorHandler: errorHandler) {
-            return enumerator.allObjects.flatMap { $0 as? URL }.filter { $0.pathExtension == "swift" }
+
+        let simpleContains =  file.contents.contains(componentString)
+        guard simpleContains else {
+            return nil
         }
-        return []
+
+        let properContains = (componentExpression.firstMatch(file.contents) != nil)
+        guard properContains else {
+            return nil
+        }
+
+        let result = try? Structure(file: file)
+
+        return result
     }
 }
