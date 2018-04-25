@@ -22,16 +22,17 @@ import SourceKittenFramework
 import Utility
 
 func ScanFiles(atPath folderPath: String, withSuffix suffix: String?) {
-    let enumerator = FileManager.default.enumerator(atPath: folderPath)
+    let scanner = FileScanner(path: folderPath)
+    let filePaths = scanner.scan()
 
-    while let fileName = enumerator?.nextObject() as? String {
-        guard fileName.hasSuffix(".swift") else { continue }
+    filePaths.forEach { url in
+        let path = url.path
 
-        if let file = File(path: folderPath + fileName) {
+        if let file = File(path: path) {
             let start = CACurrentMediaTime()
             let _ = try? Structure(file: file)
             let stop = CACurrentMediaTime()
-            print(fileName, 1000.0*(stop-start))
+            print(path, 1000.0*(stop-start))
         }
     }
 }
