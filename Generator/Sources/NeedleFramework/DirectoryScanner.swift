@@ -16,14 +16,14 @@
 
 import Foundation
 
-class DirectoryScanner {
+public class DirectoryScanner {
     private let directoryURL: URL
 
-    init(path: String) {
+    public init(path: String) {
         directoryURL = URL(fileURLWithPath: path)
     }
 
-    func scan() -> [URL] {
+    public func scan() -> [URL] {
         let errorHandler: (URL, Error) -> Bool = { (url, error) -> Bool in
             print("Directory traversal error at \(url): ", error)
             return true

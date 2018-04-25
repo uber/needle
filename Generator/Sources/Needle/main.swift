@@ -17,6 +17,7 @@
 
 import Basic
 import Foundation
+import NeedleFramework
 import QuartzCore
 import SourceKittenFramework
 import Utility

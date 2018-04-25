@@ -17,16 +17,16 @@
 import Foundation
 import SourceKittenFramework
 
-class FileScanner {
+public class FileScanner {
     private let filePath: String
     private let componentString = "Component"
     private let componentExpression = RegEx("Component *<")
 
-    init(url: URL) {
+    public init(url: URL) {
         filePath = url.path
     }
 
-    func scan() -> Structure? {
+    public func scan() -> Structure? {
         guard let file = File(path: filePath) else {
             return nil
         }
