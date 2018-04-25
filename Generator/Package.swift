@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "Needle",
     products: [
-        .executable(name: "needle", targets: ["Needle"])
+        .executable(name: "needle", targets: ["needle"]),
+        .library(name: "NeedleFramework", targets: ["NeedleFramework"])
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.20.0"),
@@ -12,14 +13,19 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Needle",
+            name: "needle",
+            dependencies: [
+                "NeedleFramework",
+            ]),
+        .target(
+            name: "NeedleFramework",
             dependencies: [
                 "Utility",
                 "SourceKittenFramework",
             ]),
         .testTarget(
-            name: "NeedleTests",
-            dependencies: ["Needle"]),
+            name: "NeedleFrameworkTests",
+            dependencies: ["NeedleFramework"]),
     ],
     swiftLanguageVersions: [4]
 )

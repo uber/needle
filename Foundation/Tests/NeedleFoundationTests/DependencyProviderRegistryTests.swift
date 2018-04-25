@@ -15,7 +15,7 @@
 //
 
 import XCTest
-@testable import NeedleFramework
+@testable import NeedleFoundation
 
 class DependencyProviderRegistryTests: XCTestCase {
 
@@ -26,14 +26,14 @@ class DependencyProviderRegistryTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "NeedleFrameworkTests.MockAppComponent", withParentComponentName: "NeedleFramework.BootstrapComponent") {_ in 
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "NeedleFoundationTests.MockAppComponent", withParentComponentName: "NeedleFoundation.BootstrapComponent") {_ in
             return EmptyDependencyProvider()
         }
     }
 
     func test_registerProviderFactory_verifyRetrievingProvider_verifyDependencyReference() {
         let expectedProvider = MockRootDependencyProvider()
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "NeedleFrameworkTests.MockRootComponent", withParentComponentName: "NeedleFrameworkTests.MockAppComponent") { (component: ComponentType) -> AnyObject in
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "NeedleFoundationTests.MockRootComponent", withParentComponentName: "NeedleFoundationTests.MockAppComponent") { (component: ComponentType) -> AnyObject in
             return expectedProvider
         }
 

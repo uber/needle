@@ -15,7 +15,7 @@
 //
 
 import XCTest
-@testable import Needle
+@testable import NeedleFramework
 
 class StubTests: XCTestCase {
 

@@ -15,7 +15,7 @@
 //
 
 import XCTest
-@testable import NeedleFramework
+@testable import NeedleFoundation
 
 class ComponentTests: XCTestCase {
 
