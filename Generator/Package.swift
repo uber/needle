@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "Needle",
     products: [
-        .executable(name: "needle", targets: ["needle"])
+        .executable(name: "needle", targets: ["Needle"])
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.20.0"),
@@ -12,7 +12,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "needle",
+            name: "Needle",
             dependencies: [
                 "Utility",
                 "SourceKittenFramework",
