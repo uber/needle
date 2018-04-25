@@ -16,8 +16,10 @@ let package = Package(
             dependencies: [
                 "Utility",
                 "SourceKittenFramework",
-            ]
-        )
+            ]),
+        .testTarget(
+            name: "NeedleTests",
+            dependencies: ["Needle"]),
     ],
     swiftLanguageVersions: [4]
 )
