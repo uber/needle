@@ -3,5 +3,6 @@ import XCTest
 
 XCTMain([
     testCase(AtomicIntTests.allTests),
+    testCase(AtomicReferenceTests.allTests),
     testCase(CountDownLatchTests.allTests),
 ])
