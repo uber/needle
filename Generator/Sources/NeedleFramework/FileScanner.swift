@@ -18,6 +18,8 @@ import Foundation
 import SourceKittenFramework
 
 public class FileScanner {
+    public var contents: String?
+
     private let filePath: String
     private let componentString = "Component"
     private let componentExpression = RegEx("Component *<")
@@ -26,23 +28,22 @@ public class FileScanner {
         filePath = url.path
     }
 
-    public func scan() -> Structure? {
-        guard let file = File(path: filePath) else {
-            return nil
+    public func shouldScan() -> Bool {
+        contents = try? String(contentsOfFile: filePath, encoding: .utf8)
+        guard let contents = contents else {
+            return false
         }
 
-        let simpleContains =  file.contents.contains(componentString)
+        let simpleContains =  contents.contains(componentString)
         guard simpleContains else {
-            return nil
+            return false
         }
 
-        let properContains = (componentExpression.firstMatch(file.contents) != nil)
+        let properContains = (componentExpression.firstMatch(contents) != nil)
         guard properContains else {
-            return nil
+            return false
         }
 
-        let result = try? Structure(file: file)
-
-        return result
+        return true
     }
 }
