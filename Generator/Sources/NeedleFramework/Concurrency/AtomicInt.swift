@@ -17,10 +17,10 @@
 import Foundation
 import libkern
 
-/// A concurrency utility class that ensures read and write-through memory behavior for the
-/// wrapped Int. This is not a mutex utility. Concurrent access to this class is allowed.
-/// It only guarantees serial time events are consistent in the memory stack, thus preventing
-/// stale values.
+/// A concurrency utility class that supports locking-free synchronization on mutating an integer
+/// value. Unlike using a lock, concurrent read and write accesses to this class is allowed. At
+/// the same time, concurrent operations using the atomic functions provided by this class ensures
+/// synchronization correctness without the higher cost of locking.
 public class AtomicInt {
 
     /// The current value.

@@ -19,8 +19,8 @@ import Basic
 import Foundation
 import NeedleFramework
 import QuartzCore
-import SourceKittenFramework
 import Utility
+import SourceKittenFramework
 
 func ScanFiles(atPath folderPath: String, withSuffix suffix: String?) {
     let scanner = DirectoryScanner(path: folderPath)
