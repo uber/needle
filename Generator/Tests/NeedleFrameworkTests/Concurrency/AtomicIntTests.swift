@@ -35,7 +35,7 @@ class AtomicIntTests: XCTestCase {
         let initialValue = 123
         let atomicInt = AtomicInt(initialValue: initialValue)
 
-        DispatchQueue.concurrentPerform(iterations: 100) { _ in
+        DispatchQueue.concurrentPerform(iterations: 100000) { _ in
             XCTAssertTrue(atomicInt.value == initialValue)
         }
     }
@@ -51,7 +51,7 @@ class AtomicIntTests: XCTestCase {
         DispatchQueue.concurrentPerform(iterations: 1) { _ in
             atomicInt.value = secondValue
 
-            DispatchQueue.concurrentPerform(iterations: 100) { _ in
+            DispatchQueue.concurrentPerform(iterations: 100000) { _ in
                 XCTAssertFalse(atomicInt.value == initialValue)
                 XCTAssertTrue(atomicInt.value == secondValue)
             }
@@ -69,7 +69,7 @@ class AtomicIntTests: XCTestCase {
             let result = atomicInt.compareAndSet(expect: initialValue, newValue: secondValue)
             XCTAssertTrue(result)
 
-            DispatchQueue.concurrentPerform(iterations: 100) { _ in
+            DispatchQueue.concurrentPerform(iterations: 100000) { _ in
                 XCTAssertFalse(atomicInt.value == initialValue)
                 XCTAssertTrue(atomicInt.value == secondValue)
             }
@@ -87,7 +87,7 @@ class AtomicIntTests: XCTestCase {
             let result = atomicInt.compareAndSet(expect: 293, newValue: secondValue)
             XCTAssertFalse(result)
 
-            DispatchQueue.concurrentPerform(iterations: 100) { _ in
+            DispatchQueue.concurrentPerform(iterations: 100000) { _ in
                 XCTAssertTrue(atomicInt.value == initialValue)
                 XCTAssertFalse(atomicInt.value == secondValue)
             }
@@ -106,7 +106,7 @@ class AtomicIntTests: XCTestCase {
             XCTAssertTrue(result == initialValue)
             XCTAssertTrue(atomicInt.value == secondValue)
 
-            DispatchQueue.concurrentPerform(iterations: 100) { _ in
+            DispatchQueue.concurrentPerform(iterations: 100000) { _ in
                 XCTAssertFalse(atomicInt.value == initialValue)
                 XCTAssertTrue(atomicInt.value == secondValue)
             }

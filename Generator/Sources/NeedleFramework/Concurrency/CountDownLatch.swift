@@ -37,9 +37,11 @@ public class CountDownLatch {
 
     /// Decrements the latch's count, resuming all awaiting threads if the count reaches zero.
     public func countDown() {
-        // Use the serial queue to read and write to the count variable. This allows us to ensure
-        // thread-safe access, while allowing this method to be invoked without blocking or any
-        // contension.
+        // Use the serial queue to read and write to both the count variables. This allows us to
+        // ensure thread-safe access, while allowing this method to be invoked without blocking
+        // or any contension. We cannot use atomic integers to replace the queue, since both of
+        // count variables need to be updated atomically together, to avoid waiting on the latch
+        // after the semaphore is signaled.
         queue.async {
             guard self.countDownValue > 0 else {
                 return
@@ -70,9 +72,10 @@ public class CountDownLatch {
     ///   counted down to zero.
     /// - returns: true if the latch is counted down to zero. false if the timeout occurred before the latch reaches
     ///   zero.
+    @discardableResult
     public func await(timeout: TimeInterval? = nil) -> Bool {
-        // Only use the queue to access count but not the semaphore wait, since we need to ensure
-        // count is always accessed from the queue's thread. Do not wait on the semaphore inside
+        // Only use the queue to access counts but not the semaphore wait, since we need to ensure
+        // counts are always accessed from the queue's thread. Do not wait on the semaphore inside
         // the queue, since the queue is serial, blocking the queue results in deadlock, since the
         // semaphore signal will also be blocked.
         let alreadyOpen: Bool = queue.sync {
@@ -99,9 +102,11 @@ public class CountDownLatch {
     // MARK: - Private
 
     private let semaphore = DispatchSemaphore(value: 0)
-    // Use a serial queue to read/write to the count, so we can avoid using locks. This allows
-    // countDown method to be non-blocking and non-contending, while ensuring thread-safe access
-    // of the count variable.
+    // Use the serial queue to read and write to both the count variables. This allows us to
+    // ensure thread-safe access, while allowing this method to be invoked without blocking
+    // or any contension. We cannot use atomic integers to replace the queue, since both of
+    // count variables need to be updated atomically together, to avoid waiting on the latch
+    // after the semaphore is signaled.
     private let queue = DispatchQueue(label: "CountDownLatch.executeQueue", qos: .userInteractive)
 
     private var countDownValue: Int
