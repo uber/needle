@@ -35,6 +35,28 @@ public struct Component {
         self.children = []
         self.parents = []
     }
+
+    public func fakeGenerateForTiming() -> String {
+
+        let middle = members.map { (name, kind) in
+            return """
+                var \(name) : \(kind) = {
+                    return dependeny.\(name)
+                }
+
+
+            """
+        }.joined()
+
+        let result = """
+        class \(self.name)Provider {
+        \(middle)}
+
+        
+        """
+
+        return result
+    }
 }
 
 public struct Dependency {

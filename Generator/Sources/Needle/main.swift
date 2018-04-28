@@ -22,21 +22,23 @@ import QuartzCore
 import SourceKittenFramework
 import Utility
 
-func ScanFiles(atPath folderPath: String, withSuffix suffix: String?) {
-    let scanner = DirectoryScanner(path: folderPath)
-    let allSwiftPaths = scanner.scan()
-
-    allSwiftPaths.forEach { url in
-        let fileScanner = FileScanner(url: url)
-        if fileScanner.shouldScan() {
-            print("Parse:", url.path)
-            if let contents = fileScanner.contents {
-                let parser = FileParser(contents: contents, path: url.path)
-                if let (c, d) = parser.parse() {
-                    print(c.count, d.count)
-                }
+private func scanFile(atURL url: Foundation.URL) {
+    let fileScanner = FileScanner(url: url)
+    if fileScanner.shouldScan() {
+        print("Parse:", url.path)
+        if let contents = fileScanner.contents {
+            let parser = FileParser(contents: contents, path: url.path)
+            if let (c, d) = parser.parse() {
+                print(c.count, d.count)
             }
         }
+    }
+}
+
+private func scanFiles(atPath folderPath: String, withoutSuffixes suffixes: [String]?) {
+    let scanner = DirectoryScanner(path: folderPath, withoutSuffixes: suffixes)
+    scanner.scan { url in
+        scanFile(atURL: url)
     }
 }
 
@@ -51,18 +53,18 @@ struct ScanCommand: Command {
 
     private let overview = "Scan's all swift files in the directory specified"
     private let dir: PositionalArgument<String>
-    private let suffix: OptionArgument<String>
+    private let suffixes: OptionArgument<[String]>
 
     init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
         dir = subparser.add(positional: "directory", kind: String.self)
-        suffix = subparser.add(option: "--suffix", shortName: "-s", kind: String.self, usage: "Filename suffix (not including extension)", completion: .filename)
+        suffixes = subparser.add(option: "--suffixes", shortName: "-s", kind: [String].self, usage: "Filename suffix(es) to skip (not including extension)", completion: .filename)
     }
 
     func run(with arguments: ArgumentParser.Result) {
         if let path = arguments.get(dir) {
-            let suffix = arguments.get(self.suffix)
-            ScanFiles(atPath: path, withSuffix: suffix)
+            let suffixes = arguments.get(self.suffixes)
+            scanFiles(atPath: path, withoutSuffixes: suffixes)
         }
     }
 }
