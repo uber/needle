@@ -15,7 +15,6 @@
 //
 
 import Foundation
-import SourceKittenFramework
 
 class FileScanner {
     public var contents: String?

@@ -1,4 +1,3 @@
-
 //
 //  Copyright (c) 2018. Uber Technologies
 //
@@ -15,7 +14,6 @@
 //  limitations under the License.
 //
 
-import Basic
 import Foundation
 import NeedleFramework
 import Utility
@@ -42,7 +40,7 @@ struct ScanCommand: Command {
     func run(with arguments: ArgumentParser.Result) {
         if let path = arguments.get(dir) {
             let suffixes = arguments.get(self.suffixes)
-            ProviderGenerator().scanFiles(atPath: path, withoutSuffixes: suffixes)
+            ProviderGenerator().scanFiles(mode: .serial, atPath: path, withoutSuffixes: suffixes)
         }
     }
 }

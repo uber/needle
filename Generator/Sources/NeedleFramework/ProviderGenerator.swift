@@ -17,9 +17,10 @@
 import Foundation
 
 public class ProviderGenerator {
-    private var total = 0
+    private let total = AtomicInt(initialValue: 0)
     private var allComponents = [Component]()
     private var allDependencies = [Dependency]()
+    private let lock = NSRecursiveLock()
 
     private func scanFile(atURL url: URL) {
         let fileScanner = FileScanner(url: url)
@@ -28,21 +29,62 @@ public class ProviderGenerator {
             if let contents = fileScanner.contents {
                 let parser = FileParser(contents: contents, path: url.path)
                 if let (c, d) = parser.parse() {
+                    lock.lock()
                     allComponents += c
                     allDependencies += d
-                    total += 1
+                    lock.unlock()
+                    total.incrementAndGet()
                 }
             }
         }
     }
 
-    public func scanFiles(atPath folderPath: String, withoutSuffixes suffixes: [String]?) {
-        let scanner = DirectoryScanner(path: folderPath, withoutSuffixes: suffixes)
-        scanner.scan { url in
-            scanFile(atURL: url)
-        }
+    public enum Mode {
+        case serial
+        case two
+        case burst
+        case overlap
+    }
 
-        print("files scanned:", total)
+    public func scanFiles(mode: Mode, atPath folderPath: String, withoutSuffixes suffixes: [String]?) {
+        let scanner = DirectoryScanner(path: folderPath, withoutSuffixes: suffixes)
+
+        switch mode {
+        case .serial:
+            scanner.scan { url in
+                scanFile(atURL: url)
+            }
+        case .two:
+            let queue = DispatchQueue(label: "scanner-serial", qos: .userInteractive)
+            scanner.scan { url in
+                queue.async {
+                    self.scanFile(atURL: url)
+                }
+            }
+
+            // Wait for queue to drain
+            queue.sync(flags: .barrier) {}
+        case .burst:
+            var all = [Foundation.URL]()
+            scanner.scan { url in
+                all.append(url)
+            }
+            let allFiles = all
+            DispatchQueue.concurrentPerform(iterations: allFiles.count) { i in
+                scanFile(atURL: allFiles[i])
+            }
+        case .overlap:
+            let queue = DispatchQueue(label: "scanner-concurrent", qos: .userInteractive, attributes: .concurrent)
+            scanner.scan { url in
+                queue.async {
+                    self.scanFile(atURL: url)
+                }
+            }
+
+            // Wait for queue to drain
+            queue.sync(flags: .barrier) {}
+        }
+        print("files scanned:", total.value)
 
         let result = allComponents.map { component in
             component.fakeGenerateForTiming()
