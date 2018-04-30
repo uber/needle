@@ -18,29 +18,7 @@
 import Basic
 import Foundation
 import NeedleFramework
-import QuartzCore
 import Utility
-import SourceKittenFramework
-
-private func scanFile(atURL url: Foundation.URL) {
-    let fileScanner = FileScanner(url: url)
-    if fileScanner.shouldScan() {
-        print("Parse:", url.path)
-        if let contents = fileScanner.contents {
-            let parser = FileParser(contents: contents, path: url.path)
-            if let (c, d) = parser.parse() {
-                print(c.count, d.count)
-            }
-        }
-    }
-}
-
-private func scanFiles(atPath folderPath: String, withoutSuffixes suffixes: [String]?) {
-    let scanner = DirectoryScanner(path: folderPath, withoutSuffixes: suffixes)
-    scanner.scan { url in
-        scanFile(atURL: url)
-    }
-}
 
 protocol Command {
     var name: String { get }
@@ -64,7 +42,7 @@ struct ScanCommand: Command {
     func run(with arguments: ArgumentParser.Result) {
         if let path = arguments.get(dir) {
             let suffixes = arguments.get(self.suffixes)
-            scanFiles(atPath: path, withoutSuffixes: suffixes)
+            ProviderGenerator().scanFiles(atPath: path, withoutSuffixes: suffixes)
         }
     }
 }

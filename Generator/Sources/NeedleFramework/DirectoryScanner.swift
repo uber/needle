@@ -16,7 +16,7 @@
 
 import Foundation
 
-public class DirectoryScanner {
+class DirectoryScanner {
     private let directoryURL: URL
     private let suffixesToSkip: [String]?
 
@@ -40,7 +40,7 @@ public class DirectoryScanner {
         return url
     }
 
-    public func scan(process: (URL) -> ()) {
+    func scan(process: (URL) -> ()) {
         let errorHandler: (URL, Error) -> Bool = { (url, error) -> Bool in
             print("Directory traversal error at \(url): ", error)
             return true
