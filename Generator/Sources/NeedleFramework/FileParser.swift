@@ -17,7 +17,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct Component {
+struct Component {
     let name: String
     let dependency: String
     var members: [(String, String)]
@@ -36,7 +36,7 @@ public struct Component {
         self.parents = []
     }
 
-    public func fakeGenerateForTiming() -> String {
+    func fakeGenerateForTiming() -> String {
 
         let middle = members.map { (name, kind) in
             return """
@@ -59,19 +59,19 @@ public struct Component {
     }
 }
 
-public struct Dependency {
+struct Dependency {
     var name: String
     var members: [(String, String)]
     let filePath: String
     let offsetInFile: Int
 }
 
-public class FileParser {
+class FileParser {
     private let file: File
     private let path: String
     private let componentsExpression = RegEx("^Component *<(.+)>$")
 
-    public init(contents: String, path: String) {
+    init(contents: String, path: String) {
         self.file = File(contents: contents)
         self.path = path
     }
@@ -108,7 +108,7 @@ public class FileParser {
         return Dependency(name: structure.name!, members: vars, filePath: filePath, offsetInFile: 0)
     }
 
-    public func parse() -> ([Component], [Dependency])? {
+    func parse() -> ([Component], [Dependency])? {
         let result = try? Structure(file: file)
 
         if let result = result {

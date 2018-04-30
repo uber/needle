@@ -17,18 +17,18 @@
 import Foundation
 import SourceKittenFramework
 
-public class FileScanner {
+class FileScanner {
     public var contents: String?
 
     private let filePath: String
     private let componentString = "Component"
     private let componentExpression = RegEx("Component *<")
 
-    public init(url: URL) {
+    init(url: URL) {
         filePath = url.path
     }
 
-    public func shouldScan() -> Bool {
+    func shouldScan() -> Bool {
         contents = try? String(contentsOfFile: filePath, encoding: .utf8)
         guard let contents = contents else {
             return false
