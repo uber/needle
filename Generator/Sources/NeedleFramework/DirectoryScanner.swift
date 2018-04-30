@@ -18,22 +18,42 @@ import Foundation
 
 public class DirectoryScanner {
     private let directoryURL: URL
+    private let suffixesToSkip: [String]?
 
-    public init(path: String) {
+    public init(path: String, withoutSuffixes suffixes: [String]?) {
         directoryURL = URL(fileURLWithPath: path)
+        suffixesToSkip = suffixes
     }
 
-    public func scan() -> [URL] {
+    private func shouldConsider(url: URL?) -> URL? {
+        guard let url = url, url.pathExtension == "swift" else { return nil }
+
+        if let suffixes = suffixesToSkip {
+            let name = url.deletingPathExtension().lastPathComponent
+            for suffix in suffixes {
+                if name.hasSuffix(suffix) {
+                    return nil
+                }
+            }
+        }
+
+        return url
+    }
+
+    public func scan(process: (URL) -> ()) {
         let errorHandler: (URL, Error) -> Bool = { (url, error) -> Bool in
             print("Directory traversal error at \(url): ", error)
             return true
         }
-        if let enumerator = FileManager.default.enumerator(at: directoryURL,
-                                                           includingPropertiesForKeys: nil,
-                                                           options: [.skipsHiddenFiles],
-                                                           errorHandler: errorHandler) {
-            return enumerator.allObjects.flatMap { $0 as? URL }.filter { $0.pathExtension == "swift" }
+        guard let enumerator = FileManager.default.enumerator(at: directoryURL,
+                                                              includingPropertiesForKeys: nil,
+                                                              options: [.skipsHiddenFiles],
+                                                              errorHandler: errorHandler) else { return }
+
+        while let next = enumerator.nextObject() {
+            if let url = shouldConsider(url: next as? URL) {
+                process(url)
+            }
         }
-        return []
     }
 }
