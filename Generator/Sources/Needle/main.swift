@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Basic
 import Foundation
 import NeedleFramework
 import Utility
@@ -50,14 +51,19 @@ func main() {
     let commandsTypes = [ScanCommand.self]
     let commands = commandsTypes.map { $0.init(parser: parser) }
     let arguments = Array(CommandLine.arguments.dropFirst())
-    let result = try? parser.parse(arguments)
-    if let result = result {
-        let subparserName = result.subparser(parser)
-        for command in commands {
-            if subparserName == command.name {
-                command.run(with: result)
+    do {
+        let result = try parser.parse(arguments)
+        if let subparserName = result.subparser(parser) {
+            for command in commands {
+                if subparserName == command.name {
+                    command.run(with: result)
+                }
             }
+        } else {
+            parser.printUsage(on: stdoutStream)
         }
+    } catch {
+        print("Command-line pasing error (use --help for help):", error)
     }
 }
 

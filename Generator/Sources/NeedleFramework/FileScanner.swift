@@ -30,7 +30,7 @@ class FileScanner {
     func shouldScan() -> Bool {
         contents = try? String(contentsOfFile: filePath, encoding: .utf8)
         guard let contents = contents else {
-            return false
+            fatalError("Unable to read contents of file at: \(filePath)")
         }
 
         let simpleContains =  contents.contains(componentString)
