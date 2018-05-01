@@ -25,7 +25,10 @@ let package = Package(
             ]),
         .testTarget(
             name: "NeedleFrameworkTests",
-            dependencies: ["NeedleFramework"]),
+            dependencies: ["NeedleFramework"],
+            exclude: [
+                "Fixtures",
+            ]),
     ],
     swiftLanguageVersions: [4]
 )
