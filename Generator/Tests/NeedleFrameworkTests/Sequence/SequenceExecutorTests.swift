@@ -20,7 +20,7 @@ import XCTest
 class SequenceExecutorTests: XCTestCase {
 
     func test_executeSequence_withSingle_verifyConcurrency() {
-        let executor = SequenceExecutor(name: "test_executeSequence_withSingle_verifyConcurrency")
+        let executor = SequenceExecutorImpl(name: "test_executeSequence_withSingle_verifyConcurrency")
 
         var threadHashes = [Int: Int]()
         let threadHashesLock = NSRecursiveLock()
@@ -46,7 +46,7 @@ class SequenceExecutorTests: XCTestCase {
     }
 
     func test_executeSequence_withNonTerminatingSequence_verifyCancel_verifyConcurrency() {
-        let executor = SequenceExecutor(name: "test_executeSequence_withNonTerminatingSequence_verifyCancel_verifyConcurrency")
+        let executor = SequenceExecutorImpl(name: "test_executeSequence_withNonTerminatingSequence_verifyCancel_verifyConcurrency")
 
         var executionCount = 0
         var threadHashes = [Int: Int]()
@@ -73,8 +73,8 @@ class SequenceExecutorTests: XCTestCase {
         threadHashesLock.unlock()
     }
 
-    func test_executeSequence_withTerminatingSequence_verifyAwait_verifyConcurrency() {
-        let executor = SequenceExecutor(name: "test_executeSequence_withTerminatingSequence_verifyAwait_verifyConcurrency")
+    func test_executeSequence_withTerminatingSequence_noTimeout_verifyAwait_verifyConcurrency() {
+        let executor = SequenceExecutorImpl(name: "test_executeSequence_withTerminatingSequence_noTimeout_verifyAwait_verifyConcurrency")
 
         var executionCount = 0
         var threadHashes = [Int: Int]()
@@ -93,12 +93,40 @@ class SequenceExecutorTests: XCTestCase {
 
         let handle = executor.execute(sequenceFrom: sequencedTask)
 
-        handle.await()
+        do {
+            try handle.await(withTimeout: nil)
+        } catch {
+            XCTFail("Waiting for execution completion failed.")
+        }
 
         threadHashesLock.lock()
         XCTAssertGreaterThan(threadHashes.count, 1)
         XCTAssertGreaterThanOrEqual(executionCount, threadHashes.count)
         threadHashesLock.unlock()
+    }
+
+    func test_executeSequence_withNonTerminatingSequence_withTimeout_verifyAwaitTimeout() {
+        let executor = SequenceExecutorImpl(name: "test_executeSequence_withNonTerminatingSequence_withTimeout_verifyAwaitTimeout")
+
+        let sequencedTask = MockSelfRepeatingTask {
+            return false
+        }
+
+        let handle = executor.execute(sequenceFrom: sequencedTask)
+
+        var didThrowError = false
+        let startTime = CACurrentMediaTime()
+        do {
+            try handle.await(withTimeout: 0.5)
+        } catch SequenceExecutionError.awaitTimeout {
+            didThrowError = true
+            let endTime = CACurrentMediaTime()
+            XCTAssertTrue((endTime - startTime) >= 0.5)
+        } catch {
+            XCTFail("Incorrect error thrown: \(error)")
+        }
+
+        XCTAssertTrue(didThrowError)
     }
 }
 
