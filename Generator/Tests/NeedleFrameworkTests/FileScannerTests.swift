@@ -30,11 +30,6 @@ class FileScannerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_bogusFile_verifyShouldNotScan() {
-        let scanner = FileScanner(url: URL(fileURLWithPath: "/random/foo/xyzabc"))
-        XCTAssertFalse(scanner.shouldScan())
-    }
-
     func test_noComponentFile_verifyShouldNotScan() {
         let url = fixturesURL.appendingPathComponent("nocomp.swift")
         let scanner = FileScanner(url: url)

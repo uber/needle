@@ -42,13 +42,14 @@ class DirectoryScanner {
 
     func scan(process: (URL) -> ()) {
         let errorHandler: (URL, Error) -> Bool = { (url, error) -> Bool in
-            print("Directory traversal error at \(url): ", error)
-            return true
+            fatalError("Directory traversal error at \(url): \(error)")
         }
         guard let enumerator = FileManager.default.enumerator(at: directoryURL,
                                                               includingPropertiesForKeys: nil,
                                                               options: [.skipsHiddenFiles],
-                                                              errorHandler: errorHandler) else { return }
+                                                              errorHandler: errorHandler) else {
+            fatalError("Could not create directory enumerator at \(directoryURL)")
+        }
 
         while let next = enumerator.nextObject() {
             if let url = shouldConsider(url: next as? URL) {
