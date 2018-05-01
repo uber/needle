@@ -65,7 +65,7 @@ public class ProviderGenerator {
             // Wait for queue to drain
             queue.sync(flags: .barrier) {}
         case .burst:
-            var all = [Foundation.URL]()
+            var all = [URL]()
             scanner.scan { url in
                 all.append(url)
             }
