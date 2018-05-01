@@ -16,14 +16,26 @@
 
 import Foundation
 
+/// Errors that can occur during a sequence execution.
+enum SequenceExecutionError: Error {
+    /// The waiting on sequence completion timed out.
+    case awaitTimeout
+}
+
 /// The handle of the execution of a sequence of tasks, that allows control and
 /// monitoring of the said sequence of tasks.
-public protocol SequenceExecutionHandle {
+protocol SequenceExecutionHandle {
 
-    /// Block the caller thread until the sequence of tasks all finished execution.
-    /// The completion is achieved by a task returning `nil` after execution. This
-    /// marks the said task the terminating task.
-    func await()
+    /// Block the caller thread until the sequence of tasks all finished execution
+    /// or the specified timeout period has elapsed. The completion is achieved by
+    /// a task returning `nil` after execution. This marks the said task the
+    /// terminating task.
+    ///
+    /// - parameter timeout: The duration to wait before the timeout error is thrown.
+    /// `nil` to wait forever until the sequence execution completes.
+    /// - throws: `SequenceExecutionError.awaitTimeout` if the given timeout period
+    /// elapsed before the sequence execution completed.
+    func await(withTimeout timeout: TimeInterval?) throws
 
     /// Cancel the sequence execution at the point this function is invoked.
     func cancel()
@@ -32,12 +44,25 @@ public protocol SequenceExecutionHandle {
 /// Executor of sequences of tasks.
 ///
 /// - seeAlso: `SequencedTask`.
-public class SequenceExecutor {
+protocol SequenceExecutor {
+
+    /// Execute a sequence of tasks from the given task.
+    ///
+    /// - parameter task: The root task of the sequence of tasks to be executed.
+    /// - returns: The execution handle that allows control and monitoring of the
+    /// sequence of tasks being executed.
+    func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle
+}
+
+/// Executor of sequences of tasks.
+///
+/// - seeAlso: `SequencedTask`.
+class SequenceExecutorImpl: SequenceExecutor {
 
     /// Initializer.
     ///
     /// - parameter name: The name of the executor.
-    public init(name: String, qos: DispatchQoS = .userInitiated) {
+    init(name: String, qos: DispatchQoS = .userInitiated) {
         taskQueue = DispatchQueue(label: "Executor.taskQueue-\(name)", qos: qos, attributes: .concurrent)
     }
 
@@ -46,7 +71,7 @@ public class SequenceExecutor {
     /// - parameter task: The root task of the sequence of tasks to be executed.
     /// - returns: The execution handle that allows control and monitoring of the
     /// sequence of tasks being executed.
-    public func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle {
+    func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle {
         let handle = SequenceExecutionHandleImpl()
         execute(task: task, withSequenceHandle: handle)
         return handle
@@ -80,8 +105,11 @@ private class SequenceExecutionHandleImpl: SequenceExecutionHandle {
         return didCancel.value
     }
 
-    fileprivate func await() {
-        latch.await()
+    fileprivate func await(withTimeout timeout: TimeInterval?) throws {
+        let didComplete = latch.await(timeout: timeout)
+        if !didComplete {
+            throw SequenceExecutionError.awaitTimeout
+        }
     }
 
     fileprivate func sequenceDidComplete() {

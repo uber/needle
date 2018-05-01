@@ -16,16 +16,22 @@
 
 import Foundation
 
-/// A task that after execution can optionally return another task to form a sequence
-/// of tasks to be executed.
-protocol SequencedTask: AnyObject {
+/// A task that checks the various aspects of a file, including its content to determine
+/// if the file needs to be parsed for AST.
+class FileFilterTask: SequencedTask {
 
-    /// Execute this task and the returned task if there is one.
-    ///
-    /// - returns: An optional task to be executed after this task is executed. If a
-    /// new task is returned, this task and the returned one effectively forms a task
-    /// sequence to be executed like an assembly line. If `nil` is returned, this
-    /// task effectively becomes the terminating task, marking the completion of the
-    /// entire task sequence.
-    func execute() -> SequencedTask?
+    let url: URL
+
+    init(url: URL, exclusionSuffixes: [String]) {
+        self.url = url
+        self.exclusionSuffixes = exclusionSuffixes
+    }
+
+    func execute() -> SequencedTask? {
+        return nil
+    }
+
+    // MARK: - Private
+
+    private let exclusionSuffixes: [String]
 }
