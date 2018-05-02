@@ -1,0 +1,31 @@
+{
+  "key.diagnostic_stage" : "source.diagnostic.stage.swift.parse",
+  "key.substructure" : [
+    {
+      "key.bodyoffset" : 39,
+      "key.nameoffset" : 6,
+      "key.accessibility" : "source.lang.swift.accessibility.internal",
+      "key.length" : 46,
+      "key.elements" : [
+        {
+          "key.kind" : "source.lang.swift.structure.elem.typeref",
+          "key.offset" : 14,
+          "key.length" : 23
+        }
+      ],
+      "key.runtime_name" : "_TtC8__main__6MyComp",
+      "key.name" : "MyComp",
+      "key.inheritedtypes" : [
+        {
+          "key.name" : "Component<MyDependency>"
+        }
+      ],
+      "key.kind" : "source.lang.swift.decl.class",
+      "key.bodylength" : 6,
+      "key.namelength" : 6,
+      "key.offset" : 0
+    }
+  ],
+  "key.offset" : 0,
+  "key.length" : 47
+}

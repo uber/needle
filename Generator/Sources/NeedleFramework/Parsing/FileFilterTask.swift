@@ -16,22 +16,74 @@
 
 import Foundation
 
+/// A set of errors that can occur when filtering files for parsing.
+enum FileFilterTaskError: Error {
+    /// Failed to read the content from the file URL.
+    case failedToReadContent(URL)
+}
+
 /// A task that checks the various aspects of a file, including its content to determine
-/// if the file needs to be parsed for AST.
+/// if the file needs to be parsed for AST. If the file should be parsed, it returns the
+/// `ASTParserTask` for further processing.
 class FileFilterTask: SequencedTask {
 
-    let url: URL
-
+    /// Initializer.
+    /// - parameter url: The file URL to read from.
+    /// - parameter exclusionSuffixes: The list of file name suffixes to check from. If
+    /// the given URL filename's suffix matches any in the this list, the file will not
+    /// be parsed.
     init(url: URL, exclusionSuffixes: [String]) {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
     }
 
+    /// Execute the task and returns `ASTParserTask` if the file should be parsed.
+    ///
+    /// - returns: `ASTParserTask` if the file should be parsed. `nil` otherwise.
     func execute() -> SequencedTask? {
-        return nil
+        if !isUrlSwiftSource || urlHasExcludedSuffix {
+            return nil
+        }
+
+        let content = try? String(contentsOf: url)
+        if let content = content {
+            if shouldParse(content) {
+                return ASTParserTask(content: content)
+            } else {
+                return nil
+            }
+        } else {
+            fatalError("Failed to read file at \(url)")
+        }
     }
 
     // MARK: - Private
 
+    private let url: URL
     private let exclusionSuffixes: [String]
+
+    private var isUrlSwiftSource: Bool {
+        return url.pathExtension == "swift"
+    }
+
+    private var urlHasExcludedSuffix: Bool {
+        let name = url.deletingPathExtension().lastPathComponent
+        for suffix in exclusionSuffixes {
+            if name.hasSuffix(suffix) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private func shouldParse(_ content: String) -> Bool {
+        // Use simple string matching first since it's more performant.
+        if !content.contains("Component") {
+            return false
+        }
+
+        // Match actual component inheritance using Regex.
+        let containsComponentInheritance = (Regex("Component *<").firstMatch(in: content) != nil)
+        return containsComponentInheritance
+    }
 }
