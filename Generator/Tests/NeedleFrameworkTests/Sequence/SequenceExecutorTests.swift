@@ -35,7 +35,7 @@ class SequenceExecutorTests: XCTestCase {
 
                 didComplete.fulfill()
             }
-            executor.execute(sequenceFrom: task)
+            _ = executor.execute(sequenceFrom: task)
         }
 
         waitForExpectations(timeout: 3, handler: nil)

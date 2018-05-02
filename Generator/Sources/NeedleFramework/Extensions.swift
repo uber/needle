@@ -66,11 +66,11 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     var substructure: [[String: SourceKitRepresentable]] {
         let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.flatMap { $0 as? [String: SourceKitRepresentable] }
+        return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
     }
 
     var inheritedTypes: [String] {
         let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
-        return array.flatMap { ($0 as? [String: String])?.name }
+        return array.compactMap { ($0 as? [String: String])?.name }
     }
 }

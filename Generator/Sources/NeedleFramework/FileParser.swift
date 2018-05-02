@@ -86,7 +86,7 @@ class FileParser {
         }
         guard let dependency = dep else { return nil }
 
-        let vars: [(String, String)] = structure.substructure.flatMap { item in
+        let vars: [(String, String)] = structure.substructure.compactMap { item in
             if let name = item.name, let typeName = item.typeName, let kind = item.kind {
                 if SwiftDeclarationKind(rawValue: kind) == .varInstance {
                     return (name, typeName)
@@ -98,7 +98,7 @@ class FileParser {
     }
 
     private func parseProtocol(_ structure: [String: SourceKitRepresentable], filePath: String) -> Dependency? {
-        let vars: [(String, String)] = structure.substructure.flatMap { item in
+        let vars: [(String, String)] = structure.substructure.compactMap { item in
             if let name = item.name, let typeName = item.typeName, let kind = item.kind, SwiftDeclarationKind(rawValue: kind) == .varInstance {
                 return (name, typeName)
             } else {
@@ -115,7 +115,7 @@ class FileParser {
             let substructure = result.dictionary.substructure
 
             // Find component subclasses
-            let components: [Component] = substructure.flatMap { structure in
+            let components: [Component] = substructure.compactMap { structure in
                 if let kind = structure.kind, SwiftDeclarationKind(rawValue: kind) == .class {
                     return parseClass(structure, filePath: path)
                 } else {
@@ -125,7 +125,7 @@ class FileParser {
             let dependencyNames = components.map { $0.dependency }
 
             // Scan for dependency protocols using the list generated above
-            let dependencies: [Dependency] = substructure.flatMap { structure in
+            let dependencies: [Dependency] = substructure.compactMap { structure in
                 if let name = structure.name, let kind = structure.kind, SwiftDeclarationKind(rawValue: kind) == .protocol {
                     if dependencyNames.contains(name) {
                         return parseProtocol(structure, filePath: path)
