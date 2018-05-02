@@ -21,7 +21,7 @@ class FileScanner {
 
     private let filePath: String
     private let componentString = "Component"
-    private let componentExpression = RegEx("Component *<")
+    private let componentExpression = Regex("Component *<")
 
     init(url: URL) {
         filePath = url.path
@@ -38,7 +38,7 @@ class FileScanner {
             return false
         }
 
-        let properContains = (componentExpression.firstMatch(contents) != nil)
+        let properContains = (componentExpression.firstMatch(in: contents) != nil)
         guard properContains else {
             return false
         }

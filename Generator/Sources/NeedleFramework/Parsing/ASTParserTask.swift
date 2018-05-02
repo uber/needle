@@ -16,19 +16,21 @@
 
 import Foundation
 
-class RegEx {
-    let expression: NSRegularExpression
+/// A task that parses a Swift source content into Swift AST.
+class ASTParserTask: SequencedTask {
 
-    init(_ expr: String) {
-        do {
-            expression = try NSRegularExpression(pattern: expr, options: [])
-        } catch {
-            fatalError("Could not create parser for expression : \(expr)")
-        }
+    /// Initializer.
+    ///
+    /// - parameter content: The source content to be parsed into AST.
+    init(content: String) {
+        self.content = content
     }
 
-    func firstMatch(_ line: String) -> NSTextCheckingResult? {
-        return expression.firstMatch(in: line, options: [], range: NSRange(location:0, length:line.count))
+    func execute() -> SequencedTask? {
+        return nil
     }
+
+    // MARK: - Private
+
+    private let content: String
 }
-

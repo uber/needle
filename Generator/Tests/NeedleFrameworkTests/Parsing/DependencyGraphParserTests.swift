@@ -43,9 +43,9 @@ class DependencyGraphParserTests: XCTestCase {
             XCTFail("\(error)")
         }
 
-        XCTAssertEqual(executor.executeCallCount, 2)
+        XCTAssertEqual(executor.executeCallCount, 5)
         XCTAssertEqual(executionHandle.cancelCallCount, 0)
-        XCTAssertEqual(executionHandle.awaitCallCount, 2)
+        XCTAssertEqual(executionHandle.awaitCallCount, 5)
     }
 }
 

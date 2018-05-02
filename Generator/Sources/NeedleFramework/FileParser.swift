@@ -69,7 +69,7 @@ struct Dependency {
 class FileParser {
     private let file: File
     private let path: String
-    private let componentsExpression = RegEx("^Component *<(.+)>$")
+    private let componentsExpression = Regex("^Component *<(.+)>$")
 
     init(contents: String, path: String) {
         self.file = File(contents: contents)
@@ -79,7 +79,7 @@ class FileParser {
     private func parseClass(_ structure: [String: SourceKitRepresentable], filePath: String) -> Component? {
         var dep: String?
         for inheritedType in structure.inheritedTypes {
-            if let match = componentsExpression.firstMatch(inheritedType),
+            if let match = componentsExpression.firstMatch(in: inheritedType),
                 let range = Range(match.range(at: 1), in: inheritedType) {
                 dep = String(inheritedType[range])
             }
