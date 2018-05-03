@@ -24,7 +24,7 @@ enum SequenceExecutionError: Error {
 
 /// The handle of the execution of a sequence of tasks, that allows control and
 /// monitoring of the said sequence of tasks.
-protocol SequenceExecutionHandle {
+public protocol SequenceExecutionHandle {
 
     /// Block the caller thread until the sequence of tasks all finished execution
     /// or the specified timeout period has elapsed. The completion is achieved by
@@ -44,7 +44,7 @@ protocol SequenceExecutionHandle {
 /// Executor of sequences of tasks.
 ///
 /// - seeAlso: `SequencedTask`.
-protocol SequenceExecutor {
+public protocol SequenceExecutor {
 
     /// Execute a sequence of tasks from the given task.
     ///
@@ -57,12 +57,12 @@ protocol SequenceExecutor {
 /// Executor of sequences of tasks.
 ///
 /// - seeAlso: `SequencedTask`.
-class SequenceExecutorImpl: SequenceExecutor {
+public class SequenceExecutorImpl: SequenceExecutor {
 
     /// Initializer.
     ///
     /// - parameter name: The name of the executor.
-    init(name: String, qos: DispatchQoS = .userInitiated) {
+    public init(name: String, qos: DispatchQoS = .userInitiated) {
         taskQueue = DispatchQueue(label: "Executor.taskQueue-\(name)", qos: qos, attributes: .concurrent)
     }
 
@@ -71,7 +71,7 @@ class SequenceExecutorImpl: SequenceExecutor {
     /// - parameter task: The root task of the sequence of tasks to be executed.
     /// - returns: The execution handle that allows control and monitoring of the
     /// sequence of tasks being executed.
-    func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle {
+    public func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle {
         let handle = SequenceExecutionHandleImpl()
         execute(task: task, withSequenceHandle: handle)
         return handle

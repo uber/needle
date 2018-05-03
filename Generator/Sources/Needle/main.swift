@@ -19,36 +19,9 @@ import Foundation
 import NeedleFramework
 import Utility
 
-protocol Command {
-    var name: String { get }
-    init(parser: ArgumentParser)
-    func run(with arguments: ArgumentParser.Result)
-}
-
-struct ScanCommand: Command {
-    let name = "scan"
-
-    private let overview = "Scan's all swift files in the directory specified"
-    private let dir: PositionalArgument<String>
-    private let suffixes: OptionArgument<[String]>
-
-    init(parser: ArgumentParser) {
-        let subparser = parser.add(subparser: name, overview: overview)
-        dir = subparser.add(positional: "directory", kind: String.self)
-        suffixes = subparser.add(option: "--suffixes", shortName: "-s", kind: [String].self, usage: "Filename suffix(es) to skip (not including extension)", completion: .filename)
-    }
-
-    func run(with arguments: ArgumentParser.Result) {
-        if let path = arguments.get(dir) {
-            let suffixes = arguments.get(self.suffixes)
-            ProviderGenerator().scanFiles(mode: .serial, atPath: path, withoutSuffixes: suffixes)
-        }
-    }
-}
-
 func main() {
     let parser = ArgumentParser(usage: "<command> <options>", overview: "needle DI code generator")
-    let commandsTypes = [ScanCommand.self]
+    let commandsTypes: [Command.Type] = [ScanCommand.self, GenerateCommand.self]
     let commands = commandsTypes.map { $0.init(parser: parser) }
     let arguments = Array(CommandLine.arguments.dropFirst())
     do {
