@@ -79,7 +79,7 @@ class FileFilterTask: SequencedTask {
         }
 
         // Match actual component inheritance using Regex.
-        let containsComponentInheritance = (Regex("Component *<").firstMatch(in: content) != nil)
+        let containsComponentInheritance = (Regex(": *Component *<").firstMatch(in: content) != nil)
         return containsComponentInheritance
     }
 }

@@ -44,9 +44,17 @@ class FileFilterTaskTests: AbstractParsingTests {
         XCTAssertEqual(producerTask.sourceContent, content)
     }
 
-    func test_execute_incorrectComponent_verifyFilter() {
-        let fileUrl = fixtureUrl(for: "IncorrectComponent.swift")
-        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+    func test_execute_nonNeedleComponent_verifyFilter() {
+        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonNeedleComponent.swift")
+        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+
+        let nextTask = task.execute()
+        XCTAssertNil(nextTask)
+    }
+
+    func test_execute_nonInheritanceComponent_verifyFilter() {
+        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonInheritanceComponent.swift")
+        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
         let nextTask = task.execute()
         XCTAssertNil(nextTask)

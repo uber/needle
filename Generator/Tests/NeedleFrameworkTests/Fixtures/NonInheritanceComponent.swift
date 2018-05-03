@@ -1,0 +1,3 @@
+class Component<DependencyType> {
+    
+}
