@@ -37,12 +37,11 @@ class ASTProducerTask: SequencedTask {
 
     func execute() -> SequencedTask? {
         let file = File(contents: sourceContent)
-        let structure = try? Structure(file: file)
-        if let structure = structure {
+        do {
+            let structure = try Structure(file: file)
             return ASTParserTask(structure: structure)
-        } else {
+        } catch {
             fatalError("Failed to parse AST for source at \(sourceUrl)")
         }
-        return nil
     }
 }
