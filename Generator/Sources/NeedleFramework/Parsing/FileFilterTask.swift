@@ -16,16 +16,15 @@
 
 import Foundation
 
-/// A set of errors that can occur when filtering files for parsing.
-enum FileFilterTaskError: Error {
-    /// Failed to read the content from the file URL.
-    case failedToReadContent(URL)
-}
-
 /// A task that checks the various aspects of a file, including its content to determine
 /// if the file needs to be parsed for AST. If the file should be parsed, it returns the
-/// `ASTParserTask` for further processing.
+/// `ASTProducerTask` for further processing.
 class FileFilterTask: SequencedTask {
+
+    /// The file URL to read from.
+    let url: URL
+    /// The list of file name suffixes to check from.
+    let exclusionSuffixes: [String]
 
     /// Initializer.
     /// - parameter url: The file URL to read from.
@@ -48,7 +47,7 @@ class FileFilterTask: SequencedTask {
         let content = try? String(contentsOf: url)
         if let content = content {
             if shouldParse(content) {
-                return ASTParserTask(content: content)
+                return ASTProducerTask(sourceUrl: url, sourceContent: content)
             } else {
                 return nil
             }
@@ -58,9 +57,6 @@ class FileFilterTask: SequencedTask {
     }
 
     // MARK: - Private
-
-    private let url: URL
-    private let exclusionSuffixes: [String]
 
     private var isUrlSwiftSource: Bool {
         return url.pathExtension == "swift"

@@ -17,27 +17,31 @@
 import XCTest
 @testable import NeedleFramework
 
-class FileFilterTaskTests: XCTestCase {
+class FileFilterTaskTests: AbstractParsingTests {
     
     func test_execute_nonSwiftSource_verifyFilter() {
-        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonSwift.json")
-        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+        let fileUrl = fixtureUrl(for: "NonSwift.json")
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let nextTask = task.execute()
         XCTAssertNil(nextTask)
     }
 
     func test_execute_excludedSuffix_verifyFilter() {
-        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/ComponentSample.swift")
-        let excludeSuffixTask = FileFilterTask(url: fixturesURL, exclusionSuffixes: ["Sample"])
+        let fileUrl = fixtureUrl(for: "ComponentSample.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let excludeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"])
 
         var nextTask = excludeSuffixTask.execute()
         XCTAssertNil(nextTask)
 
-        let includeSuffixTask = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+        let includeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         nextTask = includeSuffixTask.execute()
+        let producerTask = nextTask as! ASTProducerTask
         XCTAssertNotNil(nextTask)
+        XCTAssertEqual(producerTask.sourceUrl, fileUrl)
+        XCTAssertEqual(producerTask.sourceContent, content)
     }
 
     func test_execute_nonNeedleComponent_verifyFilter() {
@@ -55,12 +59,24 @@ class FileFilterTaskTests: XCTestCase {
         let nextTask = task.execute()
         XCTAssertNil(nextTask)
     }
-
-    func test_execute_actualComponent_verifyNextTask() {
-        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/ComponentSample.swift")
-        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+  
+    func test_execute_incorrectComponent_verifyFilter() {
+        let fileUrl = fixtureUrl(for: "IncorrectComponent.swift")
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let nextTask = task.execute()
+        XCTAssertNil(nextTask)
+    }
+
+    func test_execute_actualComponent_verifyNextTask() {
+        let fileUrl = fixtureUrl(for: "ComponentSample.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+
+        let nextTask = task.execute()
+        let producerTask = nextTask as! ASTProducerTask
         XCTAssertNotNil(nextTask)
+        XCTAssertEqual(producerTask.sourceUrl, fileUrl)
+        XCTAssertEqual(producerTask.sourceContent, content)
     }
 }

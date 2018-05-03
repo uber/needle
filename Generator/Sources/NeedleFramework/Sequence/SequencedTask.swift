@@ -18,7 +18,7 @@ import Foundation
 
 /// A task that after execution can optionally return another task to form a sequence
 /// of tasks to be executed.
-protocol SequencedTask: AnyObject {
+public protocol SequencedTask: AnyObject {
 
     /// Execute this task and the returned task if there is one.
     ///
