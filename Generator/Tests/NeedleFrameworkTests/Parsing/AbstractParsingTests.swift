@@ -14,19 +14,16 @@
 //  limitations under the License.
 //
 
-import Foundation
-import SourceKittenFramework
+import XCTest
 
-/// A task that parses Swift AST into in-memory dependency graph data models.
-class ASTParserTask: SequencedTask {
+/// Base class for all parsing related tests.
+class AbstractParsingTests: XCTestCase {
 
-    let structure: Structure
-
-    init(structure: Structure) {
-        self.structure = structure
-    }
-
-    func execute() -> SequencedTask? {
-        return nil
+    /// Retrieve the URL for a fixture file.
+    ///
+    /// - parameter file: The name of the file including extension.
+    /// - returns: The fixture file URL.
+    func fixtureUrl(for file: String) -> URL {
+        return URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/\(file)")
     }
 }
