@@ -59,14 +59,6 @@ class FileFilterTaskTests: AbstractParsingTests {
         let nextTask = task.execute()
         XCTAssertNil(nextTask)
     }
-  
-    func test_execute_incorrectComponent_verifyFilter() {
-        let fileUrl = fixtureUrl(for: "IncorrectComponent.swift")
-        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
-
-        let nextTask = task.execute()
-        XCTAssertNil(nextTask)
-    }
 
     func test_execute_actualComponent_verifyNextTask() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
