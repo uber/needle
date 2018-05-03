@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import NeedleFramework
 import Utility
 
 /// Each available command for needle (needle <command> <params>) has a

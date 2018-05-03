@@ -24,7 +24,7 @@ enum DependencyGraphParserError: Error {
 
 /// The entry utility for the parsing phase. The parser deeply scans a directory and
 /// parses the relevant Swift source files, and finally outputs the dependency graph.
-class DependencyGraphParser {
+public class DependencyGraphParser {
 
     /// Parse all the Swift sources within the directory of given URL, excluding any
     /// file that contains a suffix specified in the given exclusion list. Parsing
@@ -37,7 +37,7 @@ class DependencyGraphParser {
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
     /// out.
     // TODO: Pass in the dependency graph data structure so the tasks can contribute to it.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws {
+    public func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws {
         var taskHandleTuples = [(handle: SequenceExecutionHandle, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -61,6 +61,8 @@ class DependencyGraphParser {
             }
         }
     }
+
+    public init() {}
 
     // MARK: - Private
 
