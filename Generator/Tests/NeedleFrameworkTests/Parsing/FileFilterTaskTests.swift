@@ -23,8 +23,14 @@ class FileFilterTaskTests: AbstractParsingTests {
         let fileUrl = fixtureUrl(for: "NonSwift.json")
         let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
-        let nextTask = task.execute()
-        XCTAssertNil(nextTask)
+        let result = task.execute()
+
+        switch result {
+        case .continueSequence(_):
+            XCTFail()
+        case .endOfSequence(let components):
+            XCTAssertTrue(components.isEmpty)
+        }
     }
 
     func test_execute_excludedSuffix_verifyFilter() {
@@ -32,32 +38,56 @@ class FileFilterTaskTests: AbstractParsingTests {
         let content = try! String(contentsOf: fileUrl)
         let excludeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"])
 
-        var nextTask = excludeSuffixTask.execute()
-        XCTAssertNil(nextTask)
+        var result = excludeSuffixTask.execute()
+
+        switch result {
+        case .continueSequence(_):
+            XCTFail()
+        case .endOfSequence(let components):
+            XCTAssertTrue(components.isEmpty)
+        }
 
         let includeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
-        nextTask = includeSuffixTask.execute()
-        let producerTask = nextTask as! ASTProducerTask
-        XCTAssertNotNil(nextTask)
-        XCTAssertEqual(producerTask.sourceUrl, fileUrl)
-        XCTAssertEqual(producerTask.sourceContent, content)
+        result = includeSuffixTask.execute()
+
+        switch result {
+        case .continueSequence(let nextTask):
+            let producerTask = nextTask as! ASTProducerTask
+            XCTAssertNotNil(nextTask)
+            XCTAssertEqual(producerTask.sourceUrl, fileUrl)
+            XCTAssertEqual(producerTask.sourceContent, content)
+        case .endOfSequence(_):
+            XCTFail()
+        }
     }
 
     func test_execute_nonNeedleComponent_verifyFilter() {
         let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonNeedleComponent.swift")
         let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
-        let nextTask = task.execute()
-        XCTAssertNil(nextTask)
+        let result = task.execute()
+
+        switch result {
+        case .continueSequence(_):
+            XCTFail()
+        case .endOfSequence(let components):
+            XCTAssertTrue(components.isEmpty)
+        }
     }
 
     func test_execute_nonInheritanceComponent_verifyFilter() {
         let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonInheritanceComponent.swift")
         let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
-        let nextTask = task.execute()
-        XCTAssertNil(nextTask)
+        let result = task.execute()
+
+        switch result {
+        case .continueSequence(_):
+            XCTFail()
+        case .endOfSequence(let components):
+            XCTAssertTrue(components.isEmpty)
+        }
     }
 
     func test_execute_actualComponent_verifyNextTask() {
@@ -65,10 +95,16 @@ class FileFilterTaskTests: AbstractParsingTests {
         let content = try! String(contentsOf: fileUrl)
         let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
-        let nextTask = task.execute()
-        let producerTask = nextTask as! ASTProducerTask
-        XCTAssertNotNil(nextTask)
-        XCTAssertEqual(producerTask.sourceUrl, fileUrl)
-        XCTAssertEqual(producerTask.sourceContent, content)
+        let result = task.execute()
+
+        switch result {
+        case .continueSequence(let nextTask):
+            let producerTask = nextTask as! ASTProducerTask
+            XCTAssertNotNil(nextTask)
+            XCTAssertEqual(producerTask.sourceUrl, fileUrl)
+            XCTAssertEqual(producerTask.sourceContent, content)
+        case .endOfSequence(_):
+            XCTFail()
+        }
     }
 }

@@ -30,7 +30,7 @@ class DependencyGraphParserTests: AbstractParsingTests {
             XCTAssertNotNil(timeout)
         }
 
-        let executeTaskHandler = { (task: SequencedTask) -> SequenceExecutionHandle in
+        let executeTaskHandler = { (task: SequencedTask<[Component]>) -> SequenceExecutionHandle<[Component]> in
             XCTAssertTrue(task is FileFilterTask)
             let filterTask = task as! FileFilterTask
             XCTAssertEqual(filterTask.exclusionSuffixes, ["ha", "yay", "blah"])
@@ -59,19 +59,19 @@ class MockSequenceExecutor: SequenceExecutor {
 
     var executeCallCount = 0
 
-    private let executeTaskHandler: (SequencedTask) -> SequenceExecutionHandle
+    private let executeTaskHandler: (SequencedTask<[Component]>) -> SequenceExecutionHandle<[Component]>
 
-    init(executeTaskHandler: @escaping (SequencedTask) -> SequenceExecutionHandle) {
+    init(executeTaskHandler: @escaping (SequencedTask<[Component]>) -> SequenceExecutionHandle<[Component]>) {
         self.executeTaskHandler = executeTaskHandler
     }
 
-    func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle {
+    func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
         executeCallCount += 1
-        return executeTaskHandler(task)
+        return executeTaskHandler(task as! SequencedTask<[Component]>) as! SequenceExecutionHandle<SequenceResultType>
     }
 }
 
-class MockExecutionHandle: SequenceExecutionHandle {
+class MockExecutionHandle: SequenceExecutionHandle<[Component]> {
 
     var awaitCallCount = 0
     var awaitHandler: ((TimeInterval?) -> ())?
@@ -79,12 +79,13 @@ class MockExecutionHandle: SequenceExecutionHandle {
     var cancelCallCount = 0
     var cancelHandler: (() -> ())?
 
-    func await(withTimeout timeout: TimeInterval?) throws {
+    override func await(withTimeout timeout: TimeInterval?) throws -> [Component] {
         awaitCallCount += 1
         awaitHandler?(timeout)
+        return []
     }
 
-    func cancel() {
+    override func cancel() {
         cancelCallCount += 1
         cancelHandler?()
     }

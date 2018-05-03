@@ -16,16 +16,24 @@
 
 import Foundation
 
-/// A task that after execution can optionally return another task to form a sequence
-/// of tasks to be executed.
-public protocol SequencedTask: AnyObject {
+/// The execution result of a single `SequencedTask`.
+enum ExecutionResult<SequenceResultType> {
+    /// The execution of the sequence should continue with another task.
+    case continueSequence(SequencedTask<SequenceResultType>)
+    /// The end of the entire task sequence with produced result.
+    case endOfSequence(SequenceResultType)
+}
 
-    /// Execute this task and the returned task if there is one.
+/// A task that after execution can optionally return another task to form a sequence
+/// of tasks to be executed, or an end result produced by the entire sequence.
+// This cannot be a protocol, since `ExecutionResult` references this as a type.
+// Protocols with associatedType cannot be directly used as types.
+class SequencedTask<SequenceResultType> {
+
+    /// Execute this task.
     ///
-    /// - returns: An optional task to be executed after this task is executed. If a
-    /// new task is returned, this task and the returned one effectively forms a task
-    /// sequence to be executed like an assembly line. If `nil` is returned, this
-    /// task effectively becomes the terminating task, marking the completion of the
-    /// entire task sequence.
-    func execute() -> SequencedTask?
+    /// - returns: The execution result of this task.
+    func execute() -> ExecutionResult<SequenceResultType> {
+        fatalError("execute not yet implemented.")
+    }
 }

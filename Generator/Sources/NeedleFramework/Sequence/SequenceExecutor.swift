@@ -24,7 +24,9 @@ enum SequenceExecutionError: Error {
 
 /// The handle of the execution of a sequence of tasks, that allows control and
 /// monitoring of the said sequence of tasks.
-public protocol SequenceExecutionHandle {
+// This cannot be a protocol, since `SequenceExecutor` references this as a type.
+// Protocols with associatedType cannot be directly used as types.
+class SequenceExecutionHandle<SequenceResultType> {
 
     /// Block the caller thread until the sequence of tasks all finished execution
     /// or the specified timeout period has elapsed. The completion is achieved by
@@ -35,34 +37,36 @@ public protocol SequenceExecutionHandle {
     /// `nil` to wait forever until the sequence execution completes.
     /// - throws: `SequenceExecutionError.awaitTimeout` if the given timeout period
     /// elapsed before the sequence execution completed.
-    func await(withTimeout timeout: TimeInterval?) throws
+    func await(withTimeout timeout: TimeInterval?) throws -> SequenceResultType {
+        fatalError("await not yet implemented.")
+    }
 
     /// Cancel the sequence execution at the point this function is invoked.
-    func cancel()
+    func cancel() {}
 }
 
 /// Executor of sequences of tasks.
 ///
 /// - seeAlso: `SequencedTask`.
-public protocol SequenceExecutor {
+protocol SequenceExecutor {
 
     /// Execute a sequence of tasks from the given task.
     ///
     /// - parameter task: The root task of the sequence of tasks to be executed.
     /// - returns: The execution handle that allows control and monitoring of the
     /// sequence of tasks being executed.
-    func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle
+    func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType>
 }
 
 /// Executor of sequences of tasks.
 ///
 /// - seeAlso: `SequencedTask`.
-public class SequenceExecutorImpl: SequenceExecutor {
+class SequenceExecutorImpl: SequenceExecutor {
 
     /// Initializer.
     ///
     /// - parameter name: The name of the executor.
-    public init(name: String, qos: DispatchQoS = .userInitiated) {
+    init(name: String, qos: DispatchQoS = .userInitiated) {
         taskQueue = DispatchQueue(label: "Executor.taskQueue-\(name)", qos: qos, attributes: .concurrent)
     }
 
@@ -71,8 +75,8 @@ public class SequenceExecutorImpl: SequenceExecutor {
     /// - parameter task: The root task of the sequence of tasks to be executed.
     /// - returns: The execution handle that allows control and monitoring of the
     /// sequence of tasks being executed.
-    public func execute(sequenceFrom task: SequencedTask) -> SequenceExecutionHandle {
-        let handle = SequenceExecutionHandleImpl()
+    func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
+        let handle: SequenceExecutionHandleImpl<SequenceResultType> = SequenceExecutionHandleImpl()
         execute(task: task, withSequenceHandle: handle)
         return handle
     }
@@ -81,42 +85,61 @@ public class SequenceExecutorImpl: SequenceExecutor {
 
     private let taskQueue: DispatchQueue
 
-    private func execute(task: SequencedTask, withSequenceHandle handle: SequenceExecutionHandleImpl) {
+    private func execute<SequenceResultType>(task: SequencedTask<SequenceResultType>, withSequenceHandle handle: SequenceExecutionHandleImpl<SequenceResultType>) {
         taskQueue.async {
             guard !handle.isCancelled else {
                 return
             }
 
-            if let nextTask = task.execute() {
+            let result = task.execute()
+            switch result {
+            case .continueSequence(let nextTask):
                 self.execute(task: nextTask, withSequenceHandle: handle)
-            } else {
-                handle.sequenceDidComplete()
+            case .endOfSequence(let result):
+                handle.sequenceDidComplete(with: result)
             }
         }
     }
 }
 
-private class SequenceExecutionHandleImpl: SequenceExecutionHandle {
+private class SequenceExecutionHandleImpl<SequenceResultType>: SequenceExecutionHandle<SequenceResultType> {
 
     private let latch = CountDownLatch(count: 1)
     private let didCancel = AtomicBool(initialValue: false)
+
+    // Use a lock to ensure result is properly accessed, since the read `await` method
+    // may be invoked on a different thread than the write `sequenceDidComplete` method.
+    private let resultLock = NSRecursiveLock()
+    private var result: SequenceResultType?
 
     fileprivate var isCancelled: Bool {
         return didCancel.value
     }
 
-    fileprivate func await(withTimeout timeout: TimeInterval?) throws {
+    fileprivate override func await(withTimeout timeout: TimeInterval?) throws -> SequenceResultType {
         let didComplete = latch.await(timeout: timeout)
         if !didComplete {
             throw SequenceExecutionError.awaitTimeout
         }
+
+        resultLock.lock()
+        defer {
+            resultLock.unlock()
+        }
+        // If latch was counted down, the result must have been set. Therefore, this forced
+        // unwrap is safe.
+        return result!
     }
 
-    fileprivate func sequenceDidComplete() {
+    fileprivate func sequenceDidComplete(with result: SequenceResultType) {
+        resultLock.lock()
+        self.result = result
+        resultLock.unlock()
+
         latch.countDown()
     }
 
-    fileprivate func cancel() {
+    fileprivate override func cancel() {
         didCancel.compareAndSet(expect: false, newValue: true)
     }
 }
