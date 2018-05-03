@@ -14,19 +14,20 @@
 //  limitations under the License.
 //
 
-import Foundation
 import SourceKittenFramework
+import XCTest
+@testable import NeedleFramework
 
-/// A task that parses Swift AST into in-memory dependency graph data models.
-class ASTParserTask: SequencedTask {
+class ASTProducerTaskTests: AbstractParsingTests {
 
-    let structure: Structure
+    func test_execute_verifyNextTask() {
+        let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
+        let sourceContent = try! String(contentsOf: sourceUrl)
+        let astContent = try! Structure(file: File(contents: sourceContent))
 
-    init(structure: Structure) {
-        self.structure = structure
-    }
+        let task = ASTProducerTask(sourceUrl: sourceUrl, sourceContent: sourceContent)
+        let nextTask = task.execute() as! ASTParserTask
 
-    func execute() -> SequencedTask? {
-        return nil
+        XCTAssertEqual(nextTask.structure, astContent)
     }
 }

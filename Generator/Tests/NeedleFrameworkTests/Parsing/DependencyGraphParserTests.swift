@@ -17,18 +17,24 @@
 import XCTest
 @testable import NeedleFramework
 
-class DependencyGraphParserTests: XCTestCase {
+class DependencyGraphParserTests: AbstractParsingTests {
     
     func test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask() {
         let parser = DependencyGraphParser()
-        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/")
-        print(fixturesURL)
+        let fixturesURL = fixtureUrl(for: "")
+        let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
+        let files = enumerator!.allObjects as! [URL]
+
         let executionHandle = MockExecutionHandle()
         executionHandle.awaitHandler = { (timeout: TimeInterval?) in
             XCTAssertNotNil(timeout)
         }
+
         let executeTaskHandler = { (task: SequencedTask) -> SequenceExecutionHandle in
             XCTAssertTrue(task is FileFilterTask)
+            let filterTask = task as! FileFilterTask
+            XCTAssertEqual(filterTask.exclusionSuffixes, ["ha", "yay", "blah"])
+            XCTAssertTrue(files.contains(filterTask.url))
             return executionHandle
         }
         let executor = MockSequenceExecutor(executeTaskHandler: executeTaskHandler)
@@ -38,14 +44,14 @@ class DependencyGraphParserTests: XCTestCase {
         XCTAssertEqual(executionHandle.awaitCallCount, 0)
 
         do {
-            try parser.parse(from: fixturesURL, using: executor)
+            try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
         } catch {
             XCTFail("\(error)")
         }
 
-        XCTAssertEqual(executor.executeCallCount, 5)
+        XCTAssertEqual(executor.executeCallCount, files.count)
         XCTAssertEqual(executionHandle.cancelCallCount, 0)
-        XCTAssertEqual(executionHandle.awaitCallCount, 5)
+        XCTAssertEqual(executionHandle.awaitCallCount, files.count)
     }
 }
 
