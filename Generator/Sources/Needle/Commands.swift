@@ -20,7 +20,7 @@ import Utility
 
 /// Each available command for needle (needle <command> <params>) has a
 /// name that is used to decide which subparser to use by main()
-public protocol Command {
+protocol Command {
     /// Name used to check which of the Commands to apply
     var name: String { get }
     /// Initializer, sets up the command-line flags
@@ -31,20 +31,20 @@ public protocol Command {
 
 /// This command just scans files and produces dummy output, created for timing
 /// and prototyping purposes. Will be deleted soon.
-public struct ScanCommand: Command {
-    public let name = "scan"
+class ScanCommand: Command {
+    let name = "scan"
 
     private let overview = "Scan's all swift files in the directory specified"
     private let dir: PositionalArgument<String>
     private let suffixes: OptionArgument<[String]>
 
-    public init(parser: ArgumentParser) {
+    required init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
         dir = subparser.add(positional: "directory", kind: String.self)
         suffixes = subparser.add(option: "--suffixes", shortName: "-s", kind: [String].self, usage: "Filename suffix(es) to skip (not including extension)", completion: .filename)
     }
 
-    public func run(with arguments: ArgumentParser.Result) {
+    func run(with arguments: ArgumentParser.Result) {
         if let path = arguments.get(dir) {
             let suffixes = arguments.get(self.suffixes)
             ProviderGenerator().scanFiles(mode: .serial, atPath: path, withoutSuffixes: suffixes)
@@ -55,20 +55,20 @@ public struct ScanCommand: Command {
 /// The generate command provides the core functionality of needle. It scans
 /// all the relevant files in the directories and builds a DI tree, then it
 /// outputs provider classes to satisfy the dependency protocols found.
-public struct GenerateCommand: Command {
-    public let name = "generate"
+class GenerateCommand: Command {
+    let name = "generate"
 
     private let overview = "Generate DI provider classes based on the source scanned"
     private let dir: PositionalArgument<String>
     private let suffixes: OptionArgument<[String]>
 
-    public init(parser: ArgumentParser) {
+    required init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
         dir = subparser.add(positional: "directory", kind: String.self)
         suffixes = subparser.add(option: "--suffixes", shortName: "-s", kind: [String].self, usage: "Filename suffix(es) to skip (not including extension)", completion: .filename)
     }
 
-    public func run(with arguments: ArgumentParser.Result) {
+    func run(with arguments: ArgumentParser.Result) {
         if let path = arguments.get(dir) {
             let suffixes = arguments.get(self.suffixes)
             do {
