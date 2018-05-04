@@ -39,10 +39,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     var length: Int? {
         return (self["key.length"] as? Int64).flatMap({ Int($0) })
     }
-    /// Name.
-    var name: String? {
-        return self["key.name"] as? String
-    }
+
     /// Name length.
     var nameLength: Int? {
         return (self["key.namelength"] as? Int64).flatMap({ Int($0) })
@@ -67,10 +64,5 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     var substructure: [[String: SourceKitRepresentable]] {
         let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }
-    }
-
-    var inheritedTypes: [String] {
-        let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
-        return array.compactMap { ($0 as? [String: String])?.name }
     }
 }

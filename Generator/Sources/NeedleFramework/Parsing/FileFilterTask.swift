@@ -19,7 +19,7 @@ import Foundation
 /// A task that checks the various aspects of a file, including its content to determine
 /// if the file needs to be parsed for AST. If the file should be parsed, it returns the
 /// `ASTProducerTask` for further processing.
-class FileFilterTask: SequencedTask<[Component]> {
+class FileFilterTask: SequencedTask<DependencyGraphNode> {
 
     /// The file URL to read from.
     let url: URL
@@ -38,10 +38,11 @@ class FileFilterTask: SequencedTask<[Component]> {
 
     /// Execute the task and returns `ASTProducerTask` if the file should be parsed.
     ///
-    /// - returns: `ASTProducerTask` if the file should be parsed. `nil` otherwise.
-    override func execute() -> ExecutionResult<[Component]> {
+    /// - returns: `.continueSequence` with `ASTProducerTask` if the file should be parsed.
+    /// Otherwise `endOfSequence` with an empty `DependencyGraphNode` is returned.
+    override func execute() -> ExecutionResult<DependencyGraphNode> {
         if !isUrlSwiftSource || urlHasExcludedSuffix {
-            return .endOfSequence([])
+            return .endOfSequence(DependencyGraphNode(components: [], dependencies: []))
         }
 
         let content = try? String(contentsOf: url)
@@ -49,7 +50,7 @@ class FileFilterTask: SequencedTask<[Component]> {
             if shouldParse(content) {
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             } else {
-                return .endOfSequence([])
+                return .endOfSequence(DependencyGraphNode(components: [], dependencies: []))
             }
         } else {
             fatalError("Failed to read file at \(url)")

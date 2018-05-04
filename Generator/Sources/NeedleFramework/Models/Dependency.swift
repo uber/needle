@@ -16,13 +16,12 @@
 
 import Foundation
 
-/// A data model representing a dependency graph scope declared by a NeedleFoundation
-/// `Component` subclass.
-struct Component {
-    /// The name of the component.
+/// A data model representing a dependency protocol of a NeedleFoundation `Component`.
+// This is separate from the `Component` data model, since a component's dependency
+// protocol may be declared in a separate file.
+struct Dependency {
+    /// The name of the dependency protocol.
     let name: String
-    /// The name of the component's dependency protocol.
-    let dependencyProtocolName: String
-    /// A list of properties this component instantiates, thereby provides.
+    /// The list of dependency properties.
     let properties: [Property]
 }
