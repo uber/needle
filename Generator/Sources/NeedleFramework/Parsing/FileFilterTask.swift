@@ -19,7 +19,7 @@ import Foundation
 /// A task that checks the various aspects of a file, including its content to determine
 /// if the file needs to be parsed for AST. If the file should be parsed, it returns the
 /// `ASTProducerTask` for further processing.
-class FileFilterTask: SequencedTask {
+class FileFilterTask: SequencedTask<[Component]> {
 
     /// The file URL to read from.
     let url: URL
@@ -36,20 +36,20 @@ class FileFilterTask: SequencedTask {
         self.exclusionSuffixes = exclusionSuffixes
     }
 
-    /// Execute the task and returns `ASTParserTask` if the file should be parsed.
+    /// Execute the task and returns `ASTProducerTask` if the file should be parsed.
     ///
-    /// - returns: `ASTParserTask` if the file should be parsed. `nil` otherwise.
-    func execute() -> SequencedTask? {
+    /// - returns: `ASTProducerTask` if the file should be parsed. `nil` otherwise.
+    override func execute() -> ExecutionResult<[Component]> {
         if !isUrlSwiftSource || urlHasExcludedSuffix {
-            return nil
+            return .endOfSequence([])
         }
 
         let content = try? String(contentsOf: url)
         if let content = content {
             if shouldParse(content) {
-                return ASTProducerTask(sourceUrl: url, sourceContent: content)
+                return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             } else {
-                return nil
+                return .endOfSequence([])
             }
         } else {
             fatalError("Failed to read file at \(url)")

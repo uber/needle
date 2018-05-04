@@ -24,7 +24,10 @@ enum DependencyGraphParserError: Error {
 
 /// The entry utility for the parsing phase. The parser deeply scans a directory and
 /// parses the relevant Swift source files, and finally outputs the dependency graph.
-public class DependencyGraphParser {
+class DependencyGraphParser {
+
+    /// Initializer.
+    init() {}
 
     /// Parse all the Swift sources within the directory of given URL, excluding any
     /// file that contains a suffix specified in the given exclusion list. Parsing
@@ -36,9 +39,8 @@ public class DependencyGraphParser {
     /// - parameter executor: The executor to use for concurrent processing of files.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
     /// out.
-    // TODO: Pass in the dependency graph data structure so the tasks can contribute to it.
-    public func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws {
-        var taskHandleTuples = [(handle: SequenceExecutionHandle, fileUrl: URL)]()
+    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws {
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<[Component]>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = newFileEnumerator(for: rootUrl)
@@ -53,7 +55,7 @@ public class DependencyGraphParser {
         // Wait for all sequences to finish.
         for tuple in taskHandleTuples {
             do {
-                try tuple.handle.await(withTimeout: 30)
+                let components = try tuple.handle.await(withTimeout: 30)
             } catch SequenceExecutionError.awaitTimeout {
                 throw DependencyGraphParserError.timeout(tuple.fileUrl.absoluteString)
             } catch {
@@ -61,8 +63,6 @@ public class DependencyGraphParser {
             }
         }
     }
-
-    public init() {}
 
     // MARK: - Private
 

@@ -17,53 +17,53 @@
 import Foundation
 import SourceKittenFramework
 
-struct Component {
-    let name: String
-    let dependency: String
-    var members: [(String, String)]
-    let filePath: String
-    let offsetInFile: Int
-    var children: [Component]
-    var parents: [Component]
-
-    init(name: String, dependency: String, members: [(String, String)], filePath: String) {
-        self.name = name
-        self.dependency = dependency
-        self.members = members
-        self.filePath = filePath
-        self.offsetInFile = 0
-        self.children = []
-        self.parents = []
-    }
-
-    func fakeGenerateForTiming() -> String {
-
-        let middle = members.map { (name, kind) in
-            return """
-                var \(name) : \(kind) = {
-                    return dependeny.\(name)
-                }
-
-
-            """
-        }.joined()
-
-        let result = """
-        class \(self.name)Provider {
-        \(middle)}
-
-        
-        """
-
-        return result
-    }
-}
+//struct Component {
+//    let name: String
+//    let dependency: String
+//    var members: [(String, String)]
+//    let filePath: String
+//    let offsetInFile: Int
+//    var children: [Component]
+//    var parents: [Component]
+//
+//    init(name: String, dependency: String, members: [(String, String)], filePath: String) {
+//        self.name = name
+//        self.dependency = dependency
+//        self.members = members
+//        self.filePath = filePath
+//        self.offsetInFile = 0
+//        self.children = []
+//        self.parents = []
+//    }
+//
+//    func fakeGenerateForTiming() -> String {
+//
+//        let middle = members.map { (name, kind) in
+//            return """
+//                var \(name) : \(kind) = {
+//                    return dependeny.\(name)
+//                }
+//
+//
+//            """
+//        }.joined()
+//
+//        let result = """
+//        class \(self.name)Provider {
+//        \(middle)}
+//
+//
+//        """
+//
+//        return result
+//    }
+//}
 
 struct Dependency {
-    var name: String
-    var members: [(String, String)]
-    let filePath: String
-    let offsetInFile: Int
+//    var name: String
+//    var members: [(String, String)]
+//    let filePath: String
+//    let offsetInFile: Int
 }
 
 class FileParser {
@@ -76,65 +76,65 @@ class FileParser {
         self.path = path
     }
 
-    private func parseClass(_ structure: [String: SourceKitRepresentable], filePath: String) -> Component? {
-        var dep: String?
-        for inheritedType in structure.inheritedTypes {
-            if let match = componentsExpression.firstMatch(in: inheritedType),
-                let range = Range(match.range(at: 1), in: inheritedType) {
-                dep = String(inheritedType[range])
-            }
-        }
-        guard let dependency = dep else { return nil }
-
-        let vars: [(String, String)] = structure.substructure.compactMap { item in
-            if let name = item.name, let typeName = item.typeName, let kind = item.kind {
-                if SwiftDeclarationKind(rawValue: kind) == .varInstance {
-                    return (name, typeName)
-                }
-            }
-            return nil
-        }
-        return Component(name: structure.name!, dependency: dependency, members: vars, filePath: filePath)
-    }
-
-    private func parseProtocol(_ structure: [String: SourceKitRepresentable], filePath: String) -> Dependency? {
-        let vars: [(String, String)] = structure.substructure.compactMap { item in
-            if let name = item.name, let typeName = item.typeName, let kind = item.kind, SwiftDeclarationKind(rawValue: kind) == .varInstance {
-                return (name, typeName)
-            } else {
-                return nil
-            }
-        }
-        return Dependency(name: structure.name!, members: vars, filePath: filePath, offsetInFile: 0)
-    }
+//    private func parseClass(_ structure: [String: SourceKitRepresentable], filePath: String) -> Component? {
+//        var dep: String?
+//        for inheritedType in structure.inheritedTypes {
+//            if let match = componentsExpression.firstMatch(in: inheritedType),
+//                let range = Range(match.range(at: 1), in: inheritedType) {
+//                dep = String(inheritedType[range])
+//            }
+//        }
+//        guard let dependency = dep else { return nil }
+//
+//        let vars: [(String, String)] = structure.substructure.compactMap { item in
+//            if let name = item.name, let typeName = item.typeName, let kind = item.kind {
+//                if SwiftDeclarationKind(rawValue: kind) == .varInstance {
+//                    return (name, typeName)
+//                }
+//            }
+//            return nil
+//        }
+//        return Component(name: structure.name!, dependency: dependency, members: vars, filePath: filePath)
+//    }
+//
+//    private func parseProtocol(_ structure: [String: SourceKitRepresentable], filePath: String) -> Dependency? {
+//        let vars: [(String, String)] = structure.substructure.compactMap { item in
+//            if let name = item.name, let typeName = item.typeName, let kind = item.kind, SwiftDeclarationKind(rawValue: kind) == .varInstance {
+//                return (name, typeName)
+//            } else {
+//                return nil
+//            }
+//        }
+//        return Dependency(name: structure.name!, members: vars, filePath: filePath, offsetInFile: 0)
+//    }
 
     func parse() -> ([Component], [Dependency])? {
-        let result = try? Structure(file: file)
-
-        if let result = result {
-            let substructure = result.dictionary.substructure
-
-            // Find component subclasses
-            let components: [Component] = substructure.compactMap { structure in
-                if let kind = structure.kind, SwiftDeclarationKind(rawValue: kind) == .class {
-                    return parseClass(structure, filePath: path)
-                } else {
-                    return nil
-                }
-            }
-            let dependencyNames = components.map { $0.dependency }
-
-            // Scan for dependency protocols using the list generated above
-            let dependencies: [Dependency] = substructure.compactMap { structure in
-                if let name = structure.name, let kind = structure.kind, SwiftDeclarationKind(rawValue: kind) == .protocol {
-                    if dependencyNames.contains(name) {
-                        return parseProtocol(structure, filePath: path)
-                    }
-                }
-                return nil
-            }
-            return (components, dependencies)
-        }
+//        let result = try? Structure(file: file)
+//
+//        if let result = result {
+//            let substructure = result.dictionary.substructure
+//
+//            // Find component subclasses
+//            let components: [Component] = substructure.compactMap { structure in
+//                if let kind = structure.kind, SwiftDeclarationKind(rawValue: kind) == .class {
+//                    return parseClass(structure, filePath: path)
+//                } else {
+//                    return nil
+//                }
+//            }
+//            let dependencyNames = components.map { $0.dependency }
+//
+//            // Scan for dependency protocols using the list generated above
+//            let dependencies: [Dependency] = substructure.compactMap { structure in
+//                if let name = structure.name, let kind = structure.kind, SwiftDeclarationKind(rawValue: kind) == .protocol {
+//                    if dependencyNames.contains(name) {
+//                        return parseProtocol(structure, filePath: path)
+//                    }
+//                }
+//                return nil
+//            }
+//            return (components, dependencies)
+//        }
 
         return nil
     }

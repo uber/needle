@@ -18,15 +18,23 @@ import Foundation
 import SourceKittenFramework
 
 /// A task that parses Swift AST into in-memory dependency graph data models.
-class ASTParserTask: SequencedTask {
+class ASTParserTask: SequencedTask<[Component]> {
 
+    /// The AST structure of the file to parse.
     let structure: Structure
 
+    /// Initializer.
+    ///
+    /// - parameter structure: The AST structure of the file to parse.
     init(structure: Structure) {
         self.structure = structure
     }
 
-    func execute() -> SequencedTask? {
-        return nil
+    /// Execute the task and returns the in-memory dependency graph data models.
+    /// This is the last task in the sequence.
+    ///
+    /// - returns: `nil`.
+    override func execute() -> ExecutionResult<[Component]> {
+        return .endOfSequence([])
     }
 }

@@ -86,12 +86,12 @@ public class ProviderGenerator {
         }
         print("files scanned:", total.value)
 
-        let result = allComponents.map { component in
-            component.fakeGenerateForTiming()
-        }.joined()
-
-        let outPath = "/tmp/Providers.swift"
-        try? result.write(toFile: outPath, atomically: true, encoding: .utf8)
+//        let result = allComponents.map { component in
+//            component.fakeGenerateForTiming()
+//        }.joined()
+//
+//        let outPath = "/tmp/Providers.swift"
+//        try? result.write(toFile: outPath, atomically: true, encoding: .utf8)
     }
 
     public init() {}

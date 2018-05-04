@@ -26,8 +26,14 @@ class ASTProducerTaskTests: AbstractParsingTests {
         let astContent = try! Structure(file: File(contents: sourceContent))
 
         let task = ASTProducerTask(sourceUrl: sourceUrl, sourceContent: sourceContent)
-        let nextTask = task.execute() as! ASTParserTask
+        let result = task.execute()
 
-        XCTAssertEqual(nextTask.structure, astContent)
+        switch result {
+        case .continueSequence(let nextTask):
+            let parserTask = nextTask as! ASTParserTask
+            XCTAssertEqual(parserTask.structure, astContent)
+        default:
+            XCTFail()
+        }
     }
 }
