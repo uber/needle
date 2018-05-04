@@ -69,13 +69,14 @@ class GenerateCommand: Command {
     }
 
     func run(with arguments: ArgumentParser.Result) {
-        if let path = arguments.get(dir) {
-            let suffixes = arguments.get(self.suffixes)
-            do {
-                try DependencyGraphParser().parse(from: URL(fileURLWithPath: path), excludingFilesWithSuffixes: suffixes ?? [], using: SequenceExecutorImpl(name: "main"))
-            } catch {
-                fatalError()
-            }
-        }
+        // TODO Replace with entry point that does both parsing and generating.
+//        if let path = arguments.get(dir) {
+//            let suffixes = arguments.get(self.suffixes)
+//            do {
+//                try DependencyGraphParser().parse(from: URL(fileURLWithPath: path), excludingFilesWithSuffixes: suffixes ?? [], using: SequenceExecutorImpl(name: "main"))
+//            } catch {
+//                fatalError()
+//            }
+//        }
     }
 }

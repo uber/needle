@@ -28,8 +28,9 @@ class FileFilterTaskTests: AbstractParsingTests {
         switch result {
         case .continueSequence(_):
             XCTFail()
-        case .endOfSequence(let components):
-            XCTAssertTrue(components.isEmpty)
+        case .endOfSequence(let node):
+            XCTAssertTrue(node.components.isEmpty)
+            XCTAssertTrue(node.dependencies.isEmpty)
         }
     }
 
@@ -43,8 +44,9 @@ class FileFilterTaskTests: AbstractParsingTests {
         switch result {
         case .continueSequence(_):
             XCTFail()
-        case .endOfSequence(let components):
-            XCTAssertTrue(components.isEmpty)
+        case .endOfSequence(let node):
+            XCTAssertTrue(node.components.isEmpty)
+            XCTAssertTrue(node.dependencies.isEmpty)
         }
 
         let includeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
@@ -71,8 +73,9 @@ class FileFilterTaskTests: AbstractParsingTests {
         switch result {
         case .continueSequence(_):
             XCTFail()
-        case .endOfSequence(let components):
-            XCTAssertTrue(components.isEmpty)
+        case .endOfSequence(let node):
+            XCTAssertTrue(node.components.isEmpty)
+            XCTAssertTrue(node.dependencies.isEmpty)
         }
     }
 
@@ -85,8 +88,9 @@ class FileFilterTaskTests: AbstractParsingTests {
         switch result {
         case .continueSequence(_):
             XCTFail()
-        case .endOfSequence(let components):
-            XCTAssertTrue(components.isEmpty)
+        case .endOfSequence(let node):
+            XCTAssertTrue(node.components.isEmpty)
+            XCTAssertTrue(node.dependencies.isEmpty)
         }
     }
 

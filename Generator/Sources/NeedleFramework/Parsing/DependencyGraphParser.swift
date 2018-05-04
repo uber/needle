@@ -40,7 +40,7 @@ class DependencyGraphParser {
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
     /// out.
     func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws {
-        var taskHandleTuples = [(handle: SequenceExecutionHandle<[Component]>, fileUrl: URL)]()
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = newFileEnumerator(for: rootUrl)

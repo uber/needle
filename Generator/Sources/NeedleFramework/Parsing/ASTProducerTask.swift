@@ -19,7 +19,7 @@ import SourceKittenFramework
 
 /// A task that parses a Swift source content and produces Swift AST that can then be
 /// parsed into the dependnecy graph.
-class ASTProducerTask: SequencedTask<[Component]> {
+class ASTProducerTask: SequencedTask<DependencyGraphNode> {
 
     /// The source URL.
     let sourceUrl: URL
@@ -37,8 +37,9 @@ class ASTProducerTask: SequencedTask<[Component]> {
 
     /// Execute the task and returns `ASTParserTask` if parsing file into AST succeeded.
     ///
-    /// - returns: `ASTParserTask` if parsing file into AST succeeded.
-    override func execute() -> ExecutionResult<[Component]> {
+    /// - returns: `.continueSequence` with `ASTParserTask` if parsing file into AST
+    /// succeeded.
+    override func execute() -> ExecutionResult<DependencyGraphNode> {
         let file = File(contents: sourceContent)
         do {
             let structure = try Structure(file: file)

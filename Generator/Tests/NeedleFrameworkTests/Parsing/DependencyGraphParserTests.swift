@@ -30,7 +30,7 @@ class DependencyGraphParserTests: AbstractParsingTests {
             XCTAssertNotNil(timeout)
         }
 
-        let executeTaskHandler = { (task: SequencedTask<[Component]>) -> SequenceExecutionHandle<[Component]> in
+        let executeTaskHandler = { (task: SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode> in
             XCTAssertTrue(task is FileFilterTask)
             let filterTask = task as! FileFilterTask
             XCTAssertEqual(filterTask.exclusionSuffixes, ["ha", "yay", "blah"])
@@ -59,19 +59,19 @@ class MockSequenceExecutor: SequenceExecutor {
 
     var executeCallCount = 0
 
-    private let executeTaskHandler: (SequencedTask<[Component]>) -> SequenceExecutionHandle<[Component]>
+    private let executeTaskHandler: (SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode>
 
-    init(executeTaskHandler: @escaping (SequencedTask<[Component]>) -> SequenceExecutionHandle<[Component]>) {
+    init(executeTaskHandler: @escaping (SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode>) {
         self.executeTaskHandler = executeTaskHandler
     }
 
     func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
         executeCallCount += 1
-        return executeTaskHandler(task as! SequencedTask<[Component]>) as! SequenceExecutionHandle<SequenceResultType>
+        return executeTaskHandler(task as! SequencedTask<DependencyGraphNode>) as! SequenceExecutionHandle<SequenceResultType>
     }
 }
 
-class MockExecutionHandle: SequenceExecutionHandle<[Component]> {
+class MockExecutionHandle: SequenceExecutionHandle<DependencyGraphNode> {
 
     var awaitCallCount = 0
     var awaitHandler: ((TimeInterval?) -> ())?
@@ -79,10 +79,10 @@ class MockExecutionHandle: SequenceExecutionHandle<[Component]> {
     var cancelCallCount = 0
     var cancelHandler: (() -> ())?
 
-    override func await(withTimeout timeout: TimeInterval?) throws -> [Component] {
+    override func await(withTimeout timeout: TimeInterval?) throws -> DependencyGraphNode {
         awaitCallCount += 1
         awaitHandler?(timeout)
-        return []
+        return DependencyGraphNode(components: [], dependencies: [])
     }
 
     override func cancel() {
