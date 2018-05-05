@@ -32,26 +32,18 @@ public class __DependencyProviderRegistry {
     /// Register the given factory closure with given key.
     ///
     /// - note: This method is thread-safe.
-    /// - note: This method takes in `String` component and parent component names instead of
-    /// their metatypes to avoid additional `String` conversion cost. At the same time, the
-    /// metatype converted `String` does not contain module prefix, which is important in
-    /// resolving name collisions.
-    /// - parameter componentName: The fully qualified name of the component that the given
-    /// dependency provider factory is for.
-    /// - parameter parentComponentName: The fully qualified name of the parent component of
-    /// the specified component.
+    /// - parameter componentPath: The dependency graph path of the component the provider
+    /// is for.
     /// - parameter dependencyProviderFactory: The closure that takes in a component to be
     /// injected and returns a provider instance that conforms to the component's dependency
     /// protocol.
-    public func registerDependencyProviderFactory(`for` componentName: String, withParentComponentName parentComponentName: String, _ dependencyProviderFactory: @escaping (ComponentType) -> AnyObject) {
-        let key = providerFactoryKey(for: componentName, withParentComponentName: parentComponentName)
-
+    public func registerDependencyProviderFactory(`for` componentPath: String, _ dependencyProviderFactory: @escaping (ComponentType) -> AnyObject) {
         providerFactoryLock.lock()
         defer {
             providerFactoryLock.unlock()
         }
 
-        providerFactories[key] = dependencyProviderFactory
+        providerFactories[componentPath.hashValue] = dependencyProviderFactory
     }
 
     /// Retrieve the dependency provider for the given component and its parent.
@@ -59,32 +51,20 @@ public class __DependencyProviderRegistry {
     /// - parameter component: The component that uses the returned dependency provider.
     /// - returns: The dependency provider for the given component.
     func dependencyProvider(`for` component: ComponentType) -> AnyObject {
-        let key = providerFactoryKey(for: component)
-
         providerFactoryLock.lock()
         defer {
             providerFactoryLock.unlock()
         }
 
-        if let factory = providerFactories[key] {
+        if let factory = providerFactories[component.path.hashValue] {
             return factory(component)
         } else {
-            fatalError("Missing dependency provider factory for \(key)")
+            fatalError("Missing dependency provider factory for \(component.path)")
         }
     }
 
     private let providerFactoryLock = NSRecursiveLock()
-    private var providerFactories = [String: (ComponentType) -> AnyObject]()
+    private var providerFactories = [Int: (ComponentType) -> AnyObject]()
 
     private init() {}
-
-    private func providerFactoryKey(`for` component: ComponentType) -> String {
-        let componentName = String(describing: component)
-        let parentComponentName = String(describing: component.parent)
-        return providerFactoryKey(for: componentName, withParentComponentName: parentComponentName)
-    }
-
-    private func providerFactoryKey(`for` componentName: String, withParentComponentName parentComponentName: String) -> String {
-        return "\(parentComponentName)->\(componentName)"
-    }
 }

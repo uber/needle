@@ -16,12 +16,22 @@
 
 import Foundation
 
+/// A protocol defining a scope on the dependency graph. A scope only requires a path to
+/// reach the scope.
+public protocol Scope: AnyObject {
+
+    /// The path to reach this scope on the dependnecy graph.
+    var path: String { get }
+}
+
 /// The base protocol of a component. Application code should inherit from the `Component`
 /// base class, instead of using this protocol directly.
-public protocol ComponentType: AnyObject {
+public protocol ComponentType: Scope {
 
     /// The parent of this component.
-    var parent: AnyObject { get }
+    // This property cannot be of `ComponentType`, since the root of the dependency graph
+    // must have a parent that does not have a parent.
+    var parent: Scope { get }
 }
 
 /// The base implementation of a dependency injection component. A subclass defines a unique
@@ -31,7 +41,14 @@ public protocol ComponentType: AnyObject {
 open class Component<DependencyType>: ComponentType {
 
     /// The parent of this component.
-    public let parent: AnyObject
+    public let parent: Scope
+
+    /// The path to reach this scope on the dependnecy graph.
+    // Use `lazy var` to avoid computing the path repeatedly. Internally, this is always
+    // accessed with the `__DependencyProviderRegistry`'s lock acquired.
+    public lazy var path: String = {
+        return parent.path + "->\(self)"
+    }()
 
     /// The dependency of this component.
     ///
@@ -42,7 +59,7 @@ open class Component<DependencyType>: ComponentType {
     /// Initializer.
     ///
     /// - parameter parent: The parent component of this component.
-    public init(parent: AnyObject) {
+    public init(parent: Scope) {
         self.parent = parent
         dependency = createDependencyProvider()
     }
