@@ -22,14 +22,22 @@ class ComponentTests: XCTestCase {
     static var allTests = [
         ("test_shared_veirfySingleInstance", test_shared_veirfySingleInstance),
     ]
-    
+
+    override func setUp() {
+        super.setUp()
+
+        let path = "^->NeedleFoundationTests.TestComponent"
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) {_ in
+            return EmptyDependencyProvider()
+        }
+    }
+
     func test_shared_veirfySingleInstance() {
-        // TODO: Enable test once generation is implemented.
-//        let component = TestComponent(parent: BootstrapComponent())
-//        XCTAssert(component.share === component.share, "Should have returned same shared object")
-//
-//        XCTAssertTrue(component.share2 === component.share2)
-//        XCTAssertFalse(component.share === component.share2)
+        let component = TestComponent(parent: BootstrapComponent())
+        XCTAssert(component.share === component.share, "Should have returned same shared object")
+
+        XCTAssertTrue(component.share2 === component.share2)
+        XCTAssertFalse(component.share === component.share2)
     }
 }
 
