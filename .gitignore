@@ -1,6 +1,6 @@
-# Xcode
-*.xcodeproj
-*.xcworkspace
+# Xcode Include to support Carthage for the Foundation project.
+# *.xcodeproj
+# *.xcworkspace
 
 ## Build generated
 build/
