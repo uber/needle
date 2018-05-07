@@ -53,14 +53,39 @@ class DependencyGraphParser {
         }
 
         // Wait for all sequences to finish.
+        var components = [Component]()
+        var dependencies = [Dependency]()
         for tuple in taskHandleTuples {
             do {
-                let components = try tuple.handle.await(withTimeout: 30)
+                let node = try tuple.handle.await(withTimeout: 30)
+                components.append(contentsOf: node.components)
+                dependencies.append(contentsOf: node.dependencies)
             } catch SequenceExecutionError.awaitTimeout {
                 throw DependencyGraphParserError.timeout(tuple.fileUrl.absoluteString)
             } catch {
                 fatalError("Unhandled task execution error \(error)")
             }
+        }
+
+        // Validate duplicates. If we want to support components/dependencies that have the
+        // same name across modules, then this should be removed. One option to support such
+        // scenario without trying to detect module structure is to simply use the file URL
+        // of the component/dependency as a proxy for module.
+        let duplicateValidator = DuplicateValidator()
+        var result = duplicateValidator.validate(components)
+        switch result {
+        case .duplicate(let name):
+            fatalError("Needle does not support components with the same name \(name)")
+        default:
+            break
+        }
+
+        result = duplicateValidator.validate(dependencies)
+        switch result {
+        case .duplicate(let name):
+            fatalError("Needle does not support dependency protocols with the same name \(name)")
+        default:
+            break
         }
     }
 
