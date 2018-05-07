@@ -1,23 +1,11 @@
 # Sample App Using Needle
 
-## Installation
+## Build & Run TicTacToe
 
-### Compiling from source:
-
-First fetch the dependencies:
+Make sure (Carthage)[https://github.com/Carthage/Carthage] is installed.
 
 ```
-$ swift package fetch
+$ carthage bootstrap --platform ios
 ```
 
-You can then build from the command-line:
-
-```
-$ swift build
-```
-
-Or create an Xcode project and build using the IDE:
-
-```
-$ swift package generate-xcodeproj
-```
+Open the TicTacToe.xcodeproj to build and run the game.
