@@ -2,7 +2,7 @@
 
 ## Build & Run TicTacToe
 
-Make sure (Carthage)[https://github.com/Carthage/Carthage] is installed.
+Make sure [Carthage](https://github.com/Carthage/Carthage) is installed.
 
 ```
 $ carthage bootstrap --platform ios
