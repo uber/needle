@@ -22,10 +22,11 @@ class DuplicateValidatorTests: XCTestCase {
     func test_validateComponent_noDuplicate_verifyResult() {
         let comp1 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [])
         let comp2 = Component(name: "ha2", dependencyProtocolName: "dep1", properties: [])
+        let comp3 = Component(name: "ha3", dependencyProtocolName: "dep1", properties: [])
 
         let validator = DuplicateValidator()
 
-        let result = validator.validate([comp1, comp2])
+        let result = validator.validate([comp1, comp2, comp3])
 
         switch result {
         case .duplicate(_):
@@ -38,10 +39,11 @@ class DuplicateValidatorTests: XCTestCase {
     func test_validateComponent_withDuplicates_verifyResult() {
         let comp1 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [])
         let comp2 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [])
+        let comp3 = Component(name: "ha3", dependencyProtocolName: "dep1", properties: [])
 
         let validator = DuplicateValidator()
 
-        let result = validator.validate([comp1, comp2])
+        let result = validator.validate([comp1, comp2, comp3])
 
         switch result {
         case .duplicate(let name):
@@ -54,10 +56,11 @@ class DuplicateValidatorTests: XCTestCase {
     func test_validateDependencies_noDuplicate_verifyResult() {
         let dep1 = Dependency(name: "d1", properties: [])
         let dep2 = Dependency(name: "d2", properties: [])
+        let dep3 = Dependency(name: "d3", properties: [])
 
         let validator = DuplicateValidator()
 
-        let result = validator.validate([dep1, dep2])
+        let result = validator.validate([dep1, dep2, dep3])
 
         switch result {
         case .duplicate(_):
@@ -70,10 +73,11 @@ class DuplicateValidatorTests: XCTestCase {
     func test_validateDependencies_withDuplicates_verifyResult() {
         let dep1 = Dependency(name: "d1", properties: [])
         let dep2 = Dependency(name: "d1", properties: [])
+        let dep3 = Dependency(name: "d3", properties: [])
 
         let validator = DuplicateValidator()
 
-        let result = validator.validate([dep1, dep2])
+        let result = validator.validate([dep1, dep2, dep3])
 
         switch result {
         case .duplicate(let name):
