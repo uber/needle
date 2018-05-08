@@ -21,9 +21,15 @@ protocol LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream { get }
 }
 
-class LoggedOutComponent: Component<LoggedOutDependency> {
+class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
 
     var loggedOutViewController: UIViewController {
         return LoggedOutViewController(mutablePlayersStream: dependency.mutablePlayersStream)
     }
+}
+
+// Use a builder protocol to allow mocking for unit tests. At the same time,
+// this allows LoggedOutViewController to be initialized lazily.
+protocol LoggedOutBuilder {
+    var loggedOutViewController: UIViewController { get }
 }
