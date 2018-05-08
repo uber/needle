@@ -17,18 +17,6 @@
 import RxSwift
 import UIKit
 
-// Use a builder protocol to allow mocking for unit tests. At the same time,
-// this allows LoggedOutViewController to be initialized lazily.
-protocol LoggedOutBuilder {
-    var loggedOutViewController: UIViewController { get }
-}
-
-extension RootComponent: LoggedOutBuilder {
-    var loggedOutViewController: UIViewController {
-        return loggedOutComponent.loggedOutViewController
-    }
-}
-
 class RootViewController: UIViewController {
 
     private let playersStream: PlayersStream
