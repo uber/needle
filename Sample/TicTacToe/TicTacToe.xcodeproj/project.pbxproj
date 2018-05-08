@@ -8,20 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139095620A0F2BC00A26FF5 /* AppDelegate.swift */; };
-		4139095920A0F2BC00A26FF5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139095820A0F2BC00A26FF5 /* ViewController.swift */; };
 		4139095E20A0F2BD00A26FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4139095D20A0F2BD00A26FF5 /* Assets.xcassets */; };
 		4139096120A0F2BD00A26FF5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */; };
 		4139097220A0F6B100A26FF5 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */; };
+		4139097520A1060300A26FF5 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097420A1060300A26FF5 /* RootViewController.swift */; };
+		4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
+		4139097920A1111900A26FF5 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097820A1111900A26FF5 /* RootComponent.swift */; };
+		4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097A20A113AD00A26FF5 /* PlayersStream.swift */; };
+		4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097C20A1174700A26FF5 /* NeedleGenerated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4139095320A0F2BC00A26FF5 /* TicTacToe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicTacToe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4139095620A0F2BC00A26FF5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4139095820A0F2BC00A26FF5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4139095D20A0F2BD00A26FF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4139096020A0F2BD00A26FF5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4139096220A0F2BD00A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NeedleFoundation.framework; path = ../Carthage/Build/iOS/NeedleFoundation.framework; sourceTree = "<group>"; };
+		4139097420A1060300A26FF5 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		4139097620A10A6D00A26FF5 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		4139097820A1111900A26FF5 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
+		4139097A20A113AD00A26FF5 /* PlayersStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersStream.swift; sourceTree = "<group>"; };
+		4139097C20A1174700A26FF5 /* NeedleGenerated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedleGenerated.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */,
 				4139097220A0F6B100A26FF5 /* NeedleFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,11 +65,12 @@
 		4139095520A0F2BC00A26FF5 /* TicTacToe */ = {
 			isa = PBXGroup;
 			children = (
+				4139097320A105EE00A26FF5 /* Root */,
 				4139095620A0F2BC00A26FF5 /* AppDelegate.swift */,
-				4139095820A0F2BC00A26FF5 /* ViewController.swift */,
 				4139095D20A0F2BD00A26FF5 /* Assets.xcassets */,
 				4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */,
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
+				4139097C20A1174700A26FF5 /* NeedleGenerated.swift */,
 			);
 			path = TicTacToe;
 			sourceTree = "<group>";
@@ -68,9 +78,20 @@
 		4139096820A0F39B00A26FF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4139097620A10A6D00A26FF5 /* RxSwift.framework */,
 				4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4139097320A105EE00A26FF5 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				4139097420A1060300A26FF5 /* RootViewController.swift */,
+				4139097820A1111900A26FF5 /* RootComponent.swift */,
+				4139097A20A113AD00A26FF5 /* PlayersStream.swift */,
+			);
+			path = Root;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,9 +167,11 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/../Carthage/Build/iOS/NeedleFoundation.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
 			);
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NeedleFoundation.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -161,8 +184,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4139095920A0F2BC00A26FF5 /* ViewController.swift in Sources */,
+				4139097520A1060300A26FF5 /* RootViewController.swift in Sources */,
+				4139097920A1111900A26FF5 /* RootComponent.swift in Sources */,
 				4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */,
+				4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */,
+				4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

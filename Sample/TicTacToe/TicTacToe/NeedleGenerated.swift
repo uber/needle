@@ -14,17 +14,19 @@
 //  limitations under the License.
 //
 
-import UIKit
+import NeedleFoundation
 
-class ViewController: UIViewController {
+// MARK: - Dependency Provider Factories
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
+class NeedleGenerated {
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    static func registerDependencyProviderFactories() {
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
+            return RootComponentDependencyProvider()
+        }
     }
 }
+
+// MARK: - Dependency Providers
+
+private class RootComponentDependencyProvider: EmptyDependency {}
