@@ -28,7 +28,7 @@ class RootComponent: Component<EmptyDependency> {
     }
 
     var rootViewController: UIViewController {
-        return RootViewController(rootFactory: self)
+        return RootViewController(playersStream: playersStream, loggedOutBuilder: self)
     }
 
     var loggedOutComponent: LoggedOutComponent {

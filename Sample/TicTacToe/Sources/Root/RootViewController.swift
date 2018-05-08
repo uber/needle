@@ -17,14 +17,13 @@
 import RxSwift
 import UIKit
 
-// Use a factory protocol to allow mocking for unit tests. At the same time,
-// this allows child view controllers to be initialized lazily.
-protocol RootFactory {
-    var playersStream: PlayersStream { get }
+// Use a builder protocol to allow mocking for unit tests. At the same time,
+// this allows LoggedOutViewController to be initialized lazily.
+protocol LoggedOutBuilder {
     var loggedOutViewController: UIViewController { get }
 }
 
-extension RootComponent: RootFactory {
+extension RootComponent: LoggedOutBuilder {
     var loggedOutViewController: UIViewController {
         return loggedOutComponent.loggedOutViewController
     }
@@ -32,11 +31,13 @@ extension RootComponent: RootFactory {
 
 class RootViewController: UIViewController {
 
-    private let rootFactory: RootFactory
+    private let playersStream: PlayersStream
+    private let loggedOutBuilder: LoggedOutBuilder
     private var loginDisposable: Disposable?
 
-    init(rootFactory: RootFactory) {
-        self.rootFactory = rootFactory
+    init(playersStream: PlayersStream, loggedOutBuilder: LoggedOutBuilder) {
+        self.playersStream = playersStream
+        self.loggedOutBuilder = loggedOutBuilder
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -57,10 +58,10 @@ class RootViewController: UIViewController {
     }
 
     private func presentLoggedOut() {
-        present(rootFactory.loggedOutViewController, animated: true, completion: nil)
+        present(loggedOutBuilder.loggedOutViewController, animated: true, completion: nil)
 
         loginDisposable?.dispose()
-        loginDisposable = rootFactory.playersStream.names
+        loginDisposable = playersStream.names
             .subscribe(onNext: { (player1: String, player2: String) in
                 print("\(player1), \(player2)")
             })
