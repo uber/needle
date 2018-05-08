@@ -14,20 +14,9 @@
 //  limitations under the License.
 //
 
-import NeedleFoundation
-import UIKit
+@testable import TicTacToe
+import XCTest
 
-class RootComponent: Component<EmptyDependency> {
-
-    var playersStream: PlayersStream {
-        return mutablePlayersStream
-    }
-
-    var mutablePlayersStream: MutablePlayersStream {
-        return shared { PlayersStreamImpl() }
-    }
-
-    var rootViewController: UIViewController {
-        return RootViewController(playersStream: playersStream)
-    }
+class RootViewControllerTests: XCTestCase {
+    
 }

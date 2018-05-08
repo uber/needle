@@ -15,18 +15,15 @@
 //
 
 import NeedleFoundation
+import UIKit
 
-// MARK: - Dependency Provider Factories
-
-class NeedleGenerated {
-
-    static func registerDependencyProviderFactories() {
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-            return RootComponentDependencyProvider()
-        }
-    }
+protocol LoggedOutDependency {
+    var mutablePlayersStream: MutablePlayersStream { get }
 }
 
-// MARK: - Dependency Providers
+class LoggedOutComponent: Component<LoggedOutDependency> {
 
-private class RootComponentDependencyProvider: EmptyDependency {}
+    var loggedOutViewController: UIViewController {
+        return LoggedOutViewController(mutablePlayersStream: dependency.mutablePlayersStream)
+    }
+}

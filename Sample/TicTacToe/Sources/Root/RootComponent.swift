@@ -14,25 +14,24 @@
 //  limitations under the License.
 //
 
+import NeedleFoundation
 import UIKit
 
-class RootViewController: UIViewController {
+class RootComponent: Component<EmptyDependency> {
 
-    private let playersStream: PlayersStream
-
-    init(playersStream: PlayersStream) {
-        self.playersStream = playersStream
-
-        super.init(nibName: nil, bundle: nil)
+    var playersStream: PlayersStream {
+        return mutablePlayersStream
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    var mutablePlayersStream: MutablePlayersStream {
+        return shared { PlayersStreamImpl() }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    var rootViewController: UIViewController {
+        return RootViewController(rootFactory: self)
+    }
 
-        view.backgroundColor = UIColor.red
+    var loggedOutComponent: LoggedOutComponent {
+        return LoggedOutComponent(parent: self)
     }
 }
