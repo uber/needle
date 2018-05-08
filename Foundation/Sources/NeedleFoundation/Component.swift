@@ -47,7 +47,10 @@ open class Component<DependencyType>: ComponentType {
     // Use `lazy var` to avoid computing the path repeatedly. Internally, this is always
     // accessed with the `__DependencyProviderRegistry`'s lock acquired.
     public lazy var path: String = {
-        return parent.path + "->\(self)"
+        let fullyQualifiedSelfName = String(describing: self)
+        let parts = fullyQualifiedSelfName.components(separatedBy: ".")
+        let name = parts.last ?? fullyQualifiedSelfName
+        return parent.path + "->\(name)"
     }()
 
     /// The dependency of this component.

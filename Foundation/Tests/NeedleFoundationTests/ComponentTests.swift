@@ -26,7 +26,7 @@ class ComponentTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let path = "^->NeedleFoundationTests.TestComponent"
+        let path = "^->TestComponent"
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) {_ in
             return EmptyDependencyProvider()
         }
