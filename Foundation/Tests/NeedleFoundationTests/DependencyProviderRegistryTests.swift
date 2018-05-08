@@ -26,7 +26,7 @@ class DependencyProviderRegistryTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let path = "^->NeedleFoundationTests.MockAppComponent"
+        let path = "^->MockAppComponent"
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) {_ in
             return EmptyDependencyProvider()
         }
@@ -35,7 +35,7 @@ class DependencyProviderRegistryTests: XCTestCase {
     func test_registerProviderFactory_verifyRetrievingProvider_verifyDependencyReference() {
         let expectedProvider = MockRootDependencyProvider()
 
-        let path = "^->NeedleFoundationTests.MockAppComponent->NeedleFoundationTests.MockRootComponent"
+        let path = "^->MockAppComponent->MockRootComponent"
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) { (component: ComponentType) -> AnyObject in
             return expectedProvider
         }
