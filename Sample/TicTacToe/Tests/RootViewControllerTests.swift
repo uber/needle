@@ -14,25 +14,9 @@
 //  limitations under the License.
 //
 
-import UIKit
+@testable import TicTacToe
+import XCTest
 
-class RootViewController: UIViewController {
-
-    private let playersStream: PlayersStream
-
-    init(playersStream: PlayersStream) {
-        self.playersStream = playersStream
-
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view.backgroundColor = UIColor.red
-    }
+class RootViewControllerTests: XCTestCase {
+    
 }

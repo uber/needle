@@ -17,17 +17,13 @@
 import NeedleFoundation
 import UIKit
 
-class RootComponent: Component<EmptyDependency> {
+protocol LoggedOutDependency {
+    var mutablePlayersStream: MutablePlayersStream { get }
+}
 
-    var playersStream: PlayersStream {
-        return mutablePlayersStream
-    }
+class LoggedOutComponent: Component<LoggedOutDependency> {
 
-    var mutablePlayersStream: MutablePlayersStream {
-        return shared { PlayersStreamImpl() }
-    }
-
-    var rootViewController: UIViewController {
-        return RootViewController(playersStream: playersStream)
+    var loggedOutViewController: UIViewController {
+        return LoggedOutViewController(mutablePlayersStream: dependency.mutablePlayersStream)
     }
 }

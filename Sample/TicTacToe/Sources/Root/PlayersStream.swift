@@ -22,7 +22,7 @@ protocol PlayersStream {
 }
 
 protocol MutablePlayersStream: PlayersStream {
-    func update(players player1: String, player2: String)
+    func update(player1: String?, player2: String?)
 }
 
 class PlayersStreamImpl: MutablePlayersStream {
@@ -33,7 +33,19 @@ class PlayersStreamImpl: MutablePlayersStream {
         return subject.asObservable()
     }
 
-    func update(players player1: String, player2: String) {
-        subject.onNext((player1, player2))
+    func update(player1: String?, player2: String?) {
+        let player1Name: String
+        if let player1 = player1, !player1.isEmpty {
+            player1Name = player1
+        } else {
+            player1Name = "Player 1"
+        }
+        let player2Name: String
+        if let player2 = player2, !player2.isEmpty {
+            player2Name = player2
+        } else {
+            player2Name = "Player 2"
+        }
+        subject.onNext((player1Name, player2Name))
     }
 }

@@ -15,18 +15,23 @@
 //
 
 import NeedleFoundation
+import UIKit
 
-// MARK: - Dependency Provider Factories
+class RootComponent: Component<EmptyDependency> {
 
-class NeedleGenerated {
+    var playersStream: PlayersStream {
+        return mutablePlayersStream
+    }
 
-    static func registerDependencyProviderFactories() {
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-            return RootComponentDependencyProvider()
-        }
+    var mutablePlayersStream: MutablePlayersStream {
+        return shared { PlayersStreamImpl() }
+    }
+
+    var rootViewController: UIViewController {
+        return RootViewController(playersStream: playersStream, loggedOutBuilder: self)
+    }
+
+    var loggedOutComponent: LoggedOutComponent {
+        return LoggedOutComponent(parent: self)
     }
 }
-
-// MARK: - Dependency Providers
-
-private class RootComponentDependencyProvider: EmptyDependency {}
