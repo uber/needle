@@ -14,24 +14,25 @@
 //  limitations under the License.
 //
 
-import NeedleFoundation
 import UIKit
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class RootViewController: UIViewController {
 
-    var window: UIWindow?
+    private let playersStream: PlayersStream
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        NeedleGenerated.registerDependencyProviderFactories()
+    init(playersStream: PlayersStream) {
+        self.playersStream = playersStream
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        self.window = window
+        super.init(nibName: nil, bundle: nil)
+    }
 
-        let rootComponent = RootComponent(parent: BootstrapComponent())
-        window.rootViewController = rootComponent.rootViewController
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-        window.makeKeyAndVisible()
-        return true
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.backgroundColor = UIColor.red
     }
 }

@@ -1,1 +1,2 @@
-github "https://github.com/uber/needle.git" ~> 0.1.0
+github "https://github.com/uber/needle.git" ~> 0.2.0
+github "https://github.com/ReactiveX/RxSwift.git" ~> 4.0

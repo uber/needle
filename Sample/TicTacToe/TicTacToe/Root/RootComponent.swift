@@ -17,21 +17,17 @@
 import NeedleFoundation
 import UIKit
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class RootComponent: Component<EmptyDependency> {
 
-    var window: UIWindow?
+    var playersStream: PlayersStream {
+        return mutablePlayersStream
+    }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        NeedleGenerated.registerDependencyProviderFactories()
+    var mutablePlayersStream: MutablePlayersStream {
+        return shared { PlayersStreamImpl() }
+    }
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        self.window = window
-
-        let rootComponent = RootComponent(parent: BootstrapComponent())
-        window.rootViewController = rootComponent.rootViewController
-
-        window.makeKeyAndVisible()
-        return true
+    var rootViewController: UIViewController {
+        return RootViewController(playersStream: playersStream)
     }
 }
