@@ -17,15 +17,22 @@
 import RxSwift
 import UIKit
 
+private enum RootChildStates {
+    case loggedOut
+    case loggedIn
+}
+
 class RootViewController: UIViewController {
 
     private let playersStream: PlayersStream
     private let loggedOutBuilder: LoggedOutBuilder
-    private var loginDisposable: Disposable?
+    private let loggedInBuilder: LoggedInBuilder
+    private var playersStreamDisposable: Disposable?
 
-    init(playersStream: PlayersStream, loggedOutBuilder: LoggedOutBuilder) {
+    init(playersStream: PlayersStream, loggedOutBuilder: LoggedOutBuilder, loggedInBuilder: LoggedInBuilder) {
         self.playersStream = playersStream
         self.loggedOutBuilder = loggedOutBuilder
+        self.loggedInBuilder = loggedInBuilder
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -42,16 +49,48 @@ class RootViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        presentLoggedOut()
+        updateChildViewController()
     }
 
-    private func presentLoggedOut() {
-        present(loggedOutBuilder.loggedOutViewController, animated: true, completion: nil)
+    private func updateChildViewController() {
+        if playersStreamDisposable != nil {
+            return
+        }
 
-        loginDisposable?.dispose()
-        loginDisposable = playersStream.names
-            .subscribe(onNext: { (player1: String, player2: String) in
-                print("\(player1), \(player2)")
+        playersStreamDisposable = playersStream.names
+            .map { (names: (String, String)?) in
+                names == nil ? RootChildStates.loggedOut : RootChildStates.loggedIn
+            }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] (state: RootChildStates) in
+                guard let strongSelf = self else {
+                    return
+                }
+
+                switch state {
+                case .loggedIn:
+                    strongSelf.present(viewController: strongSelf.loggedInBuilder.loggedInViewController)
+                case .loggedOut:
+                    strongSelf.present(viewController: strongSelf.loggedOutBuilder.loggedOutViewController)
+                }
             })
+    }
+
+    private func present(viewController: UIViewController) {
+        if presentedViewController == viewController {
+            return
+        }
+
+        if presentedViewController != nil {
+            dismiss(animated: true) {
+                self.present(viewController, animated: true, completion: nil)
+            }
+        } else {
+            present(viewController, animated: true, completion: nil)
+        }
+    }
+
+    deinit {
+        playersStreamDisposable?.dispose()
     }
 }
