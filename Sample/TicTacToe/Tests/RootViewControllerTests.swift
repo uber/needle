@@ -15,8 +15,94 @@
 //
 
 @testable import TicTacToe
+import RxSwift
 import XCTest
 
 class RootViewControllerTests: XCTestCase {
-    
+
+    private var playersStream: PlayersStreamMock!
+    private var loggedOutBuilder: LoggedOutBuilderMock!
+    private var loggedInBuilder: LoggedInBuilderMock!
+    private var rootViewController: RootViewController!
+
+    override func setUp() {
+        super.setUp()
+
+        playersStream = PlayersStreamMock()
+        loggedOutBuilder = LoggedOutBuilderMock()
+        loggedInBuilder = LoggedInBuilderMock()
+        rootViewController = RootViewController(playersStream: playersStream, loggedOutBuilder: loggedOutBuilder, loggedInBuilder: loggedInBuilder)
+    }
+
+    func test_viewDidAppear_emitNoPlayers_withDuplicateEmissions_withDuplicateViewDidAppear_verifySinglePresentLoggedOut() {
+        rootViewController.viewDidAppear(true)
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 0)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 0)
+
+        playersStream.subject.onNext(nil)
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 1)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 0)
+
+        playersStream.subject.onNext(nil)
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 1)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 0)
+
+        rootViewController.viewDidAppear(true)
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 1)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 0)
+    }
+
+    func test_viewDidAppear_emitPlayers_withDuplicateEmissions_withDuplicateViewDidAppear_verifySinglePresentLoggedIn() {
+        rootViewController.viewDidAppear(true)
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 0)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 0)
+
+        playersStream.subject.onNext(("blah", "haha"))
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 0)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 1)
+
+        playersStream.subject.onNext(("blah", "haha"))
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 0)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 1)
+
+        rootViewController.viewDidAppear(true)
+
+        XCTAssertEqual(loggedOutBuilder.loggedOutViewControllerCallCount, 0)
+        XCTAssertEqual(loggedInBuilder.loggedInViewControllerCallCount, 1)
+    }
+}
+
+class PlayersStreamMock: PlayersStream {
+    var names: Observable<(String, String)?> {
+        return subject.asObservable()
+    }
+
+    let subject = PublishSubject<(String, String)?>()
+}
+
+class LoggedOutBuilderMock: LoggedOutBuilder {
+    let viewController = UIViewController()
+
+    var loggedOutViewControllerCallCount = 0
+    var loggedOutViewController: UIViewController {
+        loggedOutViewControllerCallCount += 1
+        return viewController
+    }
+}
+
+class LoggedInBuilderMock: LoggedInBuilder {
+    let viewController = UIViewController()
+
+    var loggedInViewControllerCallCount = 0
+    var loggedInViewController: UIViewController {
+        loggedInViewControllerCallCount += 1
+        return viewController
+    }
 }

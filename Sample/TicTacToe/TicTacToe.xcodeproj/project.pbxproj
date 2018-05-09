@@ -20,6 +20,13 @@
 		4139098220A21F8000A26FF5 /* LoggedOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139098120A21F8000A26FF5 /* LoggedOutViewController.swift */; };
 		4139098420A2211F00A26FF5 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139098320A2211F00A26FF5 /* SnapKit.framework */; };
 		4139098E20A22B3900A26FF5 /* RootViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */; };
+		4139099720A2481700A26FF5 /* LoggedInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099620A2481700A26FF5 /* LoggedInViewController.swift */; };
+		4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099820A2483300A26FF5 /* LoggedInComponent.swift */; };
+		4139099B20A2489100A26FF5 /* ScoreStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099A20A2489100A26FF5 /* ScoreStream.swift */; };
+		4139099D20A2747200A26FF5 /* RxExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099C20A2747200A26FF5 /* RxExtensions.swift */; };
+		4139099E20A376D000A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
+		4139099F20A376D200A26FF5 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139098320A2211F00A26FF5 /* SnapKit.framework */; };
+		413909A020A376D400A26FF5 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +57,10 @@
 		4139098B20A22B3900A26FF5 /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerTests.swift; sourceTree = "<group>"; };
 		4139098F20A22B3900A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4139099620A2481700A26FF5 /* LoggedInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInViewController.swift; sourceTree = "<group>"; };
+		4139099820A2483300A26FF5 /* LoggedInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInComponent.swift; sourceTree = "<group>"; };
+		4139099A20A2489100A26FF5 /* ScoreStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStream.swift; sourceTree = "<group>"; };
+		4139099C20A2747200A26FF5 /* RxExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +78,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4139099F20A376D200A26FF5 /* SnapKit.framework in Frameworks */,
+				4139099E20A376D000A26FF5 /* RxSwift.framework in Frameworks */,
+				413909A020A376D400A26FF5 /* NeedleFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +109,7 @@
 		4139095520A0F2BC00A26FF5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				4139099520A247D800A26FF5 /* LoggedIn */,
 				4139097E20A21EE500A26FF5 /* LoggedOut */,
 				4139097320A105EE00A26FF5 /* Root */,
 				4139095620A0F2BC00A26FF5 /* AppDelegate.swift */,
@@ -102,6 +117,7 @@
 				4139095D20A0F2BD00A26FF5 /* Assets.xcassets */,
 				4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */,
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
+				4139099C20A2747200A26FF5 /* RxExtensions.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -144,6 +160,16 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		4139099520A247D800A26FF5 /* LoggedIn */ = {
+			isa = PBXGroup;
+			children = (
+				4139099620A2481700A26FF5 /* LoggedInViewController.swift */,
+				4139099820A2483300A26FF5 /* LoggedInComponent.swift */,
+				4139099A20A2489100A26FF5 /* ScoreStream.swift */,
+			);
+			path = LoggedIn;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -172,6 +198,7 @@
 				4139098720A22B3900A26FF5 /* Sources */,
 				4139098820A22B3900A26FF5 /* Frameworks */,
 				4139098920A22B3900A26FF5 /* Resources */,
+				413909A120A376D800A26FF5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -259,6 +286,25 @@
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
+		413909A120A376D800A26FF5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../Carthage/Build/iOS/NeedleFoundation.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/SnapKit.framework",
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NeedleFoundation.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SnapKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -266,13 +312,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4139099B20A2489100A26FF5 /* ScoreStream.swift in Sources */,
 				4139098020A21F0500A26FF5 /* LoggedOutComponent.swift in Sources */,
 				4139097520A1060300A26FF5 /* RootViewController.swift in Sources */,
 				4139097920A1111900A26FF5 /* RootComponent.swift in Sources */,
 				4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */,
 				4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */,
 				4139098220A21F8000A26FF5 /* LoggedOutViewController.swift in Sources */,
+				4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */,
 				4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */,
+				4139099720A2481700A26FF5 /* LoggedInViewController.swift in Sources */,
+				4139099D20A2747200A26FF5 /* RxExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +393,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -403,6 +454,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -426,7 +478,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/build/iOS";
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -446,7 +497,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/build/iOS";
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

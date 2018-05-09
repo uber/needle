@@ -27,6 +27,9 @@ class NeedleGenerated {
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
             return LoggedOutComponentDependencyProvider(component: component)
         }
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
+            return LoggedInComponentDependencyProvider()
+        }
     }
 }
 
@@ -44,3 +47,5 @@ private class LoggedOutComponentDependencyProvider: LoggedOutDependency {
         rootComponent = loggedOut.parent as! RootComponent
     }
 }
+
+private class LoggedInComponentDependencyProvider: EmptyDependency {}

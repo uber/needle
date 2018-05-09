@@ -17,25 +17,23 @@
 import NeedleFoundation
 import UIKit
 
-class RootComponent: Component<EmptyDependency> {
+class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 
-    var playersStream: PlayersStream {
-        return mutablePlayersStream
+    var scoreStream: ScoreStream {
+        return mutableScoreStream
     }
 
-    var mutablePlayersStream: MutablePlayersStream {
-        return shared { PlayersStreamImpl() }
+    var mutableScoreStream: MutableScoreStream {
+        return shared { ScoreStreamImpl() }
     }
 
-    var rootViewController: UIViewController {
-        return RootViewController(playersStream: playersStream, loggedOutBuilder: loggedOutComponent, loggedInBuilder: loggedInComponent)
+    var loggedInViewController: UIViewController {
+        return LoggedInViewController()
     }
+}
 
-    var loggedOutComponent: LoggedOutComponent {
-        return LoggedOutComponent(parent: self)
-    }
-
-    var loggedInComponent: LoggedInComponent {
-        return LoggedInComponent(parent: self)
-    }
+// Use a builder protocol to allow mocking for unit tests. At the same time,
+// this allows LoggedInViewController to be initialized lazily.
+protocol LoggedInBuilder {
+    var loggedInViewController: UIViewController { get }
 }

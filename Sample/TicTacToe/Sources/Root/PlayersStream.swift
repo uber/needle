@@ -18,7 +18,7 @@ import Foundation
 import RxSwift
 
 protocol PlayersStream {
-    var names: Observable<(String, String)> { get }
+    var names: Observable<(String, String)?> { get }
 }
 
 protocol MutablePlayersStream: PlayersStream {
@@ -27,9 +27,9 @@ protocol MutablePlayersStream: PlayersStream {
 
 class PlayersStreamImpl: MutablePlayersStream {
 
-    private let subject = ReplaySubject<(String, String)>.create(bufferSize: 1)
+    private let subject = BehaviorSubject<(String, String)?>(value: nil)
 
-    var names: Observable<(String, String)> {
+    var names: Observable<(String, String)?> {
         return subject.asObservable()
     }
 
