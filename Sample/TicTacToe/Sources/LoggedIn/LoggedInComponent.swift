@@ -28,8 +28,13 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
     }
 
     var loggedInViewController: UIViewController {
-        return LoggedInViewController()
+        return LoggedInViewController(scoreSheetBuilder: scoreSheetComponent)
     }
+
+    var scoreSheetComponent: ScoreSheetComponent {
+        return ScoreSheetComponent(parent: self)
+    }
+
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,

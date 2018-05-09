@@ -30,6 +30,9 @@ class NeedleGenerated {
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
             return LoggedInComponentDependencyProvider()
         }
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
+            return ScoreSheetComponentDependencyProvider(component: component)
+        }
     }
 }
 
@@ -49,3 +52,14 @@ private class LoggedOutComponentDependencyProvider: LoggedOutDependency {
 }
 
 private class LoggedInComponentDependencyProvider: EmptyDependency {}
+
+private class ScoreSheetComponentDependencyProvider: ScoreSheetDependency {
+    var scoreStream: ScoreStream {
+        return loggedInComponent.scoreStream
+    }
+    private let loggedInComponent: LoggedInComponent
+    init(component: ComponentType) {
+        let scoreSheet = component as! ScoreSheetComponent
+        loggedInComponent = scoreSheet.parent as! LoggedInComponent
+    }
+}

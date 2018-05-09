@@ -17,13 +17,16 @@
 import SnapKit
 import UIKit
 
-class LoggedInViewController: UIViewController {
+class LoggedInViewController: UIViewController, ScoreSheetListener {
 
-    init() {
+    private let scoreSheetBuilder: ScoreSheetBuilder
+
+    init(scoreSheetBuilder: ScoreSheetBuilder) {
+        self.scoreSheetBuilder = scoreSheetBuilder
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -67,11 +70,18 @@ class LoggedInViewController: UIViewController {
 
     @objc
     private func didTapScoreButton() {
-        print("high score")
+        if let scoreSheetVC = scoreSheetBuilder.scoreSheetViewController as? ScoreSheetViewController {
+            scoreSheetVC.listener = self
+            present(scoreSheetVC, animated: true)
+        }
     }
 
     @objc
     private func didTapGameButton() {
         print("tictactoe")
+    }
+
+    func done() {
+        dismiss(animated: true)
     }
 }
