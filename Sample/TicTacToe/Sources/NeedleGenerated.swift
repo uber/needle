@@ -22,22 +22,23 @@ class NeedleGenerated {
 
     static func registerDependencyProviderFactories() {
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-            return RootComponentDependencyProvider()
+            return EmptyDependencyProvider()
         }
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
-            return LoggedOutComponentDependencyProvider(component: component)
+            return LoggedOutComponentFromRootDependencyProvider(component: component)
         }
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
-            return LoggedInComponentDependencyProvider()
+            return EmptyDependencyProvider()
+        }
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
+            return GameComponentFromLoggedInDependencyProvider(component: component)
         }
     }
 }
 
 // MARK: - Dependency Providers
 
-private class RootComponentDependencyProvider: EmptyDependency {}
-
-private class LoggedOutComponentDependencyProvider: LoggedOutDependency {
+private class LoggedOutComponentFromRootDependencyProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
     }
@@ -48,4 +49,18 @@ private class LoggedOutComponentDependencyProvider: LoggedOutDependency {
     }
 }
 
-private class LoggedInComponentDependencyProvider: EmptyDependency {}
+private class GameComponentFromLoggedInDependencyProvider: GameDependency {
+    var mutableScoresStream: MutableScoreStream {
+        return loggedInComponent.mutableScoreStream
+    }
+    var playersStream: PlayersStream {
+        return rootComponent.playersStream
+    }
+    private let loggedInComponent: LoggedInComponent
+    private let rootComponent: RootComponent
+    init(component: ComponentType) {
+        let game = component as! GameComponent
+        loggedInComponent = game.parent as! LoggedInComponent
+        rootComponent = loggedInComponent.parent as! RootComponent
+    }
+}

@@ -27,6 +27,8 @@
 		4139099E20A376D000A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
 		4139099F20A376D200A26FF5 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139098320A2211F00A26FF5 /* SnapKit.framework */; };
 		413909A020A376D400A26FF5 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */; };
+		413909A420A4E58A00A26FF5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413909A320A4E58A00A26FF5 /* GameViewController.swift */; };
+		413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413909A520A4EA7300A26FF5 /* GameComponent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,8 @@
 		4139099820A2483300A26FF5 /* LoggedInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInComponent.swift; sourceTree = "<group>"; };
 		4139099A20A2489100A26FF5 /* ScoreStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStream.swift; sourceTree = "<group>"; };
 		4139099C20A2747200A26FF5 /* RxExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxExtensions.swift; sourceTree = "<group>"; };
+		413909A320A4E58A00A26FF5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		413909A520A4EA7300A26FF5 /* GameComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +113,7 @@
 		4139095520A0F2BC00A26FF5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				413909A220A4E57C00A26FF5 /* Game */,
 				4139099520A247D800A26FF5 /* LoggedIn */,
 				4139097E20A21EE500A26FF5 /* LoggedOut */,
 				4139097320A105EE00A26FF5 /* Root */,
@@ -168,6 +173,15 @@
 				4139099A20A2489100A26FF5 /* ScoreStream.swift */,
 			);
 			path = LoggedIn;
+			sourceTree = "<group>";
+		};
+		413909A220A4E57C00A26FF5 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				413909A320A4E58A00A26FF5 /* GameViewController.swift */,
+				413909A520A4EA7300A26FF5 /* GameComponent.swift */,
+			);
+			path = Game;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -316,10 +330,12 @@
 				4139098020A21F0500A26FF5 /* LoggedOutComponent.swift in Sources */,
 				4139097520A1060300A26FF5 /* RootViewController.swift in Sources */,
 				4139097920A1111900A26FF5 /* RootComponent.swift in Sources */,
+				413909A420A4E58A00A26FF5 /* GameViewController.swift in Sources */,
 				4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */,
 				4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */,
 				4139098220A21F8000A26FF5 /* LoggedOutViewController.swift in Sources */,
 				4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */,
+				413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */,
 				4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */,
 				4139099720A2481700A26FF5 /* LoggedInViewController.swift in Sources */,
 				4139099D20A2747200A26FF5 /* RxExtensions.swift in Sources */,

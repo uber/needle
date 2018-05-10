@@ -23,19 +23,26 @@ struct PlayerScore {
 }
 
 protocol ScoreStream {
+    var gameDidEnd: Observable<()> { get }
     var scores: Observable<(PlayerScore, PlayerScore)> { get }
 }
 
 protocol MutableScoreStream: ScoreStream {
+    func updateDraw()
     func updateScore(withWinner winner: String, loser: String)
 }
 
 class ScoreStreamImpl: MutableScoreStream {
 
-    private let updateSubject = ReplaySubject<(PlayerScore, PlayerScore)>.create(bufferSize: 1)
+    private let updateSubject = PublishSubject<()>()
+    private let scoreSubject = ReplaySubject<(PlayerScore, PlayerScore)>.create(bufferSize: 1)
+
+    var gameDidEnd: Observable<()> {
+        return updateSubject.asObservable()
+    }
 
     var scores: Observable<(PlayerScore, PlayerScore)> {
-        return updateSubject
+        return scoreSubject
             .withPreviousValue()
             .map { (previous: (player1Score: PlayerScore, player2Score: PlayerScore)?, increment: (player1Score: PlayerScore, player2Score: PlayerScore)) -> (PlayerScore, PlayerScore) in
                 if let previous = previous {
@@ -48,9 +55,14 @@ class ScoreStreamImpl: MutableScoreStream {
             }
     }
 
+    func updateDraw() {
+        updateSubject.onNext(())
+    }
+
     func updateScore(withWinner winner: String, loser: String) {
         let winner = PlayerScore(name: winner, score: 1)
         let loser = PlayerScore(name: loser, score: 0)
-        updateSubject.onNext((winner, loser))
+        scoreSubject.onNext((winner, loser))
+        updateSubject.onNext(())
     }
 }
