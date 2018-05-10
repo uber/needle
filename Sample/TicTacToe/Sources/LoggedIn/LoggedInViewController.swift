@@ -14,12 +14,19 @@
 //  limitations under the License.
 //
 
+import RxSwift
 import SnapKit
 import UIKit
 
 class LoggedInViewController: UIViewController {
 
-    init() {
+    private let gameBuilder: GameBuilder
+    private let scoreStream: ScoreStream
+    private var gameDisposable: Disposable?
+
+    init(gameBuilder: GameBuilder, scoreStream: ScoreStream) {
+        self.gameBuilder = gameBuilder
+        self.scoreStream = scoreStream
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -72,6 +79,19 @@ class LoggedInViewController: UIViewController {
 
     @objc
     private func didTapGameButton() {
-        print("tictactoe")
+        let viewController = gameBuilder.gameViewController
+        present(viewController, animated: true, completion: nil)
+
+        gameDisposable?.dispose()
+        gameDisposable = scoreStream.gameDidEnd
+            .take(1)
+            .subscribe(onNext: { [weak self] _ in
+                assert(self?.presentedViewController === viewController)
+                self?.dismiss(animated: true, completion: nil)
+            })
+    }
+
+    deinit {
+        gameDisposable?.dispose()
     }
 }
