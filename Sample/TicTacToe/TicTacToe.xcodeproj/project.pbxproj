@@ -23,7 +23,6 @@
 		4139099720A2481700A26FF5 /* LoggedInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099620A2481700A26FF5 /* LoggedInViewController.swift */; };
 		4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099820A2483300A26FF5 /* LoggedInComponent.swift */; };
 		4139099B20A2489100A26FF5 /* ScoreStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099A20A2489100A26FF5 /* ScoreStream.swift */; };
-		4139099D20A2747200A26FF5 /* RxExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099C20A2747200A26FF5 /* RxExtensions.swift */; };
 		4139099E20A376D000A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
 		4139099F20A376D200A26FF5 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139098320A2211F00A26FF5 /* SnapKit.framework */; };
 		413909A020A376D400A26FF5 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */; };
@@ -65,7 +64,6 @@
 		4139099620A2481700A26FF5 /* LoggedInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInViewController.swift; sourceTree = "<group>"; };
 		4139099820A2483300A26FF5 /* LoggedInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInComponent.swift; sourceTree = "<group>"; };
 		4139099A20A2489100A26FF5 /* ScoreStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStream.swift; sourceTree = "<group>"; };
-		4139099C20A2747200A26FF5 /* RxExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxExtensions.swift; sourceTree = "<group>"; };
 		413909A320A4E58A00A26FF5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		413909A520A4EA7300A26FF5 /* GameComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponent.swift; sourceTree = "<group>"; };
 		F7DA7ADF20A275DA0037FF17 /* ScoreSheetComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetComponent.swift; sourceTree = "<group>"; };
@@ -130,7 +128,6 @@
 				4139095D20A0F2BD00A26FF5 /* Assets.xcassets */,
 				4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */,
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
-				4139099C20A2747200A26FF5 /* RxExtensions.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -360,7 +357,6 @@
 				413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */,
 				4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */,
 				4139099720A2481700A26FF5 /* LoggedInViewController.swift in Sources */,
-				4139099D20A2747200A26FF5 /* RxExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
