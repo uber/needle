@@ -15,11 +15,12 @@
 //
 
 import Foundation
+import RxOptional
 import RxSwift
 
 struct PlayerScore {
     let name: String
-    let score: Int
+    var score: Int
 }
 
 protocol ScoreStream {
@@ -35,24 +36,19 @@ protocol MutableScoreStream: ScoreStream {
 class ScoreStreamImpl: MutableScoreStream {
 
     private let updateSubject = PublishSubject<()>()
-    private let scoreSubject = ReplaySubject<(PlayerScore, PlayerScore)>.create(bufferSize: 1)
+    private let scoreSubject = ReplaySubject<(PlayerScore, PlayerScore)?>.create(bufferSize: 1)
 
-    var gameDidEnd: Observable<()> {
-        return updateSubject.asObservable()
-    }
+    private var player1Score: PlayerScore?
+    private var player2Score: PlayerScore?
 
     var scores: Observable<(PlayerScore, PlayerScore)> {
         return scoreSubject
-            .withPreviousValue()
-            .map { (previous: (player1Score: PlayerScore, player2Score: PlayerScore)?, increment: (player1Score: PlayerScore, player2Score: PlayerScore)) -> (PlayerScore, PlayerScore) in
-                if let previous = previous {
-                    let player1Score = PlayerScore(name: previous.player1Score.name, score: (previous.player1Score.score + increment.player1Score.score))
-                    let player2Score = PlayerScore(name: previous.player2Score.name, score: (previous.player2Score.score + increment.player2Score.score))
-                    return (player1Score, player2Score)
-                } else {
-                    return increment
-                }
-            }
+            .asObservable()
+            .filterNil()
+    }
+
+    var gameDidEnd: Observable<()> {
+        return updateSubject.asObservable()
     }
 
     func updateDraw() {
@@ -60,9 +56,20 @@ class ScoreStreamImpl: MutableScoreStream {
     }
 
     func updateScore(withWinner winner: String, loser: String) {
-        let winner = PlayerScore(name: winner, score: 1)
-        let loser = PlayerScore(name: loser, score: 0)
-        scoreSubject.onNext((winner, loser))
+        if var player1Score = player1Score, var player2Score = player2Score {
+            if winner == player1Score.name {
+                player1Score.score += 1
+            } else {
+                player2Score.score += 1
+            }
+            self.player1Score = player1Score
+            self.player2Score = player2Score
+        } else {
+            player1Score = PlayerScore(name: winner, score: 1)
+            player2Score = PlayerScore(name: loser, score: 0)
+        }
+
+        scoreSubject.onNext((player1Score!, player2Score!))
         updateSubject.onNext(())
     }
 }
