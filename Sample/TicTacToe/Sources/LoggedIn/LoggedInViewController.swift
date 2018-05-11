@@ -18,19 +18,21 @@ import RxSwift
 import SnapKit
 import UIKit
 
-class LoggedInViewController: UIViewController {
+class LoggedInViewController: UIViewController, ScoreSheetListener {
 
     private let gameBuilder: GameBuilder
     private let scoreStream: ScoreStream
     private var gameDisposable: Disposable?
+    private let scoreSheetBuilder: ScoreSheetBuilder
 
-    init(gameBuilder: GameBuilder, scoreStream: ScoreStream) {
+    init(gameBuilder: GameBuilder, scoreStream: ScoreStream, scoreSheetBuilder: ScoreSheetBuilder) {
         self.gameBuilder = gameBuilder
         self.scoreStream = scoreStream
+        self.scoreSheetBuilder = scoreSheetBuilder
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -74,7 +76,10 @@ class LoggedInViewController: UIViewController {
 
     @objc
     private func didTapScoreButton() {
-        print("high score")
+        if let scoreSheetVC = scoreSheetBuilder.scoreSheetViewController as? ScoreSheetViewController {
+            scoreSheetVC.listener = self
+            present(scoreSheetVC, animated: true)
+        }
     }
 
     @objc
@@ -89,6 +94,10 @@ class LoggedInViewController: UIViewController {
                 assert(self?.presentedViewController === viewController)
                 self?.dismiss(animated: true, completion: nil)
             })
+    }
+
+    func done() {
+        dismiss(animated: true)
     }
 
     deinit {
