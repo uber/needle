@@ -15,7 +15,6 @@
 //
 
 import Foundation
-import RxOptional
 import RxSwift
 
 struct PlayerScore {
@@ -36,7 +35,7 @@ protocol MutableScoreStream: ScoreStream {
 class ScoreStreamImpl: MutableScoreStream {
 
     private let updateSubject = PublishSubject<()>()
-    private let scoreSubject = ReplaySubject<(PlayerScore, PlayerScore)?>.create(bufferSize: 1)
+    private let scoreSubject = ReplaySubject<(PlayerScore, PlayerScore)>.create(bufferSize: 1)
 
     private var player1Score: PlayerScore?
     private var player2Score: PlayerScore?
@@ -44,7 +43,6 @@ class ScoreStreamImpl: MutableScoreStream {
     var scores: Observable<(PlayerScore, PlayerScore)> {
         return scoreSubject
             .asObservable()
-            .filterNil()
     }
 
     var gameDidEnd: Observable<()> {

@@ -1,4 +1,3 @@
 github "ReactiveX/RxSwift" "4.1.2"
-github "RxSwiftCommunity/RxOptional" "3.4.1"
 github "SnapKit/SnapKit" "4.0.0"
 github "uber/needle" "v0.2.0"
