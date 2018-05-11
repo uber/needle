@@ -28,11 +28,15 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
     }
 
     var loggedInViewController: UIViewController {
-        return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream)
+        return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent)
     }
 
     var gameComponent: GameComponent {
         return GameComponent(parent: self)
+	}
+
+    var scoreSheetComponent: ScoreSheetComponent {
+        return ScoreSheetComponent(parent: self)
     }
 }
 
