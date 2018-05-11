@@ -25,7 +25,11 @@ protocol GameDependency {
 class GameComponent: Component<GameDependency>, GameBuilder {
 
     var gameViewController: UIViewController {
-        return GameViewController(mutableScoresStream: dependency.mutableScoresStream, playersStream: dependency.playersStream)
+        return GameViewController(mutableScoresStream: dependency.mutableScoresStream, playersStream: dependency.playersStream, scoreSheetBuilder: scoreSheetBuilder)
+    }
+
+    var scoreSheetBuilder: ScoreSheetBuilder {
+        return ScoreSheetComponent(parent: self)
     }
 }
 
