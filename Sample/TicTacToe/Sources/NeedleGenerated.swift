@@ -34,7 +34,10 @@ class NeedleGenerated {
             return GameComponentFromLoggedInDependencyProvider(component: component)
 		}
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
-            return ScoreSheetComponentDependencyProvider(component: component)
+            return ScoreSheetComponentFromLoggedInDependencyProvider(component: component)
+        }
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent") { component in
+            return ScoreSheetComponentFromGameDependencyProvider(component: component)
         }
     }
 }
@@ -68,9 +71,7 @@ private class GameComponentFromLoggedInDependencyProvider: GameDependency {
     }
 }
 
-private class LoggedInComponentDependencyProvider: EmptyDependency {}
-
-private class ScoreSheetComponentDependencyProvider: ScoreSheetDependency {
+private class ScoreSheetComponentFromLoggedInDependencyProvider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
@@ -81,5 +82,14 @@ private class ScoreSheetComponentDependencyProvider: ScoreSheetDependency {
     }
 }
 
-
-
+private class ScoreSheetComponentFromGameDependencyProvider: ScoreSheetDependency {
+    var scoreStream: ScoreStream {
+        return loggedInComponent.scoreStream
+    }
+    private let loggedInComponent: LoggedInComponent
+    init(component: ComponentType) {
+        let scoreSheet = component as! ScoreSheetComponent
+        let game = scoreSheet.parent as! GameComponent
+        loggedInComponent = game.parent as! LoggedInComponent
+    }
+}

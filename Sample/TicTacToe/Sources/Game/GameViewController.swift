@@ -38,10 +38,11 @@ private enum Players: Int {
     }
 }
 
-class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, ScoreSheetListener {
 
     private let mutableScoresStream: MutableScoreStream
     private let playersStream: PlayersStream
+    private let scoreSheetBuilder: ScoreSheetBuilder
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
@@ -51,9 +52,10 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     }()
     private var appearanceDisposable = CompositeDisposable()
 
-    init(mutableScoresStream: MutableScoreStream, playersStream: PlayersStream) {
+    init(mutableScoresStream: MutableScoreStream, playersStream: PlayersStream, scoreSheetBuilder: ScoreSheetBuilder) {
         self.mutableScoresStream = mutableScoresStream
         self.playersStream = playersStream
+        self.scoreSheetBuilder = scoreSheetBuilder
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -67,6 +69,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         view.backgroundColor = UIColor.purple
 
         buildCollectionView()
+        buildScoerButton()
         initBoard()
     }
 
@@ -128,6 +131,34 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
                 handler(player1Name, player2Name)
             })
         _ = appearanceDisposable.insert(disposable)
+    }
+
+    // MARK: - High Scores
+
+    private func buildScoerButton() {
+        let scoreButton = UIButton()
+        view.addSubview(scoreButton)
+        scoreButton.snp.makeConstraints { (maker: ConstraintMaker) in
+            maker.bottom.equalTo(self.view.snp.bottom).offset(-70)
+            maker.leading.trailing.equalTo(self.view).inset(40)
+            maker.height.equalTo(50)
+        }
+        scoreButton.setTitle("High Scores", for: .normal)
+        scoreButton.setTitleColor(UIColor.white, for: .normal)
+        scoreButton.backgroundColor = UIColor.black
+        scoreButton.addTarget(self, action: #selector(didTapScoreButton), for: .touchUpInside)
+    }
+
+    @objc
+    private func didTapScoreButton() {
+        if let scoreSheetVC = scoreSheetBuilder.scoreSheetViewController as? ScoreSheetViewController {
+            scoreSheetVC.listener = self
+            present(scoreSheetVC, animated: true)
+        }
+    }
+
+    func done() {
+        dismiss(animated: true, completion: nil)
     }
 
     // MARK: - Game Logic
