@@ -42,7 +42,7 @@ class ASTParserTask: SequencedTask<DependencyGraphNode> {
         for item in substructures ?? [] {
             if let substructure = item as? [String: SourceKitRepresentable] {
                 if substructure.isComponent {
-                    components.append(Component(name: substructure.name, dependencyProtocolName: substructure.dependencyProtocolName, properties: substructure.properties))
+                    components.append(Component(name: substructure.name, dependencyProtocolName: substructure.dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames))
                 } else if substructure.isDependencyProtocol {
                     dependencies.append(Dependency(name: substructure.name, properties: substructure.properties))
                 }
@@ -102,27 +102,47 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 
     var properties: [Property] {
-        let subsctructures = self["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return subsctructures.compactMap { (substructure: SourceKitRepresentable) -> Property? in
-            let itemMap = substructure as? [String: SourceKitRepresentable]
-            let itemType = itemMap?["key.kind"] as? String
-            if itemType == "source.lang.swift.decl.var.instance" {
-                if let variableName = itemMap?["key.name"] as? String {
-                    if let typeName = itemMap?["key.typename"] as? String {
+        return filterSubstructure(by: "source.lang.swift.decl.var.instance")
+            .map { (item: [String: SourceKitRepresentable]) -> Property in
+                if let variableName = item["key.name"] as? String {
+                    if let typeName = item["key.typename"] as? String {
                         return Property(name: variableName, type: typeName)
                     } else {
                         fatalError("Missing explicit type annotation for property \"\(variableName)\" in \(self.name)")
                     }
                 }
+                fatalError("Property \(item) does not have a name.")
             }
-            return nil
-        }
+    }
+
+    var expressionCallNames: [String] {
+        return filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
+            .map { (item: [String: SourceKitRepresentable]) -> String in
+                item.name
+            }
     }
 
     private var inheritedTypes: [String] {
         let types = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return types.compactMap { (item: SourceKitRepresentable) -> String? in
             (item as? [String: String])?["key.name"]
+        }
+    }
+
+    private func filterSubstructure(by kind: String, recursively: Bool = false) -> [[String: SourceKitRepresentable]] {
+        let subsctructures = self["key.substructure"] as? [[String: SourceKitRepresentable]] ?? []
+        let currentLevelSubstructures = subsctructures.compactMap { (itemMap: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? in
+            if itemMap["key.kind"] as? String == kind {
+                return itemMap
+            }
+            return nil
+        }
+        if recursively && !subsctructures.isEmpty {
+            return currentLevelSubstructures + subsctructures.flatMap { (substructure: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] in
+                substructure.filterSubstructure(by: kind, recursively: recursively)
+            }
+        } else {
+            return currentLevelSubstructures
         }
     }
 }

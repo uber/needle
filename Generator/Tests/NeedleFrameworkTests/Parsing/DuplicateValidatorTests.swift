@@ -20,9 +20,9 @@ import XCTest
 class DuplicateValidatorTests: XCTestCase {
     
     func test_validateComponent_noDuplicate_verifyResult() {
-        let comp1 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [])
-        let comp2 = Component(name: "ha2", dependencyProtocolName: "dep1", properties: [])
-        let comp3 = Component(name: "ha3", dependencyProtocolName: "dep1", properties: [])
+        let comp1 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
+        let comp2 = Component(name: "ha2", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
+        let comp3 = Component(name: "ha3", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator()
 
@@ -37,9 +37,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateComponent_withDuplicates_verifyResult() {
-        let comp1 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [])
-        let comp2 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [])
-        let comp3 = Component(name: "ha3", dependencyProtocolName: "dep1", properties: [])
+        let comp1 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
+        let comp2 = Component(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
+        let comp3 = Component(name: "ha3", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator()
 

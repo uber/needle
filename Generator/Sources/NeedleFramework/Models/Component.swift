@@ -25,4 +25,6 @@ struct Component {
     let dependencyProtocolName: String
     /// A list of properties this component instantiates, thereby provides.
     let properties: [Property]
+    /// A list of expression call type names.
+    let expressionCallTypeNames: [String]
 }

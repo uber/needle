@@ -37,6 +37,7 @@ class ASTParserTaskTests: AbstractParsingTests {
             let myComponent = node.components.first { (component: Component) -> Bool in
                 component.name == "MyComponent"
             }!
+            XCTAssertEqual(myComponent.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
             XCTAssertEqual(myComponent.name, "MyComponent")
             XCTAssertEqual(myComponent.dependencyProtocolName, "MyDependency")
             XCTAssertEqual(myComponent.properties.count, 4)
@@ -60,6 +61,7 @@ class ASTParserTaskTests: AbstractParsingTests {
             let my2Component = node.components.first { (component: Component) -> Bool in
                 component.name == "My2Component"
             }!
+            XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Book"])
             XCTAssertEqual(my2Component.name, "My2Component")
             XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
             XCTAssertEqual(my2Component.properties.count, 1)
