@@ -34,6 +34,14 @@ class My2Component: Component<My2Dependency> {
             Book()
         }
     }
+
+    private var banana: Banana {
+        return Banana()
+    }
+
+    fileprivate var apple: Apple {
+        return Apple()
+    }
 }
 
 protocol My2Dependency: Dependency {

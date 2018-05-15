@@ -103,6 +103,12 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
 
     var properties: [Property] {
         return filterSubstructure(by: "source.lang.swift.decl.var.instance")
+            .filter { (item: [String: SourceKitRepresentable]) -> Bool in
+                if let accessibility = item["key.accessibility"] as? String {
+                    return accessibility != "source.lang.swift.accessibility.private" && accessibility != "source.lang.swift.accessibility.fileprivate"
+                }
+                fatalError("Property missing accessibility identifier.")
+            }
             .map { (item: [String: SourceKitRepresentable]) -> Property in
                 if let variableName = item["key.name"] as? String {
                     if let typeName = item["key.typename"] as? String {
