@@ -39,7 +39,7 @@ class DependencyGraphParser {
     /// - parameter executor: The executor to use for concurrent processing of files.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
     /// out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws {
+    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [Dependency]) {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -67,6 +67,27 @@ class DependencyGraphParser {
             }
         }
 
+        validate(components, dependencies)
+
+        linkParents(components)
+
+        return (components, dependencies)
+    }
+
+    // MARK: - Private
+
+    private func newFileEnumerator(for rootUrl: URL) -> FileManager.DirectoryEnumerator {
+        let errorHandler = { (url: URL, error: Error) -> Bool in
+            fatalError("Failed to traverse \(url) with error \(error).")
+        }
+        if let enumerator = FileManager.default.enumerator(at: rootUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: errorHandler) {
+            return enumerator
+        } else {
+            fatalError("\(rootUrl) does not exist.")
+        }
+    }
+
+    private func validate(_ components: [Component], _ dependencies: [Dependency]) {
         // Validate duplicates. If we want to support components/dependencies that have the
         // same name across modules, then this should be removed. One option to support such
         // scenario without trying to detect module structure is to simply use the file URL
@@ -89,16 +110,17 @@ class DependencyGraphParser {
         }
     }
 
-    // MARK: - Private
-
-    private func newFileEnumerator(for rootUrl: URL) -> FileManager.DirectoryEnumerator {
-        let errorHandler = { (url: URL, error: Error) -> Bool in
-            fatalError("Failed to traverse \(url) with error \(error).")
+    private func linkParents(_ components: [Component]) {
+        var nameToComponent = [String: Component]()
+        for component in components {
+            nameToComponent[component.name] = component
         }
-        if let enumerator = FileManager.default.enumerator(at: rootUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: errorHandler) {
-            return enumerator
-        } else {
-            fatalError("\(rootUrl) does not exist.")
+        for component in components {
+            for typeName in component.expressionCallTypeNames {
+                if let childComponent = nameToComponent[typeName] {
+                    childComponent.parents.append(component)
+                }
+            }
         }
     }
 }

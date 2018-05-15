@@ -44,7 +44,7 @@ class DependencyGraphParserTests: AbstractParsingTests {
         XCTAssertEqual(executionHandle.awaitCallCount, 0)
 
         do {
-            try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
+            _ = try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
         } catch {
             XCTFail("\(error)")
         }
@@ -52,6 +52,42 @@ class DependencyGraphParserTests: AbstractParsingTests {
         XCTAssertEqual(executor.executeCallCount, files.count)
         XCTAssertEqual(executionHandle.cancelCallCount, 0)
         XCTAssertEqual(executionHandle.awaitCallCount, files.count)
+    }
+
+    func test_parse_withTaskCompleteion_verifyResults() {
+        let parser = DependencyGraphParser()
+        let fixturesURL = fixtureUrl(for: "")
+        let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
+        let files = enumerator!.allObjects as! [URL]
+
+        let executeTaskHandler = { (task: SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode> in
+            var task = task
+            while true {
+                let executionResult = task.execute()
+                switch executionResult {
+                case .continueSequence(let nextTask):
+                    task = nextTask
+                case .endOfSequence(let result):
+                    let executionHandle = MockExecutionHandle()
+                    executionHandle.result = result
+                    return executionHandle
+                }
+            }
+        }
+        let executor = MockSequenceExecutor(executeTaskHandler: executeTaskHandler)
+
+        XCTAssertEqual(executor.executeCallCount, 0)
+
+        do {
+            let (components, _) = try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
+            let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
+            let parentComponent = components.filter { $0.name == "MyComponent" }.first!
+            XCTAssertTrue(childComponent.parents.first! === parentComponent)
+        } catch {
+            XCTFail("\(error)")
+        }
+
+        XCTAssertEqual(executor.executeCallCount, files.count)
     }
 }
 
@@ -79,10 +115,12 @@ class MockExecutionHandle: SequenceExecutionHandle<DependencyGraphNode> {
     var cancelCallCount = 0
     var cancelHandler: (() -> ())?
 
+    var result: DependencyGraphNode?
+
     override func await(withTimeout timeout: TimeInterval?) throws -> DependencyGraphNode {
         awaitCallCount += 1
         awaitHandler?(timeout)
-        return DependencyGraphNode(components: [], dependencies: [])
+        return result ?? DependencyGraphNode(components: [], dependencies: [])
     }
 
     override func cancel() {

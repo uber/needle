@@ -18,7 +18,7 @@ import Foundation
 
 /// A data model representing a dependency graph scope declared by a NeedleFoundation
 /// `Component` subclass.
-struct Component {
+class Component {
     /// The name of the component.
     let name: String
     /// The name of the component's dependency protocol.
@@ -27,4 +27,14 @@ struct Component {
     let properties: [Property]
     /// A list of expression call type names.
     let expressionCallTypeNames: [String]
+    /// A list of parent components
+    var parents : [Component]
+
+    init(name: String, dependencyProtocolName: String, properties: [Property], expressionCallTypeNames: [String]) {
+        self.name = name
+        self.dependencyProtocolName = dependencyProtocolName
+        self.properties = properties
+        self.expressionCallTypeNames = expressionCallTypeNames
+        self.parents = []
+    }
 }
