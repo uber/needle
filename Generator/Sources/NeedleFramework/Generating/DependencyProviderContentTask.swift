@@ -14,22 +14,17 @@
 //  limitations under the License.
 //
 
-import NeedleFoundation
-import UIKit
+import Foundation
 
-protocol LoggedOutDependency: Dependency {
-    var mutablePlayersStream: MutablePlayersStream { get }
-}
+class DependencyProviderContentTask: SequencedTask<[DependencyProvider]> {
 
-class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
+    let providers: [DependencyProvider]
 
-    var loggedOutViewController: UIViewController {
-        return LoggedOutViewController(mutablePlayersStream: dependency.mutablePlayersStream)
+    init(providers: [DependencyProvider]) {
+        self.providers = providers
     }
-}
 
-// Use a builder protocol to allow mocking for unit tests. At the same time,
-// this allows LoggedOutViewController to be initialized lazily.
-protocol LoggedOutBuilder {
-    var loggedOutViewController: UIViewController { get }
+    override func execute() -> ExecutionResult<[DependencyProvider]> {
+        fatalError()
+    }
 }

@@ -17,7 +17,7 @@
 import XCTest
 @testable import NeedleFramework
 
-class FileFilterTaskTests: AbstractParsingTests {
+class FileFilterTaskTests: AbstractParserTests {
     
     func test_execute_nonSwiftSource_verifyFilter() {
         let fileUrl = fixtureUrl(for: "NonSwift.json")

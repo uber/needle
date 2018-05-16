@@ -37,9 +37,10 @@ class DependencyGraphParser {
     /// - parameter exclusionSuffixes: If a file name contains a suffix in this list,
     /// the said file is excluded from parsing.
     /// - parameter executor: The executor to use for concurrent processing of files.
+    /// - returns: The list of component data models.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
     /// out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [Dependency]) {
+    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> [Component] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -53,7 +54,7 @@ class DependencyGraphParser {
         }
 
         // Wait for all sequences to finish.
-        var components = [Component]()
+        var components = [ASTComponent]()
         var dependencies = [Dependency]()
         for tuple in taskHandleTuples {
             do {
@@ -68,10 +69,12 @@ class DependencyGraphParser {
         }
 
         validate(components, dependencies)
+        linkParents(for: components)
+        link(components, to: dependencies)
 
-        linkParents(components)
-
-        return (components, dependencies)
+        return components.map { (astComponent: ASTComponent) -> Component in
+            astComponent.valueType
+        }
     }
 
     // MARK: - Private
@@ -87,7 +90,7 @@ class DependencyGraphParser {
         }
     }
 
-    private func validate(_ components: [Component], _ dependencies: [Dependency]) {
+    private func validate(_ components: [ASTComponent], _ dependencies: [Dependency]) {
         // Validate duplicates. If we want to support components/dependencies that have the
         // same name across modules, then this should be removed. One option to support such
         // scenario without trying to detect module structure is to simply use the file URL
@@ -110,8 +113,8 @@ class DependencyGraphParser {
         }
     }
 
-    private func linkParents(_ components: [Component]) {
-        var nameToComponent = [String: Component]()
+    private func linkParents(for components: [ASTComponent]) {
+        var nameToComponent = [String: ASTComponent]()
         for component in components {
             nameToComponent[component.name] = component
         }
@@ -120,6 +123,20 @@ class DependencyGraphParser {
                 if let childComponent = nameToComponent[typeName] {
                     childComponent.parents.append(component)
                 }
+            }
+        }
+    }
+
+    private func link(_ components: [ASTComponent], to dependencies: [Dependency]) {
+        var nameToDependency: [String: Dependency] = [emptyDependency.name: emptyDependency]
+        for dependency in dependencies {
+            nameToDependency[dependency.name] = dependency
+        }
+        for component in components {
+            if let dependency = nameToDependency[component.dependencyProtocolName] {
+                component.dependencyProtocol = dependency
+            } else {
+                fatalError("Missing dependency protocol data model for \(component.dependencyProtocolName).")
             }
         }
     }

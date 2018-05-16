@@ -18,7 +18,7 @@ import NeedleFoundation
 import RxSwift
 import UIKit
 
-protocol ScoreSheetDependency {
+protocol ScoreSheetDependency: Dependency {
     var scoreStream: ScoreStream { get }
 }
 

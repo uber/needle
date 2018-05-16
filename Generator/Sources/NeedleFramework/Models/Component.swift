@@ -18,9 +18,23 @@ import Foundation
 
 /// A data model representing a dependency graph scope declared by a NeedleFoundation
 /// `Component` subclass.
-/// Note: We're using a class here because (among other reasons) we have a mutable list
-/// of parents which we plan to add to one element at a time, while maintaing the tree structure.
-class Component {
+struct Component: Equatable {
+    /// The name of the component.
+    let name: String
+    /// A list of properties this component instantiates, thereby provides.
+    let properties: [Property]
+    /// A list of parent components.
+    let parents : [Component]
+    /// The dependency protocol data model.
+    let dependency: Dependency
+}
+
+/// A intermediate data model representing a component parsed straight out of
+/// the source file AST. This model does not include the necessary references
+/// to other related models, such as the dependency protocol.
+/// - note: This data structure is mutated to link child-parent instances. Therefore,
+/// this needs to be a reference type.
+class ASTComponent {
     /// The name of the component.
     let name: String
     /// The name of the component's dependency protocol.
@@ -29,16 +43,27 @@ class Component {
     let properties: [Property]
     /// A list of expression call type names.
     let expressionCallTypeNames: [String]
-    /// A list of parent components
-    /// While we expect to update this from only one thread, it may be read from multiple
-    /// threads, and we need to be careful about synchronization in that case
-    var parents : [Component]
+    /// The mutable list of parents.
+    var parents = [ASTComponent]()
+    /// The referenced dependency protocol data model.
+    var dependencyProtocol: Dependency?
 
+    /// Convert the mutable reference type into a thread-safe value type.
+    var valueType: Component {
+        let parentValues = parents.map { (parent: ASTComponent) -> Component in
+            parent.valueType
+        }
+        guard let dependency = dependencyProtocol else {
+            fatalError("\(self)'s dependency protocol data model is not yet linked.")
+        }
+        return Component(name: name, properties: properties, parents: parentValues, dependency: dependency)
+    }
+
+    /// Initializer.
     init(name: String, dependencyProtocolName: String, properties: [Property], expressionCallTypeNames: [String]) {
         self.name = name
         self.dependencyProtocolName = dependencyProtocolName
         self.properties = properties
         self.expressionCallTypeNames = expressionCallTypeNames
-        self.parents = []
     }
 }

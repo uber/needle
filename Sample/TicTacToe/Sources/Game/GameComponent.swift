@@ -17,7 +17,7 @@
 import NeedleFoundation
 import UIKit
 
-protocol GameDependency {
+protocol GameDependency: Dependency {
     var mutableScoresStream: MutableScoreStream { get }
     var playersStream: PlayersStream { get }
 }

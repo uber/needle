@@ -16,10 +16,12 @@
 
 import Foundation
 
+let emptyDependency = Dependency(name: "EmptyDependency", properties: [])
+
 /// A data model representing a dependency protocol of a NeedleFoundation `Component`.
 // This is separate from the `Component` data model, since a component's dependency
 // protocol may be declared in a separate file.
-struct Dependency {
+struct Dependency: Equatable {
     /// The name of the dependency protocol.
     let name: String
     /// The list of dependency properties.
