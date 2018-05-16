@@ -35,14 +35,14 @@ class ASTParserTask: SequencedTask<DependencyGraphNode> {
     ///
     /// - returns: `.endOfSequence` with a `DependencyGraphNode`.
     override func execute() -> ExecutionResult<DependencyGraphNode> {
-        var components = [Component]()
+        var components = [ASTComponent]()
         var dependencies = [Dependency]()
 
         let substructures = structure.dictionary["key.substructure"] as? [SourceKitRepresentable]
         for item in substructures ?? [] {
             if let substructure = item as? [String: SourceKitRepresentable] {
                 if substructure.isComponent {
-                    components.append(Component(name: substructure.name, dependencyProtocolName: substructure.dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames))
+                    components.append(ASTComponent(name: substructure.name, dependencyProtocolName: substructure.dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames))
                 } else if substructure.isDependencyProtocol {
                     dependencies.append(Dependency(name: substructure.name, properties: substructure.properties))
                 }

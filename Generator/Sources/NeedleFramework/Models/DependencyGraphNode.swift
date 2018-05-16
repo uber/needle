@@ -20,7 +20,7 @@ import Foundation
 /// a single file.
 struct DependencyGraphNode {
     /// The list of components in this node.
-    let components: [Component]
+    let components: [ASTComponent]
     /// The list of dependencies in this node.
     let dependencies: [Dependency]
 }

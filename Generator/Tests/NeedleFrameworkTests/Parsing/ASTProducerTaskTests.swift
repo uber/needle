@@ -18,7 +18,7 @@ import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 
-class ASTProducerTaskTests: AbstractParsingTests {
+class ASTProducerTaskTests: AbstractParserTests {
 
     func test_execute_verifyNextTask() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")

@@ -16,8 +16,8 @@
 
 import XCTest
 
-/// Base class for all parsing related tests.
-class AbstractParsingTests: XCTestCase {
+/// Base class for all parser related tests.
+class AbstractParserTests: XCTestCase {
 
     /// Retrieve the URL for a fixture file.
     ///

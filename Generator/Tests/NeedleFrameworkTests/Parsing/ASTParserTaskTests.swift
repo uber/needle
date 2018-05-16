@@ -18,7 +18,7 @@ import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 
-class ASTParserTaskTests: AbstractParsingTests {
+class ASTParserTaskTests: AbstractParserTests {
     
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
@@ -34,7 +34,7 @@ class ASTParserTaskTests: AbstractParsingTests {
         case .endOfSequence(let node):
             XCTAssertEqual(node.components.count, 2)
 
-            let myComponent = node.components.first { (component: Component) -> Bool in
+            let myComponent = node.components.first { (component: ASTComponent) -> Bool in
                 component.name == "MyComponent"
             }!
             XCTAssertEqual(myComponent.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
@@ -58,7 +58,7 @@ class ASTParserTaskTests: AbstractParsingTests {
             }
             XCTAssertTrue(containsChildComponent)
 
-            let my2Component = node.components.first { (component: Component) -> Bool in
+            let my2Component = node.components.first { (component: ASTComponent) -> Bool in
                 component.name == "My2Component"
             }!
             XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Banana", "Apple", "Book"])

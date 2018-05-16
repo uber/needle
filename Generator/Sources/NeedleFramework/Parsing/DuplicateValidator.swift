@@ -32,7 +32,7 @@ class DuplicateValidator {
     ///
     /// - parameter components: The list of components to validate.
     /// - returns: The validation result.
-    func validate(_ components: [Component]) -> DuplicateValidationResult {
+    func validate(_ components: [ASTComponent]) -> DuplicateValidationResult {
         var map = [String: String]()
         for component in components {
             if map[component.name] == nil {

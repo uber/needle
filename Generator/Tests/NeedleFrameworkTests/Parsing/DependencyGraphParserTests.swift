@@ -17,7 +17,7 @@
 import XCTest
 @testable import NeedleFramework
 
-class DependencyGraphParserTests: AbstractParsingTests {
+class DependencyGraphParserTests: AbstractParserTests {
     
     func test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask() {
         let parser = DependencyGraphParser()
@@ -79,10 +79,10 @@ class DependencyGraphParserTests: AbstractParsingTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            let (components, _) = try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
+            let components = try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
-            XCTAssertTrue(childComponent.parents.first! === parentComponent)
+            XCTAssertTrue(childComponent.parents.first! == parentComponent)
         } catch {
             XCTFail("\(error)")
         }
