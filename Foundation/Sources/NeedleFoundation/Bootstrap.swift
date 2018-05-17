@@ -30,10 +30,15 @@ public class EmptyDependencyProvider: EmptyDependency {
 
 /// An empty class that can be used as the bootstrap component, the parent component of the
 /// root component in the dependency graph.
-public class BootstrapComponent: Scope {
+public class BootstrapComponent: ComponentType {
 
     /// The path to reach this scope on the dependnecy graph.
     public let path: String = "^"
+
+    /// This component does not have a parent
+    public var parent: ComponentType {
+        fatalError("BootstrapComponent does not have a parent, do not use this property.")
+    }
 
     /// Initializer.
     public init() {}
