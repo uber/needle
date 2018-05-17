@@ -24,3 +24,10 @@ struct Property: Equatable {
     /// The property type `String`.
     let type: String
 }
+
+struct ProcessedProperty: Equatable {
+    /// The unprocessed property we started with
+    let unprocessed: Property
+    /// Type of the Component where this property is satisfied
+    let sourceComponentType: String
+}
