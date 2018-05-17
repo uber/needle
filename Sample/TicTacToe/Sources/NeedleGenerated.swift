@@ -56,7 +56,7 @@ private class LoggedOutComponentFromRootDependencyProvider: LoggedOutDependency 
 }
 
 private class GameComponentFromLoggedInDependencyProvider: GameDependency {
-    var mutableScoresStream: MutableScoreStream {
+    var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
     var playersStream: PlayersStream {

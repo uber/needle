@@ -40,7 +40,7 @@ private enum Players: Int {
 
 class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, ScoreSheetListener {
 
-    private let mutableScoresStream: MutableScoreStream
+    private let mutableScoreStream: MutableScoreStream
     private let playersStream: PlayersStream
     private let scoreSheetBuilder: ScoreSheetBuilder
     private let collectionView: UICollectionView = {
@@ -52,8 +52,8 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     }()
     private var appearanceDisposable = CompositeDisposable()
 
-    init(mutableScoresStream: MutableScoreStream, playersStream: PlayersStream, scoreSheetBuilder: ScoreSheetBuilder) {
-        self.mutableScoresStream = mutableScoresStream
+    init(mutableScoreStream: MutableScoreStream, playersStream: PlayersStream, scoreSheetBuilder: ScoreSheetBuilder) {
+        self.mutableScoreStream = mutableScoreStream
         self.playersStream = playersStream
         self.scoreSheetBuilder = scoreSheetBuilder
         super.init(nibName: nil, bundle: nil)
@@ -188,12 +188,12 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
                     let winnerName = winner == .player1 ? player1Name : player2Name
                     let loserName = winner != .player1 ? player1Name : player2Name
                     self?.announce(winner) { [weak self] in
-                        self?.mutableScoresStream.updateScore(withWinner: winnerName, loser: loserName)
+                        self?.mutableScoreStream.updateScore(withWinner: winnerName, loser: loserName)
                     }
                 }
             } else {
                 announceDraw { [weak self] in
-                    self?.mutableScoresStream.updateDraw()
+                    self?.mutableScoreStream.updateDraw()
                 }
             }
         }
