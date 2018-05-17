@@ -16,6 +16,9 @@
 
 import Foundation
 
+/// The base protocol of a dependency, enabling Needle's parsing process.
+public protocol Dependency: AnyObject {}
+
 /// The base protocol of a component. Application code should inherit from the `Component`
 /// base class, instead of using this protocol directly.
 public protocol ComponentType: AnyObject {
