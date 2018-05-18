@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
 public class ProviderGenerator {
