@@ -27,8 +27,8 @@ class DependencyProviderDeclarerTask: SequencedTask<[ProcessedDependencyProvider
     init(component: Component) {
         self.component = component
     }
+
     /// Execute the task and returns the in-memory dependency graph data models.
-    /// This is the last task in the sequence.
     ///
     /// - returns: `.continueSequence` with a `DependencyProviderContentTask`.
     override func execute() -> ExecutionResult<[ProcessedDependencyProvider]> {

@@ -16,7 +16,9 @@
 
 import Foundation
 
-struct MissingPropertyInfo {
+/// Struct that gives us detailed information when we cannot find
+/// a dependency after walking up the chain.
+struct PropertyNotFoundErrorInfo {
     let dependency: String
     let name: String
     let type: String
@@ -24,18 +26,28 @@ struct MissingPropertyInfo {
     let possibleMatchComponent: String?
 }
 
+/// Enum of possible errors we may throw from this task.
 enum DependencyProviderContentError: Error {
-    case propertyNotFound(MissingPropertyInfo)
+    case propertyNotFound(PropertyNotFoundErrorInfo)
 }
 
+/// The task that walks through the chain of parents for each dependency item
+/// of the dependency protocol that this provider class needs to satisfy.
 class DependencyProviderContentTask: SequencedTask<[ProcessedDependencyProvider]> {
 
     let providers: [DependencyProvider]
 
+    /// Initializer.
+    ///
+    /// - parameter providers: The list of providers that we need to fill in
     init(providers: [DependencyProvider]) {
         self.providers = providers
     }
 
+    /// Execute the task and returns the in-memory dependency graph data models.
+    /// This is the last task in the sequence.
+    ///
+    /// - returns: `.continueSequence` with a `DependencyProviderContentTask`.
     override func execute() -> ExecutionResult<[ProcessedDependencyProvider]> {
         let results = providers.map { (provider: DependencyProvider) -> ProcessedDependencyProvider in
             do {
@@ -53,7 +65,9 @@ class DependencyProviderContentTask: SequencedTask<[ProcessedDependencyProvider]
         return .endOfSequence(results)
     }
 
-    func process(_ provider: DependencyProvider) throws -> ProcessedDependencyProvider  {
+    // MARK: - Private
+
+    private func process(_ provider: DependencyProvider) throws -> ProcessedDependencyProvider  {
         var levelMap = [String: Int]()
 
         let properties = try provider.dependency.properties.map { (property : Property) -> ProcessedProperty in
@@ -82,7 +96,7 @@ class DependencyProviderContentTask: SequencedTask<[ProcessedDependencyProvider]
                     break
                 }
             }
-            let info = MissingPropertyInfo(dependency: provider.dependency.name, name: property.name, type: property.type, possibleNames: possibleMatches, possibleMatchComponent: possibleMatchComponent)
+            let info = PropertyNotFoundErrorInfo(dependency: provider.dependency.name, name: property.name, type: property.type, possibleNames: possibleMatches, possibleMatchComponent: possibleMatchComponent)
             throw DependencyProviderContentError.propertyNotFound(info)
         }
 

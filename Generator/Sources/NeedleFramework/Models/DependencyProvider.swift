@@ -46,8 +46,8 @@ struct ProcessedDependencyProvider {
     /// The unprocessed data model
     let unprocessed: DependencyProvider
 
-    /// The map of component type names to the number of levels between the component we are a provider for
-    /// and said compoennt
+    /// The map of component type names to the number of levels between the requiring component
+    /// and the providing compoennt
     let levelMap: [String: Int]
 
     /// The properties with their source components filled in
