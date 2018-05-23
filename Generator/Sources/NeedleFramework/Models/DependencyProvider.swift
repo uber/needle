@@ -37,4 +37,20 @@ struct DependencyProvider {
     var name: String {
         return dependency.name + String(pathString.hashValue).replacingOccurrences(of: "-", with: "_") + "Provider"
     }
+
 }
+
+/// The data model representing a dependency provider to be generated for a
+/// specific path of a component.
+struct ProcessedDependencyProvider {
+    /// The unprocessed data model
+    let unprocessed: DependencyProvider
+
+    /// The map of component type names to the number of levels between the requiring component
+    /// and the providing compoennt
+    let levelMap: [String: Int]
+
+    /// The properties with their source components filled in
+    let processedProperties: [ProcessedProperty]
+}
+
