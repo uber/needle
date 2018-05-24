@@ -25,7 +25,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
 
-        let executionHandle = MockExecutionHandle()
+        let executionHandle = MockExecutionHandle(defaultResult: DependencyGraphNode(components: [], dependencies: []))
         executionHandle.awaitHandler = { (timeout: TimeInterval?) in
             XCTAssertNotNil(timeout)
         }
@@ -59,22 +59,8 @@ class DependencyGraphParserTests: AbstractParserTests {
         let fixturesURL = fixtureUrl(for: "")
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
-
-        let executeTaskHandler = { (task: SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode> in
-            var task = task
-            while true {
-                let executionResult = task.execute()
-                switch executionResult {
-                case .continueSequence(let nextTask):
-                    task = nextTask
-                case .endOfSequence(let result):
-                    let executionHandle = MockExecutionHandle()
-                    executionHandle.result = result
-                    return executionHandle
-                }
-            }
-        }
-        let executor = MockSequenceExecutor(executeTaskHandler: executeTaskHandler)
+        let executionHandler = MockExecutionTaskHandler(defaultResult: DependencyGraphNode(components: [], dependencies: []))
+        let executor = MockSequenceExecutor(executeTaskHandler: executionHandler.execute)
 
         XCTAssertEqual(executor.executeCallCount, 0)
 
@@ -91,23 +77,23 @@ class DependencyGraphParserTests: AbstractParserTests {
     }
 }
 
-class MockSequenceExecutor: SequenceExecutor {
+class MockSequenceExecutor<T>: SequenceExecutor {
 
     var executeCallCount = 0
 
-    private let executeTaskHandler: (SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode>
+    private let executeTaskHandler: (SequencedTask<T>) -> SequenceExecutionHandle<T>
 
-    init(executeTaskHandler: @escaping (SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode>) {
+    init(executeTaskHandler: @escaping (SequencedTask<T>) -> SequenceExecutionHandle<T>) {
         self.executeTaskHandler = executeTaskHandler
     }
 
     func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
         executeCallCount += 1
-        return executeTaskHandler(task as! SequencedTask<DependencyGraphNode>) as! SequenceExecutionHandle<SequenceResultType>
+        return executeTaskHandler(task as! SequencedTask<T>) as! SequenceExecutionHandle<SequenceResultType>
     }
 }
 
-class MockExecutionHandle: SequenceExecutionHandle<DependencyGraphNode> {
+class MockExecutionHandle<T>: SequenceExecutionHandle<T> {
 
     var awaitCallCount = 0
     var awaitHandler: ((TimeInterval?) -> ())?
@@ -115,12 +101,18 @@ class MockExecutionHandle: SequenceExecutionHandle<DependencyGraphNode> {
     var cancelCallCount = 0
     var cancelHandler: (() -> ())?
 
-    var result: DependencyGraphNode?
+    var result: T?
 
-    override func await(withTimeout timeout: TimeInterval?) throws -> DependencyGraphNode {
+    private let defaultResult: T
+
+    init(defaultResult: T) {
+        self.defaultResult = defaultResult
+    }
+
+    override func await(withTimeout timeout: TimeInterval?) throws -> T {
         awaitCallCount += 1
         awaitHandler?(timeout)
-        return result ?? DependencyGraphNode(components: [], dependencies: [])
+        return result ?? defaultResult
     }
 
     override func cancel() {

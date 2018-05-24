@@ -34,7 +34,7 @@ class AbstractGeneratorTests: XCTestCase {
                 case .continueSequence(let nextTask):
                     task = nextTask
                 case .endOfSequence(let result):
-                    let executionHandle = MockExecutionHandle()
+                    let executionHandle = MockExecutionHandle(defaultResult: DependencyGraphNode(components: [], dependencies: []))
                     executionHandle.result = result
                     return executionHandle
                 }
