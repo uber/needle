@@ -18,7 +18,7 @@ import Foundation
 
 /// The task thet generates the declarations of a dependency providers for a
 /// specific component, for all of its ancestor paths.
-class DependencyProviderDeclarerTask: SequencedTask<[ProcessedDependencyProvider]> {
+class DependencyProviderDeclarerTask: SequencedTask<[SerializedDependencyProvider]> {
 
     /// Initializer.
     ///
@@ -31,7 +31,7 @@ class DependencyProviderDeclarerTask: SequencedTask<[ProcessedDependencyProvider
     /// Execute the task and returns the in-memory dependency graph data models.
     ///
     /// - returns: `.continueSequence` with a `DependencyProviderContentTask`.
-    override func execute() -> ExecutionResult<[ProcessedDependencyProvider]> {
+    override func execute() -> ExecutionResult<[SerializedDependencyProvider]> {
         let providers = ancestorPaths(for: component)
             .map { (path: [Component]) -> DependencyProvider in
                 return DependencyProvider(path: path, dependency: component.dependency)

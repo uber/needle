@@ -33,7 +33,7 @@ enum DependencyProviderContentError: Error {
 
 /// The task that walks through the chain of parents for each dependency item
 /// of the dependency protocol that this provider class needs to satisfy.
-class DependencyProviderContentTask: SequencedTask<[ProcessedDependencyProvider]> {
+class DependencyProviderContentTask: SequencedTask<[SerializedDependencyProvider]> {
 
     let providers: [DependencyProvider]
 
@@ -44,11 +44,11 @@ class DependencyProviderContentTask: SequencedTask<[ProcessedDependencyProvider]
         self.providers = providers
     }
 
-    /// Execute the task and returns the in-memory dependency graph data models.
-    /// This is the last task in the sequence.
+    /// Execute the task and returns the processed in-memory dependency graph
+    /// data models.
     ///
-    /// - returns: `.continueSequence` with a `DependencyProviderContentTask`.
-    override func execute() -> ExecutionResult<[ProcessedDependencyProvider]> {
+    /// - returns: `.continueSequence` with a `DependencyProviderSerializerTask`.
+    override func execute() -> ExecutionResult<[SerializedDependencyProvider]> {
         let results = providers.map { (provider: DependencyProvider) -> ProcessedDependencyProvider in
             do {
                 return try process(provider)
@@ -62,7 +62,7 @@ class DependencyProviderContentTask: SequencedTask<[ProcessedDependencyProvider]
                 fatalError("Unhandled error while processing dependency provider content: \(error)")
             }
         }
-        return .endOfSequence(results)
+        return ExecutionResult.continueSequence(DependencyProviderSerializerTask(providers: results))
     }
 
     // MARK: - Private

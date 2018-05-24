@@ -21,41 +21,31 @@ import NeedleFoundation
 class NeedleGenerated {
 
     static func registerDependencyProviderFactories() {
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-            return EmptyDependencyProvider()
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
+            return GameDependency_2401566548657102800Provider(component: component)
+        }
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent") { component in
+            return ScoreSheetDependency_1515114331612493672Provider(component: component)
+        }
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
+            return ScoreSheetDependency8667150673442932147Provider(component: component)
         }
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
-            return LoggedOutComponentFromRootDependencyProvider(component: component)
+            return LoggedOutDependency5490810220359560589Provider(component: component)
         }
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
             return EmptyDependencyProvider()
         }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
-            return GameComponentFromLoggedInDependencyProvider(component: component)
-		}
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
-            return ScoreSheetComponentFromLoggedInDependencyProvider(component: component)
-        }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent") { component in
-            return ScoreSheetComponentFromGameDependencyProvider(component: component)
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
+            return EmptyDependencyProvider()
         }
     }
 }
 
 // MARK: - Dependency Providers
 
-private class LoggedOutComponentFromRootDependencyProvider: LoggedOutDependency {
-    var mutablePlayersStream: MutablePlayersStream {
-        return rootComponent.mutablePlayersStream
-    }
-    private let rootComponent: RootComponent
-    init(component: ComponentType) {
-        let loggedOut = component as! LoggedOutComponent
-        rootComponent = loggedOut.parent as! RootComponent
-    }
-}
-
-private class GameComponentFromLoggedInDependencyProvider: GameDependency {
+/// ^->RootComponent->LoggedInComponent->GameComponent
+private class GameDependency_2401566548657102800Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
@@ -65,31 +55,37 @@ private class GameComponentFromLoggedInDependencyProvider: GameDependency {
     private let loggedInComponent: LoggedInComponent
     private let rootComponent: RootComponent
     init(component: ComponentType) {
-        let game = component as! GameComponent
-        loggedInComponent = game.parent as! LoggedInComponent
-        rootComponent = loggedInComponent.parent as! RootComponent
+        loggedInComponent = component.parent as! LoggedInComponent
+        rootComponent = component.parent.parent as! RootComponent
     }
 }
-
-private class ScoreSheetComponentFromLoggedInDependencyProvider: ScoreSheetDependency {
+/// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent
+private class ScoreSheetDependency_1515114331612493672Provider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
     private let loggedInComponent: LoggedInComponent
     init(component: ComponentType) {
-        let scoreSheet = component as! ScoreSheetComponent
-        loggedInComponent = scoreSheet.parent as! LoggedInComponent
+        loggedInComponent = component.parent.parent as! LoggedInComponent
     }
 }
-
-private class ScoreSheetComponentFromGameDependencyProvider: ScoreSheetDependency {
+/// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
+private class ScoreSheetDependency8667150673442932147Provider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
     private let loggedInComponent: LoggedInComponent
     init(component: ComponentType) {
-        let scoreSheet = component as! ScoreSheetComponent
-        let game = scoreSheet.parent as! GameComponent
-        loggedInComponent = game.parent as! LoggedInComponent
+        loggedInComponent = component.parent as! LoggedInComponent
+    }
+}
+/// ^->RootComponent->LoggedOutComponent
+private class LoggedOutDependency5490810220359560589Provider: LoggedOutDependency {
+    var mutablePlayersStream: MutablePlayersStream {
+        return rootComponent.mutablePlayersStream
+    }
+    private let rootComponent: RootComponent
+    init(component: ComponentType) {
+        rootComponent = component.parent as! RootComponent
     }
 }

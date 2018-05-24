@@ -43,14 +43,26 @@ struct DependencyProvider {
 /// The data model representing a dependency provider to be generated for a
 /// specific path of a component.
 struct ProcessedDependencyProvider {
-    /// The unprocessed data model
+    /// The unprocessed data model.
     let unprocessed: DependencyProvider
-
-    /// The map of component type names to the number of levels between the requiring component
-    /// and the providing compoennt
+    /// The map of component type names to the number of levels between the requiring
+    /// component and the providing compoennt.
     let levelMap: [String: Int]
-
-    /// The properties with their source components filled in
+    /// The properties with their source components filled in.
     let processedProperties: [ProcessedProperty]
+
+    /// `true` if this provider's dependency prootocol is the `EmptyDependency`.
+    /// `false` otherwise.
+    var isEmptyDependency: Bool {
+        return unprocessed.dependency.name == "EmptyDependency"
+    }
 }
 
+/// The data model representing a fully serialized dependency provider ready for
+/// export.
+struct SerializedDependencyProvider {
+    /// The dependency provider class content code.
+    let content: String
+    /// The dependency provider registration code.
+    let registration: String
+}
