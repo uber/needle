@@ -62,7 +62,7 @@ class DependencyProviderContentTask: SequencedTask<[SerializedDependencyProvider
                 fatalError("Unhandled error while processing dependency provider content: \(error)")
             }
         }
-        return ExecutionResult.continueSequence(DependencyProviderSerializerTask(providers: results))
+        return .continueSequence(DependencyProviderSerializerTask(providers: results))
     }
 
     // MARK: - Private

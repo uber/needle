@@ -16,8 +16,8 @@
 
 import Foundation
 
-/// The task that serialized a list of processed dependency providers into
-/// exportable `String`.
+/// The task that serializes a list of processed dependency providers into
+/// exportable foramt.
 class DependencyProviderSerializerTask: SequencedTask<[SerializedDependencyProvider]> {
 
     /// The processed dependency provider to serialize.
