@@ -31,11 +31,11 @@ class DependencyProviderContentTaskTests: AbstractGeneratorTests {
             case .continueSequence(let contentTask):
                 let contentResult = contentTask.execute()
                 switch contentResult {
-                case .continueSequence(_):
-                    XCTFail()
-                case .endOfSequence(let processedProviders):
+                case .continueSequence(let serializerTask):
                     // Verify
-                    verify(processedProviders, count: i)
+                    verify((serializerTask as! DependencyProviderSerializerTask).providers, count: i)
+                case .endOfSequence(_):
+                    XCTFail()
                 }
             case .endOfSequence(_):
                 XCTFail()
@@ -67,6 +67,5 @@ class DependencyProviderContentTaskTests: AbstractGeneratorTests {
         default:
             break
         }
-
     }
 }

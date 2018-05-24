@@ -16,20 +16,14 @@
 
 import Foundation
 
-/// A data model representing a dependency property that is either provided by a
-/// `Component` or required by one.
-struct Property: Equatable {
-    /// The variable name.
-    let name: String
-    /// The property type `String`.
-    let type: String
-}
+/// Utility String extensions.
+extension String {
 
-/// A data model representing a single dependency property that has gone through
-/// generation processing.
-struct ProcessedProperty: Equatable {
-    /// The unprocessed property we started with.
-    let unprocessed: Property
-    /// Type of the Component where this property is satisfied.
-    let sourceComponentType: String
+    /// Return the same String with the first character lowercased.
+    ///
+    /// - returns: The same String with the first character lowercased.
+    func lowercasedFirstChar() -> String {
+        let ommitFirstCharIndex = index(after: startIndex)
+        return String(self[startIndex]).lowercased() + String(self[ommitFirstCharIndex...])
+    }
 }

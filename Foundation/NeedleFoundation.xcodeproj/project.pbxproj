@@ -31,14 +31,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		413AD8BE20AE427F00AD7F36 /* PBXContainerItemProxy */ = {
+		41B6EE0C20B766FF00BFF8F8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
 			remoteInfo = NeedleFoundation;
 		};
-		413AD8BF20AE427F00AD7F36 /* PBXContainerItemProxy */ = {
+		41B6EE0D20B766FF00BFF8F8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
@@ -106,8 +106,8 @@
 		OBJ_17 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				"NeedleFoundation::NeedleFoundationTests::Product" /* NeedleFoundationTests.xctest */,
 				"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */,
+				"NeedleFoundation::NeedleFoundationTests::Product" /* NeedleFoundationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -254,12 +254,12 @@
 		OBJ_39 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "NeedleFoundation::NeedleFoundationTests" /* NeedleFoundationTests */;
-			targetProxy = 413AD8BF20AE427F00AD7F36 /* PBXContainerItemProxy */;
+			targetProxy = 41B6EE0D20B766FF00BFF8F8 /* PBXContainerItemProxy */;
 		};
 		OBJ_49 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "NeedleFoundation::NeedleFoundation" /* NeedleFoundation */;
-			targetProxy = 413AD8BE20AE427F00AD7F36 /* PBXContainerItemProxy */;
+			targetProxy = 41B6EE0C20B766FF00BFF8F8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

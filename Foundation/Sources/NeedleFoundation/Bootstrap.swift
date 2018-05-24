@@ -25,7 +25,9 @@ public protocol EmptyDependency {}
 public class EmptyDependencyProvider: EmptyDependency {
 
     /// Initializer.
-    public init() {}
+    ///
+    /// - parameter component: The component instance.
+    public init(component: ComponentType) {}
 }
 
 /// An empty class that can be used as the bootstrap component, the parent component of the
