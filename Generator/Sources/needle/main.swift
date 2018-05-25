@@ -16,20 +16,19 @@
 
 import Basic
 import Foundation
-import NeedleFramework
 import Utility
 
 func main() {
-    let parser = ArgumentParser(usage: "<command> <options>", overview: "needle DI code generator")
-    let commandsTypes: [Command.Type] = [ScanCommand.self, GenerateCommand.self]
+    let parser = ArgumentParser(usage: "<command> <options>", overview: "Needle DI code generator.")
+    let commandsTypes: [Command.Type] = [GenerateCommand.self]
     let commands = commandsTypes.map { $0.init(parser: parser) }
-    let arguments = Array(CommandLine.arguments.dropFirst())
+    let intputs = Array(CommandLine.arguments.dropFirst())
     do {
-        let result = try parser.parse(arguments)
-        if let subparserName = result.subparser(parser) {
+        let args = try parser.parse(intputs)
+        if let subparserName = args.subparser(parser) {
             for command in commands {
                 if subparserName == command.name {
-                    command.run(with: result)
+                    command.execute(with: args)
                 }
             }
         } else {

@@ -27,6 +27,9 @@ enum DependencyGraphExporterError: Error {
     case unableToWriteFile(String)
 }
 
+/// The generation phase entry class that executes tasks to process dependency
+/// graph components into the necessary dependency providers and their registrations,
+/// then exports the contents to the destination path.
 class DependencyGraphExporter {
 
     /// Initializer.
@@ -72,8 +75,9 @@ class DependencyGraphExporter {
         } catch {
             throw DependencyGraphExporterError.unableToWriteFile(path)
         }
-
     }
+
+    // MARK: - Private
 
     private func serialize(providers: [SerializedDependencyProvider]) -> String {
         let registrationBody = providers
