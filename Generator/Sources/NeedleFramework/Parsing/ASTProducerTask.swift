@@ -20,7 +20,6 @@ import SourceKittenFramework
 /// A task that parses a Swift source content and produces Swift AST that can then be
 /// parsed into the dependnecy graph.
 class ASTProducerTask: SequencedTask<DependencyGraphNode> {
-
     /// The source URL.
     let sourceUrl: URL
     /// The source content to be parsed into AST.
