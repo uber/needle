@@ -22,9 +22,9 @@ func main() {
     let parser = ArgumentParser(usage: "<command> <options>", overview: "Needle DI code generator.")
     let commandsTypes: [Command.Type] = [GenerateCommand.self]
     let commands = commandsTypes.map { $0.init(parser: parser) }
-    let intputs = Array(CommandLine.arguments.dropFirst())
+    let inputs = Array(CommandLine.arguments.dropFirst())
     do {
-        let args = try parser.parse(intputs)
+        let args = try parser.parse(inputs)
         if let subparserName = args.subparser(parser) {
             for command in commands {
                 if subparserName == command.name {
