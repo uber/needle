@@ -16,8 +16,14 @@
 
 import Foundation
 
+/// Errors that may occur while trying to export the dependency provider classes.
 enum DependencyGraphExporterError: Error {
+    /// One of the dependecy provider tasks timed out, possibly due to some massive
+    /// class or a programming error causing some sort of infinite loop
+    /// String contains the name of the component.
     case timeout(String)
+    /// Problem while trying to write the generated text to disk
+    /// The String contains the file we were tyingto write to.
     case unableToWriteFile(String)
 }
 
@@ -26,6 +32,17 @@ class DependencyGraphExporter {
     /// Initializer.
     init() {}
 
+    /// Given an array of components to create dependency providers for, for
+    /// each one, traverse it's list of parents looking for all the required
+    /// dependencies. Then turn this data into the source code for the dependency
+    /// providers.
+    ///
+    /// - parameter components: Array of Components to export.
+    /// - parameter to: Path to file where we want the results written to.
+    /// - parameter using: The executor to use for concurrent computation of the
+    ///   dependency provider bodies.
+    /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
+    /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file write fails.
     func export(components: [Component], to path: String, using executor: SequenceExecutor) throws {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedDependencyProvider]>, componentName: String)]()
 
