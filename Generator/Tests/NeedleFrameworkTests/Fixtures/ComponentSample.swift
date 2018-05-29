@@ -35,6 +35,10 @@ class My2Component: Component<My2Dependency> {
         }
     }
 
+    var maybeWallet: Wallet? {
+        return Wallet()
+    }
+
     private var banana: Banana {
         return Banana()
     }
@@ -46,6 +50,7 @@ class My2Component: Component<My2Dependency> {
 
 protocol My2Dependency: Dependency {
     var backPack: Pack { get }
+    var maybeMoney: Dollar? { get }
 }
 
 class RandomClass {
