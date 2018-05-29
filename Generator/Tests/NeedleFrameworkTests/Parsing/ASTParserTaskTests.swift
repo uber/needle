@@ -61,14 +61,19 @@ class ASTParserTaskTests: AbstractParserTests {
             let my2Component = node.components.first { (component: ASTComponent) -> Bool in
                 component.name == "My2Component"
             }!
-            XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Banana", "Apple", "Book"])
+            XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Wallet", "Banana", "Apple", "Book"])
             XCTAssertEqual(my2Component.name, "My2Component")
             XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
-            XCTAssertEqual(my2Component.properties.count, 1)
+            XCTAssertEqual(my2Component.properties.count, 2)
             let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
                 return property.name == "book" && property.type == "Book"
             }
             XCTAssertTrue(containsBook)
+
+            let containsOptionalWallet = my2Component.properties.contains { (property: Property) -> Bool in
+                return property.name == "maybeWallet" && property.type == "Wallet?"
+            }
+            XCTAssertTrue(containsOptionalWallet)
 
             XCTAssertEqual(node.dependencies.count, 2)
             let myDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
@@ -89,11 +94,16 @@ class ASTParserTaskTests: AbstractParserTests {
                 dependency.name == "My2Dependency"
             }!
             XCTAssertEqual(my2Dependency.name, "My2Dependency")
-            XCTAssertEqual(my2Dependency.properties.count, 1)
+            XCTAssertEqual(my2Dependency.properties.count, 2)
             let containsBackPack = my2Dependency.properties.contains { (property: Property) -> Bool in
                 return property.name == "backPack" && property.type == "Pack"
             }
             XCTAssertTrue(containsBackPack)
+
+            let containsOptionalMoney = my2Dependency.properties.contains { (property: Property) -> Bool in
+                return property.name == "maybeMoney" && property.type == "Dollar?"
+            }
+            XCTAssertTrue(containsOptionalMoney)
         }
     }
 }
