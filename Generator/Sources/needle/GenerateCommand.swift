@@ -28,16 +28,16 @@ class GenerateCommand: Command {
     /// The name of the command.
     let name = "generate"
 
-    private let overview = "Generate DI code based on Swift source files in a directory."
+    private let overview = "Generate DI code based on all Swift source files in a directory."
     private let sourceRootPath: PositionalArgument<String>
     private let destinationPath: PositionalArgument<String>
     private let suffixes: OptionArgument<[String]>
 
     required init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
-        sourceRootPath = subparser.add(positional: "sourceRootPath", kind: String.self)
-        destinationPath = subparser.add(positional: "destinationPath", kind: String.self)
-        suffixes = subparser.add(option: "--suffixes", shortName: "-sf", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
+        sourceRootPath = subparser.add(positional: "sourceRootPath", kind: String.self, usage: "Path to the root folder of Swift source files.", completion: .filename)
+        destinationPath = subparser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
+        suffixes = subparser.add(option: "--suffixes", shortName: "-sfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
     }
 
     func execute(with arguments: ArgumentParser.Result) {
