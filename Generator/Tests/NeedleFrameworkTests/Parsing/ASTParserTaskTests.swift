@@ -19,6 +19,10 @@ import XCTest
 @testable import NeedleFramework
 
 class ASTParserTaskTests: AbstractParserTests {
+
+    static var allTests = [
+        ("test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode),
+    ]
     
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")

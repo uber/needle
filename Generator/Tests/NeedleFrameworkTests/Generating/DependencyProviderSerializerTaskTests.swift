@@ -21,6 +21,10 @@ import XCTest
 
 class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
 
+    static var allTests = [
+        ("test_execute_withSampleProject_verifySerialization", test_execute_withSampleProject_verifySerialization),
+    ]
+
     func test_execute_withSampleProject_verifySerialization() {
         var flattenRegistrations = ""
         var flattenContents = ""

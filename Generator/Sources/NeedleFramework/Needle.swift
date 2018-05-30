@@ -33,8 +33,8 @@ public class Needle {
         let parser = DependencyGraphParser()
         do {
             let components = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
-//            let exporter = DependencyGraphExporter()
-//            try exporter.export(components: components, to: destinationPath, using: executor)
+            let exporter = DependencyGraphExporter()
+            try exporter.export(components: components, to: destinationPath, using: executor)
         } catch DependencyGraphParserError.timeout(let sourcePath) {
             fatalError("Parsing Swift source file at \(sourcePath) timed out.")
         } catch DependencyGraphExporterError.timeout(let componentName) {

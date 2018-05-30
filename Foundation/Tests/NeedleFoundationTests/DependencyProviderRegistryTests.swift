@@ -19,16 +19,12 @@ import XCTest
 
 class DependencyProviderRegistryTests: XCTestCase {
 
-    static var allTests = [
-        ("test_registerProviderFactory_verifyRetrievingProvider", test_registerProviderFactory_verifyRetrievingProvider_verifyDependencyReference),
-    ]
-
     override func setUp() {
         super.setUp()
 
         let path = "^->MockAppComponent"
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) {_ in
-            return EmptyDependencyProvider()
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) { component in
+            return EmptyDependencyProvider(component: component)
         }
     }
 

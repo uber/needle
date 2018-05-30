@@ -18,6 +18,11 @@ import XCTest
 @testable import NeedleFramework
 
 class DependencyGraphParserTests: AbstractParserTests {
+
+    static var allTests = [
+        ("test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask", test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask),
+        ("test_parse_withTaskCompleteion_verifyResults", test_parse_withTaskCompleteion_verifyResults),
+    ]
     
     func test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask() {
         let parser = DependencyGraphParser()
