@@ -19,7 +19,7 @@ import Foundation
 import Utility
 
 func main() {
-    let parser = ArgumentParser(usage: "<command> <options>", overview: "Needle DI code generator.")
+    let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Needle DI code generator.")
     let commandsTypes: [Command.Type] = [GenerateCommand.self]
     let commands = commandsTypes.map { $0.init(parser: parser) }
     let inputs = Array(CommandLine.arguments.dropFirst())
