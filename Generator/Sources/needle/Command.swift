@@ -15,7 +15,6 @@
 //
 
 import Foundation
-import NeedleFramework
 import Utility
 
 /// Each available command for needle (needle <command> <params>) has a
@@ -28,26 +27,3 @@ protocol Command {
     /// Execute the command.
     func execute(with arguments: ArgumentParser.Result)
 }
-
-/// This command just scans files and produces dummy output, created for timing
-/// and prototyping purposes. Will be deleted soon.
-//class ScanCommand: Command {
-//    let name = "scan"
-//
-//    private let overview = "Scan's all swift files in the directory specified"
-//    private let dir: PositionalArgument<String>
-//    private let suffixes: OptionArgument<[String]>
-//
-//    required init(parser: ArgumentParser) {
-//        let subparser = parser.add(subparser: name, overview: overview)
-//        dir = subparser.add(positional: "directory", kind: String.self)
-//        suffixes = subparser.add(option: "--suffixes", shortName: "-s", kind: [String].self, usage: "Filename suffix(es) to skip (not including extension)", completion: .filename)
-//    }
-//
-//    func run(with arguments: ArgumentParser.Result) {
-//        if let path = arguments.get(dir) {
-//            let suffixes = arguments.get(self.suffixes)
-//            ProviderGenerator().scanFiles(mode: .serial, atPath: path, withoutSuffixes: suffixes)
-//        }
-//    }
-//}
