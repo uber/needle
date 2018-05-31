@@ -30,7 +30,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
 
-        let executionHandle = MockExecutionHandle(defaultResult: DependencyGraphNode(components: [], dependencies: []))
+        let executionHandle = MockExecutionHandle(defaultResult: DependencyGraphNode(components: [], dependencies: [], imports: []))
         executionHandle.awaitHandler = { (timeout: TimeInterval?) in
             XCTAssertNotNil(timeout)
         }
@@ -64,7 +64,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         let fixturesURL = fixtureUrl(for: "")
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
-        let executionHandler = MockExecutionTaskHandler(defaultResult: DependencyGraphNode(components: [], dependencies: []))
+        let executionHandler = MockExecutionTaskHandler(defaultResult: DependencyGraphNode(components: [], dependencies: [], imports: []))
         let executor = MockSequenceExecutor(executeTaskHandler: executionHandler.execute)
 
         XCTAssertEqual(executor.executeCallCount, 0)

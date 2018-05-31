@@ -42,7 +42,7 @@ class FileFilterTask: SequencedTask<DependencyGraphNode> {
     /// Otherwise `endOfSequence` with an empty `DependencyGraphNode` is returned.
     override func execute() -> ExecutionResult<DependencyGraphNode> {
         if !isUrlSwiftSource || urlHasExcludedSuffix {
-            return .endOfSequence(DependencyGraphNode(components: [], dependencies: []))
+            return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
         }
 
         let content = try? String(contentsOf: url)
@@ -50,7 +50,7 @@ class FileFilterTask: SequencedTask<DependencyGraphNode> {
             if shouldParse(content) {
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             } else {
-                return .endOfSequence(DependencyGraphNode(components: [], dependencies: []))
+                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
             }
         } else {
             fatalError("Failed to read file at \(url)")

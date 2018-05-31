@@ -40,4 +40,12 @@ class Regex {
     func firstMatch(in content: String) -> NSTextCheckingResult? {
         return expression.firstMatch(in: content, options: [], range: NSRange(location:0, length:content.count))
     }
+
+    /// Retrieve all the matches in the given content.
+    ///
+    /// - parameter content: The content to check from.
+    /// - returns: All the matching results.
+    func matches(in content: String) -> [NSTextCheckingResult] {
+        return expression.matches(in: content, options: [], range: NSRange(location:0, length:content.count))
+    }
 }

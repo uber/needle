@@ -26,4 +26,15 @@ extension String {
         let ommitFirstCharIndex = index(after: startIndex)
         return String(self[startIndex]).lowercased() + String(self[ommitFirstCharIndex...])
     }
+
+    /// Returns the substring of the given range.
+    ///
+    /// - parameter range: The `NSRange` to retrieve substring with.
+    /// - returns: The substring if the range is valid. `nil` otherwise.
+    func substring(with range: NSRange) -> String? {
+        guard let range = Range(range, in: self) else {
+            return nil
+        }
+        return String(self[range])
+    }
 }

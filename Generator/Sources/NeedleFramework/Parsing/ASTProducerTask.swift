@@ -42,7 +42,7 @@ class ASTProducerTask: SequencedTask<DependencyGraphNode> {
         let file = File(contents: sourceContent)
         do {
             let structure = try Structure(file: file)
-            return .continueSequence(ASTParserTask(structure: structure))
+            return .continueSequence(ASTParserTask(sourceContent: sourceContent, structure: structure))
         } catch {
             fatalError("Failed to parse AST for source at \(sourceUrl)")
         }
