@@ -29,7 +29,7 @@ class ASTParserTaskTests: AbstractParserTests {
         let sourceContent = try! String(contentsOf: sourceUrl)
         let structure = try! Structure(file: File(contents: sourceContent))
 
-        let task = ASTParserTask(structure: structure)
+        let task = ASTParserTask(sourceContent: sourceContent, structure: structure)
         let result = task.execute()
 
         switch result {
@@ -108,6 +108,8 @@ class ASTParserTaskTests: AbstractParserTests {
                 return property.name == "maybeMoney" && property.type == "Dollar?"
             }
             XCTAssertTrue(containsOptionalMoney)
+
+            XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
         }
     }
 }

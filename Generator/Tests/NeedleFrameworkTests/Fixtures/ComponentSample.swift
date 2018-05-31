@@ -1,3 +1,6 @@
+import UIKit
+import RIBs;    import Foundation
+
 protocol MyDependency: Dependency {
     var candy: Candy { get }
     var cheese: Cheese { get }

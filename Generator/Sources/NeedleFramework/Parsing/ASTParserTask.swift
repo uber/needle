@@ -20,13 +20,17 @@ import SourceKittenFramework
 /// A task that parses Swift AST into in-memory dependency graph data models.
 class ASTParserTask: SequencedTask<DependencyGraphNode> {
 
+    /// The raw source content.
+    let sourceContent: String
     /// The AST structure of the file to parse.
     let structure: Structure
 
     /// Initializer.
     ///
+    /// - parameter sourceContent: The raw source content.
     /// - parameter structure: The AST structure of the file to parse.
-    init(structure: Structure) {
+    init(sourceContent: String, structure: Structure) {
+        self.sourceContent = sourceContent
         self.structure = structure
     }
 
@@ -35,6 +39,26 @@ class ASTParserTask: SequencedTask<DependencyGraphNode> {
     ///
     /// - returns: `.endOfSequence` with a `DependencyGraphNode`.
     override func execute() -> ExecutionResult<DependencyGraphNode> {
+        let imports = parseImports()
+        let (components, dependencies) = parseStructures()
+        return .endOfSequence(DependencyGraphNode(components: components, dependencies: dependencies, imports: imports))
+    }
+
+    // MARK: - Private
+
+    private func parseImports() -> [String] {
+        // Use regex since SourceKit does not have a command that parses imports.
+        let regex = Regex("\\bimport +[^\\n;]+")
+        let matches = regex.matches(in: sourceContent)
+
+        let spacesAndNewLinesSet = CharacterSet.whitespacesAndNewlines
+        return matches
+            .compactMap { (match: NSTextCheckingResult) in
+                return sourceContent.substring(with: match.range)?.trimmingCharacters(in: spacesAndNewLinesSet)
+            }
+    }
+
+    private func parseStructures() -> ([ASTComponent], [Dependency]) {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
 
@@ -48,8 +72,7 @@ class ASTParserTask: SequencedTask<DependencyGraphNode> {
                 }
             }
         }
-
-        return .endOfSequence(DependencyGraphNode(components: components, dependencies: dependencies))
+        return (components, dependencies)
     }
 }
 

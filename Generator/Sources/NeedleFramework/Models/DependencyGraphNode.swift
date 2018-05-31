@@ -23,4 +23,6 @@ struct DependencyGraphNode {
     let components: [ASTComponent]
     /// The list of dependencies in this node.
     let dependencies: [Dependency]
+    /// The list of import statements including the `import` keyword.
+    let imports: [String]
 }
