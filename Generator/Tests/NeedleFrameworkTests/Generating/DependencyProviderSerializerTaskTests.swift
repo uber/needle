@@ -29,7 +29,7 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
         var flattenRegistrations = ""
         var flattenContents = ""
 
-        let components = sampleProjectComponents()
+        let (components, imports) = sampleProjectParsed()
         for component in components {
             let task = DependencyProviderDeclarerTask(component: component)
             let result = task.execute()
@@ -127,5 +127,6 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
         """
 
         XCTAssertEqual(flattenContents, expectedContents)
+        XCTAssertEqual(imports, ["import NeedleFoundation", "import RxSwift", "import UIKit"])
     }
 }

@@ -15,6 +15,8 @@
 //
 
 import NeedleFoundation
+import RxSwift
+import UIKit
 
 // MARK: - Dependency Provider Factories
 
@@ -32,11 +34,12 @@ func registerDependencyProviderFactories() {
         return LoggedOutDependency5490810220359560589Provider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
-        return EmptyDependencyProvider()
+        return EmptyDependencyProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-        return EmptyDependencyProvider()
+        return EmptyDependencyProvider(component: component)
     }
+
 }
 
 // MARK: - Dependency Providers

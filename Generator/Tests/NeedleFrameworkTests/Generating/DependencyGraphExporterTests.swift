@@ -54,13 +54,13 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
 
     @available(OSX 10.12, *)
     func test_export_verifyContent() {
-        let components = sampleProjectComponents()
+        let (components, imports) = sampleProjectParsed()
         let mockTaskHandler = MockExecutionTaskHandler(defaultResult: [SerializedDependencyProvider]())
         let executor = MockSequenceExecutor(executeTaskHandler: mockTaskHandler.execute)
         let exporter = DependencyGraphExporter()
 
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("generated.swift")
-        try? exporter.export(components: components, to: outputURL.path, using: executor)
+        try? exporter.export(components, with: imports, to: outputURL.path, using: executor)
         let generated = try? String(contentsOf: outputURL)
         XCTAssertNotNil(generated, "Could not read the generated file")
 

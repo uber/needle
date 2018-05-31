@@ -19,10 +19,11 @@ import XCTest
 
 class AbstractGeneratorTests: XCTestCase {
     
-    /// Retrieve the parsed component data models for the sample project.
+    /// Retrieve the parsed component data models and import statements
+    /// for the sample project.
     ///
-    /// - returns: The list of component data models.
-    func sampleProjectComponents() -> [Component] {
+    /// - returns: The list of component data models and import statements.
+    func sampleProjectParsed() -> (components: [Component], imports: [String]) {
         let parser = DependencyGraphParser()
         let fixturesURL = sampleProjectUrl()
 

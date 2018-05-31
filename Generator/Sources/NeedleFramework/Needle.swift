@@ -32,9 +32,9 @@ public class Needle {
         let executor = SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
         let parser = DependencyGraphParser()
         do {
-            let components = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
+            let (components, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
             let exporter = DependencyGraphExporter()
-            try exporter.export(components: components, to: destinationPath, using: executor)
+            try exporter.export(components, with: imports, to: destinationPath, using: executor)
         } catch DependencyGraphParserError.timeout(let sourcePath) {
             fatalError("Parsing Swift source file at \(sourcePath) timed out.")
         } catch DependencyGraphExporterError.timeout(let componentName) {
