@@ -19,6 +19,13 @@ import XCTest
 
 class SequenceExecutorTests: XCTestCase {
 
+    static var allTests = [
+        ("test_executeSequence_withSingle_verifyConcurrency", test_executeSequence_withSingle_verifyConcurrency),
+        ("test_executeSequence_withNonTerminatingSequence_verifyCancel_verifyConcurrency", test_executeSequence_withNonTerminatingSequence_verifyCancel_verifyConcurrency),
+        ("test_executeSequence_withTerminatingSequence_noTimeout_verifyAwaitResult_verifyConcurrency", test_executeSequence_withTerminatingSequence_noTimeout_verifyAwaitResult_verifyConcurrency),
+        ("test_executeSequence_withNonTerminatingSequence_withTimeout_verifyAwaitTimeout", test_executeSequence_withNonTerminatingSequence_withTimeout_verifyAwaitTimeout),
+    ]
+
     func test_executeSequence_withSingle_verifyConcurrency() {
         let executor = SequenceExecutorImpl(name: "test_executeSequence_withSingle_verifyConcurrency")
 

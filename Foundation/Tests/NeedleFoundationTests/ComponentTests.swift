@@ -19,16 +19,12 @@ import XCTest
 
 class ComponentTests: XCTestCase {
 
-    static var allTests = [
-        ("test_shared_veirfySingleInstance", test_shared_veirfySingleInstance),
-    ]
-
     override func setUp() {
         super.setUp()
 
         let path = "^->TestComponent"
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) {_ in
-            return EmptyDependencyProvider()
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) { component in
+            return EmptyDependencyProvider.init(component: component)
         }
     }
 

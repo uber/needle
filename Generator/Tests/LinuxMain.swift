@@ -18,7 +18,14 @@ import XCTest
 @testable import NeedleFrameworkTests
 
 XCTMain([
-    testCase(AtomicIntTests.allTests),
-    testCase(AtomicReferenceTests.allTests),
-    testCase(CountDownLatchTests.allTests),
+    testCase(DependencyGraphExporterTests.allTests),
+    testCase(DependencyProviderContentTaskTests.allTests),
+    testCase(DependencyProviderDeclarerTaskTests.allTests),
+    testCase(DependencyProviderSerializerTaskTests.allTests),
+    testCase(ASTParserTaskTests.allTests),
+    testCase(ASTProducerTaskTests.allTests),
+    testCase(DependencyGraphParserTests.allTests),
+    testCase(DuplicateValidatorTests.allTests),
+    testCase(FileFilterTaskTests.allTests),
+    testCase(SequenceExecutorTests.allTests),
 ])

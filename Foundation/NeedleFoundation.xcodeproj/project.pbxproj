@@ -24,7 +24,6 @@
 		OBJ_25 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Bootstrap.swift */; };
 		OBJ_26 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Component.swift */; };
 		OBJ_27 /* DependencyProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* DependencyProviderRegistry.swift */; };
-		OBJ_34 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 		OBJ_45 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* ComponentTests.swift */; };
 		OBJ_46 /* DependencyProviderRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* DependencyProviderRegistryTests.swift */; };
 		OBJ_48 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */; };
@@ -54,7 +53,6 @@
 		OBJ_12 /* DependencyProviderRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProviderRegistry.swift; sourceTree = "<group>"; };
 		OBJ_15 /* ComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentTests.swift; sourceTree = "<group>"; };
 		OBJ_16 /* DependencyProviderRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProviderRegistryTests.swift; sourceTree = "<group>"; };
-		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		OBJ_9 /* Bootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bootstrap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,15 +110,13 @@
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
-				OBJ_6 /* Package.swift */,
 				OBJ_7 /* Sources */,
 				OBJ_13 /* Tests */,
 				OBJ_17 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
@@ -207,7 +203,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_17 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -235,7 +231,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_34 /* Package.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

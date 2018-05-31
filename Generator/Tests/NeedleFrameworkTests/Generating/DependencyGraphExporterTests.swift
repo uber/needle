@@ -48,7 +48,12 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
     let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/")
 
     @available(OSX 10.12, *)
-    func testExport() {
+    static var allTests = [
+        ("test_export_verifyContent", test_export_verifyContent),
+    ]
+
+    @available(OSX 10.12, *)
+    func test_export_verifyContent() {
         let components = sampleProjectComponents()
         let mockTaskHandler = MockExecutionTaskHandler(defaultResult: [SerializedDependencyProvider]())
         let executor = MockSequenceExecutor(executeTaskHandler: mockTaskHandler.execute)
@@ -65,5 +70,4 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
 
         XCTAssertEqual(generated, expected)
     }
-
 }

@@ -19,6 +19,10 @@ import XCTest
 
 class DependencyProviderDeclarerTaskTests: AbstractGeneratorTests {
 
+    static var allTests = [
+        ("test_execute_withSampleProject_verifyProviderDeclarations", test_execute_withSampleProject_verifyProviderDeclarations),
+    ]
+
     func test_execute_withSampleProject_verifyProviderDeclarations() {
         let components = sampleProjectComponents()
         for component in components {
