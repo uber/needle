@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Basic
 import Foundation
 
 /// Errors that can occur during parsing of the dependency graph from Swift sources.
@@ -40,7 +41,7 @@ class DependencyGraphParser {
     /// - returns: The list of component data models.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
     /// out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> [Component] {
+    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -56,11 +57,15 @@ class DependencyGraphParser {
         // Wait for all sequences to finish.
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
+        var imports = Set<String>()
         for tuple in taskHandleTuples {
             do {
                 let node = try tuple.handle.await(withTimeout: 30)
                 components.append(contentsOf: node.components)
                 dependencies.append(contentsOf: node.dependencies)
+                for statement in node.imports {
+                    imports.insert(statement)
+                }
             } catch SequenceExecutionError.awaitTimeout {
                 throw DependencyGraphParserError.timeout(tuple.fileUrl.absoluteString)
             } catch {
@@ -72,9 +77,10 @@ class DependencyGraphParser {
         linkParents(for: components)
         link(components, to: dependencies)
 
-        return components.map { (astComponent: ASTComponent) -> Component in
+        let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
             astComponent.valueType
         }
+        return (valueTypeComponents, imports.sorted())
     }
 
     // MARK: - Private

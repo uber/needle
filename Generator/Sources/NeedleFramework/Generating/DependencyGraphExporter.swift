@@ -41,12 +41,13 @@ class DependencyGraphExporter {
     /// providers.
     ///
     /// - parameter components: Array of Components to export.
+    /// - parameter imports: The import statements.
     /// - parameter to: Path to file where we want the results written to.
     /// - parameter using: The executor to use for concurrent computation of the
     ///   dependency provider bodies.
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file write fails.
-    func export(components: [Component], to path: String, using executor: SequenceExecutor) throws {
+    func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor) throws {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedDependencyProvider]>, componentName: String)]()
 
         for component in components {
@@ -68,7 +69,7 @@ class DependencyGraphExporter {
             }
         }
 
-        let fileContents = serialize(providers: providers)
+        let fileContents = serialize(providers, with: imports)
 
         do {
             try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
@@ -79,7 +80,7 @@ class DependencyGraphExporter {
 
     // MARK: - Private
 
-    private func serialize(providers: [SerializedDependencyProvider]) -> String {
+    private func serialize(_ providers: [SerializedDependencyProvider], with imports: [String]) -> String {
         let registrationBody = providers
             .map { (provider: SerializedDependencyProvider) in
                 provider.registration
@@ -93,8 +94,10 @@ class DependencyGraphExporter {
             }
             .joined()
 
+        let importsJoined = imports.joined(separator: "\n")
+
         return """
-        import NeedleFoundation
+        \(importsJoined)
 
         // MARK: - Dependency Provider Factories
 

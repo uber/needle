@@ -26,15 +26,17 @@ public class Needle {
     ///
     /// - parameter sourceRootPath: The root directory of source files to parse.
     /// - parameter exclusionSuffixes: The file suffixes to exclude from parsing.
+    /// - parameter additionalImports: The additional import statements to add
+    /// to the ones parsed from source files.
     /// - parameter destinationPath: The path to export generated code to.
-    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], to destinationPath: String) {
+    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
         let executor = SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
         let parser = DependencyGraphParser()
         do {
-            let components = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
+            let (components, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
             let exporter = DependencyGraphExporter()
-            try exporter.export(components: components, to: destinationPath, using: executor)
+            try exporter.export(components, with: imports + additionalImports, to: destinationPath, using: executor)
         } catch DependencyGraphParserError.timeout(let sourcePath) {
             fatalError("Parsing Swift source file at \(sourcePath) timed out.")
         } catch DependencyGraphExporterError.timeout(let componentName) {

@@ -32,19 +32,22 @@ class GenerateCommand: Command {
     private let sourceRootPath: PositionalArgument<String>
     private let destinationPath: PositionalArgument<String>
     private let suffixes: OptionArgument<[String]>
+    private let additionalImports: OptionArgument<[String]>
 
     required init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
         sourceRootPath = subparser.add(positional: "sourceRootPath", kind: String.self, usage: "Path to the root folder of Swift source files.", completion: .filename)
         destinationPath = subparser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
         suffixes = subparser.add(option: "--suffixes", shortName: "-sfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
+        additionalImports = subparser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
     }
 
     func execute(with arguments: ArgumentParser.Result) {
         if let sourceRootPath = arguments.get(sourceRootPath) {
             if let destinationPath = arguments.get(destinationPath) {
                 let suffixes = arguments.get(self.suffixes) ?? []
-                Needle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, to: destinationPath)
+                let additionalImports = arguments.get(self.additionalImports) ?? []
+                Needle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath)
             } else {
                 fatalError("Missing destination path.")
             }

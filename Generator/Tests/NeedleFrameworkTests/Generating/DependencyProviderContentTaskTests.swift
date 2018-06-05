@@ -26,7 +26,7 @@ class DependencyProviderContentTaskTests: AbstractGeneratorTests {
     ]
 
     func test_execute_withSampleProject_verifyProviderContent() {
-        let components = sampleProjectComponents()
+        let (components, imports) = sampleProjectParsed()
         var i = 0
         for component in components {
             let task = DependencyProviderDeclarerTask(component: component)
@@ -46,6 +46,8 @@ class DependencyProviderContentTaskTests: AbstractGeneratorTests {
             }
             i += 1
         }
+
+        XCTAssertEqual(imports, ["import NeedleFoundation", "import RxSwift", "import UIKit"])
     }
 
     private func verify(_ providers: [ProcessedDependencyProvider], count: Int) {
