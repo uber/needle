@@ -31,11 +31,9 @@ enum DependencyProviderContentError: Error {
     case propertyNotFound(PropertyNotFoundErrorInfo)
 }
 
-/// The task that walks through the chain of parents for each dependency item
-/// of the dependency protocol that this provider class needs to satisfy.
-class DependencyProviderContentTask: SequencedTask<[SerializedDependencyProvider]> {
-
-    let providers: [DependencyProvider]
+/// The task that walks through the chain of parents for each dependency
+/// item of the dependency protocol that this provider class needs to satisfy.
+class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]> {
 
     /// Initializer.
     ///
@@ -47,9 +45,9 @@ class DependencyProviderContentTask: SequencedTask<[SerializedDependencyProvider
     /// Execute the task and returns the processed in-memory dependency graph
     /// data models.
     ///
-    /// - returns: `.continueSequence` with a `DependencyProviderSerializerTask`.
-    override func execute() -> ExecutionResult<[SerializedDependencyProvider]> {
-        let results = providers.map { (provider: DependencyProvider) -> ProcessedDependencyProvider in
+    /// - returns: The list of `ProcessedDependencyProvider`.
+    override func execute() -> [ProcessedDependencyProvider] {
+        return providers.map { (provider: DependencyProvider) -> ProcessedDependencyProvider in
             do {
                 return try process(provider)
             } catch DependencyProviderContentError.propertyNotFound(let info) {
@@ -62,10 +60,11 @@ class DependencyProviderContentTask: SequencedTask<[SerializedDependencyProvider
                 fatalError("Unhandled error while processing dependency provider content: \(error)")
             }
         }
-        return .continueSequence(DependencyProviderSerializerTask(providers: results))
     }
 
     // MARK: - Private
+
+    private let providers: [DependencyProvider]
 
     private func process(_ provider: DependencyProvider) throws -> ProcessedDependencyProvider  {
         var levelMap = [String: Int]()

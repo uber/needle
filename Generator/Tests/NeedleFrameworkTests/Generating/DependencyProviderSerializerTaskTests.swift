@@ -31,28 +31,12 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
 
         let (components, imports) = sampleProjectParsed()
         for component in components {
-            let task = DependencyProviderDeclarerTask(component: component)
-            let result = task.execute()
-            switch result {
-            case .continueSequence(let contentTask):
-                let contentResult = contentTask.execute()
-                switch contentResult {
-                case .continueSequence(let serializerTask):
-                    let serializationResult = serializerTask.execute()
-                    switch serializationResult {
-                    case .continueSequence(_):
-                        XCTFail()
-                    case .endOfSequence(let serialized):
-                        for item in serialized {
-                            flattenRegistrations += item.registration
-                            flattenContents += item.content
-                        }
-                    }
-                case .endOfSequence(_):
-                    XCTFail()
-                }
-            case .endOfSequence(_):
-                XCTFail()
+            let providers = DependencyProviderDeclarerTask(component: component).execute()
+            let processedProviders = DependencyProviderContentTask(providers: providers).execute()
+            let serializedProviders = DependencyProviderSerializerTask(providers: processedProviders).execute()
+            for item in serializedProviders {
+                flattenRegistrations += item.registration
+                flattenContents += item.content
             }
         }
 

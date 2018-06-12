@@ -17,13 +17,9 @@
 import Foundation
 import SourceKittenFramework
 
-/// A task that parses a Swift source content and produces Swift AST that can then be
-/// parsed into the dependnecy graph.
-class ASTProducerTask: SequencedTask<DependencyGraphNode> {
-    /// The source URL.
-    let sourceUrl: URL
-    /// The source content to be parsed into AST.
-    let sourceContent: String
+/// A task that parses a Swift source content and produces Swift AST that
+/// can then be parsed into the dependnecy graph.
+class ASTProducerTask: AbstractTask<AST> {
 
     /// Initializer.
     ///
@@ -34,17 +30,34 @@ class ASTProducerTask: SequencedTask<DependencyGraphNode> {
         self.sourceContent = sourceContent
     }
 
-    /// Execute the task and returns `ASTParserTask` if parsing file into AST succeeded.
+    /// Execute the task and return the AST structure data model.
     ///
-    /// - returns: `.continueSequence` with `ASTParserTask` if parsing file into AST
-    /// succeeded.
-    override func execute() -> ExecutionResult<DependencyGraphNode> {
+    /// - returns: The `AST` data model.
+    override func execute() -> AST {
         let file = File(contents: sourceContent)
         do {
             let structure = try Structure(file: file)
-            return .continueSequence(ASTParserTask(sourceContent: sourceContent, structure: structure))
+            let imports = parseImports()
+            return AST(structure: structure, imports: imports)
         } catch {
             fatalError("Failed to parse AST for source at \(sourceUrl)")
+        }
+    }
+
+    // MARK: - Private
+
+    private let sourceUrl: URL
+    private let sourceContent: String
+
+    private func parseImports() -> [String] {
+        // Use regex since SourceKit does not have a command that parses imports.
+        let regex = Regex("\\bimport +[^\\n;]+")
+        let matches = regex.matches(in: sourceContent)
+
+        let spacesAndNewLinesSet = CharacterSet.whitespacesAndNewlines
+        return matches
+            .compactMap { (match: NSTextCheckingResult) in
+                return sourceContent.substring(with: match.range)?.trimmingCharacters(in: spacesAndNewLinesSet)
         }
     }
 }

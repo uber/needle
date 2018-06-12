@@ -44,7 +44,9 @@ class SequenceExecutorTests: XCTestCase {
 
                 return 68281
             }
-            _ = executor.execute(sequenceFrom: task)
+            _ = executor.executeSequence(from: task) { (_, result) -> SequenceExecution<Int> in
+                return .endOfSequence(result as! Int)
+            }
         }
 
         waitForExpectations(timeout: 3, handler: nil)
@@ -60,17 +62,19 @@ class SequenceExecutorTests: XCTestCase {
         var executionCount = 0
         var threadHashes = [Int: Int]()
         let threadHashesLock = NSRecursiveLock()
-        let sequencedTask = MockSelfRepeatingTask {
+        let execution: () -> Int = {
             threadHashesLock.lock()
             let hash = Thread.current.hash
             threadHashes[hash] = hash
             executionCount += 1
             threadHashesLock.unlock()
-
-            return nil
+            return 0
         }
+        let sequencedTask = MockSelfRepeatingTask(execution: execution)
 
-        let handle = executor.execute(sequenceFrom: sequencedTask)
+        let handle = executor.executeSequence(from: sequencedTask) { _, _ -> SequenceExecution<Int> in
+            return .continueSequence(MockSelfRepeatingTask(execution: execution))
+        }
 
         Thread.sleep(forTimeInterval: 1)
 
@@ -88,7 +92,7 @@ class SequenceExecutorTests: XCTestCase {
         var executionCount = 0
         var threadHashes = [Int: Int]()
         let threadHashesLock = NSRecursiveLock()
-        let sequencedTask = MockSelfRepeatingTask {
+        let execution: () -> Int = {
             threadHashesLock.lock()
             defer {
                 threadHashesLock.unlock()
@@ -96,11 +100,13 @@ class SequenceExecutorTests: XCTestCase {
             let hash = Thread.current.hash
             threadHashes[hash] = hash
             executionCount += 1
-
-            return executionCount > 100000 ? 17823781 : nil
+            return 0
         }
+        let sequencedTask = MockSelfRepeatingTask(execution: execution)
 
-        let handle = executor.execute(sequenceFrom: sequencedTask)
+        let handle = executor.executeSequence(from: sequencedTask) { _, _ -> SequenceExecution<Int> in
+            return executionCount > 100000 ? .endOfSequence(17823781) : .continueSequence(MockSelfRepeatingTask(execution: execution))
+        }
 
         do {
             let result = try handle.await(withTimeout: nil)
@@ -119,10 +125,14 @@ class SequenceExecutorTests: XCTestCase {
         let executor = SequenceExecutorImpl(name: "test_executeSequence_withNonTerminatingSequence_withTimeout_verifyAwaitTimeout")
 
         let sequencedTask = MockSelfRepeatingTask {
-            return nil
+            return 0
         }
 
-        let handle = executor.execute(sequenceFrom: sequencedTask)
+        let handle = executor.executeSequence(from: sequencedTask) { _, _ -> SequenceExecution<Int> in
+            return .continueSequence(MockSelfRepeatingTask {
+                return 0
+            })
+        }
 
         var didThrowError = false
         let startTime = CACurrentMediaTime()
@@ -140,20 +150,15 @@ class SequenceExecutorTests: XCTestCase {
     }
 }
 
-class MockSelfRepeatingTask: SequencedTask<Int> {
+class MockSelfRepeatingTask: AbstractTask<Int> {
 
-    private let execution: () -> Int?
+    private let execution: () -> Int
 
-    init(execution: @escaping () -> Int?) {
+    init(execution: @escaping () -> Int) {
         self.execution = execution
     }
 
-    override func execute() -> ExecutionResult<Int> {
-        let result = execution()
-        if let result = result {
-            return .endOfSequence(result)
-        } else {
-            return .continueSequence(MockSelfRepeatingTask(execution: self.execution))
-        }
+    override func execute() -> Int {
+        return execution()
     }
 }

@@ -17,52 +17,33 @@
 import Foundation
 import SourceKittenFramework
 
-/// A task that parses Swift AST into in-memory dependency graph data models.
-class ASTParserTask: SequencedTask<DependencyGraphNode> {
-
-    /// The raw source content.
-    let sourceContent: String
-    /// The AST structure of the file to parse.
-    let structure: Structure
+/// A task that parses Swift AST into dependency graph data models.
+class ASTParserTask: AbstractTask<DependencyGraphNode> {
 
     /// Initializer.
     ///
-    /// - parameter sourceContent: The raw source content.
-    /// - parameter structure: The AST structure of the file to parse.
-    init(sourceContent: String, structure: Structure) {
-        self.sourceContent = sourceContent
-        self.structure = structure
+    /// - parameter ast: The AST of the file to parse.
+    init(ast: AST) {
+        self.ast = ast
     }
 
-    /// Execute the task and returns the in-memory dependency graph data models.
-    /// This is the last task in the sequence.
+    /// Execute the task and returns the dependency graph data model.
     ///
-    /// - returns: `.endOfSequence` with a `DependencyGraphNode`.
-    override func execute() -> ExecutionResult<DependencyGraphNode> {
-        let imports = parseImports()
+    /// - returns: Parsed `DependencyGraphNode`.
+    override func execute() -> DependencyGraphNode {
         let (components, dependencies) = parseStructures()
-        return .endOfSequence(DependencyGraphNode(components: components, dependencies: dependencies, imports: imports))
+        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports)
     }
 
     // MARK: - Private
 
-    private func parseImports() -> [String] {
-        // Use regex since SourceKit does not have a command that parses imports.
-        let regex = Regex("\\bimport +[^\\n;]+")
-        let matches = regex.matches(in: sourceContent)
-
-        let spacesAndNewLinesSet = CharacterSet.whitespacesAndNewlines
-        return matches
-            .compactMap { (match: NSTextCheckingResult) in
-                return sourceContent.substring(with: match.range)?.trimmingCharacters(in: spacesAndNewLinesSet)
-            }
-    }
+    private let ast: AST
 
     private func parseStructures() -> ([ASTComponent], [Dependency]) {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
 
-        let substructures = structure.dictionary["key.substructure"] as? [SourceKitRepresentable]
+        let substructures = ast.structure.dictionary["key.substructure"] as? [SourceKitRepresentable]
         for item in substructures ?? [] {
             if let substructure = item as? [String: SourceKitRepresentable] {
                 if substructure.isComponent {

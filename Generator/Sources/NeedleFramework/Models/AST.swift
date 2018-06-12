@@ -15,16 +15,13 @@
 //
 
 import Foundation
+import SourceKittenFramework
 
-/// The special empty dependency data model.
-let emptyDependency = Dependency(name: "EmptyDependency", properties: [])
-
-/// A data model representing a dependency protocol of a NeedleFoundation `Component`.
-// This is separate from the `Component` data model, since a component's dependency
-// protocol may be declared in a separate file.
-struct Dependency: Equatable {
-    /// The name of the dependency protocol.
-    let name: String
-    /// The list of dependency properties.
-    let properties: [Property]
+/// A data model representing a abstract syntax tree of a Swift source
+/// file including its import statements.
+struct AST {
+    /// The AST structure.
+    let structure: Structure
+    /// The import statements including the `import` keyword.
+    let imports: [String]
 }

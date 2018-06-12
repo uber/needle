@@ -26,22 +26,7 @@ class AbstractGeneratorTests: XCTestCase {
     func sampleProjectParsed() -> (components: [Component], imports: [String]) {
         let parser = DependencyGraphParser()
         let fixturesURL = sampleProjectUrl()
-
-        let executeTaskHandler = { (task: SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode> in
-            var task = task
-            while true {
-                let executionResult = task.execute()
-                switch executionResult {
-                case .continueSequence(let nextTask):
-                    task = nextTask
-                case .endOfSequence(let result):
-                    let executionHandle = MockExecutionHandle(defaultResult: DependencyGraphNode(components: [], dependencies: [], imports: []))
-                    executionHandle.result = result
-                    return executionHandle
-                }
-            }
-        }
-        let executor = MockSequenceExecutor(executeTaskHandler: executeTaskHandler)
+        let executor = MockSequenceExecutor()
 
         do {
             return try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)

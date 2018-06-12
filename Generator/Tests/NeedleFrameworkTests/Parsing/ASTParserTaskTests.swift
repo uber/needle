@@ -23,93 +23,89 @@ class ASTParserTaskTests: AbstractParserTests {
     static var allTests = [
         ("test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode),
     ]
-    
+
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
         let structure = try! Structure(file: File(contents: sourceContent))
+        let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = ASTParserTask(sourceContent: sourceContent, structure: structure)
-        let result = task.execute()
+        let task = ASTParserTask(ast: AST(structure: structure, imports: imports))
+        let node = task.execute()
 
-        switch result {
-        case .continueSequence(_):
-            XCTFail()
-        case .endOfSequence(let node):
-            XCTAssertEqual(node.components.count, 2)
+        XCTAssertEqual(node.components.count, 2)
 
-            let myComponent = node.components.first { (component: ASTComponent) -> Bool in
-                component.name == "MyComponent"
-            }!
-            XCTAssertEqual(myComponent.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
-            XCTAssertEqual(myComponent.name, "MyComponent")
-            XCTAssertEqual(myComponent.dependencyProtocolName, "MyDependency")
-            XCTAssertEqual(myComponent.properties.count, 4)
-            let containsStream = myComponent.properties.contains { (property: Property) -> Bool in
-                return property.name == "stream" && property.type == "Stream"
-            }
-            XCTAssertTrue(containsStream)
-            let containsDonut = myComponent.properties.contains { (property: Property) -> Bool in
-                return property.name == "donut" && property.type == "Donut"
-            }
-            XCTAssertTrue(containsDonut)
-            let containsBasket = myComponent.properties.contains { (property: Property) -> Bool in
-                return property.name == "sweetsBasket" && property.type == "Basket"
-            }
-            XCTAssertTrue(containsBasket)
-            let containsChildComponent = myComponent.properties.contains { (property: Property) -> Bool in
-                return property.name == "myChildComponent" && property.type == "MyChildComponent"
-            }
-            XCTAssertTrue(containsChildComponent)
-
-            let my2Component = node.components.first { (component: ASTComponent) -> Bool in
-                component.name == "My2Component"
-            }!
-            XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Wallet", "Banana", "Apple", "Book"])
-            XCTAssertEqual(my2Component.name, "My2Component")
-            XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
-            XCTAssertEqual(my2Component.properties.count, 2)
-            let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
-                return property.name == "book" && property.type == "Book"
-            }
-            XCTAssertTrue(containsBook)
-
-            let containsOptionalWallet = my2Component.properties.contains { (property: Property) -> Bool in
-                return property.name == "maybeWallet" && property.type == "Wallet?"
-            }
-            XCTAssertTrue(containsOptionalWallet)
-
-            XCTAssertEqual(node.dependencies.count, 2)
-            let myDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
-                dependency.name == "MyDependency"
-            }!
-            XCTAssertEqual(myDependency.name, "MyDependency")
-            XCTAssertEqual(myDependency.properties.count, 2)
-            let containsCandy = myDependency.properties.contains { (property: Property) -> Bool in
-                return property.name == "candy" && property.type == "Candy"
-            }
-            XCTAssertTrue(containsCandy)
-            let containsCheese = myDependency.properties.contains { (property: Property) -> Bool in
-                return property.name == "cheese" && property.type == "Cheese"
-            }
-            XCTAssertTrue(containsCheese)
-
-            let my2Dependency = node.dependencies.first { (dependency: Dependency) -> Bool in
-                dependency.name == "My2Dependency"
-            }!
-            XCTAssertEqual(my2Dependency.name, "My2Dependency")
-            XCTAssertEqual(my2Dependency.properties.count, 2)
-            let containsBackPack = my2Dependency.properties.contains { (property: Property) -> Bool in
-                return property.name == "backPack" && property.type == "Pack"
-            }
-            XCTAssertTrue(containsBackPack)
-
-            let containsOptionalMoney = my2Dependency.properties.contains { (property: Property) -> Bool in
-                return property.name == "maybeMoney" && property.type == "Dollar?"
-            }
-            XCTAssertTrue(containsOptionalMoney)
-
-            XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
+        let myComponent = node.components.first { (component: ASTComponent) -> Bool in
+            component.name == "MyComponent"
+        }!
+        XCTAssertEqual(myComponent.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
+        XCTAssertEqual(myComponent.name, "MyComponent")
+        XCTAssertEqual(myComponent.dependencyProtocolName, "MyDependency")
+        XCTAssertEqual(myComponent.properties.count, 4)
+        let containsStream = myComponent.properties.contains { (property: Property) -> Bool in
+            return property.name == "stream" && property.type == "Stream"
         }
+        XCTAssertTrue(containsStream)
+        let containsDonut = myComponent.properties.contains { (property: Property) -> Bool in
+            return property.name == "donut" && property.type == "Donut"
+        }
+        XCTAssertTrue(containsDonut)
+        let containsBasket = myComponent.properties.contains { (property: Property) -> Bool in
+            return property.name == "sweetsBasket" && property.type == "Basket"
+        }
+        XCTAssertTrue(containsBasket)
+        let containsChildComponent = myComponent.properties.contains { (property: Property) -> Bool in
+            return property.name == "myChildComponent" && property.type == "MyChildComponent"
+        }
+        XCTAssertTrue(containsChildComponent)
+
+        let my2Component = node.components.first { (component: ASTComponent) -> Bool in
+            component.name == "My2Component"
+        }!
+        XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Wallet", "Banana", "Apple", "Book"])
+        XCTAssertEqual(my2Component.name, "My2Component")
+        XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
+        XCTAssertEqual(my2Component.properties.count, 2)
+        let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
+            return property.name == "book" && property.type == "Book"
+        }
+        XCTAssertTrue(containsBook)
+
+        let containsOptionalWallet = my2Component.properties.contains { (property: Property) -> Bool in
+            return property.name == "maybeWallet" && property.type == "Wallet?"
+        }
+        XCTAssertTrue(containsOptionalWallet)
+
+        XCTAssertEqual(node.dependencies.count, 2)
+        let myDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
+            dependency.name == "MyDependency"
+        }!
+        XCTAssertEqual(myDependency.name, "MyDependency")
+        XCTAssertEqual(myDependency.properties.count, 2)
+        let containsCandy = myDependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "candy" && property.type == "Candy"
+        }
+        XCTAssertTrue(containsCandy)
+        let containsCheese = myDependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "cheese" && property.type == "Cheese"
+        }
+        XCTAssertTrue(containsCheese)
+
+        let my2Dependency = node.dependencies.first { (dependency: Dependency) -> Bool in
+            dependency.name == "My2Dependency"
+        }!
+        XCTAssertEqual(my2Dependency.name, "My2Dependency")
+        XCTAssertEqual(my2Dependency.properties.count, 2)
+        let containsBackPack = my2Dependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "backPack" && property.type == "Pack"
+        }
+        XCTAssertTrue(containsBackPack)
+
+        let containsOptionalMoney = my2Dependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "maybeMoney" && property.type == "Dollar?"
+        }
+        XCTAssertTrue(containsOptionalMoney)
+
+        XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }

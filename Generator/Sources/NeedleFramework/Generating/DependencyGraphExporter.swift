@@ -16,9 +16,11 @@
 
 import Foundation
 
-/// Errors that may occur while trying to export the dependency provider classes.
+/// Errors that may occur while trying to export the dependency provider
+/// classes.
 enum DependencyGraphExporterError: Error {
-    /// One of the dependecy provider tasks timed out, possibly due to some massive
+    /// One of the dependecy provider tasks timed out, possibly due to
+    /// some massive
     /// class or a programming error causing some sort of infinite loop
     /// String contains the name of the component.
     case timeout(String)
@@ -28,8 +30,8 @@ enum DependencyGraphExporterError: Error {
 }
 
 /// The generation phase entry class that executes tasks to process dependency
-/// graph components into the necessary dependency providers and their registrations,
-/// then exports the contents to the destination path.
+/// graph components into the necessary dependency providers and their
+/// registrations, then exports the contents to the destination path.
 class DependencyGraphExporter {
 
     /// Initializer.
@@ -43,16 +45,27 @@ class DependencyGraphExporter {
     /// - parameter components: Array of Components to export.
     /// - parameter imports: The import statements.
     /// - parameter to: Path to file where we want the results written to.
-    /// - parameter using: The executor to use for concurrent computation of the
-    ///   dependency provider bodies.
+    /// - parameter using: The executor to use for concurrent computation of
+    /// the dependency provider bodies.
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
-    /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file write fails.
+    /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
+    /// write fails.
     func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor) throws {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedDependencyProvider]>, componentName: String)]()
 
         for component in components {
-            let task = DependencyProviderDeclarerTask(component: component)
-            let taskHandle = executor.execute(sequenceFrom: task)
+            let initialTask = DependencyProviderDeclarerTask(component: component)
+            let taskHandle = executor.executeSequence(from: initialTask) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[SerializedDependencyProvider]> in
+                if currentTask is DependencyProviderDeclarerTask, let providers = currentResult as? [DependencyProvider] {
+                    return .continueSequence(DependencyProviderContentTask(providers: providers))
+                } else if currentTask is DependencyProviderContentTask, let processedProviders = currentResult as? [ProcessedDependencyProvider] {
+                    return .continueSequence(DependencyProviderSerializerTask(providers: processedProviders))
+                } else if currentTask is DependencyProviderSerializerTask, let serializedProviders = currentResult as? [SerializedDependencyProvider] {
+                    return .endOfSequence(serializedProviders)
+                } else {
+                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                }
+            }
             taskHandleTuples.append((taskHandle, component.name))
         }
 

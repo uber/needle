@@ -16,31 +16,32 @@
 
 import Basic
 import Foundation
+import SourceKittenFramework
 
-/// Errors that can occur during parsing of the dependency graph from Swift sources.
+/// Errors that can occur during parsing of the dependency graph from
+/// Swift sources.
 enum DependencyGraphParserError: Error {
     /// Parsing a particular source file timed out.
     case timeout(String)
 }
 
-/// The entry utility for the parsing phase. The parser deeply scans a directory and
-/// parses the relevant Swift source files, and finally outputs the dependency graph.
+/// The entry utility for the parsing phase. The parser deeply scans a
+/// directory and parses the relevant Swift source files, and finally
+/// outputs the dependency graph.
 class DependencyGraphParser {
 
-    /// Initializer.
-    init() {}
-
-    /// Parse all the Swift sources within the directory of given URL, excluding any
-    /// file that contains a suffix specified in the given exclusion list. Parsing
-    /// sources concurrently using the given executor.
+    /// Parse all the Swift sources within the directory of given URL,
+    /// excluding any file that contains a suffix specified in the given
+    /// exclusion list. Parsing sources concurrently using the given executor.
     ///
     /// - parameter rootUrl: The URL of the directory to scan from.
-    /// - parameter exclusionSuffixes: If a file name contains a suffix in this list,
-    /// the said file is excluded from parsing.
-    /// - parameter executor: The executor to use for concurrent processing of files.
+    /// - parameter exclusionSuffixes: If a file name contains a suffix
+    /// in this list, the said file is excluded from parsing.
+    /// - parameter executor: The executor to use for concurrent processing
+    /// of files.
     /// - returns: The list of component data models.
-    /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift source timed
-    /// out.
+    /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
+    /// source timed out.
     func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
@@ -49,7 +50,22 @@ class DependencyGraphParser {
         while let nextObjc = enumerator.nextObject() {
             if let fileUrl = nextObjc as? URL {
                 let task = FileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes)
-                let taskHandle = executor.execute(sequenceFrom: task)
+                let taskHandle = executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<DependencyGraphNode> in
+                    if currentTask is FileFilterTask, let filterResult = currentResult as? FilterResult {
+                        switch filterResult {
+                        case .shouldParse(let url, let content):
+                            return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
+                        case .skip:
+                            return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
+                        }
+                    } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
+                        return .continueSequence(ASTParserTask(ast: ast))
+                    } else if currentTask is ASTParserTask, let node = currentResult as? DependencyGraphNode {
+                        return .endOfSequence(node)
+                    } else {
+                        fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                    }
+                }
                 taskHandleTuples.append((taskHandle, fileUrl))
             }
         }

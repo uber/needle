@@ -18,10 +18,7 @@ import Foundation
 
 /// The task that serializes a list of processed dependency providers into
 /// exportable foramt.
-class DependencyProviderSerializerTask: SequencedTask<[SerializedDependencyProvider]> {
-
-    /// The processed dependency provider to serialize.
-    let providers: [ProcessedDependencyProvider]
+class DependencyProviderSerializerTask: AbstractTask<[SerializedDependencyProvider]> {
 
     /// Initializer.
     ///
@@ -33,15 +30,16 @@ class DependencyProviderSerializerTask: SequencedTask<[SerializedDependencyProvi
     /// Execute the task and returns the in-memory serialized dependency
     /// provider data models.
     ///
-    /// - returns: `.endOfSequence` with a list of `SerializedDependencyProvider`.
-    override func execute() -> ExecutionResult<[SerializedDependencyProvider]> {
-        let serialized = providers.map { (provider: ProcessedDependencyProvider) in
+    /// - returns: The list of `SerializedDependencyProvider`.
+    override func execute() -> [SerializedDependencyProvider] {
+        return providers.map { (provider: ProcessedDependencyProvider) in
             return serialize(provider)
         }
-        return .endOfSequence(serialized)
     }
 
     // MARK: - Private
+
+    private let providers: [ProcessedDependencyProvider]
 
     private func serialize(_ provider: ProcessedDependencyProvider) -> SerializedDependencyProvider {
         let content = serializedContent(for: provider)
