@@ -43,8 +43,8 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
 
-        let substructures = ast.structure.dictionary["key.substructure"] as? [SourceKitRepresentable]
-        for item in substructures ?? [] {
+        let substructures = ast.structure.substructures
+        for item in substructures {
             if let substructure = item as? [String: SourceKitRepresentable] {
                 if substructure.isComponent {
                     components.append(ASTComponent(name: substructure.name, dependencyProtocolName: substructure.dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames))
@@ -58,6 +58,13 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
 }
 
 // MARK: - SourceKit AST Parsing Utilities
+
+private extension Structure {
+
+    var substructures: [SourceKitRepresentable] {
+        return (dictionary["key.substructure"]  as? [SourceKitRepresentable]) ?? []
+    }
+}
 
 private extension Dictionary where Key: ExpressibleByStringLiteral {
 
