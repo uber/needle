@@ -16,19 +16,11 @@
 
 import Foundation
 
-/// The result of filtering the source file.
-enum FilterResult {
-    /// The source URL and content that should be parsed.
-    case shouldParse(URL, String)
-    /// The file should be skipped.
-    case skip
-}
-
-/// A task that checks the various aspects of a file, including its content
-/// to determine if the file needs to be parsed for AST.
-class FileFilterTask: AbstractTask<FilterResult> {
+/// A filter that performs checks based on URL content.
+class UrlFilter: FileFilter {
 
     /// Initializer.
+    ///
     /// - parameter url: The file URL to read from.
     /// - parameter exclusionSuffixes: The list of file name suffixes to
     /// check from. If the given URL filename's suffix matches any in the
@@ -38,31 +30,33 @@ class FileFilterTask: AbstractTask<FilterResult> {
         self.exclusionSuffixes = exclusionSuffixes
     }
 
-    /// Execute the task and returns the filter result indicating if the file
-    /// should be parsed.
+    /// Execute the filter.
     ///
-    /// - returns: The `FilterResult`.
-    override func execute() -> FilterResult {
-        let urlFilter = UrlFilter(url: url, exclusionSuffixes: exclusionSuffixes)
-        if !urlFilter.filter() {
-            return FilterResult.skip
+    /// - returns: `true` if the URL is a Swift source file and its file
+    /// name suffix is not in the exclusion list.
+    func filter() -> Bool {
+        if !isUrlSwiftSource || urlHasExcludedSuffix {
+            return false
         }
-
-        let content = try? String(contentsOf: url)
-        if let content = content {
-            let contentFilter = ContentFilter(content: content)
-            if contentFilter.filter() {
-                return FilterResult.shouldParse(url, content)
-            } else {
-                return FilterResult.skip
-            }
-        } else {
-            fatalError("Failed to read file at \(url)")
-        }
+        return true
     }
 
     // MARK: - Private
 
     private let url: URL
     private let exclusionSuffixes: [String]
+
+    private var isUrlSwiftSource: Bool {
+        return url.pathExtension == "swift"
+    }
+
+    private var urlHasExcludedSuffix: Bool {
+        let name = url.deletingPathExtension().lastPathComponent
+        for suffix in exclusionSuffixes {
+            if name.hasSuffix(suffix) {
+                return true
+            }
+        }
+        return false
+    }
 }
