@@ -46,17 +46,30 @@ class SequenceExecutionHandle<SequenceResultType> {
     func cancel() {}
 }
 
+/// The execution of a sequence.
+enum SequenceExecution<ResultType> {
+    /// The execution of the sequence should continue with another task.
+    case continueSequence(Task)
+    /// The end of the entire task sequence with produced result.
+    case endOfSequence(ResultType)
+}
+
 /// Executor of sequences of tasks.
 ///
-/// - seeAlso: `SequencedTask`.
+/// - seeAlso: `Task`.
 protocol SequenceExecutor {
 
-    /// Execute a sequence of tasks from the given task.
+    /// Execute a sequence of tasks from the given initial task.
     ///
-    /// - parameter task: The root task of the sequence of tasks to be executed.
-    /// - returns: The execution handle that allows control and monitoring of the
-    /// sequence of tasks being executed.
-    func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType>
+    /// - parameter initialTask: The root task of the sequence of tasks
+    /// to be executed.
+    /// - parameter execution: The execution defining the sequence of tasks.
+    /// When a task completes its execution, this closure is invoked with
+    /// the task and its produced result. This closure is invoked from
+    /// multiple threads concurrently.
+    /// - returns: The execution handle that allows control and monitoring
+    /// of the sequence of tasks being executed.
+    func executeSequence<SequenceResultType>(from initialTask: Task, with execution: @escaping (Task, Any) -> SequenceExecution<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType>
 }
 
 /// Executor of sequences of tasks.
@@ -71,14 +84,19 @@ class SequenceExecutorImpl: SequenceExecutor {
         taskQueue = DispatchQueue(label: "Executor.taskQueue-\(name)", qos: qos, attributes: .concurrent)
     }
 
-    /// Execute a sequence of tasks from the given task.
+    /// Execute a sequence of tasks from the given initial task.
     ///
-    /// - parameter task: The root task of the sequence of tasks to be executed.
-    /// - returns: The execution handle that allows control and monitoring of the
-    /// sequence of tasks being executed.
-    func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
+    /// - parameter initialTask: The root task of the sequence of tasks
+    /// to be executed.
+    /// - parameter execution: The execution defining the sequence of tasks.
+    /// When a task completes its execution, this closure is invoked with
+    /// the task and its produced result. This closure is invoked from
+    /// multiple threads concurrently.
+    /// - returns: The execution handle that allows control and monitoring
+    /// of the sequence of tasks being executed.
+    func executeSequence<SequenceResultType>(from initialTask: Task, with execution: @escaping (Task, Any) -> SequenceExecution<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
         let handle: SequenceExecutionHandleImpl<SequenceResultType> = SequenceExecutionHandleImpl()
-        execute(task: task, withSequenceHandle: handle)
+        execute(initialTask, with: handle, execution)
         return handle
     }
 
@@ -86,18 +104,19 @@ class SequenceExecutorImpl: SequenceExecutor {
 
     private let taskQueue: DispatchQueue
 
-    private func execute<SequenceResultType>(task: SequencedTask<SequenceResultType>, withSequenceHandle handle: SequenceExecutionHandleImpl<SequenceResultType>) {
+    private func execute<SequenceResultType>(_ task: Task, with sequenceHandle: SequenceExecutionHandleImpl<SequenceResultType>, _ execution: @escaping (Task, Any) -> SequenceExecution<SequenceResultType>) {
         taskQueue.async {
-            guard !handle.isCancelled else {
+            guard !sequenceHandle.isCancelled else {
                 return
             }
 
-            let result = task.execute()
-            switch result {
+            let result = task.typeErasedExecute()
+            let nextExecution = execution(task, result)
+            switch nextExecution {
             case .continueSequence(let nextTask):
-                self.execute(task: nextTask, withSequenceHandle: handle)
+                self.execute(nextTask, with: sequenceHandle, execution)
             case .endOfSequence(let result):
-                handle.sequenceDidComplete(with: result)
+                sequenceHandle.sequenceDidComplete(with: result)
             }
         }
     }

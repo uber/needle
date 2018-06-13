@@ -32,12 +32,7 @@ class ASTProducerTaskTests: AbstractParserTests {
         let task = ASTProducerTask(sourceUrl: sourceUrl, sourceContent: sourceContent)
         let result = task.execute()
 
-        switch result {
-        case .continueSequence(let nextTask):
-            let parserTask = nextTask as! ASTParserTask
-            XCTAssertEqual(parserTask.structure, astContent)
-        default:
-            XCTFail()
-        }
+        XCTAssertEqual(result.structure, astContent)
+        XCTAssertEqual(result.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }

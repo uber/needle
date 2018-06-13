@@ -19,31 +19,6 @@ import Foundation
 import XCTest
 @testable import NeedleFramework
 
-class MockExecutionTaskHandler<T> {
-
-    private let defaultResult: T
-
-    init(defaultResult: T) {
-        self.defaultResult = defaultResult
-    }
-
-    func execute(task: SequencedTask<T>) -> SequenceExecutionHandle<T> {
-        var task = task
-        while true {
-            let executionResult = task.execute()
-            switch executionResult {
-            case .continueSequence(let nextTask):
-                task = nextTask
-            case .endOfSequence(let result):
-                let executionHandle = MockExecutionHandle(defaultResult: defaultResult)
-                executionHandle.result = result
-                return executionHandle
-            }
-        }
-    }
-
-}
-
 class DependencyGraphExporterTests: AbstractGeneratorTests {
     let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/")
 
@@ -55,8 +30,7 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
     @available(OSX 10.12, *)
     func test_export_verifyContent() {
         let (components, imports) = sampleProjectParsed()
-        let mockTaskHandler = MockExecutionTaskHandler(defaultResult: [SerializedDependencyProvider]())
-        let executor = MockSequenceExecutor(executeTaskHandler: mockTaskHandler.execute)
+        let executor = MockSequenceExecutor()
         let exporter = DependencyGraphExporter()
 
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("generated.swift")

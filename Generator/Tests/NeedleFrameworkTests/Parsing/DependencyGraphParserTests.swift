@@ -20,33 +20,33 @@ import XCTest
 class DependencyGraphParserTests: AbstractParserTests {
 
     static var allTests = [
-        ("test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask", test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask),
+        ("test_parse_withTaskCompleteion_verifyTaskSequence", test_parse_withTaskCompleteion_verifyTaskSequence),
         ("test_parse_withTaskCompleteion_verifyResults", test_parse_withTaskCompleteion_verifyResults),
     ]
-    
-    func test_parse_withTaskCompleteion_verifyEnqueueFileFilterTask() {
+
+    func test_parse_withTaskCompleteion_verifyTaskSequence() {
         let parser = DependencyGraphParser()
         let fixturesURL = fixtureUrl(for: "")
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
 
-        let executionHandle = MockExecutionHandle(defaultResult: DependencyGraphNode(components: [], dependencies: [], imports: []))
-        executionHandle.awaitHandler = { (timeout: TimeInterval?) in
-            XCTAssertNotNil(timeout)
+        let executor = MockSequenceExecutor()
+        var filterCount = 0
+        var producerCount = 0
+        var parserCount = 0
+        executor.executionHandler = { (task: Task, result: Any) in
+            if task is FileFilterTask {
+                filterCount += 1
+            } else if task is ASTProducerTask {
+                producerCount += 1
+            } else if task is ASTParserTask {
+                parserCount += 1
+            } else {
+                XCTFail()
+            }
         }
-
-        let executeTaskHandler = { (task: SequencedTask<DependencyGraphNode>) -> SequenceExecutionHandle<DependencyGraphNode> in
-            XCTAssertTrue(task is FileFilterTask)
-            let filterTask = task as! FileFilterTask
-            XCTAssertEqual(filterTask.exclusionSuffixes, ["ha", "yay", "blah"])
-            XCTAssertTrue(files.contains(filterTask.url))
-            return executionHandle
-        }
-        let executor = MockSequenceExecutor(executeTaskHandler: executeTaskHandler)
 
         XCTAssertEqual(executor.executeCallCount, 0)
-        XCTAssertEqual(executionHandle.cancelCallCount, 0)
-        XCTAssertEqual(executionHandle.awaitCallCount, 0)
 
         do {
             _ = try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
@@ -55,8 +55,10 @@ class DependencyGraphParserTests: AbstractParserTests {
         }
 
         XCTAssertEqual(executor.executeCallCount, files.count)
-        XCTAssertEqual(executionHandle.cancelCallCount, 0)
-        XCTAssertEqual(executionHandle.awaitCallCount, files.count)
+        XCTAssertEqual(filterCount, files.count)
+        XCTAssertEqual(producerCount, 3)
+        XCTAssertEqual(parserCount, 3)
+        XCTAssertEqual(producerCount, parserCount)
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {
@@ -64,8 +66,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         let fixturesURL = fixtureUrl(for: "")
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
-        let executionHandler = MockExecutionTaskHandler(defaultResult: DependencyGraphNode(components: [], dependencies: [], imports: []))
-        let executor = MockSequenceExecutor(executeTaskHandler: executionHandler.execute)
+        let executor = MockSequenceExecutor()
 
         XCTAssertEqual(executor.executeCallCount, 0)
 
@@ -74,6 +75,7 @@ class DependencyGraphParserTests: AbstractParserTests {
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
+            XCTAssertEqual(components.count, 5)
             XCTAssertEqual(imports, ["import Foundation", "import RIBs", "import RxSwift", "import UIKit", "import Utility"])
         } catch {
             XCTFail("\(error)")
@@ -83,19 +85,27 @@ class DependencyGraphParserTests: AbstractParserTests {
     }
 }
 
-class MockSequenceExecutor<T>: SequenceExecutor {
+class MockSequenceExecutor: SequenceExecutor {
 
     var executeCallCount = 0
+    var executionHandler: ((Task, Any) -> ())?
 
-    private let executeTaskHandler: (SequencedTask<T>) -> SequenceExecutionHandle<T>
-
-    init(executeTaskHandler: @escaping (SequencedTask<T>) -> SequenceExecutionHandle<T>) {
-        self.executeTaskHandler = executeTaskHandler
-    }
-
-    func execute<SequenceResultType>(sequenceFrom task: SequencedTask<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
+    func executeSequence<SequenceResultType>(from initialTask: Task, with execution: @escaping (Task, Any) -> SequenceExecution<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
         executeCallCount += 1
-        return executeTaskHandler(task as! SequencedTask<T>) as! SequenceExecutionHandle<SequenceResultType>
+
+        var result = initialTask.typeErasedExecute()
+        var executionResult = execution(initialTask, result)
+        executionHandler?(initialTask, result)
+        while true {
+            switch executionResult {
+            case .continueSequence(let task):
+                result = task.typeErasedExecute()
+                executionResult = execution(task, result)
+                executionHandler?(task, result)
+            case .endOfSequence(let finalResult):
+                return MockExecutionHandle(result: finalResult)
+            }
+        }
     }
 }
 
@@ -107,18 +117,16 @@ class MockExecutionHandle<T>: SequenceExecutionHandle<T> {
     var cancelCallCount = 0
     var cancelHandler: (() -> ())?
 
-    var result: T?
+    let result: T
 
-    private let defaultResult: T
-
-    init(defaultResult: T) {
-        self.defaultResult = defaultResult
+    init(result: T) {
+        self.result = result
     }
 
     override func await(withTimeout timeout: TimeInterval?) throws -> T {
         awaitCallCount += 1
         awaitHandler?(timeout)
-        return result ?? defaultResult
+        return result
     }
 
     override func cancel() {

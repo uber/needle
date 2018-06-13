@@ -24,8 +24,8 @@ enum DuplicateValidationResult {
     case duplicate(String)
 }
 
-/// A utility class that checks if there are any components or dependency protocols
-/// with the same names.
+/// A utility class that checks if there are any components or dependency
+/// protocols with the same names.
 class DuplicateValidator {
 
     /// Validate the given list of components.

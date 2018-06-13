@@ -16,41 +16,43 @@
 
 import Foundation
 
-/// A task that checks the various aspects of a file, including its content to determine
-/// if the file needs to be parsed for AST. If the file should be parsed, it returns the
-/// `ASTProducerTask` for further processing.
-class FileFilterTask: SequencedTask<DependencyGraphNode> {
+/// The result of filtering the source file.
+enum FilterResult {
+    /// The source URL and content that should be parsed.
+    case shouldParse(URL, String)
+    /// The file should be skipped.
+    case skip
+}
 
-    /// The file URL to read from.
-    let url: URL
-    /// The list of file name suffixes to check from.
-    let exclusionSuffixes: [String]
+/// A task that checks the various aspects of a file, including its content
+/// to determine if the file needs to be parsed for AST.
+class FileFilterTask: AbstractTask<FilterResult> {
 
     /// Initializer.
     /// - parameter url: The file URL to read from.
-    /// - parameter exclusionSuffixes: The list of file name suffixes to check from. If
-    /// the given URL filename's suffix matches any in the this list, the file will not
-    /// be parsed.
+    /// - parameter exclusionSuffixes: The list of file name suffixes to
+    /// check from. If the given URL filename's suffix matches any in the
+    /// this list, the file will not be parsed.
     init(url: URL, exclusionSuffixes: [String]) {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
     }
 
-    /// Execute the task and returns `ASTProducerTask` if the file should be parsed.
+    /// Execute the task and returns the filter result indicating if the file
+    /// should be parsed.
     ///
-    /// - returns: `.continueSequence` with `ASTProducerTask` if the file should be parsed.
-    /// Otherwise `endOfSequence` with an empty `DependencyGraphNode` is returned.
-    override func execute() -> ExecutionResult<DependencyGraphNode> {
+    /// - returns: The `FilterResult`.
+    override func execute() -> FilterResult {
         if !isUrlSwiftSource || urlHasExcludedSuffix {
-            return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
+            return FilterResult.skip
         }
 
         let content = try? String(contentsOf: url)
         if let content = content {
             if shouldParse(content) {
-                return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
+                return FilterResult.shouldParse(url, content)
             } else {
-                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
+                return FilterResult.skip
             }
         } else {
             fatalError("Failed to read file at \(url)")
@@ -58,6 +60,9 @@ class FileFilterTask: SequencedTask<DependencyGraphNode> {
     }
 
     // MARK: - Private
+
+    private let url: URL
+    private let exclusionSuffixes: [String]
 
     private var isUrlSwiftSource: Bool {
         return url.pathExtension == "swift"

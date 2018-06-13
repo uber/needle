@@ -32,13 +32,11 @@ class FileFilterTaskTests: AbstractParserTests {
         let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let result = task.execute()
-
         switch result {
-        case .continueSequence(_):
+        case .shouldParse(_, _):
             XCTFail()
-        case .endOfSequence(let node):
-            XCTAssertTrue(node.components.isEmpty)
-            XCTAssertTrue(node.dependencies.isEmpty)
+        case .skip:
+            break
         }
     }
 
@@ -50,11 +48,10 @@ class FileFilterTaskTests: AbstractParserTests {
         var result = excludeSuffixTask.execute()
 
         switch result {
-        case .continueSequence(_):
+        case .shouldParse(_, _):
             XCTFail()
-        case .endOfSequence(let node):
-            XCTAssertTrue(node.components.isEmpty)
-            XCTAssertTrue(node.dependencies.isEmpty)
+        case .skip:
+            break
         }
 
         let includeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
@@ -62,12 +59,10 @@ class FileFilterTaskTests: AbstractParserTests {
         result = includeSuffixTask.execute()
 
         switch result {
-        case .continueSequence(let nextTask):
-            let producerTask = nextTask as! ASTProducerTask
-            XCTAssertNotNil(nextTask)
-            XCTAssertEqual(producerTask.sourceUrl, fileUrl)
-            XCTAssertEqual(producerTask.sourceContent, content)
-        case .endOfSequence(_):
+        case .shouldParse(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
             XCTFail()
         }
     }
@@ -79,11 +74,10 @@ class FileFilterTaskTests: AbstractParserTests {
         let result = task.execute()
 
         switch result {
-        case .continueSequence(_):
+        case .shouldParse(_, _):
             XCTFail()
-        case .endOfSequence(let node):
-            XCTAssertTrue(node.components.isEmpty)
-            XCTAssertTrue(node.dependencies.isEmpty)
+        case .skip:
+            break
         }
     }
 
@@ -94,11 +88,10 @@ class FileFilterTaskTests: AbstractParserTests {
         let result = task.execute()
 
         switch result {
-        case .continueSequence(_):
+        case .shouldParse(_, _):
             XCTFail()
-        case .endOfSequence(let node):
-            XCTAssertTrue(node.components.isEmpty)
-            XCTAssertTrue(node.dependencies.isEmpty)
+        case .skip:
+            break
         }
     }
 
@@ -110,12 +103,10 @@ class FileFilterTaskTests: AbstractParserTests {
         let result = task.execute()
 
         switch result {
-        case .continueSequence(let nextTask):
-            let producerTask = nextTask as! ASTProducerTask
-            XCTAssertNotNil(nextTask)
-            XCTAssertEqual(producerTask.sourceUrl, fileUrl)
-            XCTAssertEqual(producerTask.sourceContent, content)
-        case .endOfSequence(_):
+        case .shouldParse(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
             XCTFail()
         }
     }

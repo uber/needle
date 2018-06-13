@@ -27,26 +27,16 @@ class DependencyProviderContentTaskTests: AbstractGeneratorTests {
 
     func test_execute_withSampleProject_verifyProviderContent() {
         let (components, imports) = sampleProjectParsed()
-        var i = 0
+        var assertCount = 0
         for component in components {
-            let task = DependencyProviderDeclarerTask(component: component)
-            let result = task.execute()
-            switch result {
-            case .continueSequence(let contentTask):
-                let contentResult = contentTask.execute()
-                switch contentResult {
-                case .continueSequence(let serializerTask):
-                    // Verify
-                    verify((serializerTask as! DependencyProviderSerializerTask).providers, count: i)
-                case .endOfSequence(_):
-                    XCTFail()
-                }
-            case .endOfSequence(_):
-                XCTFail()
-            }
-            i += 1
+            let providers = DependencyProviderDeclarerTask(component: component).execute()
+            let task = DependencyProviderContentTask(providers: providers)
+            let processedProviders = task.execute()
+            verify(processedProviders, count: assertCount)
+            assertCount += 1
         }
 
+        XCTAssertEqual(assertCount, 5)
         XCTAssertEqual(imports, ["import NeedleFoundation", "import RxSwift", "import UIKit"])
     }
 
