@@ -46,7 +46,8 @@ struct ProcessedDependencyProvider {
     /// The unprocessed data model.
     let unprocessed: DependencyProvider
     /// The map of component type names to the number of levels between the requiring
-    /// component and the providing compoennt.
+    /// component and the providing compoennt. The key is the type of the component
+    /// that provides one of the dependencies.
     let levelMap: [String: Int]
     /// The properties with their source components filled in.
     let processedProperties: [ProcessedProperty]
