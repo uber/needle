@@ -29,6 +29,7 @@ enum FilterResult {
 class FileFilterTask: AbstractTask<FilterResult> {
 
     /// Initializer.
+    ///
     /// - parameter url: The file URL to read from.
     /// - parameter exclusionSuffixes: The list of file name suffixes to
     /// check from. If the given URL filename's suffix matches any in the

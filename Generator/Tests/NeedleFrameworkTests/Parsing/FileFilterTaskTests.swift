@@ -24,7 +24,7 @@ class FileFilterTaskTests: AbstractParserTests {
         ("test_execute_excludedSuffix_verifyFilter", test_execute_excludedSuffix_verifyFilter),
         ("test_execute_nonNeedleComponent_verifyFilter", test_execute_nonNeedleComponent_verifyFilter),
         ("test_execute_nonInheritanceComponent_verifyFilter", test_execute_nonInheritanceComponent_verifyFilter),
-        ("test_execute_actualComponent_verifyNextTask", test_execute_actualComponent_verifyNextTask),
+        ("test_execute_actualComponent_verifyResult", test_execute_actualComponent_verifyResult),
     ]
 
     func test_execute_nonSwiftSource_verifyFilter() {
@@ -68,7 +68,7 @@ class FileFilterTaskTests: AbstractParserTests {
     }
 
     func test_execute_nonNeedleComponent_verifyFilter() {
-        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonNeedleComponent.swift")
+        let fixturesURL = fixtureUrl(for: "NonNeedleComponent.swift")
         let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
         let result = task.execute()
@@ -82,7 +82,7 @@ class FileFilterTaskTests: AbstractParserTests {
     }
 
     func test_execute_nonInheritanceComponent_verifyFilter() {
-        let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/NonInheritanceComponent.swift")
+        let fixturesURL = fixtureUrl(for: "NonInheritanceComponent.swift")
         let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
         let result = task.execute()
@@ -95,7 +95,7 @@ class FileFilterTaskTests: AbstractParserTests {
         }
     }
 
-    func test_execute_actualComponent_verifyNextTask() {
+    func test_execute_actualComponent_verifyResult() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
         let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
