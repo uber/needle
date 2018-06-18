@@ -43,6 +43,14 @@ class DependencyGraphParser {
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
     func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
+        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
+        let (components, dependencies, imports) = try collectDataModels(with: urlHandles)
+        return process(components, dependencies, imports)
+    }
+
+    // MARK: - Private
+
+    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -50,56 +58,13 @@ class DependencyGraphParser {
         while let nextObjc = enumerator.nextObject() {
             if let fileUrl = nextObjc as? URL {
                 let task = FileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes)
-                let taskHandle = executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<DependencyGraphNode> in
-                    if currentTask is FileFilterTask, let filterResult = currentResult as? FilterResult {
-                        switch filterResult {
-                        case .shouldParse(let url, let content):
-                            return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
-                        case .skip:
-                            return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
-                        }
-                    } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
-                        return .continueSequence(ASTParserTask(ast: ast))
-                    } else if currentTask is ASTParserTask, let node = currentResult as? DependencyGraphNode {
-                        return .endOfSequence(node)
-                    } else {
-                        fatalError("Unhandled task \(currentTask) with result \(currentResult)")
-                    }
-                }
+                let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
                 taskHandleTuples.append((taskHandle, fileUrl))
             }
         }
 
-        // Wait for all sequences to finish.
-        var components = [ASTComponent]()
-        var dependencies = [Dependency]()
-        var imports = Set<String>()
-        for tuple in taskHandleTuples {
-            do {
-                let node = try tuple.handle.await(withTimeout: 30)
-                components.append(contentsOf: node.components)
-                dependencies.append(contentsOf: node.dependencies)
-                for statement in node.imports {
-                    imports.insert(statement)
-                }
-            } catch SequenceExecutionError.awaitTimeout {
-                throw DependencyGraphParserError.timeout(tuple.fileUrl.absoluteString)
-            } catch {
-                fatalError("Unhandled task execution error \(error)")
-            }
-        }
-
-        validate(components, dependencies)
-        linkParents(for: components)
-        link(components, to: dependencies)
-
-        let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
-            astComponent.valueType
-        }
-        return (valueTypeComponents, imports.sorted())
+        return taskHandleTuples
     }
-
-    // MARK: - Private
 
     private func newFileEnumerator(for rootUrl: URL) -> FileManager.DirectoryEnumerator {
         let errorHandler = { (url: URL, error: Error) -> Bool in
@@ -112,54 +77,64 @@ class DependencyGraphParser {
         }
     }
 
-    private func validate(_ components: [ASTComponent], _ dependencies: [Dependency]) {
-        // Validate duplicates. If we want to support components/dependencies that have the
-        // same name across modules, then this should be removed. One option to support such
-        // scenario without trying to detect module structure is to simply use the file URL
-        // of the component/dependency as a proxy for module.
-        let duplicateValidator = DuplicateValidator()
-        var result = duplicateValidator.validate(components)
-        switch result {
-        case .duplicate(let name):
-            fatalError("Needle does not support components with the same name \(name)")
-        default:
-            break
-        }
-
-        result = duplicateValidator.validate(dependencies)
-        switch result {
-        case .duplicate(let name):
-            fatalError("Needle does not support dependency protocols with the same name \(name)")
-        default:
-            break
+    private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<DependencyGraphNode> {
+        if currentTask is FileFilterTask, let filterResult = currentResult as? FilterResult {
+            switch filterResult {
+            case .shouldParse(let url, let content):
+                return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
+            case .skip:
+                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
+            }
+        } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
+            return .continueSequence(ASTParserTask(ast: ast))
+        } else if currentTask is ASTParserTask, let node = currentResult as? DependencyGraphNode {
+            return .endOfSequence(node)
+        } else {
+            fatalError("Unhandled task \(currentTask) with result \(currentResult)")
         }
     }
 
-    private func linkParents(for components: [ASTComponent]) {
-        var nameToComponent = [String: ASTComponent]()
-        for component in components {
-            nameToComponent[component.name] = component
-        }
-        for component in components {
-            for typeName in component.expressionCallTypeNames {
-                if let childComponent = nameToComponent[typeName] {
-                    childComponent.parents.append(component)
+    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([ASTComponent], [Dependency], Set<String>) {
+        var components = [ASTComponent]()
+        var dependencies = [Dependency]()
+        var imports = Set<String>()
+        for urlHandle in urlHandles {
+            do {
+                let node = try urlHandle.handle.await(withTimeout: 30)
+                components.append(contentsOf: node.components)
+                dependencies.append(contentsOf: node.dependencies)
+                for statement in node.imports {
+                    imports.insert(statement)
                 }
+            } catch SequenceExecutionError.awaitTimeout {
+                throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString)
+            } catch {
+                fatalError("Unhandled task execution error \(error)")
             }
         }
+        return (components, dependencies, imports)
     }
 
-    private func link(_ components: [ASTComponent], to dependencies: [Dependency]) {
-        var nameToDependency: [String: Dependency] = [emptyDependency.name: emptyDependency]
-        for dependency in dependencies {
-            nameToDependency[dependency.name] = dependency
-        }
-        for component in components {
-            if let dependency = nameToDependency[component.dependencyProtocolName] {
-                component.dependencyProtocol = dependency
-            } else {
-                fatalError("Missing dependency protocol data model for \(component.dependencyProtocolName).")
+    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [String]) {
+        let processors: [Processor] = [
+            DuplicateValidator(components: components, dependencies: dependencies),
+            ParentLinker(components: components),
+            DependencyLinker(components: components, dependencies: dependencies)
+        ]
+        for processor in processors {
+            do {
+                try processor.process()
+            } catch {
+                fatalError("\(error)")
             }
         }
+
+        let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
+            astComponent.valueType
+        }
+        let sortedImports = imports.sorted()
+        return (valueTypeComponents, sortedImports)
     }
 }
+
+typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)

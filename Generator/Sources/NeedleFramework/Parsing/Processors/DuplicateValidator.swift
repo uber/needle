@@ -16,47 +16,52 @@
 
 import Foundation
 
-/// The duplicate check result.
-enum DuplicateValidationResult {
-    /// There are no duplicates found.
-    case noDuplicates
-    /// There is at least a duplicate with the specified name.
-    case duplicate(String)
-}
+/// A post processing utility class that checks if there are any components
+/// or dependency protocols with the same names.
+class DuplicateValidator: Processor {
 
-/// A utility class that checks if there are any components or dependency
-/// protocols with the same names.
-class DuplicateValidator {
-
-    /// Validate the given list of components.
+    /// Initializer.
     ///
     /// - parameter components: The list of components to validate.
-    /// - returns: The validation result.
-    func validate(_ components: [ASTComponent]) -> DuplicateValidationResult {
+    /// - parameter dependencies: The list of dependencies to validate.
+    init(components: [ASTComponent], dependencies: [Dependency]) {
+        self.components = components
+        self.dependencies = dependencies
+    }
+
+    /// Process the data models.
+    ///
+    /// - throws: `ProcessingError` if any components or dependencies have
+    /// the same type names.
+    func process() throws {
+        try validate(components)
+        try validate(dependencies)
+    }
+
+    // MARK - Private
+
+    private let components: [ASTComponent]
+    private let dependencies: [Dependency]
+
+    private func validate(_ components: [ASTComponent]) throws {
         var map = [String: String]()
         for component in components {
             if map[component.name] == nil {
                 map[component.name] = component.name
             } else {
-                return .duplicate(component.name)
+                throw ProcessingError.fail("Needle does not support components with the same name \(component.name)")
             }
         }
-        return .noDuplicates
     }
 
-    /// Validate the given list of dependencies.
-    ///
-    /// - parameter dependencies: The list of dependencies to validate.
-    /// - returns: The validation result.
-    func validate(_ dependencies: [Dependency]) -> DuplicateValidationResult {
+    private func validate(_ dependencies: [Dependency]) throws {
         var map = [String: String]()
         for dependency in dependencies {
             if map[dependency.name] == nil {
                 map[dependency.name] = dependency.name
             } else {
-                return .duplicate(dependency.name)
+                throw ProcessingError.fail("Needle does not support dependency protocols with the same name \(dependency.name)")
             }
         }
-        return .noDuplicates
     }
 }
