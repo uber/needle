@@ -43,7 +43,7 @@ class AbstractGeneratorTests: XCTestCase {
         for _ in 0 ..< 5 {
             dir = dir.deletingLastPathComponent()
         }
-        dir.appendPathComponent("Sample/TicTacToe/Sources/")
+        dir.appendPathComponent("Sample/MVC/TicTacToe/Sources/")
         return dir
     }
 }

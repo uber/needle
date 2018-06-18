@@ -28,7 +28,7 @@ extension Structure {
 }
 
 /// Extension of `Dictionary` to provide easy access to AST properties.
-public extension Dictionary where Key: ExpressibleByStringLiteral {
+extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// Check if this structure represents a `Component` subclass.
     var isComponent: Bool {
