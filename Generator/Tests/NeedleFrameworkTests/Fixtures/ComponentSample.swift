@@ -31,6 +31,22 @@ class MyComponent: Component<MyDependency> {
     }
 }
 
+protocol SomeNonCoreDependency: Dependency {
+    var aNonCoreDep: Dep { get }
+    var maybeNonCoreDep: MaybeDep? { get }
+}
+
+class SomeNonCoreComponent: NonCoreComponent<SomeNonCoreDependency> {
+    var newNonCoreObject: NonCoreObject? {
+        return NonCoreObject()
+    }
+    var sharedNonCoreObject: SharedObject {
+        return shared {
+            return SharedObject()
+        }
+    }
+}
+
 class My2Component: Component<My2Dependency> {
     var book: Book {
         return shared {
@@ -48,6 +64,20 @@ class My2Component: Component<My2Dependency> {
 
     fileprivate var apple: Apple {
         return Apple()
+    }
+}
+
+protocol ADependency: Dependency {
+    var maybe: Maybe? { get }
+}
+
+protocol BExtension: PluginExtension {
+    var myPluginPoint: MyPluginPoint { get }
+}
+
+class SomePluginizedCompo: PluginizedComponent<ADependency, BExtension, SomeNonCoreComponent>, Stuff {
+    var tv: Tv {
+        return LGOLEDTv()
     }
 }
 

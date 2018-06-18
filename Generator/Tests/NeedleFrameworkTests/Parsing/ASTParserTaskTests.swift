@@ -76,7 +76,7 @@ class ASTParserTaskTests: AbstractParserTests {
         }
         XCTAssertTrue(containsOptionalWallet)
 
-        XCTAssertEqual(node.dependencies.count, 2)
+        XCTAssertEqual(node.dependencies.count, 4)
         let myDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
             dependency.name == "MyDependency"
         }!
