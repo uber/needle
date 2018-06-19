@@ -31,13 +31,21 @@ class ContentFilter: FileFilter {
     /// - returns: `true` if the
     func filter() -> Bool {
         // Use simple string matching first since it's more performant.
-        if !content.contains("Component") {
+        if !content.contains("Component") && !content.contains("Dependency") {
             return false
         }
 
         // Match actual component inheritance using Regex.
         let containsComponentInheritance = (Regex(": *Component *<").firstMatch(in: content) != nil)
-        return containsComponentInheritance
+        if containsComponentInheritance {
+            return true
+        }
+        let containsDependencyInheritance = (Regex(": *Dependency").firstMatch(in: content) != nil)
+        if containsDependencyInheritance {
+            return true
+        }
+
+        return false
     }
 
     // MARK: - Private

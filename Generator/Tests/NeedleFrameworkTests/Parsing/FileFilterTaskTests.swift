@@ -110,4 +110,20 @@ class FileFilterTaskTests: AbstractParserTests {
             XCTFail()
         }
     }
+
+    func test_execute_onlyDependency_verifyResult() {
+        let fileUrl = fixtureUrl(for: "OnlyDependency.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+
+        let result = task.execute()
+
+        switch result {
+        case .shouldParse(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
+            XCTFail()
+        }
+    }
 }

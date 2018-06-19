@@ -16,16 +16,13 @@
 
 import Foundation
 
-/// The special empty dependency data model.
-let emptyDependency = Dependency(name: "EmptyDependency", properties: [])
-
-/// A data model representing a dependency protocol of a NeedleFoundation
-/// `Component`.
-// This is separate from the `Component` data model, since a component's
-// dependency protocol may be declared in a separate file.
-struct Dependency: Equatable {
-    /// The name of the dependency protocol.
+/// A data model representing a plugin extension protocol of a NeedleFoundation
+/// `PluginizedComponent`.
+// This is separate from the `PluginizedComponent` data model, since its
+// plugin extension protocol may be declared in a separate file.
+struct PluginExtension: Equatable {
+    /// The name of the plugin extension protocol.
     let name: String
-    /// The list of dependency properties.
+    /// The list of properties.
     let properties: [Property]
 }

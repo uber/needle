@@ -34,23 +34,18 @@ class PluginizableASTParserTask: AbstractTask<PluginizableDependencyGraphNode> {
     override func execute() -> PluginizableDependencyGraphNode {
         let baseTask = ASTParserTask(ast: ast)
         let baseNode = baseTask.execute()
-        let extendedBaseComponents = baseNode.components
-            .map { (component: ASTComponent) -> PluginizableASTComponent in
-                return PluginizableASTComponent(data: component)
-            }
-        let (pluginizedComponents, nonCoreComponents) = parsePluginizedStructures()
-        let allComponents = extendedBaseComponents + pluginizedComponents + nonCoreComponents
-
-        return PluginizableDependencyGraphNode(components: allComponents, dependencies: baseNode.dependencies, imports: baseNode.imports)
+        let (pluginizedComponents, nonCoreComponents, pluginExtensions) = parsePluginizedStructures()
+        return PluginizableDependencyGraphNode(pluginiableComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
     }
 
     // MARK: - Private
 
     private let ast: AST
 
-    private func parsePluginizedStructures() -> ([PluginizableASTComponent], [PluginizableASTComponent]) {
+    private func parsePluginizedStructures() -> ([PluginizableASTComponent], [ASTComponent], [PluginExtension]) {
         var pluginizedComponents = [PluginizableASTComponent]()
-        var nonCoreComponents = [PluginizableASTComponent]()
+        var nonCoreComponents = [ASTComponent]()
+        var pluginExtensions = [PluginExtension]()
 
         let substructures = ast.structure.substructures
         for item in substructures {
@@ -62,12 +57,14 @@ class PluginizableASTParserTask: AbstractTask<PluginizableDependencyGraphNode> {
                 } else if substructure.isNonCoreComponent {
                     let dependencyProtocolName = substructure.dependencyProtocolName(for: "NonCoreComponent")
                     let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames)
-                    nonCoreComponents.append(PluginizableASTComponent(data: component))
+                    nonCoreComponents.append(component)
+                } else if substructure.isPluginExtension {
+                    pluginExtensions.append(PluginExtension(name: substructure.name, properties: substructure.properties))
                 }
             }
         }
 
-        return (pluginizedComponents, nonCoreComponents)
+        return (pluginizedComponents, nonCoreComponents, pluginExtensions)
     }
 }
 
@@ -87,6 +84,10 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil
         }
+    }
+
+    var isPluginExtension: Bool {
+        return inheritedTypes.contains("PluginExtension")
     }
 
     var pluginizedGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {

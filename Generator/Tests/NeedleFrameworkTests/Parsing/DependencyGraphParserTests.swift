@@ -56,8 +56,8 @@ class DependencyGraphParserTests: AbstractParserTests {
 
         XCTAssertEqual(executor.executeCallCount, files.count)
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 3)
-        XCTAssertEqual(parserCount, 3)
+        XCTAssertEqual(producerCount, 4)
+        XCTAssertEqual(parserCount, 4)
         XCTAssertEqual(producerCount, parserCount)
     }
 
