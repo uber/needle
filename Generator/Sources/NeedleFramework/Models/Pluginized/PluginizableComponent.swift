@@ -24,21 +24,18 @@ import Foundation
 class PluginizableASTComponent {
     /// The actual data of this component.
     let data: ASTComponent
-    /// The type name of the plugin extension if this component is a
-    /// pluginized component.
-    let pluginExtensionType: String?
-    /// The type name of the non-core component if this component is a
-    /// pluginized component.
-    let nonCoreComponentType: String?
+    /// The type name of the plugin extension.
+    let pluginExtensionType: String
+    /// The type name of the non-core component.
+    let nonCoreComponentType: String
 
     /// Initializer.
     ///
     /// - parameter data: The actual data of this component.
-    /// - parameter pluginExtensionType: The type name of the plugin extension
-    /// if this component is a pluginized component.
+    /// - parameter pluginExtensionType: The type name of the plugin extension.
     /// - parameter nonCoreComponentType: The type name of the non-core
-    /// component if this component is a pluginized component.
-    init(data: ASTComponent, pluginExtensionType: String? = nil, nonCoreComponentType: String? = nil) {
+    /// component.
+    init(data: ASTComponent, pluginExtensionType: String, nonCoreComponentType: String) {
         self.data = data
         self.pluginExtensionType = pluginExtensionType
         self.nonCoreComponentType = nonCoreComponentType
@@ -50,6 +47,6 @@ class PluginizableASTComponent {
 struct PluginizableComponent {
     /// The actual data of this component.
     let data: Component
-    /// The non-core component if this component is a pluginized component.
-    let nonCoreComponent: Component?
+    /// The non-core component.
+    let nonCoreComponent: Component
 }

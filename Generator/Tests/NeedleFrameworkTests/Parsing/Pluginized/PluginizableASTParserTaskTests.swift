@@ -33,73 +33,70 @@ class PluginizableASTParserTaskTests: AbstractParserTests {
         let task = PluginizableASTParserTask(ast: AST(structure: structure, imports: imports))
         let node = task.execute()
 
-        XCTAssertEqual(node.components.count, 4)
 
         // Regular components.
-        let myComponent = node.components.first { (component: PluginizableASTComponent) -> Bool in
-            component.data.name == "MyComponent"
+        XCTAssertEqual(node.components.count, 2)
+        let myComponent = node.components.first { (component: ASTComponent) -> Bool in
+            component.name == "MyComponent"
         }!
-        XCTAssertEqual(myComponent.data.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
-        XCTAssertEqual(myComponent.data.name, "MyComponent")
-        XCTAssertEqual(myComponent.data.dependencyProtocolName, "MyDependency")
-        XCTAssertEqual(myComponent.data.properties.count, 4)
-        XCTAssertNil(myComponent.pluginExtensionType)
-        XCTAssertNil(myComponent.nonCoreComponentType)
-        let containsStream = myComponent.data.properties.contains { (property: Property) -> Bool in
+        XCTAssertEqual(myComponent.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
+        XCTAssertEqual(myComponent.name, "MyComponent")
+        XCTAssertEqual(myComponent.dependencyProtocolName, "MyDependency")
+        XCTAssertEqual(myComponent.properties.count, 4)
+        let containsStream = myComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "stream" && property.type == "Stream"
         }
         XCTAssertTrue(containsStream)
-        let containsDonut = myComponent.data.properties.contains { (property: Property) -> Bool in
+        let containsDonut = myComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "donut" && property.type == "Donut"
         }
         XCTAssertTrue(containsDonut)
-        let containsBasket = myComponent.data.properties.contains { (property: Property) -> Bool in
+        let containsBasket = myComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "sweetsBasket" && property.type == "Basket"
         }
         XCTAssertTrue(containsBasket)
-        let containsChildComponent = myComponent.data.properties.contains { (property: Property) -> Bool in
+        let containsChildComponent = myComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "myChildComponent" && property.type == "MyChildComponent"
         }
         XCTAssertTrue(containsChildComponent)
 
-        let my2Component = node.components.first { (component: PluginizableASTComponent) -> Bool in
-            component.data.name == "My2Component"
+        let my2Component = node.components.first { (component: ASTComponent) -> Bool in
+            component.name == "My2Component"
         }!
-        XCTAssertEqual(my2Component.data.expressionCallTypeNames, ["shared", "Wallet", "Banana", "Apple", "Book"])
-        XCTAssertEqual(my2Component.data.name, "My2Component")
-        XCTAssertEqual(my2Component.data.dependencyProtocolName, "My2Dependency")
-        XCTAssertEqual(my2Component.data.properties.count, 2)
-        XCTAssertNil(my2Component.pluginExtensionType)
-        XCTAssertNil(my2Component.nonCoreComponentType)
-        let containsBook = my2Component.data.properties.contains { (property: Property) -> Bool in
+        XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Wallet", "Banana", "Apple", "Book"])
+        XCTAssertEqual(my2Component.name, "My2Component")
+        XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
+        XCTAssertEqual(my2Component.properties.count, 2)
+        let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "book" && property.type == "Book"
         }
         XCTAssertTrue(containsBook)
-        let containsOptionalWallet = my2Component.data.properties.contains { (property: Property) -> Bool in
+        let containsOptionalWallet = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "maybeWallet" && property.type == "Wallet?"
         }
         XCTAssertTrue(containsOptionalWallet)
 
-        let someNonCoreComponent = node.components.first { (component: PluginizableASTComponent) -> Bool in
-            component.data.name == "SomeNonCoreComponent"
-            }!
-        XCTAssertEqual(someNonCoreComponent.data.expressionCallTypeNames, ["NonCoreObject", "shared", "SharedObject"])
-        XCTAssertEqual(someNonCoreComponent.data.name, "SomeNonCoreComponent")
-        XCTAssertEqual(someNonCoreComponent.data.dependencyProtocolName, "SomeNonCoreDependency")
-        XCTAssertEqual(someNonCoreComponent.data.properties.count, 2)
-        XCTAssertNil(someNonCoreComponent.pluginExtensionType)
-        XCTAssertNil(someNonCoreComponent.nonCoreComponentType)
-        let containsNewNonCoreObject = someNonCoreComponent.data.properties.contains { (property: Property) -> Bool in
+        // Non-core components.
+        XCTAssertEqual(node.nonCoreComponents.count, 1)
+        let someNonCoreComponent = node.nonCoreComponents.first { (component: ASTComponent) -> Bool in
+            component.name == "SomeNonCoreComponent"
+        }!
+        XCTAssertEqual(someNonCoreComponent.expressionCallTypeNames, ["NonCoreObject", "shared", "SharedObject"])
+        XCTAssertEqual(someNonCoreComponent.name, "SomeNonCoreComponent")
+        XCTAssertEqual(someNonCoreComponent.dependencyProtocolName, "SomeNonCoreDependency")
+        XCTAssertEqual(someNonCoreComponent.properties.count, 2)
+        let containsNewNonCoreObject = someNonCoreComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "newNonCoreObject" && property.type == "NonCoreObject?"
         }
         XCTAssertTrue(containsNewNonCoreObject)
-        let containsSharedNonCoreObject = someNonCoreComponent.data.properties.contains { (property: Property) -> Bool in
+        let containsSharedNonCoreObject = someNonCoreComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "sharedNonCoreObject" && property.type == "SharedObject"
         }
         XCTAssertTrue(containsSharedNonCoreObject)
 
         // Pluginized components.
-        let somePluginizedCompo = node.components.first { (component: PluginizableASTComponent) -> Bool in
+        XCTAssertEqual(node.pluginiableComponents.count, 1)
+        let somePluginizedCompo = node.pluginiableComponents.first { (component: PluginizableASTComponent) -> Bool in
             component.data.name == "SomePluginizedCompo"
         }!
         XCTAssertEqual(somePluginizedCompo.data.expressionCallTypeNames, ["LGOLEDTv"])
@@ -166,6 +163,18 @@ class PluginizableASTParserTaskTests: AbstractParserTests {
             return property.name == "maybe" && property.type == "Maybe?"
         }
         XCTAssertTrue(containsMaybe)
+
+        // Plugin extensions.
+        XCTAssertEqual(node.pluginExtensions.count, 1)
+        let bExtension = node.pluginExtensions.first { (pluginExtension: PluginExtension) -> Bool in
+            pluginExtension.name == "BExtension"
+        }!
+        XCTAssertEqual(bExtension.name, "BExtension")
+        XCTAssertEqual(bExtension.properties.count, 1)
+        let containsMyPluginPoint = bExtension.properties.contains { (property: Property) -> Bool in
+            property.name == "myPluginPoint"
+        }
+        XCTAssertTrue(containsMyPluginPoint)
 
         // Imports.
         XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])

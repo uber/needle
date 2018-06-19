@@ -37,17 +37,25 @@ class PluginizedContentFilter: FileFilter {
         }
 
         // Use simple string matching first since it's more performant.
-        if !content.contains("PluginizedComponent") && !content.contains("NonCoreComponent") {
+        if !content.contains("PluginizedComponent") && !content.contains("NonCoreComponent") && !content.contains("Dependency") && !content.contains("PluginExtension") {
             return false
         }
 
-        // Match actual pluginized component and non-core component inheritances using Regex.
+        // Match actual inheritancess using Regex.
         let containsPluginizedComponentInheritance = (Regex(": *PluginizedComponent *<").firstMatch(in: content) != nil)
         if containsPluginizedComponentInheritance {
             return true
         }
         let containsNonCoreComponentInheritance = (Regex(": *NonCoreComponent *<").firstMatch(in: content) != nil)
         if containsNonCoreComponentInheritance {
+            return true
+        }
+        let containsDependencyInheritance = (Regex(": *Dependency").firstMatch(in: content) != nil)
+        if containsDependencyInheritance {
+            return true
+        }
+        let containsPluginExtensionInheritance = (Regex(": *PluginExtension").firstMatch(in: content) != nil)
+        if containsPluginExtensionInheritance {
             return true
         }
 

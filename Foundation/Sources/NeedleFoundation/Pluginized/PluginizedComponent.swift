@@ -43,6 +43,9 @@ public protocol PluginizedComponentType: ComponentType {
     func builderWillDeinit()
 }
 
+/// The base protocol of a plugin extension, enabling Needle's parsing process.
+public protocol PluginExtension: AnyObject {}
+
 /// The base pluginized component class. All core components that involve
 /// plugins should inherit from this class.
 open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreComponent: NonCoreComponentType>: Component<DependencyType>, PluginizedComponentType {

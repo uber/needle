@@ -142,4 +142,36 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
             XCTFail()
         }
     }
+
+    func test_execute_onlyDependency_verifyResult() {
+        let fileUrl = fixtureUrl(for: "OnlyDependency.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+
+        let result = task.execute()
+
+        switch result {
+        case .shouldParse(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
+            XCTFail()
+        }
+    }
+
+    func test_execute_onlyPluginExtension_verifyResult() {
+        let fileUrl = pluginizedFixtureUrl(for: "OnlyPluginExtension.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+
+        let result = task.execute()
+
+        switch result {
+        case .shouldParse(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
+            XCTFail()
+        }
+    }
 }

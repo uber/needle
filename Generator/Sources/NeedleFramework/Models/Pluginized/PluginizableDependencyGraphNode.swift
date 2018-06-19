@@ -20,7 +20,13 @@ import Foundation
 /// The components may be pluginized components or regular ones.
 struct PluginizableDependencyGraphNode {
     /// The list of pluginiable components in this node.
-    let components: [PluginizableASTComponent]
+    let pluginiableComponents: [PluginizableASTComponent]
+    /// The list of non-core components in this node.
+    let nonCoreComponents: [ASTComponent]
+    /// The list of plugin extensions in this node.
+    let pluginExtensions: [PluginExtension]
+    /// The list of regular components in this node.
+    let components: [ASTComponent]
     /// The list of dependencies in this node.
     let dependencies: [Dependency]
     /// The list of import statements including the `import` keyword.
