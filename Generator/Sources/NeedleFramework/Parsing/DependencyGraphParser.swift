@@ -137,4 +137,4 @@ class DependencyGraphParser {
     }
 }
 
-typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)
+private typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)
