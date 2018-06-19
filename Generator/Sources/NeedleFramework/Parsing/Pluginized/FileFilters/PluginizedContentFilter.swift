@@ -41,7 +41,7 @@ class PluginizedContentFilter: FileFilter {
             return false
         }
 
-        // Match actual inheritancess using Regex.
+        // Match actual inheritances using Regex.
         let containsPluginizedComponentInheritance = (Regex(": *PluginizedComponent *<").firstMatch(in: content) != nil)
         if containsPluginizedComponentInheritance {
             return true
