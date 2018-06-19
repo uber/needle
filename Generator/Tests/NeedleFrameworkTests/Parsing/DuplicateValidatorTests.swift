@@ -31,16 +31,9 @@ class DuplicateValidatorTests: XCTestCase {
         let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
         let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
 
-        let validator = DuplicateValidator()
+        let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
-        let result = validator.validate([comp1, comp2, comp3])
-
-        switch result {
-        case .duplicate(_):
-            XCTFail()
-        default:
-            break
-        }
+        try! validator.process()
     }
 
     func test_validateComponent_withDuplicates_verifyResult() {
@@ -48,14 +41,13 @@ class DuplicateValidatorTests: XCTestCase {
         let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
         let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
 
-        let validator = DuplicateValidator()
+        let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
-        let result = validator.validate([comp1, comp2, comp3])
-
-        switch result {
-        case .duplicate(let name):
-            XCTAssertEqual(name, "ha1")
-        default:
+        do  {
+            try validator.process()
+        } catch ProcessingError.fail(let message) {
+            XCTAssertTrue(message.contains("ha1"))
+        } catch {
             XCTFail()
         }
     }
@@ -65,16 +57,9 @@ class DuplicateValidatorTests: XCTestCase {
         let dep2 = Dependency(name: "d2", properties: [])
         let dep3 = Dependency(name: "d3", properties: [])
 
-        let validator = DuplicateValidator()
+        let validator = DuplicateValidator(components: [], dependencies: [dep1, dep2, dep3])
 
-        let result = validator.validate([dep1, dep2, dep3])
-
-        switch result {
-        case .duplicate(_):
-            XCTFail()
-        default:
-            break
-        }
+        try! validator.process()
     }
 
     func test_validateDependencies_withDuplicates_verifyResult() {
@@ -82,14 +67,13 @@ class DuplicateValidatorTests: XCTestCase {
         let dep2 = Dependency(name: "d1", properties: [])
         let dep3 = Dependency(name: "d3", properties: [])
 
-        let validator = DuplicateValidator()
+        let validator = DuplicateValidator(components: [], dependencies: [dep1, dep2, dep3])
 
-        let result = validator.validate([dep1, dep2, dep3])
-
-        switch result {
-        case .duplicate(let name):
-            XCTAssertEqual(name, "d1")
-        default:
+        do  {
+            try validator.process()
+        } catch ProcessingError.fail(let message) {
+            XCTAssertTrue(message.contains("d1"))
+        } catch {
             XCTFail()
         }
     }
