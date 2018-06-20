@@ -28,6 +28,8 @@ class PluginizableASTComponent {
     let pluginExtensionType: String
     /// The type name of the non-core component.
     let nonCoreComponentType: String
+    /// The linked non-core component.
+    var nonCoreComponent: ASTComponent?
 
     /// Initializer.
     ///
