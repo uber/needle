@@ -95,8 +95,8 @@ class PluginizableASTParserTaskTests: AbstractParserTests {
         XCTAssertTrue(containsSharedNonCoreObject)
 
         // Pluginized components.
-        XCTAssertEqual(node.pluginiableComponents.count, 1)
-        let somePluginizedCompo = node.pluginiableComponents.first { (component: PluginizableASTComponent) -> Bool in
+        XCTAssertEqual(node.pluginizableComponents.count, 1)
+        let somePluginizedCompo = node.pluginizableComponents.first { (component: PluginizableASTComponent) -> Bool in
             component.data.name == "SomePluginizedCompo"
         }!
         XCTAssertEqual(somePluginizedCompo.data.expressionCallTypeNames, ["LGOLEDTv"])

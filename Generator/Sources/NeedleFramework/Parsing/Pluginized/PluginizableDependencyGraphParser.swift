@@ -18,17 +18,10 @@ import Basic
 import Foundation
 import SourceKittenFramework
 
-/// Errors that can occur during parsing of the dependency graph from
-/// Swift sources.
-enum DependencyGraphParserError: Error {
-    /// Parsing a particular source file timed out.
-    case timeout(String)
-}
-
 /// The entry utility for the parsing phase. The parser deeply scans a
 /// directory and parses the relevant Swift source files, and finally
 /// outputs the dependency graph.
-class DependencyGraphParser {
+class PluginizableDependencyGraphParser {
 
     /// Parse all the Swift sources within the directory of given URL,
     /// excluding any file that contains a suffix specified in the given
@@ -44,19 +37,19 @@ class DependencyGraphParser {
     /// source timed out.
     func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
         let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
-        let (components, dependencies, imports) = try collectDataModels(with: urlHandles)
-        return process(components, dependencies, imports)
+        let (pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
+        return process(pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
-        var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
+    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizableDependencyGraphNode>, URL)] {
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<PluginizableDependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         enumerator.enumerate(from: rootUrl) { (fileUrl: URL) in
-            let task = FileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes)
+            let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes)
             let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
             taskHandleTuples.append((taskHandle, fileUrl))
         }
@@ -64,30 +57,36 @@ class DependencyGraphParser {
         return taskHandleTuples
     }
 
-    private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<DependencyGraphNode> {
-        if currentTask is FileFilterTask, let filterResult = currentResult as? FilterResult {
+    private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<PluginizableDependencyGraphNode> {
+        if currentTask is PluginizableFileFilterTask, let filterResult = currentResult as? FilterResult {
             switch filterResult {
             case .shouldParse(let url, let content):
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             case .skip:
-                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
+                return .endOfSequence(PluginizableDependencyGraphNode(pluginizableComponents: [], nonCoreComponents: [], pluginExtensions: [], components: [], dependencies: [], imports: []))
             }
         } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
-            return .continueSequence(ASTParserTask(ast: ast))
-        } else if currentTask is ASTParserTask, let node = currentResult as? DependencyGraphNode {
+            return .continueSequence(PluginizableASTParserTask(ast: ast))
+        } else if currentTask is PluginizableASTParserTask, let node = currentResult as? PluginizableDependencyGraphNode {
             return .endOfSequence(node)
         } else {
             fatalError("Unhandled task \(currentTask) with result \(currentResult)")
         }
     }
 
-    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([ASTComponent], [Dependency], Set<String>) {
+    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([PluginizableASTComponent], [ASTComponent], [PluginExtension], [ASTComponent], [Dependency], Set<String>) {
+        var pluginizableComponents = [PluginizableASTComponent]()
+        var nonCoreComponents = [ASTComponent]()
+        var pluginExtensions = [PluginExtension]()
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
         var imports = Set<String>()
         for urlHandle in urlHandles {
             do {
                 let node = try urlHandle.handle.await(withTimeout: 30)
+                pluginizableComponents.append(contentsOf: node.pluginizableComponents)
+                nonCoreComponents.append(contentsOf: node.nonCoreComponents)
+                pluginExtensions.append(contentsOf: node.pluginExtensions)
                 components.append(contentsOf: node.components)
                 dependencies.append(contentsOf: node.dependencies)
                 for statement in node.imports {
@@ -99,14 +98,20 @@ class DependencyGraphParser {
                 fatalError("Unhandled task execution error \(error)")
             }
         }
-        return (components, dependencies, imports)
+        return (pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
-    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [String]) {
+    private func process(_ pluginizableComponents: [PluginizableASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [String]) {
+        var allComponents = nonCoreComponents + components
+        let pluginizableComponentData = pluginizableComponents.map { (component: PluginizableASTComponent) -> ASTComponent in
+            component.data
+        }
+        allComponents.append(contentsOf: pluginizableComponentData)
         let processors: [Processor] = [
-            DuplicateValidator(components: components, dependencies: dependencies),
-            ParentLinker(components: components),
-            DependencyLinker(components: components, dependencies: dependencies)
+            DuplicateValidator(components: allComponents, dependencies: dependencies),
+            ParentLinker(components: allComponents),
+            DependencyLinker(components: allComponents, dependencies: dependencies),
+            NonCoreComponentLinker(pluginizableComponents: pluginizableComponents, nonCoreComponents: nonCoreComponents)
         ]
         for processor in processors {
             do {
@@ -116,6 +121,7 @@ class DependencyGraphParser {
             }
         }
 
+        // TODO:  This needs further processing.
         let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
             astComponent.valueType
         }
@@ -124,4 +130,4 @@ class DependencyGraphParser {
     }
 }
 
-private typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)
+private typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<PluginizableDependencyGraphNode>, fileUrl: URL)

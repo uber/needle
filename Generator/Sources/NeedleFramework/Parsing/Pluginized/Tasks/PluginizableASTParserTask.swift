@@ -35,7 +35,7 @@ class PluginizableASTParserTask: AbstractTask<PluginizableDependencyGraphNode> {
         let baseTask = ASTParserTask(ast: ast)
         let baseNode = baseTask.execute()
         let (pluginizedComponents, nonCoreComponents, pluginExtensions) = parsePluginizedStructures()
-        return PluginizableDependencyGraphNode(pluginiableComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
+        return PluginizableDependencyGraphNode(pluginizableComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
     }
 
     // MARK: - Private
