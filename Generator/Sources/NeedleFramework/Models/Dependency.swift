@@ -28,4 +28,12 @@ struct Dependency: Equatable {
     let name: String
     /// The list of dependency properties.
     let properties: [Property]
+
+    /// Check if the dependency name is an empty dependency.
+    ///
+    /// - returns: `true` if this dependency prootocol is the `EmptyDependency`.
+    /// `false` otherwise.
+    static func isEmptyDependency(name: String) -> Bool {
+        return name == "EmptyDependency"
+    }
 }

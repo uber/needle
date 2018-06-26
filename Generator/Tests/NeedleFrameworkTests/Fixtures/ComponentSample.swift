@@ -75,7 +75,7 @@ protocol BExtension: PluginExtension {
     var myPluginPoint: MyPluginPoint { get }
 }
 
-class SomePluginizedCompo: PluginizedComponent<ADependency, BExtension, SomeNonCoreComponent>, Stuff {
+class SomePluginizedComp: PluginizedComponent<ADependency, BExtension, SomeNonCoreComponent>, Stuff {
     var tv: Tv {
         return LGOLEDTv()
     }

@@ -14,9 +14,7 @@
 //  limitations under the License.
 //
 
-import Basic
 import Foundation
-import SourceKittenFramework
 
 /// Errors that can occur during parsing of the dependency graph from
 /// Swift sources.
@@ -39,7 +37,8 @@ class DependencyGraphParser {
     /// in this list, the said file is excluded from parsing.
     /// - parameter executor: The executor to use for concurrent processing
     /// of files.
-    /// - returns: The list of component data models.
+    /// - returns: The list of component data models and sorted import
+    /// statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
     func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
