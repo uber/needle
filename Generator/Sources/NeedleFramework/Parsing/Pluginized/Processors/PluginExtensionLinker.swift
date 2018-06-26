@@ -16,34 +16,34 @@
 
 import Foundation
 
-/// A processor that links non-core components to pluginizable components
-/// based on type name.
-class NonCoreComponentLinker: Processor {
+/// A processor that links pluginizable components with their plugin
+/// extensions based on type name.
+class PluginExtensionLinker: Processor {
 
     /// Initializer.
     ///
     /// - parameter pluginizableComponents: The pluginizable components to
-    /// link with non-core components.
-    /// - parameter nonCoreComponents: The non-core components to link.
-    init(pluginizableComponents: [PluginizableASTComponent], nonCoreComponents: [ASTComponent]) {
+    /// link with plugin extensions.
+    /// - parameter pluginExtensions: The non-core components to link.
+    init(pluginizableComponents: [PluginizableASTComponent], pluginExtensions: [PluginExtension]) {
         self.pluginizableComponents = pluginizableComponents
-        self.nonCoreComponents = nonCoreComponents
+        self.pluginExtensions = pluginExtensions
     }
 
     /// Process the data models.
     ///
     /// - throws: `ProcessingError` if some pluginized components cannot
-    /// find matching non-core components.
+    /// find matching plugin extensions.
     func process() throws {
-        var nonCoreMap = [String: ASTComponent]()
-        for nonCoreComponent in nonCoreComponents {
-            nonCoreMap[nonCoreComponent.name] = nonCoreComponent
+        var extensionMap = [String: PluginExtension]()
+        for pluginExtension in pluginExtensions {
+            extensionMap[pluginExtension.name] = pluginExtension
         }
 
         for pluginizableComponent in pluginizableComponents {
-            pluginizableComponent.nonCoreComponent = nonCoreMap[pluginizableComponent.nonCoreComponentType]
-            if pluginizableComponent.nonCoreComponent == nil {
-                throw ProcessingError.fail("Cannot find \(pluginizableComponent.data.name)'s non-core component with type name \(pluginizableComponent.nonCoreComponentType)")
+            pluginizableComponent.pluginExtension = extensionMap[pluginizableComponent.pluginExtensionType]
+            if pluginizableComponent.pluginExtension == nil {
+                throw ProcessingError.fail("Cannot find \(pluginizableComponent.data.name)'s plugin extension with type name \(pluginizableComponent.pluginExtensionType)")
             }
         }
     }
@@ -51,5 +51,5 @@ class NonCoreComponentLinker: Processor {
     // MARK: - Private
 
     private let pluginizableComponents: [PluginizableASTComponent]
-    private let nonCoreComponents: [ASTComponent]
+    private let pluginExtensions: [PluginExtension]
 }

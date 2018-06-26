@@ -14,9 +14,7 @@
 //  limitations under the License.
 //
 
-import Basic
 import Foundation
-import SourceKittenFramework
 
 /// The entry utility for the parsing phase. The parser deeply scans a
 /// directory and parses the relevant Swift source files, and finally
@@ -32,10 +30,11 @@ class PluginizableDependencyGraphParser {
     /// in this list, the said file is excluded from parsing.
     /// - parameter executor: The executor to use for concurrent processing
     /// of files.
-    /// - returns: The list of component data models.
+    /// - returns: The list of component data models, pluginized component
+    /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
+    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizableComponent], [String]) {
         let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
         let (pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
         return process(pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
@@ -101,7 +100,7 @@ class PluginizableDependencyGraphParser {
         return (pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
-    private func process(_ pluginizableComponents: [PluginizableASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [String]) {
+    private func process(_ pluginizableComponents: [PluginizableASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [PluginizableComponent], [String]) {
         var allComponents = nonCoreComponents + components
         let pluginizableComponentData = pluginizableComponents.map { (component: PluginizableASTComponent) -> ASTComponent in
             component.data
@@ -111,7 +110,8 @@ class PluginizableDependencyGraphParser {
             DuplicateValidator(components: allComponents, dependencies: dependencies),
             ParentLinker(components: allComponents),
             DependencyLinker(components: allComponents, dependencies: dependencies),
-            NonCoreComponentLinker(pluginizableComponents: pluginizableComponents, nonCoreComponents: nonCoreComponents)
+            NonCoreComponentLinker(pluginizableComponents: pluginizableComponents, nonCoreComponents: nonCoreComponents),
+            PluginExtensionLinker(pluginizableComponents: pluginizableComponents, pluginExtensions: pluginExtensions)
         ]
         for processor in processors {
             do {
@@ -121,12 +121,14 @@ class PluginizableDependencyGraphParser {
             }
         }
 
-        // TODO:  This needs further processing.
         let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
             astComponent.valueType
         }
+        let valueTypePluginizedComponents = pluginizableComponents.map { (astComponent: PluginizableASTComponent) -> PluginizableComponent in
+            return astComponent.valueType
+        }
         let sortedImports = imports.sorted()
-        return (valueTypeComponents, sortedImports)
+        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports)
     }
 }
 

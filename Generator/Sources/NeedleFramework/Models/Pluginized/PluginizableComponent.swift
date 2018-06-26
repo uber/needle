@@ -30,6 +30,13 @@ class PluginizableASTComponent {
     let nonCoreComponentType: String
     /// The linked non-core component.
     var nonCoreComponent: ASTComponent?
+    /// The linked plugin extension.
+    var pluginExtension: PluginExtension?
+
+    /// Convert the mutable reference type into a thread-safe value type.
+    var valueType: PluginizableComponent {
+        return PluginizableComponent(data: data.valueType, nonCoreComponent: nonCoreComponent!.valueType, pluginExtension: pluginExtension!)
+    }
 
     /// Initializer.
     ///
@@ -51,4 +58,6 @@ struct PluginizableComponent {
     let data: Component
     /// The non-core component.
     let nonCoreComponent: Component
+    /// The plugin extension.
+    let pluginExtension: PluginExtension
 }

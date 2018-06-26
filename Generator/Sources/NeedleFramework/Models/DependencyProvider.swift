@@ -55,7 +55,7 @@ struct ProcessedDependencyProvider {
     /// `true` if this provider's dependency prootocol is the `EmptyDependency`.
     /// `false` otherwise.
     var isEmptyDependency: Bool {
-        return unprocessed.dependency.name == "EmptyDependency"
+        return Dependency.isEmptyDependency(name: unprocessed.dependency.name)
     }
 }
 

@@ -53,10 +53,7 @@ class ASTComponent {
         let parentValues = parents.map { (parent: ASTComponent) -> Component in
             parent.valueType
         }
-        guard let dependency = dependencyProtocol else {
-            fatalError("\(self)'s dependency protocol data model is not yet linked.")
-        }
-        return Component(name: name, properties: properties, parents: parentValues, dependency: dependency)
+        return Component(name: name, properties: properties, parents: parentValues, dependency: dependencyProtocol!)
     }
 
     /// Initializer.
