@@ -20,7 +20,7 @@ import Foundation
 /// to determine if the file needs to be parsed for AST. If the file should
 /// This task extends the Needle `FileFilterTask` to support pluginized and
 /// non-core component types.
-class PluginizableFileFilterTask: AbstractTask<FilterResult> {
+class PluginizedFileFilterTask: AbstractTask<FilterResult> {
 
     /// Initializer.
     ///

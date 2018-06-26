@@ -26,10 +26,10 @@ class NonCoreComponentLinkerTests: AbstractParserTests {
 
     func test_process_withComponents_verifyLinkages() {
         let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
-        let pluginizedComp = PluginizableASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")
+        let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")
         let nonCoreComponent = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", properties: [], expressionCallTypeNames: [])
 
-        let linker = NonCoreComponentLinker(pluginizableComponents: [pluginizedComp], nonCoreComponents: [nonCoreComponent])
+        let linker = NonCoreComponentLinker(pluginizedComponents: [pluginizedComp], nonCoreComponents: [nonCoreComponent])
 
         try! linker.process()
 
@@ -38,10 +38,10 @@ class NonCoreComponentLinkerTests: AbstractParserTests {
 
     func test_process_withComponentsNoNonCoreComp_verifyError() {
         let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
-        let pluginizedComp = PluginizableASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")
+        let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")
         let nonCoreComponent = ASTComponent(name: "WrongNonCoreComp", dependencyProtocolName: "ItsDependency", properties: [], expressionCallTypeNames: [])
 
-        let linker = NonCoreComponentLinker(pluginizableComponents: [pluginizedComp], nonCoreComponents: [nonCoreComponent])
+        let linker = NonCoreComponentLinker(pluginizedComponents: [pluginizedComp], nonCoreComponents: [nonCoreComponent])
 
         do {
             try linker.process()

@@ -17,7 +17,7 @@
 import XCTest
 @testable import NeedleFramework
 
-class PluginizableDependencyGraphParserTests: AbstractPluginizedParserTests {
+class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
 
     static var allTests = [
         ("test_parse_withTaskCompleteion_verifyTaskSequence", test_parse_withTaskCompleteion_verifyTaskSequence),
@@ -25,7 +25,7 @@ class PluginizableDependencyGraphParserTests: AbstractPluginizedParserTests {
     ]
 
     func test_parse_withTaskCompleteion_verifyTaskSequence() {
-        let parser = PluginizableDependencyGraphParser()
+        let parser = PluginizedDependencyGraphParser()
         let fixturesURL = fixtureUrl(for: "")
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
@@ -35,11 +35,11 @@ class PluginizableDependencyGraphParserTests: AbstractPluginizedParserTests {
         var producerCount = 0
         var parserCount = 0
         executor.executionHandler = { (task: Task, result: Any) in
-            if task is PluginizableFileFilterTask {
+            if task is PluginizedFileFilterTask {
                 filterCount += 1
             } else if task is ASTProducerTask {
                 producerCount += 1
-            } else if task is PluginizableASTParserTask {
+            } else if task is PluginizedASTParserTask {
                 parserCount += 1
             } else {
                 XCTFail()
@@ -62,7 +62,7 @@ class PluginizableDependencyGraphParserTests: AbstractPluginizedParserTests {
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {
-        let parser = PluginizableDependencyGraphParser()
+        let parser = PluginizedDependencyGraphParser()
         let fixturesURL = fixtureUrl(for: "")
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]

@@ -28,4 +28,11 @@ XCTMain([
     testCase(DuplicateValidatorTests.allTests),
     testCase(FileFilterTaskTests.allTests),
     testCase(SequenceExecutorTests.allTests),
+    testCase(PluginizableASTParserTaskTests.allTests),
+    testCase(PluginizableFileFilterTaskTests.allTests),
+    testCase(NonCoreComponentLinkerTests.allTests),
+    testCase(PluginExtensionLinkerTests.allTests),
+    testCase(DependencyLinkerTests.allTests),
+    testCase(ParentLinkerTests.allTests),
+    testCase(PluginizableDependencyGraphParserTests.allTests),
 ])

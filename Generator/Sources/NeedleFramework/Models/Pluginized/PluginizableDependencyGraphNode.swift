@@ -18,9 +18,9 @@ import Foundation
 
 /// An extended data model representing a node in the dependency graph.
 /// The components may be pluginized components or regular ones.
-struct PluginizableDependencyGraphNode {
-    /// The list of pluginizable components in this node.
-    let pluginizableComponents: [PluginizableASTComponent]
+struct PluginizedDependencyGraphNode {
+    /// The list of pluginized components in this node.
+    let pluginizedComponents: [PluginizedASTComponent]
     /// The list of non-core components in this node.
     let nonCoreComponents: [ASTComponent]
     /// The list of plugin extensions in this node.

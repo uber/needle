@@ -26,10 +26,10 @@ class PluginExtensionLinkerTests: AbstractParserTests {
 
     func test_process_withComponents_verifyLinkages() {
         let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
-        let pluginizedComp = PluginizableASTComponent(data: data, pluginExtensionType: "MyExtension", nonCoreComponentType: "Doesn't matter")
+        let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "MyExtension", nonCoreComponentType: "Doesn't matter")
         let pluginExtension = PluginExtension(name: "MyExtension", properties: [])
 
-        let linker = PluginExtensionLinker(pluginizableComponents: [pluginizedComp], pluginExtensions: [pluginExtension])
+        let linker = PluginExtensionLinker(pluginizedComponents: [pluginizedComp], pluginExtensions: [pluginExtension])
 
         try! linker.process()
 
@@ -38,9 +38,9 @@ class PluginExtensionLinkerTests: AbstractParserTests {
 
     func test_process_withComponentsNoPluginExtension_verifyError() {
         let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
-        let pluginizedComp = PluginizableASTComponent(data: data, pluginExtensionType: "StuffExtension", nonCoreComponentType: "SomeComp")
+        let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "StuffExtension", nonCoreComponentType: "SomeComp")
 
-        let linker = PluginExtensionLinker(pluginizableComponents: [pluginizedComp], pluginExtensions: [])
+        let linker = PluginExtensionLinker(pluginizedComponents: [pluginizedComp], pluginExtensions: [])
 
         do {
             try linker.process()
