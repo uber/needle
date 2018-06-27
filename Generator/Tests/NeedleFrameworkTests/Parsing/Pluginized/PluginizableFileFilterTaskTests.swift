@@ -17,7 +17,7 @@
 import XCTest
 @testable import NeedleFramework
 
-class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
+class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
 
     static var allTests = [
         ("test_execute_nonSwiftSource_verifyFilter", test_execute_nonSwiftSource_verifyFilter),
@@ -29,7 +29,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
 
     func test_execute_nonSwiftSource_verifyFilter() {
         let fileUrl = fixtureUrl(for: "NonSwift.json")
-        let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let result = task.execute()
         switch result {
@@ -43,7 +43,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
     func test_execute_excludedSuffix_verifyFilter() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
-        let excludeSuffixTask = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"])
+        let excludeSuffixTask = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"])
 
         var result = excludeSuffixTask.execute()
 
@@ -54,7 +54,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
             break
         }
 
-        let includeSuffixTask = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let includeSuffixTask = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         result = includeSuffixTask.execute()
 
@@ -69,7 +69,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
 
     func test_execute_nonNeedleComponent_verifyFilter() {
         let fixturesURL = fixtureUrl(for: "NonNeedleComponent.swift")
-        let task = PluginizableFileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
         let result = task.execute()
 
@@ -83,7 +83,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
 
     func test_execute_nonInheritanceComponent_verifyFilter() {
         let fixturesURL = fixtureUrl(for: "NonInheritanceComponent.swift")
-        let task = PluginizableFileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fixturesURL, exclusionSuffixes: [])
 
         let result = task.execute()
 
@@ -98,7 +98,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
     func test_execute_onlyComponent_verifyResult() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let result = task.execute()
 
@@ -114,7 +114,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
     func test_execute_onlyPluginizedComponent_verifyResult() {
         let fileUrl = pluginizedFixtureUrl(for: "OnlyPluginizedComponent.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let result = task.execute()
 
@@ -130,7 +130,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
     func test_execute_onlyNonCoreComponent_verifyResult() {
         let fileUrl = pluginizedFixtureUrl(for: "OnlyNonCoreComponent.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let result = task.execute()
 
@@ -162,7 +162,7 @@ class PluginizableFileFilterTaskTests: AbstractPluginizedParserTests {
     func test_execute_onlyPluginExtension_verifyResult() {
         let fileUrl = pluginizedFixtureUrl(for: "OnlyPluginExtension.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
 
         let result = task.execute()
 

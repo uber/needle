@@ -21,7 +21,7 @@ import Foundation
 /// representation does not have the reference between the pluginized component
 /// and its non-core one. Since it is the pure AST representation, it only
 /// has the type name of the non-core component.
-class PluginizableASTComponent {
+class PluginizedASTComponent {
     /// The actual data of this component.
     let data: ASTComponent
     /// The type name of the plugin extension.
@@ -34,8 +34,8 @@ class PluginizableASTComponent {
     var pluginExtension: PluginExtension?
 
     /// Convert the mutable reference type into a thread-safe value type.
-    var valueType: PluginizableComponent {
-        return PluginizableComponent(data: data.valueType, nonCoreComponent: nonCoreComponent!.valueType, pluginExtension: pluginExtension!)
+    var valueType: PluginizedComponent {
+        return PluginizedComponent(data: data.valueType, nonCoreComponent: nonCoreComponent!.valueType, pluginExtension: pluginExtension!)
     }
 
     /// Initializer.
@@ -53,7 +53,7 @@ class PluginizableASTComponent {
 
 /// A data model representing an extended component that may be a pluginized
 /// component with a referenced non-core component.
-struct PluginizableComponent {
+struct PluginizedComponent {
     /// The actual data of this component.
     let data: Component
     /// The non-core component.

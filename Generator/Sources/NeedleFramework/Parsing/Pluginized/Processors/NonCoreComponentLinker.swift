@@ -16,17 +16,17 @@
 
 import Foundation
 
-/// A processor that links non-core components to pluginizable components
+/// A processor that links non-core components to pluginized components
 /// based on type name.
 class NonCoreComponentLinker: Processor {
 
     /// Initializer.
     ///
-    /// - parameter pluginizableComponents: The pluginizable components to
+    /// - parameter pluginizedComponents: The pluginized components to
     /// link with non-core components.
     /// - parameter nonCoreComponents: The non-core components to link.
-    init(pluginizableComponents: [PluginizableASTComponent], nonCoreComponents: [ASTComponent]) {
-        self.pluginizableComponents = pluginizableComponents
+    init(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent]) {
+        self.pluginizedComponents = pluginizedComponents
         self.nonCoreComponents = nonCoreComponents
     }
 
@@ -40,16 +40,16 @@ class NonCoreComponentLinker: Processor {
             nonCoreMap[nonCoreComponent.name] = nonCoreComponent
         }
 
-        for pluginizableComponent in pluginizableComponents {
-            pluginizableComponent.nonCoreComponent = nonCoreMap[pluginizableComponent.nonCoreComponentType]
-            if pluginizableComponent.nonCoreComponent == nil {
-                throw ProcessingError.fail("Cannot find \(pluginizableComponent.data.name)'s non-core component with type name \(pluginizableComponent.nonCoreComponentType)")
+        for pluginizedComponent in pluginizedComponents {
+            pluginizedComponent.nonCoreComponent = nonCoreMap[pluginizedComponent.nonCoreComponentType]
+            if pluginizedComponent.nonCoreComponent == nil {
+                throw ProcessingError.fail("Cannot find \(pluginizedComponent.data.name)'s non-core component with type name \(pluginizedComponent.nonCoreComponentType)")
             }
         }
     }
 
     // MARK: - Private
 
-    private let pluginizableComponents: [PluginizableASTComponent]
+    private let pluginizedComponents: [PluginizedASTComponent]
     private let nonCoreComponents: [ASTComponent]
 }

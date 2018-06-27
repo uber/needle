@@ -19,7 +19,7 @@ import SourceKittenFramework
 
 /// The extended AST parser task that parses all components, dependency
 /// protocols and import statements, including pluginized components.
-class PluginizableASTParserTask: AbstractTask<PluginizableDependencyGraphNode> {
+class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 
     /// Initializer.
     ///
@@ -31,19 +31,19 @@ class PluginizableASTParserTask: AbstractTask<PluginizableDependencyGraphNode> {
     /// Execute the task and returns the dependency graph data model.
     ///
     /// - returns: Parsed `PluginizedDependencyGraphNode`.
-    override func execute() -> PluginizableDependencyGraphNode {
+    override func execute() -> PluginizedDependencyGraphNode {
         let baseTask = ASTParserTask(ast: ast)
         let baseNode = baseTask.execute()
         let (pluginizedComponents, nonCoreComponents, pluginExtensions) = parsePluginizedStructures()
-        return PluginizableDependencyGraphNode(pluginizableComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
+        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
     }
 
     // MARK: - Private
 
     private let ast: AST
 
-    private func parsePluginizedStructures() -> ([PluginizableASTComponent], [ASTComponent], [PluginExtension]) {
-        var pluginizedComponents = [PluginizableASTComponent]()
+    private func parsePluginizedStructures() -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension]) {
+        var pluginizedComponents = [PluginizedASTComponent]()
         var nonCoreComponents = [ASTComponent]()
         var pluginExtensions = [PluginExtension]()
 
@@ -53,7 +53,7 @@ class PluginizableASTParserTask: AbstractTask<PluginizableDependencyGraphNode> {
                 if substructure.isPluginizedComponent {
                     let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = substructure.pluginizedGenerics
                     let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames)
-                    pluginizedComponents.append(PluginizableASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
+                    pluginizedComponents.append(PluginizedASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
                 } else if substructure.isNonCoreComponent {
                     let dependencyProtocolName = substructure.dependencyProtocolName(for: "NonCoreComponent")
                     let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames)

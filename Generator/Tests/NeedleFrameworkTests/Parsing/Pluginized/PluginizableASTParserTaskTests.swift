@@ -18,19 +18,19 @@ import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 
-class PluginizableASTParserTaskTests: AbstractParserTests {
+class PluginizedASTParserTaskTests: AbstractParserTests {
 
     static var allTests = [
-        ("test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizableDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizableDependencyGraphNode),
+        ("test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode),
     ]
 
-    func test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizableDependencyGraphNode() {
+    func test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
         let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = PluginizableASTParserTask(ast: AST(structure: structure, imports: imports))
+        let task = PluginizedASTParserTask(ast: AST(structure: structure, imports: imports))
         let node = task.execute()
 
 
@@ -95,12 +95,12 @@ class PluginizableASTParserTaskTests: AbstractParserTests {
         XCTAssertTrue(containsSharedNonCoreObject)
 
         // Pluginized components.
-        XCTAssertEqual(node.pluginizableComponents.count, 1)
-        let somePluginizedCompo = node.pluginizableComponents.first { (component: PluginizableASTComponent) -> Bool in
-            component.data.name == "SomePluginizedCompo"
+        XCTAssertEqual(node.pluginizedComponents.count, 1)
+        let somePluginizedCompo = node.pluginizedComponents.first { (component: PluginizedASTComponent) -> Bool in
+            component.data.name == "SomePluginizedComp"
         }!
         XCTAssertEqual(somePluginizedCompo.data.expressionCallTypeNames, ["LGOLEDTv"])
-        XCTAssertEqual(somePluginizedCompo.data.name, "SomePluginizedCompo")
+        XCTAssertEqual(somePluginizedCompo.data.name, "SomePluginizedComp")
         XCTAssertEqual(somePluginizedCompo.data.dependencyProtocolName, "ADependency")
         XCTAssertEqual(somePluginizedCompo.data.properties.count, 1)
         XCTAssertEqual(somePluginizedCompo.pluginExtensionType, "BExtension")

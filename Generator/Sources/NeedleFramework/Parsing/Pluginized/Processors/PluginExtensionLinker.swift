@@ -16,17 +16,17 @@
 
 import Foundation
 
-/// A processor that links pluginizable components with their plugin
+/// A processor that links pluginized components with their plugin
 /// extensions based on type name.
 class PluginExtensionLinker: Processor {
 
     /// Initializer.
     ///
-    /// - parameter pluginizableComponents: The pluginizable components to
+    /// - parameter pluginizedComponents: The pluginized components to
     /// link with plugin extensions.
     /// - parameter pluginExtensions: The non-core components to link.
-    init(pluginizableComponents: [PluginizableASTComponent], pluginExtensions: [PluginExtension]) {
-        self.pluginizableComponents = pluginizableComponents
+    init(pluginizedComponents: [PluginizedASTComponent], pluginExtensions: [PluginExtension]) {
+        self.pluginizedComponents = pluginizedComponents
         self.pluginExtensions = pluginExtensions
     }
 
@@ -40,16 +40,16 @@ class PluginExtensionLinker: Processor {
             extensionMap[pluginExtension.name] = pluginExtension
         }
 
-        for pluginizableComponent in pluginizableComponents {
-            pluginizableComponent.pluginExtension = extensionMap[pluginizableComponent.pluginExtensionType]
-            if pluginizableComponent.pluginExtension == nil {
-                throw ProcessingError.fail("Cannot find \(pluginizableComponent.data.name)'s plugin extension with type name \(pluginizableComponent.pluginExtensionType)")
+        for pluginizedComponent in pluginizedComponents {
+            pluginizedComponent.pluginExtension = extensionMap[pluginizedComponent.pluginExtensionType]
+            if pluginizedComponent.pluginExtension == nil {
+                throw ProcessingError.fail("Cannot find \(pluginizedComponent.data.name)'s plugin extension with type name \(pluginizedComponent.pluginExtensionType)")
             }
         }
     }
 
     // MARK: - Private
 
-    private let pluginizableComponents: [PluginizableASTComponent]
+    private let pluginizedComponents: [PluginizedASTComponent]
     private let pluginExtensions: [PluginExtension]
 }

@@ -19,7 +19,7 @@ import Foundation
 /// The entry utility for the parsing phase. The parser deeply scans a
 /// directory and parses the relevant Swift source files, and finally
 /// outputs the dependency graph.
-class PluginizableDependencyGraphParser {
+class PluginizedDependencyGraphParser {
 
     /// Parse all the Swift sources within the directory of given URL,
     /// excluding any file that contains a suffix specified in the given
@@ -34,21 +34,21 @@ class PluginizableDependencyGraphParser {
     /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizableComponent], [String]) {
+    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizedComponent], [String]) {
         let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
-        let (pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
-        return process(pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
+        let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
+        return process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizableDependencyGraphNode>, URL)] {
-        var taskHandleTuples = [(handle: SequenceExecutionHandle<PluginizableDependencyGraphNode>, fileUrl: URL)]()
+    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<PluginizedDependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         enumerator.enumerate(from: rootUrl) { (fileUrl: URL) in
-            let task = PluginizableFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes)
+            let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes)
             let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
             taskHandleTuples.append((taskHandle, fileUrl))
         }
@@ -56,25 +56,25 @@ class PluginizableDependencyGraphParser {
         return taskHandleTuples
     }
 
-    private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<PluginizableDependencyGraphNode> {
-        if currentTask is PluginizableFileFilterTask, let filterResult = currentResult as? FilterResult {
+    private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<PluginizedDependencyGraphNode> {
+        if currentTask is PluginizedFileFilterTask, let filterResult = currentResult as? FilterResult {
             switch filterResult {
             case .shouldParse(let url, let content):
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             case .skip:
-                return .endOfSequence(PluginizableDependencyGraphNode(pluginizableComponents: [], nonCoreComponents: [], pluginExtensions: [], components: [], dependencies: [], imports: []))
+                return .endOfSequence(PluginizedDependencyGraphNode(pluginizedComponents: [], nonCoreComponents: [], pluginExtensions: [], components: [], dependencies: [], imports: []))
             }
         } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
-            return .continueSequence(PluginizableASTParserTask(ast: ast))
-        } else if currentTask is PluginizableASTParserTask, let node = currentResult as? PluginizableDependencyGraphNode {
+            return .continueSequence(PluginizedASTParserTask(ast: ast))
+        } else if currentTask is PluginizedASTParserTask, let node = currentResult as? PluginizedDependencyGraphNode {
             return .endOfSequence(node)
         } else {
             fatalError("Unhandled task \(currentTask) with result \(currentResult)")
         }
     }
 
-    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([PluginizableASTComponent], [ASTComponent], [PluginExtension], [ASTComponent], [Dependency], Set<String>) {
-        var pluginizableComponents = [PluginizableASTComponent]()
+    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension], [ASTComponent], [Dependency], Set<String>) {
+        var pluginizedComponents = [PluginizedASTComponent]()
         var nonCoreComponents = [ASTComponent]()
         var pluginExtensions = [PluginExtension]()
         var components = [ASTComponent]()
@@ -83,7 +83,7 @@ class PluginizableDependencyGraphParser {
         for urlHandle in urlHandles {
             do {
                 let node = try urlHandle.handle.await(withTimeout: 30)
-                pluginizableComponents.append(contentsOf: node.pluginizableComponents)
+                pluginizedComponents.append(contentsOf: node.pluginizedComponents)
                 nonCoreComponents.append(contentsOf: node.nonCoreComponents)
                 pluginExtensions.append(contentsOf: node.pluginExtensions)
                 components.append(contentsOf: node.components)
@@ -97,21 +97,21 @@ class PluginizableDependencyGraphParser {
                 fatalError("Unhandled task execution error \(error)")
             }
         }
-        return (pluginizableComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
+        return (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
-    private func process(_ pluginizableComponents: [PluginizableASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [PluginizableComponent], [String]) {
+    private func process(_ pluginizedComponents: [PluginizedASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [PluginizedComponent], [String]) {
         var allComponents = nonCoreComponents + components
-        let pluginizableComponentData = pluginizableComponents.map { (component: PluginizableASTComponent) -> ASTComponent in
+        let pluginizedComponentData = pluginizedComponents.map { (component: PluginizedASTComponent) -> ASTComponent in
             component.data
         }
-        allComponents.append(contentsOf: pluginizableComponentData)
+        allComponents.append(contentsOf: pluginizedComponentData)
         let processors: [Processor] = [
             DuplicateValidator(components: allComponents, dependencies: dependencies),
             ParentLinker(components: allComponents),
             DependencyLinker(components: allComponents, dependencies: dependencies),
-            NonCoreComponentLinker(pluginizableComponents: pluginizableComponents, nonCoreComponents: nonCoreComponents),
-            PluginExtensionLinker(pluginizableComponents: pluginizableComponents, pluginExtensions: pluginExtensions)
+            NonCoreComponentLinker(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents),
+            PluginExtensionLinker(pluginizedComponents: pluginizedComponents, pluginExtensions: pluginExtensions)
         ]
         for processor in processors {
             do {
@@ -124,7 +124,7 @@ class PluginizableDependencyGraphParser {
         let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
             astComponent.valueType
         }
-        let valueTypePluginizedComponents = pluginizableComponents.map { (astComponent: PluginizableASTComponent) -> PluginizableComponent in
+        let valueTypePluginizedComponents = pluginizedComponents.map { (astComponent: PluginizedASTComponent) -> PluginizedComponent in
             return astComponent.valueType
         }
         let sortedImports = imports.sorted()
@@ -132,4 +132,4 @@ class PluginizableDependencyGraphParser {
     }
 }
 
-private typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<PluginizableDependencyGraphNode>, fileUrl: URL)
+private typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<PluginizedDependencyGraphNode>, fileUrl: URL)
