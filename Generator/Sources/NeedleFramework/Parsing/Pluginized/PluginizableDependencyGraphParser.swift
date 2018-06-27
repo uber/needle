@@ -116,8 +116,10 @@ class PluginizedDependencyGraphParser {
         for processor in processors {
             do {
                 try processor.process()
+            } catch ProcessingError.fail(let message) {
+                fatalError(message)
             } catch {
-                fatalError("\(error)")
+                fatalError("Unknown error: \(error)")
             }
         }
 

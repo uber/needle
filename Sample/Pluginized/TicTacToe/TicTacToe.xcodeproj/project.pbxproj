@@ -215,8 +215,8 @@
 		4139094A20A0F2BC00A26FF5 = {
 			isa = PBXGroup;
 			children = (
-				4139095520A0F2BC00A26FF5 /* Sources */,
-				4139098C20A22B3900A26FF5 /* Tests */,
+				4139095520A0F2BC00A26FF5 /* TicTacToeCore */,
+				4139098C20A22B3900A26FF5 /* TicTacToeCoreTests */,
 				191B41E520C73BE80052C6CE /* ScoreSheet */,
 				191B41F220C73BE80052C6CE /* ScoreSheetTests */,
 				19EF7EB320C855FB005099BA /* TicTacToeIntegrations */,
@@ -237,7 +237,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4139095520A0F2BC00A26FF5 /* Sources */ = {
+		4139095520A0F2BC00A26FF5 /* TicTacToeCore */ = {
 			isa = PBXGroup;
 			children = (
 				413909A220A4E57C00A26FF5 /* Game */,
@@ -250,7 +250,7 @@
 				4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */,
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
 			);
-			path = Sources;
+			path = TicTacToeCore;
 			sourceTree = "<group>";
 		};
 		4139096820A0F39B00A26FF5 /* Frameworks */ = {
@@ -284,13 +284,13 @@
 			path = LoggedOut;
 			sourceTree = "<group>";
 		};
-		4139098C20A22B3900A26FF5 /* Tests */ = {
+		4139098C20A22B3900A26FF5 /* TicTacToeCoreTests */ = {
 			isa = PBXGroup;
 			children = (
 				4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */,
 				4139098F20A22B3900A26FF5 /* Info.plist */,
 			);
-			path = Tests;
+			path = TicTacToeCoreTests;
 			sourceTree = "<group>";
 		};
 		4139099520A247D800A26FF5 /* LoggedIn */ = {
@@ -940,7 +940,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Sources/Info.plist;
+				INFOPLIST_FILE = TicTacToeCore/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -960,7 +960,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Sources/Info.plist;
+				INFOPLIST_FILE = TicTacToeCore/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
