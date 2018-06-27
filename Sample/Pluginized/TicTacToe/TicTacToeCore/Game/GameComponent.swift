@@ -19,26 +19,24 @@ import ScoreSheet
 import TicTacToeIntegrations
 import UIKit
 
-protocol LoggedInPluginExtension {
-    var scoreSheetBuilder: ScoreSheetBuilder { get }
+protocol GameDependency: Dependency {
     var mutableScoreStream: MutableScoreStream { get }
+    var playersStream: PlayersStream { get }
 }
 
-class LoggedInComponent: PluginizedComponent<EmptyDependency, LoggedInPluginExtension, LoggedInNonCoreComponent>, LoggedInBuilder {
+protocol GamePluginExtension: PluginExtension {
+    var scoreSheetBuilder: ScoreSheetBuilder { get }
+}
 
-    var loggedInViewController: UIViewController {
-        return LoggedInViewController(gameBuilder: gameComponent,
-                                      scoreStream: pluginExtension.mutableScoreStream,
-                                      scoreSheetBuilder: pluginExtension.scoreSheetBuilder)
+class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, GameNonCoreComponent>, GameBuilder {
+
+    var gameViewController: UIViewController {
+        return GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStream: dependency.playersStream, scoreSheetBuilder: pluginExtension.scoreSheetBuilder)
     }
-
-    var gameComponent: GameComponent {
-        return GameComponent(parent: self)
-	}
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
-// this allows LoggedInViewController to be initialized lazily.
-protocol LoggedInBuilder {
-    var loggedInViewController: UIViewController { get }
+// this allows GameViewController to be initialized lazily.
+protocol GameBuilder {
+    var gameViewController: UIViewController { get }
 }
