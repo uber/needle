@@ -29,6 +29,12 @@ struct Dependency: Equatable {
     /// The list of dependency properties.
     let properties: [Property]
 
+    /// `true` if this dependency prootocol is the `EmptyDependency`.
+    /// `false` otherwise.
+    var isEmptyDependency: Bool {
+        return Dependency.isEmptyDependency(name: name)
+    }
+
     /// Check if the dependency name is an empty dependency.
     ///
     /// - returns: `true` if this dependency prootocol is the `EmptyDependency`.
