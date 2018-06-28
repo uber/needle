@@ -41,10 +41,12 @@ class NonCoreComponentLinker: Processor {
         }
 
         for pluginizedComponent in pluginizedComponents {
-            pluginizedComponent.nonCoreComponent = nonCoreMap[pluginizedComponent.nonCoreComponentType]
-            if pluginizedComponent.nonCoreComponent == nil {
+            guard let nonCoreComponent = nonCoreMap[pluginizedComponent.nonCoreComponentType] else {
                 throw ProcessingError.fail("Cannot find \(pluginizedComponent.data.name)'s non-core component with type name \(pluginizedComponent.nonCoreComponentType)")
             }
+
+            pluginizedComponent.nonCoreComponent = nonCoreComponent
+            nonCoreComponent.parents.append(pluginizedComponent.data)
         }
     }
 
