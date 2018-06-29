@@ -47,24 +47,4 @@ class AbstractPluginizedGeneratorTests: XCTestCase {
         dir.appendPathComponent("Sample/Pluginized/TicTacToe/")
         return dir
     }
-
-    func test() {
-        let (components, pluginizedComponents, _) = pluginizedSampleProjectParsed()
-        var allProviders = [DependencyProvider]()
-        for component in components {
-            let task = DependencyProviderDeclarerTask(component: component)
-            allProviders.append(contentsOf: task.execute())
-        }
-        for component in pluginizedComponents {
-            let task = DependencyProviderDeclarerTask(component: component.data)
-            allProviders.append(contentsOf: task.execute())
-        }
-
-        for provider in allProviders {
-            print(provider.pathString)
-        }
-
-        let task = PluginizedDependencyProviderContentTask(providers: allProviders, pluginizedComponents: pluginizedComponents)
-        task.execute()
-    }
 }
