@@ -23,7 +23,7 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
 
     static var allTests = [
         ("test_execute_withSampleProject_verifyProviderContent", test_execute_withSampleProject_verifyProviderContent),
-        ]
+    ]
 
     func test_execute_withSampleProject_verifyProviderContent() {
         let (components, pluginizedComponents, _) = pluginizedSampleProjectParsed()
@@ -55,7 +55,7 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
         XCTAssertEqual(providers[2].data.levelMap["LoggedInComponent"], 3)
         XCTAssertEqual(providers[2].processedProperties[0].data.unprocessed.name, "scoreStream")
         XCTAssertEqual(providers[2].processedProperties[0].data.sourceComponentType, "LoggedInNonCoreComponent")
-        XCTAssertEqual(providers[2].processedProperties[0].auxillarySourceType, .pluginExtension)
+        XCTAssertEqual(providers[2].processedProperties[0].auxillarySourceType, .nonCoreComponent)
 
         XCTAssertEqual(providers[3].data.levelMap["LoggedInNonCoreComponent"], 1)
         XCTAssertEqual(providers[3].processedProperties[0].data.unprocessed.name, "scoreStream")

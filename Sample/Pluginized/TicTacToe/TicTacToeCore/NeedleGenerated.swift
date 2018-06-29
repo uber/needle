@@ -78,12 +78,11 @@ private class GameDependency_2401566548657102800Provider: GameDependency {
 /// ^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent
 private class ScoreSheetDependency_92930658912857926Provider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
-        return loggedInNonCoreComponent.scoreStream
+        return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
     }
-    private let loggedInNonCoreComponent: LoggedInNonCoreComponent
+    private let loggedInComponent: LoggedInComponent
     init(component: ComponentType) {
-        let loggedInComponent = component.parent.parent.parent as! LoggedInComponent
-        loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent
+        loggedInComponent = component.parent.parent.parent as! LoggedInComponent
     }
 }
 /// ^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent

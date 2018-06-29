@@ -43,77 +43,17 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedDependencyProvid
 
     private func serialize(_ provider: ProcessedDependencyProvider) -> SerializedDependencyProvider {
         let content = serializedContent(for: provider)
-        let registration = serializedRegistration(for: provider)
+        let registration = DependencyProviderRegistrationSerializer(provider: provider).serialize()
         return SerializedDependencyProvider(content: content, registration: registration)
     }
 
-    // MARK: - Content
-
     private func serializedContent(for provider: ProcessedDependencyProvider) -> String {
-        guard !provider.isEmptyDependency else {
-            return ""
-        }
+        let classNameSerializer = ClassNameSerializer(provider: provider)
+        let propertiesSerializer = PropertiesSerializer(provider: provider)
+        let sourceComponentsSerializer = SourceComponentsSerializer(provider: provider)
+        let initBodySerializer = DependencyProviderInitBodySerializer(provider: provider)
 
-        let propertyVars = serialize(provider.processedProperties)
-        let sourceComponentVars = serialize(provider.levelMap)
-        let initContent = serializeInitContent(with: provider.levelMap)
-        let className = serializedClassName(for: provider)
-
-        return """
-        /// \(provider.unprocessed.pathString)
-        private class \(className): \(provider.unprocessed.dependency.name) {
-        \(propertyVars)
-        \(sourceComponentVars)
-            init(component: ComponentType) {
-        \(initContent)
-            }
-        }\n
-        """
-    }
-
-    private func serializedClassName(for provider: ProcessedDependencyProvider) -> String {
-        let pathId = String(provider.unprocessed.pathString.hashValue).replacingOccurrences(of: "-", with: "_")
-        return "\(provider.unprocessed.dependency.name)\(pathId)Provider"
-    }
-
-    private func serialize(_ properties: [ProcessedProperty]) -> String {
-        return properties
-            .map { (property: ProcessedProperty) in
-                serialize(property)
-            }
-            .joined(separator: "\n")
-    }
-
-    private func serialize(_ property: ProcessedProperty) -> String {
-        return """
-            var \(property.unprocessed.name): \(property.unprocessed.type) {
-                return \(property.sourceComponentType.lowercasedFirstChar()).\(property.unprocessed.name)
-            }
-        """
-    }
-
-    private func serialize(_ levelMap: [String: Int]) -> String {
-        return levelMap.keys.map { (componentType: String) in
-            return "    private let \(componentType.lowercasedFirstChar()): \(componentType)"
-        }
-        .joined(separator: "\n")
-    }
-
-    private func serializeInitContent(with levelMap: [String: Int]) -> String {
-        return levelMap.map { (componentType: String, level: Int) in
-            return "        \(componentType.lowercasedFirstChar()) = component\(String(repeating: ".parent", count: level)) as! \(componentType)"
-        }
-        .joined(separator: "\n")
-    }
-
-    // MARK: - Registration
-
-    private func serializedRegistration(for provider: ProcessedDependencyProvider) -> String {
-        let providerName = provider.isEmptyDependency ? "EmptyDependencyProvider" : serializedClassName(for: provider)
-        return """
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "\(provider.unprocessed.pathString)") { component in
-            return \(providerName)(component: component)
-        }\n
-        """
+        let serializer = DependencyProviderSerializer(provider: provider, classNameSerializer: classNameSerializer, propertiesSerializer: propertiesSerializer, sourceComponentsSerializer: sourceComponentsSerializer, initBodySerializer: initBodySerializer)
+        return serializer.serialize()
     }
 }

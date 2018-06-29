@@ -35,4 +35,5 @@ XCTMain([
     testCase(DependencyLinkerTests.allTests),
     testCase(ParentLinkerTests.allTests),
     testCase(PluginizedDependencyGraphParserTests.allTests),
+    testCase(PluginizedDependencyProviderContentTaskTests.allTests),
 ])
