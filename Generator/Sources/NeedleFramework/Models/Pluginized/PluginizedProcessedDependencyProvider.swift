@@ -30,10 +30,10 @@ struct PluginizedProcessedDependencyProvider {
     ///
     /// - parameter unprocessed: The unprocessed data model.
     /// - parameter levelMap: The map of component type names to the number of
-    ///             levels between provider and component that needs it.
-    ///             to check for auzillary properties.
+    /// levels between provider and component that needs it. to check for
+    /// auxiliary properties.
     /// - parameter processedProperties: TThe properties with their source
-    ///             components filled in.
+    /// components filled in.
     init(unprocessed: DependencyProvider, levelMap: [String: Int], processedProperties: [PluginizedProcessedProperty]) {
         self.data = ProcessedDependencyProvider(unprocessed: unprocessed, levelMap: levelMap, processedProperties: [])
         self.processedProperties = processedProperties
