@@ -16,14 +16,24 @@
 
 import Foundation
 
-/// An extended data model representing a dependency provider to be generated for a
-/// specific path of a component.
+/// An extended data model representing a dependency provider to be generated
+/// for a specific path of a component.
 struct PluginizedProcessedDependencyProvider {
     /// The actual data of this dependency provider.
+    /// Note that in this struct, the `processedProperties` are always empty
     let data: ProcessedDependencyProvider
-    /// This is a (richer) replacement for the processed properties in the data struct
+    /// This is a (richer) replacement for the processed properties in the data
+    /// struct
     let processedProperties: [PluginizedProcessedProperty]
 
+    /// Initializer.
+    ///
+    /// - parameter unprocessed: The unprocessed data model.
+    /// - parameter levelMap: The map of component type names to the number of
+    ///             levels between provider and component that needs it.
+    ///             to check for auzillary properties.
+    /// - parameter processedProperties: TThe properties with their source
+    ///             components filled in.
     init(unprocessed: DependencyProvider, levelMap: [String: Int], processedProperties: [PluginizedProcessedProperty]) {
         self.data = ProcessedDependencyProvider(unprocessed: unprocessed, levelMap: levelMap, processedProperties: [])
         self.processedProperties = processedProperties

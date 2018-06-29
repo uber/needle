@@ -16,12 +16,16 @@
 
 import Foundation
 
+/// The task that walks through the chain of parents as well as auxillary
+/// providers for each dependency item of the dependency protocol that this
+/// provider class needs to satisfy.
 class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessedDependencyProvider]> {
 
     /// Initializer.
     ///
-    /// - parameter providers: The list of providers that we need to fill in
-    /// - parameter providers: The list of pluginized components
+    /// - parameter providers: The list of providers that we need to fill in.
+    /// - parameter pluginizedComponents: The list of pluginized components
+    ///             to check for auzillary properties.
     init(providers: [DependencyProvider], pluginizedComponents: [PluginizedComponent]) {
         self.providers = providers
 
@@ -44,13 +48,12 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     ///
     /// - returns: The list of `ProcessedDependencyProvider`.
     override func execute() -> [PluginizedProcessedDependencyProvider] {
-
         return providers.map { (provider: DependencyProvider) -> PluginizedProcessedDependencyProvider in
             do {
                 if provider.pathContains(anyOf: nonCoreComponentNames) {
-                    return try process(provider, auxillaryPropertyMap: nonCoreComponentMap)
+                    return try process(provider, withAuxillaryPropertiesFrom: nonCoreComponentMap, auxillarySourceType: .nonCoreComponent)
                 } else {
-                    return try process(provider, auxillaryPropertyMap: pluginExtensionMap)
+                    return try process(provider, withAuxillaryPropertiesFrom: pluginExtensionMap, auxillarySourceType: .pluginExtension)
                 }
             } catch DependencyProviderContentError.propertyNotFound(let info) {
                 var message = "Could not find a provider for \(info.name): \(info.type) which was required by \(info.dependency)."
@@ -66,17 +69,19 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
 
     // MARK: - Private
 
-    struct AuxillaryProperties {
+    private struct AuxillaryProperties {
         let sourceName: String
         let properties: [Property]
     }
 
     private let providers: [DependencyProvider]
+    // Note: the key is the (class) name of the pluginized component
     private let nonCoreComponentMap: [String: AuxillaryProperties]
+    // Note: the key is the (class) name of the pluginized component
     private let pluginExtensionMap: [String: AuxillaryProperties]
     private let nonCoreComponentNames: Set<String>
 
-    private func process(_ provider: DependencyProvider, auxillaryPropertyMap: [String: AuxillaryProperties]) throws -> PluginizedProcessedDependencyProvider  {
+    private func process(_ provider: DependencyProvider, withAuxillaryPropertiesFrom auxillaryPropertyMap: [String: AuxillaryProperties], auxillarySourceType: AuxillarySourceType) throws -> PluginizedProcessedDependencyProvider  {
         var levelMap = [String: Int]()
 
         let properties = try provider.dependency.properties.map { (property : Property) -> PluginizedProcessedProperty in
@@ -89,7 +94,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
                 } else if let auxillaryProperties = auxillaryPropertyMap[component.name] {
                     if auxillaryProperties.properties.contains(property) {
                         levelMap[component.name] = level
-                        return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: auxillaryProperties.sourceName), auxillarySourceType: .pluginExtension)
+                        return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: auxillaryProperties.sourceName), auxillarySourceType: auxillarySourceType)
                     }
                 }
                 level += 1

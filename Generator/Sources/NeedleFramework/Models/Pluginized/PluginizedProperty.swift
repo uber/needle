@@ -20,7 +20,7 @@ import Foundation
 enum AuxillarySourceType {
     /// Situation where a core component is getting a property from the plugin extension protocol
     case pluginExtension
-    /// Situation where a non-core component gets the property from a parent non-core component
+    /// Situation where a non-core component gets the property from a ancestor non-core component
     case nonCoreComponent
 }
 
