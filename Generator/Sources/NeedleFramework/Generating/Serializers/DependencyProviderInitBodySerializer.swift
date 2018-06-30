@@ -23,14 +23,14 @@ class DependencyProviderInitBodySerializer: Serializer {
     /// Initializer.
     ///
     /// - parameter provider: The provider to generate initializer body
-    /// code for.
+    /// source code for.
     init(provider: ProcessedDependencyProvider) {
         self.provider = provider
     }
 
     /// Serialize the data model and produce the initializer body code.
     ///
-    /// - returns: The initializer body code.
+    /// - returns: The initializer body source code.
     func serialize() -> String {
         return provider.levelMap.map { (componentType: String, level: Int) in
             return "        \(componentType.lowercasedFirstChar()) = component\(String(repeating: ".parent", count: level)) as! \(componentType)"

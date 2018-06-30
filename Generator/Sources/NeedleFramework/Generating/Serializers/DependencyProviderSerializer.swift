@@ -40,9 +40,9 @@ class DependencyProviderSerializer: Serializer {
     }
 
     /// Serialize the data model and produce the entire dependency provider
-    /// code.
+    /// source code.
     ///
-    /// - returns: The entire code for the dependency provider.
+    /// - returns: The entire source code for the dependency provider.
     func serialize() -> String {
         guard !provider.isEmptyDependency else {
             return ""

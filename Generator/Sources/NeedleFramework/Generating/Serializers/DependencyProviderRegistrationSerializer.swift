@@ -28,9 +28,9 @@ class DependencyProviderRegistrationSerializer: Serializer {
         self.provider = provider
     }
 
-    /// Serialize the data model and produce the registration code.
+    /// Serialize the data model and produce the registration source code.
     ///
-    /// - returns: The registration code.
+    /// - returns: The registration source code.
     func serialize() -> String {
         let providerName = provider.isEmptyDependency ? "EmptyDependencyProvider" : ClassNameSerializer(provider: provider).serialize()
         return """
