@@ -16,19 +16,26 @@
 
 import Foundation
 
-/// When a property is found is the auxillary source, this lets us know the source
+/// When a property is found is the auxillary source, this lets us know the
+/// source
 enum AuxillarySourceType {
-    /// Situation where a core component is getting a property from the plugin extension protocol
+    /// Situation where a core component is getting a property from the
+    /// plugin extension protocol.
     case pluginExtension
-    /// Situation where a non-core component gets the property from a ancestor non-core component
+    /// Situation where a non-core component gets the property from a
+    /// ancestor non-core component.
     case nonCoreComponent
 }
 
-/// An extended data model representing a single dependency property that has gone through
-/// generation processing.
+/// An extended data model representing a single dependency property that
+/// has gone through generation processing.
 struct PluginizedProcessedProperty {
     /// The actual data of this dependency property.
     let data: ProcessedProperty
-    /// If the property was found in the auxillary scope, this tells us the type of that scope
+    /// If the property was found in the auxillary scope, this tells us the
+    /// type of that scope.
     let auxillarySourceType: AuxillarySourceType?
+    /// If the property was found in the auxillary scope, this is the type
+    /// name of the auxillary object.
+    let auxillarySourceName: String?
 }
