@@ -59,9 +59,9 @@ struct ProcessedDependencyProvider {
     }
 }
 
-/// The data model representing a fully serialized dependency provider ready for
+/// The data model representing a fully serialized provider ready for
 /// export.
-struct SerializedDependencyProvider {
+struct SerializedProvider {
     /// The dependency provider class content code.
     let content: String
     /// The dependency provider registration code.

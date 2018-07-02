@@ -51,16 +51,16 @@ class DependencyGraphExporter {
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
     /// write fails.
     func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor) throws {
-        var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedDependencyProvider]>, componentName: String)]()
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedProvider]>, componentName: String)]()
 
         for component in components {
             let initialTask = DependencyProviderDeclarerTask(component: component)
-            let taskHandle = executor.executeSequence(from: initialTask) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[SerializedDependencyProvider]> in
+            let taskHandle = executor.executeSequence(from: initialTask) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[SerializedProvider]> in
                 if currentTask is DependencyProviderDeclarerTask, let providers = currentResult as? [DependencyProvider] {
                     return .continueSequence(DependencyProviderContentTask(providers: providers))
                 } else if currentTask is DependencyProviderContentTask, let processedProviders = currentResult as? [ProcessedDependencyProvider] {
                     return .continueSequence(DependencyProviderSerializerTask(providers: processedProviders))
-                } else if currentTask is DependencyProviderSerializerTask, let serializedProviders = currentResult as? [SerializedDependencyProvider] {
+                } else if currentTask is DependencyProviderSerializerTask, let serializedProviders = currentResult as? [SerializedProvider] {
                     return .endOfSequence(serializedProviders)
                 } else {
                     fatalError("Unhandled task \(currentTask) with result \(currentResult)")
@@ -70,7 +70,7 @@ class DependencyGraphExporter {
         }
 
         // Wait for all the generation to complete so we can write all the output into a single file
-        var providers = [SerializedDependencyProvider]()
+        var providers = [SerializedProvider]()
         for (taskHandle, compnentName) in taskHandleTuples {
             do {
                 let provider = try taskHandle.await(withTimeout: 30)
@@ -93,16 +93,16 @@ class DependencyGraphExporter {
 
     // MARK: - Private
 
-    private func serialize(_ providers: [SerializedDependencyProvider], with imports: [String]) -> String {
+    private func serialize(_ providers: [SerializedProvider], with imports: [String]) -> String {
         let registrationBody = providers
-            .map { (provider: SerializedDependencyProvider) in
+            .map { (provider: SerializedProvider) in
                 provider.registration
             }
             .joined()
             .replacingOccurrences(of: "\n", with: "\n    ")
 
         let providersSection = providers
-            .map { (provider: SerializedDependencyProvider) in
+            .map { (provider: SerializedProvider) in
                 provider.content
             }
             .joined()

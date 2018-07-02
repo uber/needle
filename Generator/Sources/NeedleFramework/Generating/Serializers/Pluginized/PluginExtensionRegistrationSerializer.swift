@@ -16,31 +16,31 @@
 
 import Foundation
 
-/// A serializer that produces the registration code for the dependency
+/// A serializer that produces the registration code for the plugin extension
 /// provider.
-class DependencyProviderRegistrationSerializer: Serializer {
+class PluginExtensionRegistrationSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter provider: The provider to generate registration code
-    /// for.
-    init(provider: ProcessedDependencyProvider) {
-        self.provider = provider
+    /// - parameter component: The pluginized component to generate registration
+    ///   source code for
+    init(component: PluginizedComponent) {
+        self.component = component
     }
 
     /// Serialize the data model and produce the registration source code.
     ///
     /// - returns: The registration source code.
     func serialize() -> String {
-        let providerName = provider.isEmptyDependency ? "EmptyDependencyProvider" : DependencyProviderClassNameSerializer(provider: provider).serialize()
+        let className = PluginExtensionClassNameSerializer(component: component).serialize()
         return """
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "\(provider.unprocessed.pathString)") { component in
-            return \(providerName)(component: component)
+        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "\(component.data.name)") { component in
+            return \(className)(component: component)
         }\n
         """
     }
 
     // MARK: - Private
 
-    private let provider: ProcessedDependencyProvider
+    private let component: PluginizedComponent
 }

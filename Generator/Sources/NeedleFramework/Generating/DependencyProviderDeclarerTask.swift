@@ -16,7 +16,7 @@
 
 import Foundation
 
-/// The task thet generates the declarations of a dependency providers
+/// The task that generates the declarations of the dependency providers
 /// for a specific component, for all of its ancestor paths.
 class DependencyProviderDeclarerTask: AbstractTask<[DependencyProvider]> {
 

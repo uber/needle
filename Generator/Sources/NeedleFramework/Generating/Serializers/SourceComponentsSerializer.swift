@@ -22,17 +22,17 @@ class SourceComponentsSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter provider: The provider to generate source component
+    /// - parameter componentTypes: The types to generate source component
     /// properties code for.
-    init(provider: ProcessedDependencyProvider) {
-        self.provider = provider
+    init(componentTypes: [String]) {
+        self.componentTypes = componentTypes
     }
 
-    /// Serialize the data model and produce the registration code.
+    /// Serialize the data model and produce property declaration code.
     ///
     /// - returns: The registration code.
     func serialize() -> String {
-        return provider.levelMap.keys.map { (componentType: String) in
+        return componentTypes.map { (componentType: String) in
             return "    private let \(componentType.lowercasedFirstChar()): \(componentType)"
         }
         .joined(separator: "\n")
@@ -40,5 +40,5 @@ class SourceComponentsSerializer: Serializer {
 
     // MARK: - Private
 
-    private let provider: ProcessedDependencyProvider
+    private let componentTypes: [String]
 }
