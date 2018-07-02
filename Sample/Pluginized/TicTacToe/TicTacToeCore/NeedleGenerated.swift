@@ -50,11 +50,11 @@ func registerDependencyProviderFactories() {
 }
 
 func registerPluginExtensionProviderFactories() {
-    __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
-        return GamePluginExtension4815886340652882587Provider(component: component)
+    __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "GameComponent") { component in
+        return GamePluginExtensionProvider(component: component)
     }
-    __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
-        return LoggedInPluginExtension_2401566548657102800Provider(component: component)
+    __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "LoggedInComponent") { component in
+        return LoggedInPluginExtensionProvider(component: component)
     }
 }
 
@@ -108,8 +108,7 @@ private class LoggedOutDependency5490810220359560589Provider: LoggedOutDependenc
 
 // MARK: - Plugin Extension Providers
 
-/// ^->RootComponent->LoggedInComponent
-private class LoggedInPluginExtension_2401566548657102800Provider: LoggedInPluginExtension {
+private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder {
         return loggedInNonCoreComponent.scoreSheetBuilder
     }
@@ -122,8 +121,8 @@ private class LoggedInPluginExtension_2401566548657102800Provider: LoggedInPlugi
         loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent
     }
 }
-/// ^->RootComponent->LoggedInComponent
-private class GamePluginExtension4815886340652882587Provider: GamePluginExtension {
+
+private class GamePluginExtensionProvider: GamePluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder {
         return gameNonCoreComponent.scoreSheetBuilder
     }
