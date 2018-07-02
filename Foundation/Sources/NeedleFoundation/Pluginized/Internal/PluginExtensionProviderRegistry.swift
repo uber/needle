@@ -33,19 +33,22 @@ public class __PluginExtensionProviderRegistry {
     /// Register the given factory closure with given key.
     ///
     /// - note: This method is thread-safe.
-    /// - parameter componentPath: The dependency graph path of the component
-    /// the provider is for.
+    /// - note: Plugin extension provider is unique per pluginized component
+    /// regardless of its path, since it only extracts properties from its
+    /// corresponding non-core component.
+    /// - parameter component: The component the provider is for.
     /// - parameter pluginExtensionProviderFactory: The closure that takes in
     /// a component to be injected and returns a provider instance that conforms
     /// to the component's plugin extensions protocol.
-    public func registerPluginExtensionProviderFactory(`for` componentPath: String, _ pluginExtensionProviderFactory: @escaping (PluginizedComponentType) -> AnyObject) {
+    public func registerPluginExtensionProviderFactory(`for` component: PluginizedComponentType, _ pluginExtensionProviderFactory: @escaping (PluginizedComponentType) -> AnyObject) {
         // Lock on `providerFactories` access.
         lock.lock()
         defer {
             lock.unlock()
         }
 
-        providerFactories[componentPath.hashValue] = pluginExtensionProviderFactory
+        let key = providerKey(for: component)
+        providerFactories[key] = pluginExtensionProviderFactory
     }
 
     func pluginExtensionProvider(`for` component: PluginizedComponentType) -> AnyObject {
@@ -55,7 +58,8 @@ public class __PluginExtensionProviderRegistry {
             lock.unlock()
         }
 
-        if let factory = providerFactories[component.path.hashValue] {
+        let key = providerKey(for: component)
+        if let factory = providerFactories[key] {
             return factory(component)
         } else {
             fatalError("Missing plugin extension provider factory for \(component.path)")
@@ -63,7 +67,11 @@ public class __PluginExtensionProviderRegistry {
     }
 
     private let lock = NSRecursiveLock()
-    private var providerFactories = [Int: (PluginizedComponentType) -> AnyObject]()
+    private var providerFactories = [String: (PluginizedComponentType) -> AnyObject]()
 
     private init() {}
+
+    private func providerKey(for component: PluginizedComponentType) -> String {
+        return String(describing: component)
+    }
 }
