@@ -36,19 +36,18 @@ public class __PluginExtensionProviderRegistry {
     /// - note: Plugin extension provider is unique per pluginized component
     /// regardless of its path, since it only extracts properties from its
     /// corresponding non-core component.
-    /// - parameter component: The component the provider is for.
+    /// - parameter componentName: The name of the component the provider is for.
     /// - parameter pluginExtensionProviderFactory: The closure that takes in
     /// a component to be injected and returns a provider instance that conforms
     /// to the component's plugin extensions protocol.
-    public func registerPluginExtensionProviderFactory(`for` component: PluginizedComponentType, _ pluginExtensionProviderFactory: @escaping (PluginizedComponentType) -> AnyObject) {
+    public func registerPluginExtensionProviderFactory(`for` componentName: String, _ pluginExtensionProviderFactory: @escaping (PluginizedComponentType) -> AnyObject) {
         // Lock on `providerFactories` access.
         lock.lock()
         defer {
             lock.unlock()
         }
 
-        let key = providerKey(for: component)
-        providerFactories[key] = pluginExtensionProviderFactory
+        providerFactories[componentName] = pluginExtensionProviderFactory
     }
 
     func pluginExtensionProvider(`for` component: PluginizedComponentType) -> AnyObject {
@@ -58,7 +57,8 @@ public class __PluginExtensionProviderRegistry {
             lock.unlock()
         }
 
-        let key = providerKey(for: component)
+        // The last element of the path is the component itself and it always exists.
+        let key = component.path.last!
         if let factory = providerFactories[key] {
             return factory(component)
         } else {
@@ -70,8 +70,4 @@ public class __PluginExtensionProviderRegistry {
     private var providerFactories = [String: (PluginizedComponentType) -> AnyObject]()
 
     private init() {}
-
-    private func providerKey(for component: PluginizedComponentType) -> String {
-        return String(describing: component)
-    }
 }

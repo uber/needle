@@ -22,6 +22,9 @@ class PluginizedComponentTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        let t = type(of: self)
+        print(String(describing: t))
+
         __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->MockPluginizedComponent") { component in
             return EmptyDependencyProvider(component: component)
         }
@@ -30,7 +33,7 @@ class PluginizedComponentTests: XCTestCase {
             return EmptyDependencyProvider(component: component)
         }
 
-        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "^->MockPluginizedComponent") { pluginizedComponent in
+        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "MockPluginizedComponent") { pluginizedComponent in
             return EmptyPluginExtensionsProvider()
         }
     }

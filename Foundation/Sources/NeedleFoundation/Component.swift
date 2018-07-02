@@ -23,7 +23,7 @@ public protocol Dependency: AnyObject {}
 /// base class, instead of using this protocol directly.
 public protocol ComponentType: AnyObject {
     /// The path to reach this component on the dependnecy graph.
-    var path: String { get }
+    var path: [String] { get }
 
     /// The parent of this component.
     // This property cannot be of `ComponentType`, since the root of the dependency graph
@@ -43,11 +43,9 @@ open class Component<DependencyType>: ComponentType {
     /// The path to reach this scope on the dependnecy graph.
     // Use `lazy var` to avoid computing the path repeatedly. Internally, this is always
     // accessed with the `__DependencyProviderRegistry`'s lock acquired.
-    public lazy var path: String = {
-        let fullyQualifiedSelfName = String(describing: self)
-        let parts = fullyQualifiedSelfName.components(separatedBy: ".")
-        let name = parts.last ?? fullyQualifiedSelfName
-        return parent.path + "->\(name)"
+    public lazy var path: [String] = {
+        let name = self.name
+        return parent.path + ["\(name)"]
     }()
 
     /// The dependency of this component.
@@ -94,6 +92,11 @@ open class Component<DependencyType>: ComponentType {
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
+    private lazy var name: String = {
+        let fullyQualifiedSelfName = String(describing: self)
+        let parts = fullyQualifiedSelfName.components(separatedBy: ".")
+        return parts.last ?? fullyQualifiedSelfName
+    }()
 
     // TODO: Replace this with an `open` method, once Swift supports extension overriding methods.
     private func createDependencyProvider() -> DependencyType {

@@ -56,7 +56,8 @@ public class __DependencyProviderRegistry {
             providerFactoryLock.unlock()
         }
 
-        if let factory = providerFactories[component.path.hashValue] {
+        let pathString = component.path.joined(separator: "->")
+        if let factory = providerFactories[pathString.hashValue] {
             return factory(component)
         } else {
             fatalError("Missing dependency provider factory for \(component.path)")
