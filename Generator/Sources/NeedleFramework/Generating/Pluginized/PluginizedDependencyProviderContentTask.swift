@@ -90,11 +90,11 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
             for component in revesedPath {
                 if component.properties.contains(property) {
                     levelMap[component.name] = level
-                    return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: component.name), auxillarySourceType: nil)
+                    return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: component.name), auxillarySourceType: nil, auxillarySourceName: nil)
                 } else if let auxillaryProperties = auxillaryPropertyMap[component.name] {
                     if auxillaryProperties.properties.contains(property) {
                         levelMap[component.name] = level
-                        return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: auxillaryProperties.sourceName), auxillarySourceType: auxillarySourceType)
+                        return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: component.name), auxillarySourceType: auxillarySourceType, auxillarySourceName: auxillaryProperties.sourceName)
                     }
                 }
                 level += 1
