@@ -30,7 +30,7 @@ class PluginizedComponentTests: XCTestCase {
             return EmptyDependencyProvider(component: component)
         }
 
-        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "^->MockPluginizedComponent") { pluginizedComponent in
+        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "MockPluginizedComponent") { pluginizedComponent in
             return EmptyPluginExtensionsProvider()
         }
     }

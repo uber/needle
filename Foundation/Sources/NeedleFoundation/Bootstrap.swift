@@ -35,7 +35,7 @@ public class EmptyDependencyProvider: EmptyDependency {
 public class BootstrapComponent: ComponentType {
 
     /// The path to reach this scope on the dependnecy graph.
-    public let path: String = "^"
+    public let path: [String] = ["^"]
 
     /// This component does not have a parent
     public var parent: ComponentType {
