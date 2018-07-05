@@ -16,28 +16,22 @@
 
 import Foundation
 
-/// A serializer that produces the registration code for the dependency
-/// provider.
-class DependencyProviderRegistrationSerializer: Serializer {
+/// A serializer that produces the class name for the dependency provider.
+class DependencyProviderClassNameSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter provider: The provider to generate registration code
-    /// for.
+    /// - parameter provider: The provider to generate class name for.
     init(provider: ProcessedDependencyProvider) {
         self.provider = provider
     }
 
-    /// Serialize the data model and produce the registration source code.
+    /// Serialize the data model and produce the class name code.
     ///
-    /// - returns: The registration source code.
+    /// - returns: The class name code.
     func serialize() -> String {
-        let providerName = provider.isEmptyDependency ? "EmptyDependencyProvider" : DependencyProviderClassNameSerializer(provider: provider).serialize()
-        return """
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "\(provider.unprocessed.pathString)") { component in
-            return \(providerName)(component: component)
-        }\n
-        """
+        let pathId = String(provider.unprocessed.pathString.hashValue).replacingOccurrences(of: "-", with: "_")
+        return "\(provider.unprocessed.dependency.name)\(pathId)Provider"
     }
 
     // MARK: - Private

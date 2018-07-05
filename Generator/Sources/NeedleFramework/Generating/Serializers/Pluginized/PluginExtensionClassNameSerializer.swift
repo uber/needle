@@ -16,25 +16,24 @@
 
 import Foundation
 
-/// A serializer that produces the class name for the dependency provider.
-class ClassNameSerializer: Serializer {
+/// A serializer that produces the class name for the plugin extension proider.
+class PluginExtensionClassNameSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter provider: The provider to generate class name for.
-    init(provider: ProcessedDependencyProvider) {
-        self.provider = provider
+    /// - parameter component: The pluginized component to generate class name for.
+    init(component: PluginizedComponent) {
+        self.component = component
     }
 
     /// Serialize the data model and produce the class name code.
     ///
     /// - returns: The class name code.
     func serialize() -> String {
-        let pathId = String(provider.unprocessed.pathString.hashValue).replacingOccurrences(of: "-", with: "_")
-        return "\(provider.unprocessed.dependency.name)\(pathId)Provider"
+        return "\(component.pluginExtension.name)Provider"
     }
 
     // MARK: - Private
 
-    private let provider: ProcessedDependencyProvider
+    private let component: PluginizedComponent
 }

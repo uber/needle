@@ -54,7 +54,8 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
 
         XCTAssertEqual(providers[2].data.levelMap["LoggedInComponent"], 3)
         XCTAssertEqual(providers[2].processedProperties[0].data.unprocessed.name, "scoreStream")
-        XCTAssertEqual(providers[2].processedProperties[0].data.sourceComponentType, "LoggedInNonCoreComponent")
+        XCTAssertEqual(providers[2].processedProperties[0].auxillarySourceName, "LoggedInNonCoreComponent")
+        XCTAssertEqual(providers[2].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
         XCTAssertEqual(providers[2].processedProperties[0].auxillarySourceType, .nonCoreComponent)
 
         XCTAssertEqual(providers[3].data.levelMap["LoggedInNonCoreComponent"], 1)
@@ -65,7 +66,8 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
         XCTAssertEqual(providers[4].data.levelMap["LoggedInComponent"], 1)
         XCTAssertEqual(providers[4].data.levelMap["RootComponent"], 2)
         XCTAssertEqual(providers[4].processedProperties[0].data.unprocessed.name, "mutableScoreStream")
-        XCTAssertEqual(providers[4].processedProperties[0].data.sourceComponentType, "LoggedInPluginExtension")
+        XCTAssertEqual(providers[4].processedProperties[0].auxillarySourceName, "LoggedInPluginExtension")
+        XCTAssertEqual(providers[4].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
         XCTAssertEqual(providers[4].processedProperties[0].auxillarySourceType, .pluginExtension)
         XCTAssertEqual(providers[4].processedProperties[1].data.unprocessed.name, "playersStream")
         XCTAssertEqual(providers[4].processedProperties[1].data.sourceComponentType, "RootComponent")

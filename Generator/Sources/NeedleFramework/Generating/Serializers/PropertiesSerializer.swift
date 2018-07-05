@@ -22,17 +22,17 @@ class PropertiesSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter properties: The provider to generate dependency
-    /// provider code for.
-    init(provider: ProcessedDependencyProvider) {
-        self.provider = provider
+    /// - parameter properties: The properties to generate dependency
+    /// provider property getter code for.
+    init(processedProperties: [ProcessedProperty]) {
+        self.processedProperties = processedProperties
     }
 
     /// Serialize the property models and produce the source code.
     ///
     /// - returns: The dependency properties source code.
     func serialize() -> String {
-        return provider.processedProperties
+        return processedProperties
             .map { (property: ProcessedProperty) in
                 serialize(property)
             }
@@ -41,7 +41,7 @@ class PropertiesSerializer: Serializer {
 
     // MARK: - Private
 
-    private let provider: ProcessedDependencyProvider
+    private let processedProperties: [ProcessedProperty]
 
     private func serialize(_ property: ProcessedProperty) -> String {
         return """

@@ -26,3 +26,13 @@ struct PluginExtension: Equatable {
     /// The list of properties.
     let properties: [Property]
 }
+
+
+/// A data model representing a plugin extension protocol of a NeedleFoundation
+/// `PluginExtension`.
+struct ProcessedPluginExtension: Equatable {
+    /// The unprocessed plugin extension we started with.
+    let unprocessed: PluginExtension
+    /// The list of processed properties.
+    let properties: [ProcessedProperty]
+}

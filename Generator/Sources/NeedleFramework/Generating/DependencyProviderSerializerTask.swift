@@ -18,7 +18,7 @@ import Foundation
 
 /// The task that serializes a list of processed dependency providers into
 /// exportable foramt.
-class DependencyProviderSerializerTask: AbstractTask<[SerializedDependencyProvider]> {
+class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
 
     /// Initializer.
     ///
@@ -30,8 +30,8 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedDependencyProvid
     /// Execute the task and returns the in-memory serialized dependency
     /// provider data models.
     ///
-    /// - returns: The list of `SerializedDependencyProvider`.
-    override func execute() -> [SerializedDependencyProvider] {
+    /// - returns: The list of `SerializedProvider`.
+    override func execute() -> [SerializedProvider] {
         return providers.map { (provider: ProcessedDependencyProvider) in
             return serialize(provider)
         }
@@ -41,16 +41,16 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedDependencyProvid
 
     private let providers: [ProcessedDependencyProvider]
 
-    private func serialize(_ provider: ProcessedDependencyProvider) -> SerializedDependencyProvider {
+    private func serialize(_ provider: ProcessedDependencyProvider) -> SerializedProvider {
         let content = serializedContent(for: provider)
         let registration = DependencyProviderRegistrationSerializer(provider: provider).serialize()
-        return SerializedDependencyProvider(content: content, registration: registration)
+        return SerializedProvider(content: content, registration: registration)
     }
 
     private func serializedContent(for provider: ProcessedDependencyProvider) -> String {
-        let classNameSerializer = ClassNameSerializer(provider: provider)
-        let propertiesSerializer = PropertiesSerializer(provider: provider)
-        let sourceComponentsSerializer = SourceComponentsSerializer(provider: provider)
+        let classNameSerializer = DependencyProviderClassNameSerializer(provider: provider)
+        let propertiesSerializer = PropertiesSerializer(processedProperties: provider.processedProperties)
+        let sourceComponentsSerializer = SourceComponentsSerializer(componentTypes: Array(provider.levelMap.keys))
         let initBodySerializer = DependencyProviderInitBodySerializer(provider: provider)
 
         let serializer = DependencyProviderSerializer(provider: provider, classNameSerializer: classNameSerializer, propertiesSerializer: propertiesSerializer, sourceComponentsSerializer: sourceComponentsSerializer, initBodySerializer: initBodySerializer)
