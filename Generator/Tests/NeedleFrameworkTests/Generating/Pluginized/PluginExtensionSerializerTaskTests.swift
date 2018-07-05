@@ -36,8 +36,6 @@ class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
             flattenRegistrations += provider.registration + "\n"
             flattenContents += provider.content + "\n"
         }
-        print(flattenRegistrations)
-        print(flattenContents)
 
         let expectedRegistrations =
         """

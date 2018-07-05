@@ -30,7 +30,7 @@ class PluginExtensionSerializerTask : AbstractTask<SerializedProvider> {
 
     /// Execute the task and returns the data model.
     ///
-    /// - returns: The `PluginExtensionProvider`.
+    /// - returns: The `SerializedProvider`.
     override func execute() -> SerializedProvider {
         let content = PluginExtensionContentSerializer(component: component).serialize()
         let registration = PluginExtensionRegistrationSerializer(component: component).serialize()

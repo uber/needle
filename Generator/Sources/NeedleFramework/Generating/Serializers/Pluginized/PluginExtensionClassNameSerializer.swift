@@ -16,7 +16,7 @@
 
 import Foundation
 
-/// A serializer that produces the class name for the plugin extension.
+/// A serializer that produces the class name for the plugin extension proider.
 class PluginExtensionClassNameSerializer: Serializer {
 
     /// Initializer.

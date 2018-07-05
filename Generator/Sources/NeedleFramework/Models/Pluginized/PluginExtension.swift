@@ -16,14 +16,6 @@
 
 import Foundation
 
-/// The data model representing a plugin extension provider to be generated for a
-/// specific pluginized component.
-struct PluginExtensionProvider {
-    let coreName : String
-    let nonCoreName : String
-    let processedPluginExtension: ProcessedPluginExtension
-}
-
 /// A data model representing a plugin extension protocol of a NeedleFoundation
 /// `PluginizedComponent`.
 // This is separate from the `PluginizedComponent` data model, since its
@@ -37,9 +29,7 @@ struct PluginExtension: Equatable {
 
 
 /// A data model representing a plugin extension protocol of a NeedleFoundation
-/// `PluginizedComponent`.
-// This is separate from the `PluginizedComponent` data model, since its
-// plugin extension protocol may be declared in a separate file.
+/// `PluginExtension`.
 struct ProcessedPluginExtension: Equatable {
     /// The unprocessed plugin extension we started with.
     let unprocessed: PluginExtension
