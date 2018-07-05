@@ -82,45 +82,11 @@ class DependencyGraphExporter {
             }
         }
 
-        let fileContents = serialize(providers, with: imports)
-
+        let fileContents = OutputSerializer(providers: providers, imports: imports).serialize()
         do {
             try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
         } catch {
             throw DependencyGraphExporterError.unableToWriteFile(path)
         }
-    }
-
-    // MARK: - Private
-
-    private func serialize(_ providers: [SerializedProvider], with imports: [String]) -> String {
-        let registrationBody = providers
-            .map { (provider: SerializedProvider) in
-                provider.registration
-            }
-            .joined()
-            .replacingOccurrences(of: "\n", with: "\n    ")
-
-        let providersSection = providers
-            .map { (provider: SerializedProvider) in
-                provider.content
-            }
-            .joined()
-
-        let importsJoined = imports.joined(separator: "\n")
-
-        return """
-        \(importsJoined)
-
-        // MARK: - Dependency Provider Factories
-
-        func registerDependencyProviderFactories() {
-            \(registrationBody)
-        }
-
-        // MARK: - Dependency Providers
-
-        \(providersSection)
-        """
     }
 }
