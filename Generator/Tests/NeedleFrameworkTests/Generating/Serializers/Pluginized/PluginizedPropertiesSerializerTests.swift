@@ -33,6 +33,9 @@ class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
             let processedProviders = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()
             for provider in processedProviders {
+                if provider.processedProperties.isEmpty {
+                    continue
+                }
                 let serializedProperties = PluginizedPropertiesSerializer(provider: provider).serialize()
                 flattenContents += serializedProperties + "\n"
             }
@@ -49,22 +52,21 @@ class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
 
         let expected =
         """
-        var mutablePlayersStream: MutablePlayersStream {
-            return rootComponent.mutablePlayersStream
-        }
-
-        var scoreStream: ScoreStream {
-            return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
-        }
-        var scoreStream: ScoreStream {
-            return loggedInNonCoreComponent.scoreStream
-        }
-        var mutableScoreStream: MutableScoreStream {
-            return loggedInComponent.pluginExtension.mutableScoreStream
-        }
-        var playersStream: PlayersStream {
-            return rootComponent.playersStream
-        }
+            var mutablePlayersStream: MutablePlayersStream {
+                return rootComponent.mutablePlayersStream
+            }
+            var scoreStream: ScoreStream {
+                return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
+            }
+            var scoreStream: ScoreStream {
+                return loggedInNonCoreComponent.scoreStream
+            }
+            var mutableScoreStream: MutableScoreStream {
+                return loggedInComponent.pluginExtension.mutableScoreStream
+            }
+            var playersStream: PlayersStream {
+                return rootComponent.playersStream
+            }
 
 
         """

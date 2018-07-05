@@ -61,9 +61,9 @@ class PluginizedPropertiesSerializer: Serializer {
         }()
 
         return """
-        var \(property.data.unprocessed.name): \(property.data.unprocessed.type) {
-            return \(auxillaryPrefix)\(property.data.sourceComponentType.lowercasedFirstChar())\(auxillaryAccessor)\(auxillarySuffix).\(property.data.unprocessed.name)
-        }
+            var \(property.data.unprocessed.name): \(property.data.unprocessed.type) {
+                return \(auxillaryPrefix)\(property.data.sourceComponentType.lowercasedFirstChar())\(auxillaryAccessor)\(auxillarySuffix).\(property.data.unprocessed.name)
+            }
         """
     }
 }

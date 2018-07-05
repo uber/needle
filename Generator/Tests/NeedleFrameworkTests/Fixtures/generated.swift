@@ -2,9 +2,9 @@ import NeedleFoundation
 import RxSwift
 import UIKit
 
-// MARK: - Dependency Provider Factories
+// MARK: - Registration
 
-func registerDependencyProviderFactories() {
+func registerProviderFactories() {
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
         return GameDependency_2401566548657102800Provider(component: component)
     }
@@ -26,7 +26,7 @@ func registerDependencyProviderFactories() {
     
 }
 
-// MARK: - Dependency Providers
+// MARK: - Providers
 
 /// ^->RootComponent->LoggedInComponent->GameComponent
 private class GameDependency_2401566548657102800Provider: GameDependency {

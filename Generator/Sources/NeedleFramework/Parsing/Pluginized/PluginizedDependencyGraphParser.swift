@@ -123,7 +123,8 @@ class PluginizedDependencyGraphParser {
             }
         }
 
-        let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in
+        // Return back non-core components as well since they can be treated as any regular component.
+        let valueTypeComponents = (components + nonCoreComponents).map { (astComponent: ASTComponent) -> Component in
             astComponent.valueType
         }
         let valueTypePluginizedComponents = pluginizedComponents.map { (astComponent: PluginizedASTComponent) -> PluginizedComponent in

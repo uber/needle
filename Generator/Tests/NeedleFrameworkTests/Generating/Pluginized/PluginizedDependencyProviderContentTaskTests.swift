@@ -42,7 +42,7 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
         let task = PluginizedDependencyProviderContentTask(providers: allProviders, pluginizedComponents: pluginizedComponents)
         let allProcessedProviders = task.execute()
 
-        XCTAssertEqual(allProcessedProviders.count, 6)
+        XCTAssertEqual(allProcessedProviders.count, 8)
         verify(allProcessedProviders)
     }
 
@@ -63,14 +63,14 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
         XCTAssertEqual(providers[3].processedProperties[0].data.sourceComponentType, "LoggedInNonCoreComponent")
         XCTAssertEqual(providers[3].processedProperties[0].auxillarySourceType, nil)
 
-        XCTAssertEqual(providers[4].data.levelMap["LoggedInComponent"], 1)
-        XCTAssertEqual(providers[4].data.levelMap["RootComponent"], 2)
-        XCTAssertEqual(providers[4].processedProperties[0].data.unprocessed.name, "mutableScoreStream")
-        XCTAssertEqual(providers[4].processedProperties[0].auxillarySourceName, "LoggedInPluginExtension")
-        XCTAssertEqual(providers[4].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
-        XCTAssertEqual(providers[4].processedProperties[0].auxillarySourceType, .pluginExtension)
-        XCTAssertEqual(providers[4].processedProperties[1].data.unprocessed.name, "playersStream")
-        XCTAssertEqual(providers[4].processedProperties[1].data.sourceComponentType, "RootComponent")
-        XCTAssertEqual(providers[4].processedProperties[1].auxillarySourceType, nil)
+        XCTAssertEqual(providers[6].data.levelMap["LoggedInComponent"], 1)
+        XCTAssertEqual(providers[6].data.levelMap["RootComponent"], 2)
+        XCTAssertEqual(providers[6].processedProperties[0].data.unprocessed.name, "mutableScoreStream")
+        XCTAssertEqual(providers[6].processedProperties[0].auxillarySourceName, "LoggedInPluginExtension")
+        XCTAssertEqual(providers[6].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
+        XCTAssertEqual(providers[6].processedProperties[0].auxillarySourceType, .pluginExtension)
+        XCTAssertEqual(providers[6].processedProperties[1].data.unprocessed.name, "playersStream")
+        XCTAssertEqual(providers[6].processedProperties[1].data.sourceComponentType, "RootComponent")
+        XCTAssertEqual(providers[6].processedProperties[1].auxillarySourceType, nil)
     }
 }
