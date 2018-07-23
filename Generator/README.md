@@ -16,8 +16,16 @@ You can then build from the command-line:
 $ swift build
 ```
 
+For a release build with static-linking (so you can share the binary):
+
+```
+$ swift build -c release -Xswiftc -static-stdlib
+```
+
 Or create an Xcode project and build using the IDE:
 
 ```
 $ swift package generate-xcodeproj
 ```
+
+
