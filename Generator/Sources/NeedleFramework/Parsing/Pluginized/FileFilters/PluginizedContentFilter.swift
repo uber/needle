@@ -42,19 +42,19 @@ class PluginizedContentFilter: FileFilter {
         }
 
         // Match actual inheritances using Regex.
-        let containsPluginizedComponentInheritance = (Regex(": *PluginizedComponent *<").firstMatch(in: content) != nil)
+        let containsPluginizedComponentInheritance = (Regex(": *(NeedleFoundation.)?PluginizedComponent *<").firstMatch(in: content) != nil)
         if containsPluginizedComponentInheritance {
             return true
         }
-        let containsNonCoreComponentInheritance = (Regex(": *NonCoreComponent *<").firstMatch(in: content) != nil)
+        let containsNonCoreComponentInheritance = (Regex(": *(NeedleFoundation.)?NonCoreComponent *<").firstMatch(in: content) != nil)
         if containsNonCoreComponentInheritance {
             return true
         }
-        let containsDependencyInheritance = (Regex(": *Dependency").firstMatch(in: content) != nil)
+        let containsDependencyInheritance = (Regex(": *(NeedleFoundation.)?Dependency").firstMatch(in: content) != nil)
         if containsDependencyInheritance {
             return true
         }
-        let containsPluginExtensionInheritance = (Regex(": *PluginExtension").firstMatch(in: content) != nil)
+        let containsPluginExtensionInheritance = (Regex(": *(NeedleFoundation.)?PluginExtension").firstMatch(in: content) != nil)
         if containsPluginExtensionInheritance {
             return true
         }
