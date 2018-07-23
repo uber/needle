@@ -174,4 +174,20 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
             XCTFail()
         }
     }
+
+    func test_execute_namespacedComponent_verifyResult() {
+        let fileUrl = pluginizedFixtureUrl(for: "NamespacedComponentSample.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [])
+
+        let result = task.execute()
+
+        switch result {
+        case .shouldParse(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
+            XCTFail()
+        }
+    }
 }
