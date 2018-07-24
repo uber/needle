@@ -73,14 +73,14 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 private extension Dictionary where Key: ExpressibleByStringLiteral {
 
     var isPluginizedComponent: Bool {
-        let regex = Regex("^PluginizedComponent *<(.+)>")
+        let regex = Regex("^(NeedleFoundation.)?PluginizedComponent *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil
         }
     }
 
     var isNonCoreComponent: Bool {
-        let regex = Regex("^NonCoreComponent *<(.+)>")
+        let regex = Regex("^(NeedleFoundation.)?NonCoreComponent *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil
         }
@@ -91,7 +91,7 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 
     var pluginizedGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {
-        let regex = Regex("^PluginizedComponent *<")
+        let regex = Regex("^(NeedleFoundation.)?PluginizedComponent *<")
         let genericsString = inheritedTypes
             .compactMap { (type: String) -> String? in
                 if regex.firstMatch(in: type) != nil {
