@@ -40,7 +40,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// Check if this structure represents a `Dependency` protocol.
     var isDependencyProtocol: Bool {
-        return inheritedTypes.contains("Dependency")
+        return inheritedTypes.contains("Dependency") || inheritedTypes.contains("NeedleFoundation.Dependency")
     }
 
     /// The type name of this structure.
