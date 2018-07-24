@@ -56,8 +56,8 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
 
         XCTAssertEqual(executor.executeCallCount, files.count)
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 7)
-        XCTAssertEqual(parserCount, 7)
+        XCTAssertEqual(producerCount, 9)
+        XCTAssertEqual(parserCount, 9)
         XCTAssertEqual(producerCount, parserCount)
     }
 
