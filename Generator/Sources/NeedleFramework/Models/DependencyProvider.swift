@@ -32,12 +32,6 @@ struct DependencyProvider {
             }
             .joined(separator: "->")
     }
-
-    /// The class name of the dependency provider.
-    var name: String {
-        return dependency.name + String(pathString.hashValue).replacingOccurrences(of: "-", with: "_") + "Provider"
-    }
-
 }
 
 /// The data model representing a dependency provider to be generated for a
