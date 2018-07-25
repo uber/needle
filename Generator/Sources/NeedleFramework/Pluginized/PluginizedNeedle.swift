@@ -29,9 +29,9 @@ public class PluginizedNeedle {
     /// - parameter additionalImports: The additional import statements to add
     /// to the ones parsed from source files.
     /// - parameter destinationPath: The path to export generated code to.
-    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
+    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String, singleThreaded: Bool = false) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
-        let executor = SequenceExecutorImpl(name: "PluginizedNeedle.generate", qos: .userInteractive)
+        let executor: SequenceExecutor = singleThreaded ? SequenceExecutorSerialImpl() : SequenceExecutorImpl(name: "PluginizedNeedle.generate", qos: .userInteractive)
         let parser = PluginizedDependencyGraphParser()
         do {
             let (components, pluginizedComponents, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
