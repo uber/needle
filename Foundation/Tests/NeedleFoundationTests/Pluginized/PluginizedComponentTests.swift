@@ -63,7 +63,7 @@ class PluginizedComponentTests: XCTestCase {
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeInactiveCallCount, 1)
     }
 
-    func test_builderWillDeinit_verifyReleasingNonCoreComponent() {
+    func test_consumerWillDeinit_verifyReleasingNonCoreComponent() {
         let mockPluginizedComponent = MockPluginizedComponent()
         var noncoreComponent: MockNonCoreComponent? = mockPluginizedComponent.nonCoreComponent as? MockNonCoreComponent
         var noncoreDeinitCallCount = 0
@@ -82,7 +82,7 @@ class PluginizedComponentTests: XCTestCase {
         XCTAssertNil(noncoreComponent)
         XCTAssertEqual(noncoreDeinitCallCount, 0)
 
-        mockPluginizedComponent.builderWillDeinit()
+        mockPluginizedComponent.consumerWillDeinit()
 
         XCTAssertNil(noncoreComponent)
         XCTAssertEqual(noncoreDeinitCallCount, 1)

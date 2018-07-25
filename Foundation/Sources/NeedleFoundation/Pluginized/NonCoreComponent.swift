@@ -32,7 +32,7 @@ public protocol NonCoreComponentType: AnyObject {
     /// activating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     func scopeDidBecomeActive()
 
@@ -40,7 +40,7 @@ public protocol NonCoreComponentType: AnyObject {
     /// deactivating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     func scopeDidBecomeInactive()
 }
@@ -60,7 +60,7 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreC
     /// activating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     open func scopeDidBecomeActive() {}
 
@@ -68,7 +68,7 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreC
     /// deactivating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     open func scopeDidBecomeInactive() {}
 }
