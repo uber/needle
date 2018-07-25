@@ -5,5 +5,5 @@ class NamespacedNonCoreComponent: NeedleFoundation.NonCoreComponent<EmptyDepende
 
 protocol BExtension: NeedleFoundation.PluginExtension {}
 
-class SomePluginizedCompo: NeedleFoundation.PluginizedComponent<ADependency, BExtension, ANonCoreComponent>, Stuff {
+class SomePluginizedCompo2: NeedleFoundation.PluginizedComponent<ADependency, BExtension, ANonCoreComponent>, Stuff {
 }

@@ -16,6 +16,8 @@
 
 import Foundation
 
+let needleModuleName = "NeedleFoundation"
+
 /// The entry point to Needle, providing all the functionalities of the system.
 public class Needle {
 

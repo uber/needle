@@ -32,7 +32,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// Check if this structure represents a `Component` subclass.
     var isComponent: Bool {
-        let regex = Regex("^(NeedleFoundation.)?Component *<(.+)>")
+        let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil
         }
@@ -40,7 +40,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// Check if this structure represents a `Dependency` protocol.
     var isDependencyProtocol: Bool {
-        return inheritedTypes.contains("Dependency")
+        return inheritedTypes.contains("Dependency") || inheritedTypes.contains("\(needleModuleName).Dependency")
     }
 
     /// The type name of this structure.
@@ -55,7 +55,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     /// - parameter componentType: The type name of the component.
     /// - returns: The dependency protocol type name.
     func dependencyProtocolName(for componentType: String) -> String {
-        let regex = Regex("^(NeedleFoundation.)?\(componentType) *<")
+        let regex = Regex("^(\(needleModuleName).)?\(componentType) *<")
         let result = inheritedTypes
             .compactMap { (type: String) -> String? in
                 if regex.firstMatch(in: type) != nil {
