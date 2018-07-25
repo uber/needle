@@ -33,10 +33,10 @@ class ASTParserTaskTests: AbstractParserTests {
         let task = ASTParserTask(ast: AST(structure: structure, imports: imports))
         _ = task.execute()
 
-        let expected = ["candy: Candy is fileprivate, therefore inaccessible on DI graph.",
-                        "cheese: Cheese is fileprivate, therefore inaccessible on DI graph.",
-                        "stream: Stream is private, therefore inaccessible on DI graph.",
-                        "donut: Donut is fileprivate, therefore inaccessible on DI graph."]
+        let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateDependency (cheese: Cheese) property is fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateComponent (stream: Stream) property is private, therefore inaccessible on DI graph.",
+                        "PrivateComponent (donut: Donut) property is fileprivate, therefore inaccessible on DI graph."]
         XCTAssertEqual(UnitTestLogger.instance.messages, expected)
     }
 
