@@ -31,7 +31,11 @@ public class PluginizedNeedle {
     /// - parameter destinationPath: The path to export generated code to.
     public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
+        #if DEBUG
+        let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutorImpl() : SequenceExecutorImpl(name: "PluginizedNeedle.generate", qos: .userInteractive)
+        #else
         let executor = SequenceExecutorImpl(name: "PluginizedNeedle.generate", qos: .userInteractive)
+        #endif
         let parser = PluginizedDependencyGraphParser()
         do {
             let (components, pluginizedComponents, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
