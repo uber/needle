@@ -32,7 +32,6 @@ class DependencyProviderDeclarerTaskTests: AbstractGeneratorTests {
             switch component.name {
             case "GameComponent":
                 XCTAssertEqual(providers.count, 1)
-                XCTAssertEqual(providers[0].name, "GameDependency_2401566548657102800Provider")
                 XCTAssertEqual(providers[0].pathString, "^->RootComponent->LoggedInComponent->GameComponent")
                 XCTAssertEqual(providers[0].dependency, component.dependency)
                 XCTAssertEqual(providers[0].path[0].name, "RootComponent")
@@ -41,16 +40,14 @@ class DependencyProviderDeclarerTaskTests: AbstractGeneratorTests {
             case "ScoreSheetComponent":
                 XCTAssertEqual(providers.count, 2)
                 for provider in providers {
-                    switch provider.name {
-                    case "ScoreSheetDependency_1515114331612493672Provider":
-                        XCTAssertEqual(provider.pathString, "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent")
+                    switch provider.pathString {
+                    case "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent":
                         XCTAssertEqual(provider.dependency, component.dependency)
                         XCTAssertEqual(provider.path[0].name, "RootComponent")
                         XCTAssertEqual(provider.path[1].name, "LoggedInComponent")
                         XCTAssertEqual(provider.path[2].name, "GameComponent")
                         XCTAssertEqual(provider.path[3].name, "ScoreSheetComponent")
-                    case "ScoreSheetDependency8667150673442932147Provider":
-                        XCTAssertEqual(provider.pathString, "^->RootComponent->LoggedInComponent->ScoreSheetComponent")
+                    case "^->RootComponent->LoggedInComponent->ScoreSheetComponent":
                         XCTAssertEqual(provider.dependency, component.dependency)
                         XCTAssertEqual(provider.path[0].name, "RootComponent")
                         XCTAssertEqual(provider.path[1].name, "LoggedInComponent")
@@ -61,21 +58,18 @@ class DependencyProviderDeclarerTaskTests: AbstractGeneratorTests {
                 }
             case "LoggedOutComponent":
                 XCTAssertEqual(providers.count, 1)
-                XCTAssertEqual(providers[0].name, "LoggedOutDependency5490810220359560589Provider")
                 XCTAssertEqual(providers[0].pathString, "^->RootComponent->LoggedOutComponent")
                 XCTAssertEqual(providers[0].dependency, component.dependency)
                 XCTAssertEqual(providers[0].path[0].name, "RootComponent")
                 XCTAssertEqual(providers[0].path[1].name, "LoggedOutComponent")
             case "LoggedInComponent":
                 XCTAssertEqual(providers.count, 1)
-                XCTAssertEqual(providers[0].name, "EmptyDependency4815886340652882587Provider")
                 XCTAssertEqual(providers[0].pathString, "^->RootComponent->LoggedInComponent")
                 XCTAssertEqual(providers[0].dependency, component.dependency)
                 XCTAssertEqual(providers[0].path[0].name, "RootComponent")
                 XCTAssertEqual(providers[0].path[1].name, "LoggedInComponent")
             case "RootComponent":
                 XCTAssertEqual(providers.count, 1)
-                XCTAssertEqual(providers[0].name, "EmptyDependency_351536060279651311Provider")
                 XCTAssertEqual(providers[0].pathString, "^->RootComponent")
                 XCTAssertEqual(providers[0].dependency, component.dependency)
                 XCTAssertEqual(providers[0].path[0].name, "RootComponent")
