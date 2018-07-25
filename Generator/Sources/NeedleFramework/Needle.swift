@@ -31,9 +31,13 @@ public class Needle {
     /// - parameter additionalImports: The additional import statements to add
     /// to the ones parsed from source files.
     /// - parameter destinationPath: The path to export generated code to.
-    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String, singleThreaded: Bool = false) {
+    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
-        let executor: SequenceExecutor = singleThreaded ? SequenceExecutorSerialImpl() : SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
+        #if DEBUG
+        let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutorImpl() : SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
+        #else
+        let executor = SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
+        #endif
         let parser = DependencyGraphParser()
         do {
             let (components, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)

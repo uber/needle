@@ -25,7 +25,7 @@ $ swift build -c release -Xswiftc -static-stdlib
 Or create an Xcode project and build using the IDE:
 
 ```
-$ swift package generate-xcodeproj
+$ swift package generate-xcodeproj --xcconfig-overrides xcode.xcconfig 
 ```
-
+Note: For now, the xcconfig is being used to pass in the DEBUG define.
 

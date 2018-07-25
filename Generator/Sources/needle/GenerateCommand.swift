@@ -34,7 +34,6 @@ class GenerateCommand: Command {
     private let suffixes: OptionArgument<[String]>
     private let additionalImports: OptionArgument<[String]>
     private let scanPlugins: OptionArgument<Bool>
-    private let singleThreaded: OptionArgument<Bool>
 
     required init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
@@ -42,7 +41,6 @@ class GenerateCommand: Command {
         destinationPath = subparser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
         suffixes = subparser.add(option: "--suffixes", shortName: "-sfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
         scanPlugins = subparser.add(option: "--pluginized", shortName: "-p", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
-        singleThreaded = subparser.add(option: "--single-threaded", shortName: "-st", kind: Bool.self, usage: "Use only one thread (useful for debugging.")
         additionalImports = subparser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
     }
 
@@ -52,11 +50,10 @@ class GenerateCommand: Command {
                 let suffixes = arguments.get(self.suffixes) ?? []
                 let additionalImports = arguments.get(self.additionalImports) ?? []
                 let scanPlugins = arguments.get(self.scanPlugins) ?? false
-                let singleThreaded = arguments.get(self.singleThreaded) ?? false
                 if scanPlugins {
-                    PluginizedNeedle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath, singleThreaded: singleThreaded)
+                    PluginizedNeedle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath)
                 } else {
-                    Needle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath, singleThreaded: singleThreaded)
+                    Needle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath)
                 }
             } else {
                 fatalError("Missing destination path.")
