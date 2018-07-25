@@ -36,11 +36,11 @@ class ContentFilter: FileFilter {
         }
 
         // Match actual component inheritance using Regex.
-        let containsComponentInheritance = (Regex(": *(" + needleModuleName + ".)?Component *<").firstMatch(in: content) != nil)
+        let containsComponentInheritance = (Regex(": *(\(needleModuleName).)?Component *<").firstMatch(in: content) != nil)
         if containsComponentInheritance {
             return true
         }
-        let containsDependencyInheritance = (Regex(": *(" + needleModuleName + ".)?Dependency").firstMatch(in: content) != nil)
+        let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)?Dependency").firstMatch(in: content) != nil)
         if containsDependencyInheritance {
             return true
         }
