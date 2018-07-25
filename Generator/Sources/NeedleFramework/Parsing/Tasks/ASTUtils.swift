@@ -85,22 +85,29 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     /// The properties of this structure.
     var properties: [Property] {
         return filterSubstructure(by: "source.lang.swift.decl.var.instance")
-            .filter { (item: [String: SourceKitRepresentable]) -> Bool in
-                if let accessibility = item["key.accessibility"] as? String {
-                    return accessibility != "source.lang.swift.accessibility.private" && accessibility != "source.lang.swift.accessibility.fileprivate"
-                }
-                fatalError("Property missing accessibility identifier.")
-            }
-            .map { (item: [String: SourceKitRepresentable]) -> Property in
+            .map { (item: [String: SourceKitRepresentable]) -> (Property, [String: SourceKitRepresentable]) in
                 if let variableName = item["key.name"] as? String {
                     if let typeName = item["key.typename"] as? String {
-                        return Property(name: variableName, type: typeName)
+                        return (Property(name: variableName, type: typeName), item)
                     } else {
                         fatalError("Missing explicit type annotation for property \"\(variableName)\" in \(self.name)")
                     }
                 }
                 fatalError("Property \(item) does not have a name.")
-        }
+            }
+            .compactMap { (propertyItem: (property: Property, item: [String: SourceKitRepresentable])) -> Property? in
+                if let accessibility = propertyItem.item["key.accessibility"] as? String {
+                    let isPrivate = (accessibility == "source.lang.swift.accessibility.private")
+                    let isFilePrivate = (accessibility == "source.lang.swift.accessibility.fileprivate")
+                    if isPrivate || isFilePrivate {
+                        warning("\(self.name) (\(propertyItem.property.name): \(propertyItem.property.type)) property is \(isPrivate ? "private" : "fileprivate"), therefore inaccessible on DI graph.")
+                        return nil
+                    } else {
+                        return propertyItem.property
+                    }
+                }
+                fatalError("Property missing accessibility identifier.")
+            }
     }
 
     /// The name of the expression call types in this structure.

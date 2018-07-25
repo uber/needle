@@ -24,6 +24,22 @@ class ASTParserTaskTests: AbstractParserTests {
         ("test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode),
     ]
 
+    func test_execute_withPrivateProperties_verifyLog() {
+        let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
+        let sourceContent = try! String(contentsOf: sourceUrl)
+        let structure = try! Structure(file: File(contents: sourceContent))
+        let imports = ["import UIKit", "import RIBs", "import Foundation"]
+
+        let task = ASTParserTask(ast: AST(structure: structure, imports: imports))
+        _ = task.execute()
+
+        let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateDependency (cheese: Cheese) property is fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateComponent (stream: Stream) property is private, therefore inaccessible on DI graph.",
+                        "PrivateComponent (donut: Donut) property is fileprivate, therefore inaccessible on DI graph."]
+        XCTAssertEqual(UnitTestLogger.instance.messages, expected)
+    }
+
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)

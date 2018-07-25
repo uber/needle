@@ -16,6 +16,7 @@
 
 import Basic
 import Foundation
+import NeedleFramework
 import Utility
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
             parser.printUsage(on: stdoutStream)
         }
     } catch {
-        print("Command-line pasing error (use --help for help):", error)
+        warning("Command-line pasing error (use --help for help): \(error)")
     }
 }
 

@@ -56,8 +56,8 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
 
         XCTAssertEqual(executor.executeCallCount, files.count)
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 9)
-        XCTAssertEqual(parserCount, 9)
+        XCTAssertEqual(producerCount, 10)
+        XCTAssertEqual(parserCount, 10)
         XCTAssertEqual(producerCount, parserCount)
     }
 
@@ -75,7 +75,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
-            XCTAssertEqual(components.count, 10)
+            XCTAssertEqual(components.count, 11)
             XCTAssertEqual(pluginizedComponents.count, 3)
             XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import NeedleFoundationExtension", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility"])
         } catch {
