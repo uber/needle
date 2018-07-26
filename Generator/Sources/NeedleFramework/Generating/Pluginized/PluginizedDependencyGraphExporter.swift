@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
 /// The generation phase entry class that executes tasks to process dependency

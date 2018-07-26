@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
 /// The task that walks through the chain of parents as well as auxillary

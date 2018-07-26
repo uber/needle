@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
 /// The entry point to Needle, providing all the functionalities of the system.
@@ -32,9 +33,9 @@ public class PluginizedNeedle {
     public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
         #if DEBUG
-        let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutorImpl() : SequenceExecutorImpl(name: "PluginizedNeedle.generate", qos: .userInteractive)
+            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive)
         #else
-        let executor = SequenceExecutorImpl(name: "PluginizedNeedle.generate", qos: .userInteractive)
+            let executor = ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive)
         #endif
         let parser = PluginizedDependencyGraphParser()
         do {
