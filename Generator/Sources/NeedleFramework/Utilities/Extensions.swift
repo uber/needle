@@ -14,10 +14,16 @@
 //  limitations under the License.
 //
 
+import Basic
 import Foundation
 
 /// Utility String extensions.
 extension String {
+
+    /// The SHA256 value of this String.
+    var shortSHA256Value: String {
+        return SHA256(self).digestString().substring(with: NSRange(location: 0, length: 20))!
+    }
 
     /// Return the same String with the first character lowercased.
     ///

@@ -6,16 +6,16 @@ import UIKit
 
 func registerProviderFactories() {
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
-        return GameDependency_2401566548657102800Provider(component: component)
+        return GameDependency1ab5926a977f706d3195Provider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent") { component in
-        return ScoreSheetDependency_1515114331612493672Provider(component: component)
+        return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
-        return ScoreSheetDependency8667150673442932147Provider(component: component)
+        return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
-        return LoggedOutDependency5490810220359560589Provider(component: component)
+        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
         return EmptyDependencyProvider(component: component)
@@ -29,7 +29,7 @@ func registerProviderFactories() {
 // MARK: - Providers
 
 /// ^->RootComponent->LoggedInComponent->GameComponent
-private class GameDependency_2401566548657102800Provider: GameDependency {
+private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
@@ -44,7 +44,7 @@ private class GameDependency_2401566548657102800Provider: GameDependency {
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent
-private class ScoreSheetDependency_1515114331612493672Provider: ScoreSheetDependency {
+private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
@@ -54,7 +54,7 @@ private class ScoreSheetDependency_1515114331612493672Provider: ScoreSheetDepend
     }
 }
 /// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
-private class ScoreSheetDependency8667150673442932147Provider: ScoreSheetDependency {
+private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
@@ -64,7 +64,7 @@ private class ScoreSheetDependency8667150673442932147Provider: ScoreSheetDepende
     }
 }
 /// ^->RootComponent->LoggedOutComponent
-private class LoggedOutDependency5490810220359560589Provider: LoggedOutDependency {
+private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
     }
