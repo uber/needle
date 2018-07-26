@@ -20,7 +20,7 @@ import Foundation
 /// pairing methods to manage its and its corresponding non-core component's
 /// lifecycle.
 ///
-/// - note: A separate protocol is used to allow the consumer to delcare
+/// - note: A separate protocol is used to allow the consumer to declare
 /// a pluginized component generic without having to specify the nested
 /// generics.
 public protocol PluginizedComponentType: ComponentType {
