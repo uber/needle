@@ -20,7 +20,7 @@ import Foundation
 /// support scope activation and deactivation.
 ///
 /// - note: A separate protocol is used to allow `PluginizableComponent`
-/// to delcare a non-core component generic without having to specify the
+/// to declare a non-core component generic without having to specify the
 /// dependency protocol nested generics.
 public protocol NonCoreComponentType: AnyObject {
     /// Initializer.
@@ -32,7 +32,7 @@ public protocol NonCoreComponentType: AnyObject {
     /// activating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     func scopeDidBecomeActive()
 
@@ -40,7 +40,7 @@ public protocol NonCoreComponentType: AnyObject {
     /// deactivating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     func scopeDidBecomeInactive()
 }
@@ -60,7 +60,7 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreC
     /// activating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     open func scopeDidBecomeActive() {}
 
@@ -68,7 +68,7 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreC
     /// deactivating this non-core component as well.
     ///
     /// - note: This method is automatically invoked when the non-core component
-    /// is paired with a `PluginizableComponent` that is bound to a `Router`.
+    /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     open func scopeDidBecomeInactive() {}
 }

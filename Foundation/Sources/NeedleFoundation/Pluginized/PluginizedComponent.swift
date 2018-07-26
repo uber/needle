@@ -20,13 +20,13 @@ import Foundation
 /// pairing methods to manage its and its corresponding non-core component's
 /// lifecycle.
 ///
-/// - note: A separate protocol is used to allow `PluginizedBuilder` to
-/// delcare a pluginized component generic without having to specify the
-/// nested generics.
+/// - note: A separate protocol is used to allow the consumer to declare
+/// a pluginized component generic without having to specify the nested
+/// generics.
 public protocol PluginizedComponentType: ComponentType {
-    /// Bind the plugnizable component to the router's lifecycle. This ensures
-    /// the associated non-core component is released when the given router scope
-    /// is deallocated.
+    /// Bind the plugnizable component to the a lifecycle. This ensures
+    /// the associated non-core component is released when the given
+    /// scope is deallocated.
     ///
     /// - note: This method must be invoked when using a `PluginizedComponent`,
     /// to avoid memory leak of the component and the non-core component.
@@ -36,11 +36,11 @@ public protocol PluginizedComponentType: ComponentType {
     /// - parameter lifecycle: The `PluginizedLifecycle` to bind to.
     func bind(to lifecycle: PluginizedLifecycle)
 
-    /// Signal the corresponding `PluginizedBuilder` is about to deinit.
-    /// This allows the pluginized component to release its corresponding
-    /// non-core component, breaking the retain cycle between it and its
-    /// non-core component.
-    func builderWillDeinit()
+    /// Signal this pluginized component that the corresponding consumer
+    /// is about to deinit. This allows the pluginized component to release
+    /// its corresponding non-core component, breaking the retain cycle
+    /// between it and its non-core component.
+    func consumerWillDeinit()
 }
 
 /// The base protocol of a plugin extension, enabling Needle's parsing process.
@@ -72,9 +72,9 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
         pluginExtension = createPluginExtensionProvider()
     }
 
-    /// Bind the plugnizable component to the router's lifecycle. This ensures
-    /// the associated non-core component is released when the given router scope
-    /// is deallocated.
+    /// Bind the plugnizable component to the a lifecycle. This ensures
+    /// the associated non-core component is released when the given
+    /// scope is deallocated.
     ///
     /// - note: This method must be invoked when using a `PluginizedComponent`,
     /// to avoid memory leak of the component and the non-core component.
@@ -96,16 +96,17 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
         }
     }
 
-    /// Signal the corresponding `PluginizedBuilder` is about to deinit.
-    /// This allows the pluginized component to release its corresponding
-    /// non-core component, breaking the retain cycle between it and its
-    /// non-core component.
-    public func builderWillDeinit() {
-        // Only release the non-core component after the builder, which should be the owner
-        // reference to the component is released. Cannot release the non-core component when
-        // the bound router is detached. The builder may build another instance of the RIB
-        // with the same instance of this component again. In that case, this component will
-        // try to access its released non-core component to recreate plugin points.
+    /// Signal this pluginized component that the corresponding consumer
+    /// is about to deinit. This allows the pluginized component to release
+    /// its corresponding non-core component, breaking the retain cycle
+    /// between it and its non-core component.
+    public func consumerWillDeinit() {
+        // Only release the non-core component after the consumer, which should
+        // be the owner reference to the component is released. Cannot release
+        // the non-core component when the bound lifecyle is deactivated. The
+        // consumer may later require the same instance of this component again.
+        // In that case, this component will try to access its released non-core
+        // component to recreate plugins.
         self.releasableNonCoreComponent = nil
     }
 
