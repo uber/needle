@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
 /// The entry utility for the parsing phase. The parser deeply scans a

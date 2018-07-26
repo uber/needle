@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import XCTest
 @testable import NeedleFramework
 

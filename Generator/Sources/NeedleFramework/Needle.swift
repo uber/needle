@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
 let needleModuleName = "NeedleFoundation"
@@ -34,9 +35,9 @@ public class Needle {
     public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
         #if DEBUG
-        let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutorImpl() : SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
+            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive)
         #else
-        let executor = SequenceExecutorImpl(name: "Needle.generate", qos: .userInteractive)
+            let executor = ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive)
         #endif
         let parser = DependencyGraphParser()
         do {
