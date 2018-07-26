@@ -30,7 +30,7 @@ class DependencyProviderClassNameSerializer: Serializer {
     ///
     /// - returns: The class name code.
     func serialize() -> String {
-        let pathId = String(provider.unprocessed.pathString.hashValue).replacingOccurrences(of: "-", with: "_")
+        let pathId = String(provider.unprocessed.pathString.shortSHA256Value)
         return "\(provider.unprocessed.dependency.name)\(pathId)Provider"
     }
 
