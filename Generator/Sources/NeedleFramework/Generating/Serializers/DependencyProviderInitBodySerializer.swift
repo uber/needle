@@ -32,7 +32,9 @@ class DependencyProviderInitBodySerializer: Serializer {
     ///
     /// - returns: The initializer body source code.
     func serialize() -> String {
-        return provider.levelMap.map { (componentType: String, level: Int) in
+        return provider.levelMap
+            .sorted(by: { $0.key < $1.key })
+            .map { (componentType: String, level: Int) in
             return "        \(componentType.lowercasedFirstChar()) = component\(String(repeating: ".parent", count: level)) as! \(componentType)"
         }
         .joined(separator: "\n")

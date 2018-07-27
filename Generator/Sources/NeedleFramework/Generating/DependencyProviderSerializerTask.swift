@@ -51,7 +51,7 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
     private func serializedContent(for provider: ProcessedDependencyProvider) -> String {
         let classNameSerializer = DependencyProviderClassNameSerializer(provider: provider)
         let propertiesSerializer = PropertiesSerializer(processedProperties: provider.processedProperties)
-        let sourceComponentsSerializer = SourceComponentsSerializer(componentTypes: Array(provider.levelMap.keys))
+        let sourceComponentsSerializer = SourceComponentsSerializer(componentTypes: provider.levelMap.keys.sorted())
         let initBodySerializer = DependencyProviderInitBodySerializer(provider: provider)
 
         let serializer = DependencyProviderSerializer(provider: provider, classNameSerializer: classNameSerializer, propertiesSerializer: propertiesSerializer, sourceComponentsSerializer: sourceComponentsSerializer, initBodySerializer: initBodySerializer)
