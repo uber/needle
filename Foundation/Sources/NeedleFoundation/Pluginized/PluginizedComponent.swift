@@ -58,6 +58,9 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
     /// directly access this property.
     public var nonCoreComponent: AnyObject {
         guard let value = releasableNonCoreComponent else {
+            // This case should not occur if the pluginized component is properly
+            // paired with a consumer. This only occurs if the `nonCoreComponent`
+            // is accessed after the `consumerWillDeinit` method is invoked.
             fatalError("Attempt to access non-core component of \(self) after it has been released.")
         }
         return value
@@ -124,12 +127,17 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
         if let pluginExtension = provider as? PluginExtensionType {
             return pluginExtension
         } else {
+            // This case should never occur with properly generated Needle code.
+            // Needle's official generator should guarantee the correctness.
             fatalError("Plugin extension provider factory for \(self) returned incorrect type. Should be of type \(String(describing: PluginExtensionType.self)). Actual type is \(String(describing: provider))")
         }
     }
 
     deinit {
         guard let lifecycleObserverDisposable = lifecycleObserverDisposable else {
+            // This occurs with improper usages of a pluginized component. It
+            // should be bound to a lifecycle allowing the non-core component
+            // to trigger its lifecycle.
             fatalError("\(self) should be bound to its corresponding lifecyle to avoid memory leaks.")
         }
         lifecycleObserverDisposable.dispose()

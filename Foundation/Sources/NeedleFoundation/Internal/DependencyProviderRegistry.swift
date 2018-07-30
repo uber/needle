@@ -17,12 +17,14 @@
 import Foundation
 
 /// Needle internal registry of dependency providers.
-/// - note: This class is only needed until Swift supports extensions overriding methods.
-/// This is an internal class to the Needle dependency injection framework. Application
-/// code should never use this class directly.
-// TODO: Remove this once Swift supports extension overriding methods. Once that happens, we
-// can declare an `open createDependencyProvider` method in the base component class. Generate
-// extensions to all the component subclasses that override the method to instantiate the
+/// - note: This class is only needed until Swift supports extensions
+/// overriding methods. This is an internal class to the Needle dependency
+/// injection framework. Application code should never use this class
+/// directly.
+// TODO: Remove this once Swift supports extension overriding methods.
+// Once that happens, we can declare an `open createDependencyProvider`
+// method in the base component class. Generate extensions to all the
+// component subclasses that override the method to instantiate the
 // dependnecy providers.
 public class __DependencyProviderRegistry {
 
@@ -32,11 +34,11 @@ public class __DependencyProviderRegistry {
     /// Register the given factory closure with given key.
     ///
     /// - note: This method is thread-safe.
-    /// - parameter componentPath: The dependency graph path of the component the provider
-    /// is for.
-    /// - parameter dependencyProviderFactory: The closure that takes in a component to be
-    /// injected and returns a provider instance that conforms to the component's dependency
-    /// protocol.
+    /// - parameter componentPath: The dependency graph path of the component
+    /// the provider is for.
+    /// - parameter dependencyProviderFactory: The closure that takes in a
+    /// component to be injected and returns a provider instance that conforms
+    /// to the component's dependency protocol.
     public func registerDependencyProviderFactory(`for` componentPath: String, _ dependencyProviderFactory: @escaping (ComponentType) -> AnyObject) {
         providerFactoryLock.lock()
         defer {
@@ -60,6 +62,8 @@ public class __DependencyProviderRegistry {
         if let factory = providerFactories[pathString.hashValue] {
             return factory(component)
         } else {
+            // This case should never occur with properly generated Needle code.
+            // This is useful for Needle generator development only.
             fatalError("Missing dependency provider factory for \(component.path)")
         }
     }
