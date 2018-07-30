@@ -36,10 +36,11 @@ public class __PluginExtensionProviderRegistry {
     /// - note: Plugin extension provider is unique per pluginized component
     /// regardless of its path, since it only extracts properties from its
     /// corresponding non-core component.
-    /// - parameter componentName: The name of the component the provider is for.
-    /// - parameter pluginExtensionProviderFactory: The closure that takes in
-    /// a component to be injected and returns a provider instance that conforms
-    /// to the component's plugin extensions protocol.
+    /// - parameter componentName: The name of the component the provider
+    /// is for.
+    /// - parameter pluginExtensionProviderFactory: The closure that takes
+    /// in a component to be injected and returns a provider instance that
+    /// conforms to the component's plugin extensions protocol.
     public func registerPluginExtensionProviderFactory(`for` componentName: String, _ pluginExtensionProviderFactory: @escaping (PluginizedComponentType) -> AnyObject) {
         // Lock on `providerFactories` access.
         lock.lock()
@@ -62,6 +63,8 @@ public class __PluginExtensionProviderRegistry {
         if let factory = providerFactories[key] {
             return factory(component)
         } else {
+            // This case should never occur with properly generated Needle code.
+            // This is useful for Needle generator development only.
             fatalError("Missing plugin extension provider factory for \(component.path)")
         }
     }

@@ -16,12 +16,13 @@
 
 import Foundation
 
-/// An empty protocol that can be used for any components that require no dependencies. This
-/// can be used as the dependnecy protocol of the root component of a dependency graph.
+/// An empty protocol that can be used for any components that require no
+/// dependencies. This can be used as the dependnecy protocol of the root
+/// component of a dependency graph.
 public protocol EmptyDependency {}
 
-/// The dependency provider that conforms to `EmptyDependency`. This is used to bootstrap the
-/// root component of a dependency graph.
+/// The dependency provider that conforms to `EmptyDependency`. This is
+/// used to bootstrap the root component of a dependency graph.
 public class EmptyDependencyProvider: EmptyDependency {
 
     /// Initializer.
@@ -30,15 +31,17 @@ public class EmptyDependencyProvider: EmptyDependency {
     public init(component: ComponentType) {}
 }
 
-/// An empty class that can be used as the bootstrap component, the parent component of the
-/// root component in the dependency graph.
+/// An empty class that can be used as the bootstrap component, the parent
+/// component of the root component in the dependency graph.
 public class BootstrapComponent: ComponentType {
 
     /// The path to reach this scope on the dependency graph.
     public let path: [String] = ["^"]
 
-    /// This component does not have a parent
+    /// This component does not have a parent. Do not access this property.
     public var parent: ComponentType {
+        // With properly generated Needle code, this property should never
+        // be accessed.
         fatalError("BootstrapComponent does not have a parent, do not use this property.")
     }
 

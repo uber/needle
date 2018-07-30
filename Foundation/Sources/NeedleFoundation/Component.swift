@@ -104,6 +104,8 @@ open class Component<DependencyType>: ComponentType {
         if let dependency = provider as? DependencyType {
             return dependency
         } else {
+            // This case should never occur with properly generated Needle code.
+            // Needle's official generator should guarantee the correctness.
             fatalError("Dependency provider factory for \(self) returned incorrect type. Should be of type \(String(describing: DependencyType.self)). Actual type is \(String(describing: dependency))")
         }
     }
