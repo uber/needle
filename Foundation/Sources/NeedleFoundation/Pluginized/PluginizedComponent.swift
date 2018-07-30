@@ -59,7 +59,7 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
     public var nonCoreComponent: AnyObject {
         guard let value = releasableNonCoreComponent else {
             // This case should not occur if the pluginized component is properly
-            // paried with a consumer. This only occurs if the `nonCoreComponent`
+            // paired with a consumer. This only occurs if the `nonCoreComponent`
             // is accessed after the `consumerWillDeinit` method is invoked.
             fatalError("Attempt to access non-core component of \(self) after it has been released.")
         }
@@ -135,7 +135,7 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
 
     deinit {
         guard let lifecycleObserverDisposable = lifecycleObserverDisposable else {
-            // This occurs with inproper usages of a pluginized component. It
+            // This occurs with improper usages of a pluginized component. It
             // should be bound to a lifecycle allowing the non-core component
             // to trigger its lifecycle.
             fatalError("\(self) should be bound to its corresponding lifecyle to avoid memory leaks.")
