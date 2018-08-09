@@ -76,6 +76,10 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             }
             .first
         if let result = result {
+            if result.contains(".") {
+                // Contains a module name, strip this out
+                return result.components(separatedBy: ".").last ?? result
+            }
             return result
         } else {
             fatalError("\(name) is being parsed as a Component. Yet its generic dependency type cannot be parsed. \(inheritedTypes)")
