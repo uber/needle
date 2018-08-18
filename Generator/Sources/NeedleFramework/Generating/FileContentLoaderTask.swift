@@ -32,15 +32,11 @@ class FileContentLoaderTask: AbstractTask<String> {
     ///
     /// - returns: The file content as `String`.
     override func execute() -> String {
-        guard let url = URL(string: filePath) else {
-            warning("Cannot create file URL from path \(filePath).")
-            return ""
-        }
-        let content = try? String(contentsOf: url)
-        if let content = content {
-            return content
-        } else {
-            warning("File content cannot be loaded from \(filePath).")
+        let url = URL(fileURLWithPath: filePath)
+        do {
+            return try String(contentsOf: url)
+        } catch (let error) {
+            warning("File content cannot be loaded from \(filePath) \(error)")
             return ""
         }
     }

@@ -34,7 +34,7 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
         let exporter = PluginizedDependencyGraphExporter()
 
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("generated_pluginized.swift")
-        let headerDocPath = fixturesURL.deletingLastPathComponent().appendingPathComponent("HeaderDoc.txt").absoluteString
+        let headerDocPath = fixturesURL.deletingLastPathComponent().appendingPathComponent("HeaderDoc.txt").path
         try? exporter.export(components, pluginizedComponents, with: imports, to: outputURL.path, using: executor, include: headerDocPath)
         let generated = try? String(contentsOf: outputURL)
         XCTAssertNotNil(generated, "Could not read the generated file")
