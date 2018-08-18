@@ -32,7 +32,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// Check if this structure represents a `Component` subclass.
     var isComponent: Bool {
-        let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
+        let regex = Regex("^(\(needleModuleName).)Component *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil
         }
