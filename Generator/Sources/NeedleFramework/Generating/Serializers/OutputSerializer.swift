@@ -24,9 +24,12 @@ class OutputSerializer: Serializer {
     ///
     /// - parameter providers: The list of providers to output.
     /// - parameter imports: The list of import statements to include.
-    init(providers: [SerializedProvider], imports: [String]) {
+    /// - parameter headerDocContent: The content of the header doc to
+    /// include at the top of the output file.
+    init(providers: [SerializedProvider], imports: [String], headerDocContent: String) {
         self.providers = providers
         self.imports = imports
+        self.headerDocContent = headerDocContent
     }
 
     /// Serialize the data model into source code.
@@ -49,6 +52,8 @@ class OutputSerializer: Serializer {
         let importsJoined = imports.joined(separator: "\n")
 
         return """
+        \(headerDocContent)
+
         \(importsJoined)
 
         // MARK: - Registration
@@ -67,4 +72,5 @@ class OutputSerializer: Serializer {
 
     private let providers: [SerializedProvider]
     private let imports: [String]
+    private let headerDocContent: String
 }

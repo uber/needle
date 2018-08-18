@@ -42,15 +42,15 @@ class DependencyGraphParser {
     /// statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
-        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
+    func parse(from rootUrl: URL, excludingFilesWith exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
+        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWith: exclusionSuffixes, using: executor)
         let (components, dependencies, imports) = try collectDataModels(with: urlHandles)
         return process(components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
+    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWith exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -87,7 +87,7 @@ class DependencyGraphParser {
         var imports = Set<String>()
         for urlHandle in urlHandles {
             do {
-                let node = try urlHandle.handle.await(withTimeout: 30)
+                let node = try urlHandle.handle.await(withTimeout: defaultTimeout)
                 components.append(contentsOf: node.components)
                 dependencies.append(contentsOf: node.dependencies)
                 for statement in node.imports {

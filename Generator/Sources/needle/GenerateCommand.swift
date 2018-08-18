@@ -34,6 +34,7 @@ class GenerateCommand: Command {
     private let suffixes: OptionArgument<[String]>
     private let additionalImports: OptionArgument<[String]>
     private let scanPlugins: OptionArgument<Bool>
+    private let headerDocPath: OptionArgument<String>
 
     required init(parser: ArgumentParser) {
         let subparser = parser.add(subparser: name, overview: overview)
@@ -42,6 +43,7 @@ class GenerateCommand: Command {
         suffixes = subparser.add(option: "--suffixes", shortName: "-sfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
         scanPlugins = subparser.add(option: "--pluginized", shortName: "-p", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
         additionalImports = subparser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
+        headerDocPath = subparser.add(option: "--header-doc", shortName: "-hd", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
     }
 
     func execute(with arguments: ArgumentParser.Result) {
@@ -50,10 +52,11 @@ class GenerateCommand: Command {
                 let suffixes = arguments.get(self.suffixes) ?? []
                 let additionalImports = arguments.get(self.additionalImports) ?? []
                 let scanPlugins = arguments.get(self.scanPlugins) ?? false
+                let headerDocPath = arguments.get(self.headerDocPath) ?? nil
                 if scanPlugins {
-                    PluginizedNeedle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath)
+                    PluginizedNeedle.generate(from: sourceRootPath, excludingFilesWith: suffixes, with: additionalImports, headerDocPath, to: destinationPath)
                 } else {
-                    Needle.generate(from: sourceRootPath, excludingFilesWithSuffixes: suffixes, withAdditionalImports: additionalImports, to: destinationPath)
+                    Needle.generate(from: sourceRootPath, excludingFilesWith: suffixes, with: additionalImports, headerDocPath, to: destinationPath)
                 }
             } else {
                 fatalError("Missing destination path.")
