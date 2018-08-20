@@ -7,7 +7,7 @@ import UIKit
 
 // MARK: - Registration
 
-func registerProviderFactories() {
+public func registerProviderFactories() {
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
         return GameDependency1ab5926a977f706d3195Provider(component: component)
     }

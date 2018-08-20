@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - Registration
 
-func registerProviderFactories() {
+public func registerProviderFactories() {
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
         return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
     }

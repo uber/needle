@@ -58,7 +58,7 @@ class OutputSerializer: Serializer {
 
         // MARK: - Registration
 
-        func registerProviderFactories() {
+        public func registerProviderFactories() {
             \(registrationBody)
         }
 

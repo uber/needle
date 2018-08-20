@@ -22,18 +22,18 @@ import UIKit
 
 // MARK: - Registration
 
-func registerProviderFactories() {
+public func registerProviderFactories() {
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
-        return LoggedOutDependency5490810220359560589Provider(component: component)
+        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
         return EmptyDependencyProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent") { component in
-        return ScoreSheetDependency_92930658912857926Provider(component: component)
+        return ScoreSheetDependencyea879b8e06763171478bProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent") { component in
-        return ScoreSheetDependency_7465867243344110682Provider(component: component)
+        return ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent") { component in
         return EmptyDependencyProvider(component: component)
@@ -42,7 +42,7 @@ func registerProviderFactories() {
         return EmptyDependencyProvider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
-        return GameDependency_2401566548657102800Provider(component: component)
+        return GameDependency1ab5926a977f706d3195Provider(component: component)
     }
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
         return EmptyDependencyProvider(component: component)
@@ -53,13 +53,13 @@ func registerProviderFactories() {
     __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "LoggedInComponent") { component in
         return LoggedInPluginExtensionProvider(component: component)
     }
-
+    
 }
 
 // MARK: - Providers
 
 /// ^->RootComponent->LoggedOutComponent
-private class LoggedOutDependency5490810220359560589Provider: LoggedOutDependency {
+private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
     }
@@ -69,7 +69,7 @@ private class LoggedOutDependency5490810220359560589Provider: LoggedOutDependenc
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent
-private class ScoreSheetDependency_92930658912857926Provider: ScoreSheetDependency {
+private class ScoreSheetDependencyea879b8e06763171478bProvider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
     }
@@ -79,7 +79,7 @@ private class ScoreSheetDependency_92930658912857926Provider: ScoreSheetDependen
     }
 }
 /// ^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent
-private class ScoreSheetDependency_7465867243344110682Provider: ScoreSheetDependency {
+private class ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInNonCoreComponent.scoreStream
     }
@@ -89,7 +89,7 @@ private class ScoreSheetDependency_7465867243344110682Provider: ScoreSheetDepend
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent
-private class GameDependency_2401566548657102800Provider: GameDependency {
+private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.pluginExtension.mutableScoreStream
     }
@@ -128,4 +128,3 @@ private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
         loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent
     }
 }
-
