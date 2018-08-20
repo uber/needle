@@ -48,10 +48,45 @@ class DependencyGraphExporter {
     /// - parameter to: Path to file where we want the results written to.
     /// - parameter using: The executor to use for concurrent computation of
     /// the dependency provider bodies.
+    /// - parameter headerDocPath: The path to custom header doc file to be
+    /// included at the top of the generated file.
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
     /// write fails.
-    func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor) throws {
+    func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor, include headerDocPath: String?) throws {
+        // Enqueue tasks.
+        let taskHandleTuples = enqueueExportDependencyProviders(for: components, using: executor)
+        let headerDocContentHandle = enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
+
+        // Wait for execution to complete.
+        let providers = try awaitSerialization(using: taskHandleTuples)
+        let headerDocContent = try headerDocContentHandle?.await(withTimeout: defaultTimeout) ?? ""
+
+        let fileContents = OutputSerializer(providers: providers, imports: imports, headerDocContent: headerDocContent).serialize()
+        do {
+            try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
+        } catch {
+            throw DependencyGraphExporterError.unableToWriteFile(path)
+        }
+    }
+
+    // MARK: - Private
+
+    private func enqueueLoadHeaderDoc(from filePath: String?, using executor: SequenceExecutor) -> SequenceExecutionHandle<String>? {
+        guard let filePath = filePath else {
+            return nil
+        }
+        let loaderTask = FileContentLoaderTask(filePath: filePath)
+        return executor.executeSequence(from: loaderTask) { (_, result: Any) -> SequenceExecution<String> in
+            if let headerDocContent = result as? String {
+                return .endOfSequence(headerDocContent)
+            } else {
+                fatalError("Loading header doc content failed with result \(result)")
+            }
+        }
+    }
+
+    private func enqueueExportDependencyProviders(for components: [Component], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<[SerializedProvider]>, String)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedProvider]>, componentName: String)]()
 
         for component in components {
@@ -70,11 +105,15 @@ class DependencyGraphExporter {
             taskHandleTuples.append((taskHandle, component.name))
         }
 
+        return taskHandleTuples
+    }
+
+    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)]) throws -> [SerializedProvider] {
         // Wait for all the generation to complete so we can write all the output into a single file
         var providers = [SerializedProvider]()
         for (taskHandle, compnentName) in taskHandleTuples {
             do {
-                let provider = try taskHandle.await(withTimeout: 30)
+                let provider = try taskHandle.await(withTimeout: defaultTimeout)
                 providers.append(contentsOf: provider)
             } catch SequenceExecutionError.awaitTimeout  {
                 throw DependencyGraphExporterError.timeout(compnentName)
@@ -82,12 +121,6 @@ class DependencyGraphExporter {
                 fatalError("Unhandled task execution error \(error)")
             }
         }
-
-        let fileContents = OutputSerializer(providers: providers, imports: imports).serialize()
-        do {
-            try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
-        } catch {
-            throw DependencyGraphExporterError.unableToWriteFile(path)
-        }
+        return providers
     }
 }

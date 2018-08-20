@@ -29,8 +29,10 @@ public class PluginizedNeedle {
     /// - parameter exclusionSuffixes: The file suffixes to exclude from parsing.
     /// - parameter additionalImports: The additional import statements to add
     /// to the ones parsed from source files.
+    /// - parameter headerDocPath: The path to custom header doc file to be
+    /// included at the top of the generated file.
     /// - parameter destinationPath: The path to export generated code to.
-    public static func generate(from sourceRootPath: String, excludingFilesWithSuffixes exclusionSuffixes: [String], withAdditionalImports additionalImports: [String], to destinationPath: String) {
+    public static func generate(from sourceRootPath: String, excludingFilesWith exclusionSuffixes: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String) {
         let sourceRootUrl = URL(fileURLWithPath: sourceRootPath)
         #if DEBUG
             let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive)
@@ -39,9 +41,9 @@ public class PluginizedNeedle {
         #endif
         let parser = PluginizedDependencyGraphParser()
         do {
-            let (components, pluginizedComponents, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
+            let (components, pluginizedComponents, imports) = try parser.parse(from: sourceRootUrl, excludingFilesWith: exclusionSuffixes, using: executor)
             let exporter = PluginizedDependencyGraphExporter()
-            try exporter.export(components, pluginizedComponents, with: imports + additionalImports, to: destinationPath, using: executor)
+            try exporter.export(components, pluginizedComponents, with: imports + additionalImports, to: destinationPath, using: executor, include: headerDocPath)
         } catch DependencyGraphParserError.timeout(let sourcePath) {
             fatalError("Parsing Swift source file at \(sourcePath) timed out.")
         } catch DependencyGraphExporterError.timeout(let componentName) {

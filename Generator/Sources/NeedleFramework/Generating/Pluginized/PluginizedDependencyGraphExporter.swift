@@ -32,18 +32,25 @@ class PluginizedDependencyGraphExporter {
     /// - parameter pluginizedComponents: Array of pluginized components to
     /// generate plugin extensions and dependnecy providers for.
     /// - parameter imports: The import statements.
-    /// - parameter to: Path to file where we want the results written to.
-    /// - parameter using: The executor to use for concurrent computation of
+    /// - parameter path: Path to file where we want the results written to.
+    /// - parameter executor: The executor to use for concurrent computation of
     /// the dependency provider bodies.
+    /// - parameter headerDocPath: The path to custom header doc file to be
+    /// included at the top of the generated file.
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
     /// write fails.
-    func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor) throws {
+    func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor, include headerDocPath: String?) throws {
+        // Enqueue tasks.
         let dependencyProviderHandleTuples = enqueueExportDependencyProviders(for: components, pluginizedComponents, using: executor)
         let pluginExtensionHandleTuples = enqueueExportPluginExtensions(for: pluginizedComponents, using: executor)
-        let serializedProviders = try awaitSerialization(using: dependencyProviderHandleTuples + pluginExtensionHandleTuples)
+        let headerDocContentHandle = enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
 
-        let fileContents = OutputSerializer(providers: serializedProviders, imports: imports).serialize()
+        // Wait for execution to complete.
+        let serializedProviders = try awaitSerialization(using: dependencyProviderHandleTuples + pluginExtensionHandleTuples)
+        let headerDocContent = try headerDocContentHandle?.await(withTimeout: defaultTimeout) ?? ""
+
+        let fileContents = OutputSerializer(providers: serializedProviders, imports: imports, headerDocContent: headerDocContent).serialize()
         do {
             try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
         } catch {
@@ -52,6 +59,20 @@ class PluginizedDependencyGraphExporter {
     }
 
     // MARK: - Private
+
+    private func enqueueLoadHeaderDoc(from filePath: String?, using executor: SequenceExecutor) -> SequenceExecutionHandle<String>? {
+        guard let filePath = filePath else {
+            return nil
+        }
+        let loaderTask = FileContentLoaderTask(filePath: filePath)
+        return executor.executeSequence(from: loaderTask) { (_, result: Any) -> SequenceExecution<String> in
+            if let headerDocContent = result as? String {
+                return .endOfSequence(headerDocContent)
+            } else {
+                fatalError("Loading header doc content failed with result \(result)")
+            }
+        }
+    }
 
     private func enqueueExportDependencyProviders(for components: [Component], _ pluginizedComponents: [PluginizedComponent], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<[SerializedProvider]>, String)] {
         let pluginizedData = pluginizedComponents.map { (component: PluginizedComponent) -> Component in
@@ -96,7 +117,7 @@ class PluginizedDependencyGraphExporter {
         var providers = [SerializedProvider]()
         for (taskHandle, compnentName) in taskHandleTuples {
             do {
-                let provider = try taskHandle.await(withTimeout: 30)
+                let provider = try taskHandle.await(withTimeout: defaultTimeout)
                 providers.append(contentsOf: provider)
             } catch SequenceExecutionError.awaitTimeout  {
                 throw DependencyGraphExporterError.timeout(compnentName)

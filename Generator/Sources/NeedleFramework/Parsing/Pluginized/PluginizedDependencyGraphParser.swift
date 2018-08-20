@@ -35,15 +35,15 @@ class PluginizedDependencyGraphParser {
     /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizedComponent], [String]) {
-        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWithSuffixes: exclusionSuffixes, using: executor)
+    func parse(from rootUrl: URL, excludingFilesWith exclusionSuffixes: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizedComponent], [String]) {
+        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrl, excludingFilesWith: exclusionSuffixes, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
         return process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWithSuffixes exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
+    private func enqueueParsingTasks(with rootUrl: URL, excludingFilesWith exclusionSuffixes: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<PluginizedDependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
@@ -83,7 +83,7 @@ class PluginizedDependencyGraphParser {
         var imports = Set<String>()
         for urlHandle in urlHandles {
             do {
-                let node = try urlHandle.handle.await(withTimeout: 30)
+                let node = try urlHandle.handle.await(withTimeout: defaultTimeout)
                 pluginizedComponents.append(contentsOf: node.pluginizedComponents)
                 nonCoreComponents.append(contentsOf: node.nonCoreComponents)
                 pluginExtensions.append(contentsOf: node.pluginExtensions)

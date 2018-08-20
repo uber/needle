@@ -30,7 +30,7 @@ class AbstractGeneratorTests: XCTestCase {
         let executor = MockSequenceExecutor()
 
         do {
-            return try parser.parse(from: fixturesURL, excludingFilesWithSuffixes: ["ha", "yay", "blah"], using: executor)
+            return try parser.parse(from: fixturesURL, excludingFilesWith: ["ha", "yay", "blah"], using: executor)
         } catch {
             fatalError("\(error)")
         }
