@@ -42,19 +42,19 @@ class PluginizedContentFilter: FileFilter {
         }
 
         // Match actual inheritances using Regex.
-        let containsPluginizedComponentInheritance = (Regex(": *(\(needleModuleName).)PluginizedComponent *<").firstMatch(in: content) != nil)
+        let containsPluginizedComponentInheritance = (Regex(": *(\(needleModuleName).)?PluginizedComponent *<").firstMatch(in: content) != nil)
         if containsPluginizedComponentInheritance {
             return true
         }
-        let containsNonCoreComponentInheritance = (Regex(": *(\(needleModuleName).)NonCoreComponent *<").firstMatch(in: content) != nil)
+        let containsNonCoreComponentInheritance = (Regex(": *(\(needleModuleName).)?NonCoreComponent *<").firstMatch(in: content) != nil)
         if containsNonCoreComponentInheritance {
             return true
         }
-        let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)Dependency").firstMatch(in: content) != nil)
+        let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)?Dependency").firstMatch(in: content) != nil)
         if containsDependencyInheritance {
             return true
         }
-        let containsPluginExtensionInheritance = (Regex(": *(\(needleModuleName).)PluginExtension").firstMatch(in: content) != nil)
+        let containsPluginExtensionInheritance = (Regex(": *(\(needleModuleName).)?PluginExtension").firstMatch(in: content) != nil)
         if containsPluginExtensionInheritance {
             return true
         }
