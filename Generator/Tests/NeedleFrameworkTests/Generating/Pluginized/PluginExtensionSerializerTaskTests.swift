@@ -58,7 +58,7 @@ class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
                 return gameNonCoreComponent.scoreSheetBuilder
             }
             private unowned let gameNonCoreComponent: GameNonCoreComponent
-            init(component: ComponentType) {
+            init(component: NeedleFoundation.ComponentType) {
                 let gameComponent = component as! GameComponent
                 gameNonCoreComponent = gameComponent.nonCoreComponent as! GameNonCoreComponent
             }
@@ -73,7 +73,7 @@ class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
                 return loggedInNonCoreComponent.mutableScoreStream
             }
             private unowned let loggedInNonCoreComponent: LoggedInNonCoreComponent
-            init(component: ComponentType) {
+            init(component: NeedleFoundation.ComponentType) {
                 let loggedInComponent = component as! LoggedInComponent
                 loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent
             }
