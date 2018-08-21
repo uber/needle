@@ -73,7 +73,7 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
             }
             private let loggedInComponent: LoggedInComponent
             private let rootComponent: RootComponent
-            init(component: ComponentType) {
+            init(component: NeedleFoundation.ComponentType) {
                 loggedInComponent = component.parent as! LoggedInComponent
                 rootComponent = component.parent.parent as! RootComponent
             }
@@ -84,7 +84,7 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
                 return loggedInComponent.scoreStream
             }
             private let loggedInComponent: LoggedInComponent
-            init(component: ComponentType) {
+            init(component: NeedleFoundation.ComponentType) {
                 loggedInComponent = component.parent.parent as! LoggedInComponent
             }
         }
@@ -94,7 +94,7 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
                 return loggedInComponent.scoreStream
             }
             private let loggedInComponent: LoggedInComponent
-            init(component: ComponentType) {
+            init(component: NeedleFoundation.ComponentType) {
                 loggedInComponent = component.parent as! LoggedInComponent
             }
         }
@@ -104,7 +104,7 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
                 return rootComponent.mutablePlayersStream
             }
             private let rootComponent: RootComponent
-            init(component: ComponentType) {
+            init(component: NeedleFoundation.ComponentType) {
                 rootComponent = component.parent as! RootComponent
             }
         }\n
