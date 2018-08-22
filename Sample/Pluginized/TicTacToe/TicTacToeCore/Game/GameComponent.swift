@@ -31,7 +31,11 @@ protocol GamePluginExtension: PluginExtension {
 class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, GameNonCoreComponent>, GameBuilder {
 
     var gameViewController: UIViewController {
-        return GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStream: dependency.playersStream, scoreSheetBuilder: pluginExtension.scoreSheetBuilder)
+        return shared {
+            let viewController = GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStream: dependency.playersStream, scoreSheetBuilder: pluginExtension.scoreSheetBuilder)
+            self.bind(to: viewController)
+            return viewController
+        }
     }
 }
 

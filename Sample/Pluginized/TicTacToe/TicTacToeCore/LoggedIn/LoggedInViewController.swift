@@ -19,7 +19,7 @@ import ScoreSheet
 import SnapKit
 import UIKit
 
-class LoggedInViewController: UIViewController, ScoreSheetListener {
+class LoggedInViewController: ObservableViewController, ScoreSheetListener {
 
     private let gameBuilder: GameBuilder
     private let scoreStream: ScoreStream

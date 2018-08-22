@@ -35,6 +35,8 @@
 		4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099820A2483300A26FF5 /* LoggedInComponent.swift */; };
 		413909A420A4E58A00A26FF5 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413909A320A4E58A00A26FF5 /* GameViewController.swift */; };
 		413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413909A520A4EA7300A26FF5 /* GameComponent.swift */; };
+		41869A49212E288C0076C04B /* PluginizedScopeLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41869A48212E288C0076C04B /* PluginizedScopeLifecycle.swift */; };
+		41869A4B212E294F0076C04B /* ObservableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41869A4A212E294F0076C04B /* ObservableViewController.swift */; };
 		F7DA7AE420A3BF760037FF17 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7DA7AE320A3BF760037FF17 /* RxCocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -131,6 +133,8 @@
 		413909A320A4E58A00A26FF5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		413909A520A4EA7300A26FF5 /* GameComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponent.swift; sourceTree = "<group>"; };
 		415BCBA120C202E3007045DE /* NeedleFoundationExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NeedleFoundationExtension.framework; path = ../Carthage/Build/iOS/NeedleFoundationExtension.framework; sourceTree = "<group>"; };
+		41869A48212E288C0076C04B /* PluginizedScopeLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedScopeLifecycle.swift; sourceTree = "<group>"; };
+		41869A4A212E294F0076C04B /* ObservableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableViewController.swift; sourceTree = "<group>"; };
 		F7DA7ADF20A275DA0037FF17 /* ScoreSheetComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetComponent.swift; sourceTree = "<group>"; };
 		F7DA7AE120A275EF0037FF17 /* ScoreSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetViewController.swift; sourceTree = "<group>"; };
 		F7DA7AE320A3BF760037FF17 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = ../Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
@@ -249,6 +253,8 @@
 				4139095D20A0F2BD00A26FF5 /* Assets.xcassets */,
 				4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */,
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
+				41869A48212E288C0076C04B /* PluginizedScopeLifecycle.swift */,
+				41869A4A212E294F0076C04B /* ObservableViewController.swift */,
 			);
 			path = TicTacToeCore;
 			sourceTree = "<group>";
@@ -599,7 +605,9 @@
 				413909A420A4E58A00A26FF5 /* GameViewController.swift in Sources */,
 				4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */,
 				4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */,
+				41869A49212E288C0076C04B /* PluginizedScopeLifecycle.swift in Sources */,
 				4139098220A21F8000A26FF5 /* LoggedOutViewController.swift in Sources */,
+				41869A4B212E294F0076C04B /* ObservableViewController.swift in Sources */,
 				4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */,
 				413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */,
 				4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */,

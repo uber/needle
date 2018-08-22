@@ -39,7 +39,7 @@ private enum Players: Int {
     }
 }
 
-class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, ScoreSheetListener {
+class GameViewController: ObservableViewController, UICollectionViewDataSource, UICollectionViewDelegate, ScoreSheetListener {
 
     private let mutableScoreStream: MutableScoreStream
     private let playersStream: PlayersStream
