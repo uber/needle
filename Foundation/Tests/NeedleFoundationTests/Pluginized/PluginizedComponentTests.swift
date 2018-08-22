@@ -45,25 +45,25 @@ class PluginizedComponentTests: XCTestCase {
     func test_bindTo_verifyNonCoreComponentLifecycle() {
         let mockPluginizedComponent = MockPluginizedComponent()
         let mockDisposable = MockObserverDisposable()
-        let mockLifecycle = MockPluginizedLifecycle(disposable: mockDisposable)
+        let mockLifecycle = MockPluginizedScopeLifecycleObervable(disposable: mockDisposable)
         let noncoreComponent: MockNonCoreComponent? = mockPluginizedComponent.nonCoreComponent as? MockNonCoreComponent
         mockPluginizedComponent.bind(to: mockLifecycle)
 
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeActiveCallCount, 0)
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeInactiveCallCount, 0)
 
-        mockLifecycle.observer!(true)
+        mockLifecycle.observer!(.active)
 
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeActiveCallCount, 1)
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeInactiveCallCount, 0)
 
-        mockLifecycle.observer!(false)
+        mockLifecycle.observer!(.inactive)
 
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeActiveCallCount, 1)
         XCTAssertEqual(noncoreComponent!.scopeDidBecomeInactiveCallCount, 1)
     }
 
-    func test_consumerWillDeinit_verifyReleasingNonCoreComponent() {
+    func test_bindTo_verifyReleasingNonCoreComponent() {
         let mockPluginizedComponent = MockPluginizedComponent()
         var noncoreComponent: MockNonCoreComponent? = mockPluginizedComponent.nonCoreComponent as? MockNonCoreComponent
         var noncoreDeinitCallCount = 0
@@ -71,7 +71,7 @@ class PluginizedComponentTests: XCTestCase {
             noncoreDeinitCallCount += 1
         }
         let mockDisposable = MockObserverDisposable()
-        let mockLifecycle = MockPluginizedLifecycle(disposable: mockDisposable)
+        let mockLifecycle = MockPluginizedScopeLifecycleObervable(disposable: mockDisposable)
         mockPluginizedComponent.bind(to: mockLifecycle)
 
         XCTAssertNotNil(noncoreComponent)
@@ -82,7 +82,7 @@ class PluginizedComponentTests: XCTestCase {
         XCTAssertNil(noncoreComponent)
         XCTAssertEqual(noncoreDeinitCallCount, 0)
 
-        mockPluginizedComponent.consumerWillDeinit()
+        mockLifecycle.observer!(.deinit)
 
         XCTAssertNil(noncoreComponent)
         XCTAssertEqual(noncoreDeinitCallCount, 1)
@@ -123,7 +123,7 @@ class MockPluginizedComponent: PluginizedComponent<EmptyDependency, EmptyPluginE
     }
 }
 
-class MockPluginizedLifecycle: PluginizedLifecycle {
+class MockPluginizedScopeLifecycleObervable: PluginizedScopeLifecycleObervable {
 
     let disposable: ObserverDisposable
 
@@ -131,9 +131,9 @@ class MockPluginizedLifecycle: PluginizedLifecycle {
         self.disposable = disposable
     }
 
-    var observer: ((Bool) -> Void)?
+    var observer: ((PluginizedScopeLifecycle) -> Void)?
 
-    func observe(_ observer: @escaping (Bool) -> Void) -> ObserverDisposable {
+    func observe(_ observer: @escaping (PluginizedScopeLifecycle) -> Void) -> ObserverDisposable {
         self.observer = observer
         return disposable
     }

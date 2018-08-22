@@ -24,23 +24,18 @@ import Foundation
 /// a pluginized component generic without having to specify the nested
 /// generics.
 public protocol PluginizedComponentType: ComponentType {
-    /// Bind the plugnizable component to the a lifecycle. This ensures
-    /// the associated non-core component is released when the given
-    /// scope is deallocated.
+    /// Bind the pluginized component to the given lifecycle. This ensures
+    /// the associated non-core component is notified and released according
+    /// to the given scope's lifecycle.
     ///
     /// - note: This method must be invoked when using a `PluginizedComponent`,
     /// to avoid memory leak of the component and the non-core component.
-    /// - note: This method is required, because the non-core component reference
-    /// cannot be made weak. If the non-core component is weak, it is deallocated
-    /// before the plugin points are created lazily.
-    /// - parameter lifecycle: The `PluginizedLifecycle` to bind to.
-    func bind(to lifecycle: PluginizedLifecycle)
-
-    /// Signal this pluginized component that the corresponding consumer
-    /// is about to deinit. This allows the pluginized component to release
-    /// its corresponding non-core component, breaking the retain cycle
-    /// between it and its non-core component.
-    func consumerWillDeinit()
+    /// - note: This method is required, because the non-core component
+    /// reference cannot be made weak. If the non-core component is weak,
+    /// it is deallocated before the plugin points are created lazily.
+    /// - parameter observable: The `PluginizedScopeLifecycleObervable` to
+    /// bind to.
+    func bind(to observable: PluginizedScopeLifecycleObervable)
 }
 
 /// The base protocol of a plugin extension, enabling Needle's parsing process.
@@ -75,42 +70,38 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
         pluginExtension = createPluginExtensionProvider()
     }
 
-    /// Bind the plugnizable component to the a lifecycle. This ensures
-    /// the associated non-core component is released when the given
-    /// scope is deallocated.
+    /// Bind the pluginized component to the given lifecycle. This ensures
+    /// the associated non-core component is notified and released according
+    /// to the given scope's lifecycle.
     ///
     /// - note: This method must be invoked when using a `PluginizedComponent`,
     /// to avoid memory leak of the component and the non-core component.
-    /// - note: This method is required, because the non-core component reference
-    /// cannot be made weak. If the non-core component is weak, it is deallocated
-    /// before the plugin points are created lazily.
-    /// - parameter lifecycle: The `PluginizedLifecycle` to bind to.
-    public func bind(to lifecycle: PluginizedLifecycle) {
+    /// - note: This method is required, because the non-core component
+    /// reference cannot be made weak. If the non-core component is weak,
+    /// it is deallocated before the plugin points are created lazily.
+    /// - parameter observable: The `PluginizedScopeLifecycleObervable` to
+    /// bind to.
+    public func bind(to observable: PluginizedScopeLifecycleObervable) {
         guard lifecycleObserverDisposable == nil else {
             return
         }
 
-        lifecycleObserverDisposable = lifecycle.observe { (isActive: Bool) in
-            if isActive {
+        lifecycleObserverDisposable = observable.observe { (event: PluginizedScopeLifecycle) in
+            switch event {
+            case .active:
                 self.releasableNonCoreComponent?.scopeDidBecomeActive()
-            } else {
+            case .inactive:
                 self.releasableNonCoreComponent?.scopeDidBecomeInactive()
+            case .deinit:
+                // Only release the non-core component after the consumer, which should
+                // be the owner reference to the component is released. Cannot release
+                // the non-core component when the bound lifecyle is deactivated. The
+                // consumer may later require the same instance of this component again.
+                // In that case, this component will try to access its released non-core
+                // component to recreate plugins.
+                self.releasableNonCoreComponent = nil
             }
         }
-    }
-
-    /// Signal this pluginized component that the corresponding consumer
-    /// is about to deinit. This allows the pluginized component to release
-    /// its corresponding non-core component, breaking the retain cycle
-    /// between it and its non-core component.
-    public func consumerWillDeinit() {
-        // Only release the non-core component after the consumer, which should
-        // be the owner reference to the component is released. Cannot release
-        // the non-core component when the bound lifecyle is deactivated. The
-        // consumer may later require the same instance of this component again.
-        // In that case, this component will try to access its released non-core
-        // component to recreate plugins.
-        self.releasableNonCoreComponent = nil
     }
 
     // MARK: - Private
