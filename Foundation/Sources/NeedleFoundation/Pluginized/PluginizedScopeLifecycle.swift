@@ -16,6 +16,22 @@
 
 import Foundation
 
+/// The lifecycle of a pluginized scope. This represents the lifecycle of
+/// the scope that utilizes a pluginized DI component. In the case of an
+/// iOS MVC application, the lifecycle events should be mapped to the view
+/// controller lifecycles.
+public enum PluginizedScopeLifecycle {
+    /// The active lifecycle. This can be represented as a view controller's
+    /// `viewDidAppear` lifecycle.
+    case active
+    /// The inactivate lifecycle. This can be represented as a view
+    /// controller's `viewDidDisappear` lifecycle.
+    case inactive
+    /// The deinit lifecycle. This can be represented as a view controller's
+    /// `deinit` lifecycle.
+    case `deinit`
+}
+
 /// The object that allows an observer to be disposed, thereby ending the
 /// observation.
 public protocol ObserverDisposable {
@@ -24,13 +40,13 @@ public protocol ObserverDisposable {
     func dispose()
 }
 
-/// The lifecycle of a pluginized scope.
-public protocol PluginizedLifecycle {
+/// The observable of the lifecycle events of a pluginized scope.
+public protocol PluginizedScopeLifecycleObervable {
 
-    /// Observe the lifecycle with given observer.
+    /// Observe the lifecycle events with given observer.
     ///
     /// - parameter observer: The observer closure to invoke when the lifecycle
     /// changes.
     /// - returns: The disposable object that can end the observation.
-    func observe(_ observer: @escaping (Bool) -> Void) -> ObserverDisposable
+    func observe(_ observer: @escaping (PluginizedScopeLifecycle) -> Void) -> ObserverDisposable
 }

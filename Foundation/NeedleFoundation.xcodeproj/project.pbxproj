@@ -10,7 +10,7 @@
 		41F0681520D45AD100FD67C7 /* PluginizedComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F0681020D45AD100FD67C7 /* PluginizedComponent.swift */; };
 		41F0681620D45AD100FD67C7 /* PluginExtensionProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F0681220D45AD100FD67C7 /* PluginExtensionProviderRegistry.swift */; };
 		41F0681720D45AD100FD67C7 /* NonCoreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F0681320D45AD100FD67C7 /* NonCoreComponent.swift */; };
-		41F0681820D45AD100FD67C7 /* PluginizedLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F0681420D45AD100FD67C7 /* PluginizedLifecycle.swift */; };
+		41F0681820D45AD100FD67C7 /* PluginizedScopeLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F0681420D45AD100FD67C7 /* PluginizedScopeLifecycle.swift */; };
 		41F0681B20D45B1300FD67C7 /* PluginizedComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F0681A20D45B1300FD67C7 /* PluginizedComponentTests.swift */; };
 		OBJ_25 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Bootstrap.swift */; };
 		OBJ_26 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Component.swift */; };
@@ -34,7 +34,7 @@
 		41F0681020D45AD100FD67C7 /* PluginizedComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginizedComponent.swift; sourceTree = "<group>"; };
 		41F0681220D45AD100FD67C7 /* PluginExtensionProviderRegistry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginExtensionProviderRegistry.swift; sourceTree = "<group>"; };
 		41F0681320D45AD100FD67C7 /* NonCoreComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NonCoreComponent.swift; sourceTree = "<group>"; };
-		41F0681420D45AD100FD67C7 /* PluginizedLifecycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginizedLifecycle.swift; sourceTree = "<group>"; };
+		41F0681420D45AD100FD67C7 /* PluginizedScopeLifecycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginizedScopeLifecycle.swift; sourceTree = "<group>"; };
 		41F0681A20D45B1300FD67C7 /* PluginizedComponentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginizedComponentTests.swift; sourceTree = "<group>"; };
 		"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NeedleFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTests::Product" /* NeedleFoundationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = NeedleFoundationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,7 +70,7 @@
 				41F0681120D45AD100FD67C7 /* Internal */,
 				41F0681320D45AD100FD67C7 /* NonCoreComponent.swift */,
 				41F0681020D45AD100FD67C7 /* PluginizedComponent.swift */,
-				41F0681420D45AD100FD67C7 /* PluginizedLifecycle.swift */,
+				41F0681420D45AD100FD67C7 /* PluginizedScopeLifecycle.swift */,
 			);
 			path = Pluginized;
 			sourceTree = "<group>";
@@ -225,7 +225,7 @@
 			files = (
 				41F0681620D45AD100FD67C7 /* PluginExtensionProviderRegistry.swift in Sources */,
 				OBJ_25 /* Bootstrap.swift in Sources */,
-				41F0681820D45AD100FD67C7 /* PluginizedLifecycle.swift in Sources */,
+				41F0681820D45AD100FD67C7 /* PluginizedScopeLifecycle.swift in Sources */,
 				OBJ_26 /* Component.swift in Sources */,
 				41F0681520D45AD100FD67C7 /* PluginizedComponent.swift in Sources */,
 				41F0681720D45AD100FD67C7 /* NonCoreComponent.swift in Sources */,
