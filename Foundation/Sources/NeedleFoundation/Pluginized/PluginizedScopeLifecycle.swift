@@ -41,7 +41,7 @@ public protocol ObserverDisposable {
 }
 
 /// The observable of the lifecycle events of a pluginized scope.
-public protocol PluginizedScopeLifecycleObervable {
+public protocol PluginizedScopeLifecycleObservable {
 
     /// Observe the lifecycle events with given observer.
     ///

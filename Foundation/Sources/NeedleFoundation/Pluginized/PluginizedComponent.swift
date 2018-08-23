@@ -33,9 +33,9 @@ public protocol PluginizedComponentType: ComponentType {
     /// - note: This method is required, because the non-core component
     /// reference cannot be made weak. If the non-core component is weak,
     /// it is deallocated before the plugin points are created lazily.
-    /// - parameter observable: The `PluginizedScopeLifecycleObervable` to
+    /// - parameter observable: The `PluginizedScopeLifecycleObservable` to
     /// bind to.
-    func bind(to observable: PluginizedScopeLifecycleObervable)
+    func bind(to observable: PluginizedScopeLifecycleObservable)
 }
 
 /// The base protocol of a plugin extension, enabling Needle's parsing process.
@@ -79,9 +79,9 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
     /// - note: This method is required, because the non-core component
     /// reference cannot be made weak. If the non-core component is weak,
     /// it is deallocated before the plugin points are created lazily.
-    /// - parameter observable: The `PluginizedScopeLifecycleObervable` to
+    /// - parameter observable: The `PluginizedScopeLifecycleObservable` to
     /// bind to.
-    public func bind(to observable: PluginizedScopeLifecycleObervable) {
+    public func bind(to observable: PluginizedScopeLifecycleObservable) {
         guard lifecycleObserverDisposable == nil else {
             return
         }
