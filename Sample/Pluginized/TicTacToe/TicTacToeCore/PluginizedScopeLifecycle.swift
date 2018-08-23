@@ -19,7 +19,7 @@ import NeedleFoundation
 import RxSwift
 import UIKit
 
-extension ObservableViewController: PluginizedScopeLifecycleObervable {
+extension ObservableViewController: PluginizedScopeLifecycleObservable {
 
     public func observe(_ observer: @escaping (PluginizedScopeLifecycle) -> Void) -> ObserverDisposable {
         let disposable = lifecycle
