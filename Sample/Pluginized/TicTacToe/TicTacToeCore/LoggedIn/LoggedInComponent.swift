@@ -27,9 +27,13 @@ protocol LoggedInPluginExtension: PluginExtension {
 class LoggedInComponent: PluginizedComponent<EmptyDependency, LoggedInPluginExtension, LoggedInNonCoreComponent>, LoggedInBuilder {
 
     var loggedInViewController: UIViewController {
-        return LoggedInViewController(gameBuilder: gameComponent,
-                                      scoreStream: pluginExtension.mutableScoreStream,
-                                      scoreSheetBuilder: pluginExtension.scoreSheetBuilder)
+        return shared {
+            let viewController = LoggedInViewController(gameBuilder: gameComponent,
+                                                        scoreStream: pluginExtension.mutableScoreStream,
+                                                        scoreSheetBuilder: pluginExtension.scoreSheetBuilder)
+            self.bind(to: viewController)
+            return viewController
+        }
     }
 
     var gameComponent: GameComponent {
