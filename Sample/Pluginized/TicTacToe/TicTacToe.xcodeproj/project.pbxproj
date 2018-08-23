@@ -124,7 +124,7 @@
 		4139097F20A21F0500A26FF5 /* LoggedOutComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutComponent.swift; sourceTree = "<group>"; };
 		4139098120A21F8000A26FF5 /* LoggedOutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutViewController.swift; sourceTree = "<group>"; };
 		4139098320A2211F00A26FF5 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
-		4139098B20A22B3900A26FF5 /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4139098B20A22B3900A26FF5 /* TicTacToeCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerTests.swift; sourceTree = "<group>"; };
 		4139098F20A22B3900A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4139099620A2481700A26FF5 /* LoggedInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInViewController.swift; sourceTree = "<group>"; };
@@ -233,7 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				4139095320A0F2BC00A26FF5 /* TicTacToe.app */,
-				4139098B20A22B3900A26FF5 /* TicTacToeTests.xctest */,
+				4139098B20A22B3900A26FF5 /* TicTacToeCoreTests.xctest */,
 				191B41E420C73BE80052C6CE /* ScoreSheet.framework */,
 				191B41EC20C73BE80052C6CE /* ScoreSheetTests.xctest */,
 				19EF7EB220C855FA005099BA /* TicTacToeIntegrations.framework */,
@@ -414,9 +414,9 @@
 			productReference = 4139095320A0F2BC00A26FF5 /* TicTacToe.app */;
 			productType = "com.apple.product-type.application";
 		};
-		4139098A20A22B3900A26FF5 /* TicTacToeTests */ = {
+		4139098A20A22B3900A26FF5 /* TicTacToeCoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4139099220A22B3900A26FF5 /* Build configuration list for PBXNativeTarget "TicTacToeTests" */;
+			buildConfigurationList = 4139099220A22B3900A26FF5 /* Build configuration list for PBXNativeTarget "TicTacToeCoreTests" */;
 			buildPhases = (
 				4139098720A22B3900A26FF5 /* Sources */,
 				4139098820A22B3900A26FF5 /* Frameworks */,
@@ -428,9 +428,9 @@
 			dependencies = (
 				4139099120A22B3900A26FF5 /* PBXTargetDependency */,
 			);
-			name = TicTacToeTests;
+			name = TicTacToeCoreTests;
 			productName = TicTacToeTests;
-			productReference = 4139098B20A22B3900A26FF5 /* TicTacToeTests.xctest */;
+			productReference = 4139098B20A22B3900A26FF5 /* TicTacToeCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -476,7 +476,7 @@
 			projectRoot = "";
 			targets = (
 				4139095220A0F2BC00A26FF5 /* TicTacToe */,
-				4139098A20A22B3900A26FF5 /* TicTacToeTests */,
+				4139098A20A22B3900A26FF5 /* TicTacToeCoreTests */,
 				191B41E320C73BE80052C6CE /* ScoreSheet */,
 				191B41EB20C73BE80052C6CE /* ScoreSheetTests */,
 				19EF7EB120C855FA005099BA /* TicTacToeIntegrations */,
@@ -986,7 +986,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = TicTacToeCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1005,7 +1005,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = TicTacToeCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1067,7 +1067,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4139099220A22B3900A26FF5 /* Build configuration list for PBXNativeTarget "TicTacToeTests" */ = {
+		4139099220A22B3900A26FF5 /* Build configuration list for PBXNativeTarget "TicTacToeCoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4139099320A22B3900A26FF5 /* Debug */,
