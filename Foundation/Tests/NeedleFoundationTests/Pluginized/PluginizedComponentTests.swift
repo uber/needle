@@ -123,7 +123,7 @@ class MockPluginizedComponent: PluginizedComponent<EmptyDependency, EmptyPluginE
     }
 }
 
-class MockPluginizedScopeLifecycleObervable: PluginizedScopeLifecycleObervable {
+class MockPluginizedScopeLifecycleObervable: PluginizedScopeLifecycleObservable {
 
     let disposable: ObserverDisposable
 
