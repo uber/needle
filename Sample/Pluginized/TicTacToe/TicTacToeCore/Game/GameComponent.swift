@@ -37,6 +37,11 @@ class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, Ga
             return viewController
         }
     }
+
+    // This should not be used as the provider for GameDependency.
+    var mutableScoreStream: MutableScoreStream {
+        return ScoreStreamImpl()
+    }
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
