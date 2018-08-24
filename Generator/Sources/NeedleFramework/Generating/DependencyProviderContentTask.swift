@@ -71,9 +71,11 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
         var levelMap = [String: Int]()
 
         let properties = try provider.dependency.properties.map { (property : Property) -> ProcessedProperty in
-            var level = 0
-            let revesedPath = provider.path.reversed()
-            for component in revesedPath {
+            // Drop first element, since we should not search in the current scope.
+            let searchPath = provider.path.reversed().dropFirst()
+            // Level start at 1, since we dropped the current scope.
+            var level = 1
+            for component in searchPath {
                 if component.properties.contains(property) {
                     levelMap[component.name] = level
                     return ProcessedProperty(unprocessed: property, sourceComponentType: component.name)
@@ -83,7 +85,7 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
             var possibleMatches = [String]()
             var possibleMatchComponent: String?
             // Second pass, this time only match types to produce helpful warnings
-            for component in revesedPath {
+            for component in searchPath {
                 possibleMatches = component.properties.compactMap { componentProperty in
                     if componentProperty.type ==  property.type {
                         return componentProperty.name

@@ -29,19 +29,22 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     ///             to check for auzillary properties.
     init(providers: [DependencyProvider], pluginizedComponents: [PluginizedComponent]) {
         self.providers = providers
-
-        var nonCoreComponentMap = [String: AuxillaryProperties]()
-        var pluginExtensionMap = [String: AuxillaryProperties]()
-        for pluginizedComponent in pluginizedComponents {
-            nonCoreComponentMap[pluginizedComponent.data.name] = AuxillaryProperties(sourceName: pluginizedComponent.nonCoreComponent.name, properties: pluginizedComponent.nonCoreComponent.properties)
-            pluginExtensionMap[pluginizedComponent.data.name] = AuxillaryProperties(sourceName: pluginizedComponent.pluginExtension.name, properties:pluginizedComponent.pluginExtension.properties)
-        }
-        self.nonCoreComponentMap = nonCoreComponentMap
-        self.pluginExtensionMap = pluginExtensionMap
-
         nonCoreComponentNames = Set(pluginizedComponents.map { pluginizedComponent in
             pluginizedComponent.nonCoreComponent.name
         })
+
+        var nonCoreComponentMap = [String: AuxillaryProperties]()
+        var pluginExtensionMap = [String: AuxillaryProperties]()
+        var auxilarySourceParentDependency = [String: String]()
+        for pluginizedComponent in pluginizedComponents {
+            nonCoreComponentMap[pluginizedComponent.data.name] = AuxillaryProperties(sourceName: pluginizedComponent.nonCoreComponent.name, properties: pluginizedComponent.nonCoreComponent.properties)
+            auxilarySourceParentDependency[pluginizedComponent.nonCoreComponent.name] = pluginizedComponent.nonCoreComponent.dependency.name
+            pluginExtensionMap[pluginizedComponent.data.name] = AuxillaryProperties(sourceName: pluginizedComponent.pluginExtension.name, properties:pluginizedComponent.pluginExtension.properties)
+            auxilarySourceParentDependency[pluginizedComponent.pluginExtension.name] = pluginizedComponent.data.dependency.name
+        }
+        self.nonCoreComponentMap = nonCoreComponentMap
+        self.pluginExtensionMap = pluginExtensionMap
+        self.auxilarySourceParentDependency = auxilarySourceParentDependency
     }
 
     /// Execute the task and returns the processed in-memory dependency graph
@@ -76,24 +79,36 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     }
 
     private let providers: [DependencyProvider]
-    // Note: the key is the (class) name of the pluginized component
-    private let nonCoreComponentMap: [String: AuxillaryProperties]
-    // Note: the key is the (class) name of the pluginized component
-    private let pluginExtensionMap: [String: AuxillaryProperties]
     private let nonCoreComponentNames: Set<String>
+    // The key is the (class) name of the pluginized component.
+    private let nonCoreComponentMap: [String: AuxillaryProperties]
+    // The key is the (class) name of the pluginized component.
+    private let pluginExtensionMap: [String: AuxillaryProperties]
+    // The dependency protocol name of the parent of the auxilary property's source.
+    // For a property from a plugin extension, the parent is the pluginized component.
+    // For a property from a non-core component, the parent is the corresponding core
+    // component.
+    // For instance, [FooNonCoreComponent: FooDependency] for a non-core component
+    // auxilary property. Or [FooPluginExtension: FooDependency] for a plugin
+    // extension auxilary property.
+    private let auxilarySourceParentDependency: [String: String]
 
     private func process(_ provider: DependencyProvider, withAuxillaryPropertiesFrom auxillaryPropertyMap: [String: AuxillaryProperties], auxillarySourceType: AuxillarySourceType) throws -> PluginizedProcessedDependencyProvider  {
         var levelMap = [String: Int]()
 
         let properties = try provider.dependency.properties.map { (property : Property) -> PluginizedProcessedProperty in
-            var level = 0
-            let revesedPath = provider.path.reversed()
-            for component in revesedPath {
+            // Drop first element, since we should not search in the current scope.
+            let searchPath = provider.path.reversed().dropFirst()
+            // Level start at 1, since we dropped the current scope.
+            var level = 1
+            for component in searchPath {
                 if component.properties.contains(property) {
                     levelMap[component.name] = level
                     return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: component.name), auxillarySourceType: nil, auxillarySourceName: nil)
                 } else if let auxillaryProperties = auxillaryPropertyMap[component.name] {
-                    if auxillaryProperties.properties.contains(property) {
+                    // Do not search at the current auxilary scope.
+                    let isAtCurrentAuxilaryScope = auxilarySourceParentDependency[auxillaryProperties.sourceName] == provider.dependency.name
+                    if !isAtCurrentAuxilaryScope && auxillaryProperties.properties.contains(property) {
                         levelMap[component.name] = level
                         return PluginizedProcessedProperty(data: ProcessedProperty(unprocessed: property, sourceComponentType: component.name), auxillarySourceType: auxillarySourceType, auxillarySourceName: auxillaryProperties.sourceName)
                     }
@@ -103,7 +118,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
             var possibleMatches = [String]()
             var possibleMatchComponent: String?
             // Second pass, this time only match types to produce helpful warnings
-            for component in revesedPath {
+            for component in searchPath {
                 possibleMatches = component.properties.compactMap { componentProperty in
                     if componentProperty.type ==  property.type {
                         return componentProperty.name

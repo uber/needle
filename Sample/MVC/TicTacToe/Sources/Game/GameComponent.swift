@@ -31,6 +31,11 @@ class GameComponent: Component<GameDependency>, GameBuilder {
     var scoreSheetBuilder: ScoreSheetBuilder {
         return ScoreSheetComponent(parent: self)
     }
+
+    // This should not be used as the provider for GameDependency.
+    var mutableScoreStream: MutableScoreStream {
+        return ScoreStreamImpl()
+    }
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,

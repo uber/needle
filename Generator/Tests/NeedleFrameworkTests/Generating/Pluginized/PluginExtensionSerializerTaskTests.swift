@@ -52,7 +52,7 @@ class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
 
         let expectedContents =
         """
-        /// GameComponent
+        /// GameComponent plugin extension
         private class GamePluginExtensionProvider: GamePluginExtension {
             var scoreSheetBuilder: ScoreSheetBuilder {
                 return gameNonCoreComponent.scoreSheetBuilder
@@ -64,7 +64,7 @@ class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
             }
         }
 
-        /// LoggedInComponent
+        /// LoggedInComponent plugin extension
         private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
             var scoreSheetBuilder: ScoreSheetBuilder {
                 return loggedInNonCoreComponent.scoreSheetBuilder

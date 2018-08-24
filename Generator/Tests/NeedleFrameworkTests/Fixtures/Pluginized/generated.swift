@@ -93,7 +93,7 @@ private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
         rootComponent = component.parent.parent as! RootComponent
     }
 }
-/// GameComponent
+/// GameComponent plugin extension
 private class GamePluginExtensionProvider: GamePluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder {
         return gameNonCoreComponent.scoreSheetBuilder
@@ -104,7 +104,7 @@ private class GamePluginExtensionProvider: GamePluginExtension {
         gameNonCoreComponent = gameComponent.nonCoreComponent as! GameNonCoreComponent
     }
 }
-/// LoggedInComponent
+/// LoggedInComponent plugin extension
 private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder {
         return loggedInNonCoreComponent.scoreSheetBuilder

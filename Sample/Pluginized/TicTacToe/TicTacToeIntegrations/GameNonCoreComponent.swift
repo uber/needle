@@ -17,10 +17,19 @@
 import NeedleFoundation
 import ScoreSheet
 
+public protocol GameNonCoreDependency: Dependency {
+    var mutableScoreStream: MutableScoreStream { get }
+}
+
 /// Component for the Game non core scope.
 public class GameNonCoreComponent: NonCoreComponent<EmptyDependency> {
 
     public var scoreSheetBuilder: ScoreSheetBuilder {
         return ScoreSheetComponent(parent: self)
+    }
+
+    // This should not be used as the provider for GameNonCoreDependency.
+    var mutableScoreStream: MutableScoreStream {
+        return ScoreStreamImpl()
     }
 }
