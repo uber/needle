@@ -121,6 +121,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
                 item.name
             }
         var set = Set<String>()
+        // Use a separate array instead of directly using the Set to preserve ordering.
         var uniqueNames = [String]()
         for name in allNames {
             if !set.contains(name) {
