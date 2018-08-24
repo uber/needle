@@ -114,12 +114,21 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             }
     }
 
-    /// The name of the expression call types in this structure.
-    var expressionCallNames: [String] {
-        return filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
+    /// The unique set of expression call types in this structure.
+    var uniqueExpressionCallNames: [String] {
+        let allNames = filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
             .map { (item: [String: SourceKitRepresentable]) -> String in
                 item.name
+            }
+        var set = Set<String>()
+        var uniqueNames = [String]()
+        for name in allNames {
+            if !set.contains(name) {
+                set.insert(name)
+                uniqueNames.append(name)
+            }
         }
+        return uniqueNames
     }
 
     /// The name of the inherited types of this structure.

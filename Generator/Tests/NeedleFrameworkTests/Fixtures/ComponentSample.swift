@@ -29,6 +29,10 @@ class MyComponent: NeedleFoundation.Component<MyDependency> {
     var myChildComponent: MyChildComponent {
         return MyChildComponent(parent: self)
     }
+
+    func childComponent(with dynamicDependency: String) -> MyChildComponent {
+        return MyChildComponent(parent: self, dynamicDependency: dynamicDependency)
+    }
 }
 
 protocol SomeNonCoreDependency: Dependency {

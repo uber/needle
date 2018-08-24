@@ -39,6 +39,13 @@ class LoggedInComponent: PluginizedComponent<EmptyDependency, LoggedInPluginExte
     var gameComponent: GameComponent {
         return GameComponent(parent: self)
 	}
+
+    // This demonstrates how to inject dynamic dependency into a child scope
+    // as well as providing a unit test case for invoking the same child
+    // scope constructor twice without generating duplicate code.
+    func gameComponent(with dynamicDependency: String) -> GameComponent {
+        return GameComponent(parent: self, dynamicDependency: dynamicDependency)
+    }
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,

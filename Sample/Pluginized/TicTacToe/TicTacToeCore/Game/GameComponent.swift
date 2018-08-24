@@ -42,6 +42,22 @@ class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, Ga
     var mutableScoreStream: MutableScoreStream {
         return ScoreStreamImpl()
     }
+
+    let dynamicDependency: String
+
+    override init(parent: ComponentType) {
+        // Normally if we have a dynamic dependency, this constructor would not exist.
+        // This fake value is just to get the code to compile for demonstration of
+        // dynamic dependencies.
+        self.dynamicDependency = ""
+        super.init(parent: parent)
+    }
+
+    // Dynamic dependency constructor. Dynamic dependency provided by parent scope.
+    init(parent: ComponentType, dynamicDependency: String) {
+        self.dynamicDependency = dynamicDependency
+        super.init(parent: parent)
+    }
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
