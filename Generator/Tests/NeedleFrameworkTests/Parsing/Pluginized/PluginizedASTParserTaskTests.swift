@@ -39,7 +39,7 @@ class PluginizedASTParserTaskTests: AbstractParserTests {
         let myComponent = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "MyComponent"
         }!
-        XCTAssertEqual(myComponent.expressionCallTypeNames, ["Stream", "Donut", "shared", "MyChildComponent", "Basket"])
+        XCTAssertEqual(myComponent.expressionCallTypeNames, ["Basket", "Donut", "MyChildComponent", "Stream", "shared"])
         XCTAssertEqual(myComponent.name, "MyComponent")
         XCTAssertEqual(myComponent.dependencyProtocolName, "MyDependency")
         XCTAssertEqual(myComponent.properties.count, 4)
@@ -63,7 +63,7 @@ class PluginizedASTParserTaskTests: AbstractParserTests {
         let my2Component = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "My2Component"
         }!
-        XCTAssertEqual(my2Component.expressionCallTypeNames, ["shared", "Wallet", "Banana", "Apple", "Book"])
+        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "Wallet", "shared"])
         XCTAssertEqual(my2Component.name, "My2Component")
         XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
         XCTAssertEqual(my2Component.properties.count, 2)
@@ -81,7 +81,7 @@ class PluginizedASTParserTaskTests: AbstractParserTests {
         let someNonCoreComponent = node.nonCoreComponents.first { (component: ASTComponent) -> Bool in
             component.name == "SomeNonCoreComponent"
         }!
-        XCTAssertEqual(someNonCoreComponent.expressionCallTypeNames, ["NonCoreObject", "shared", "SharedObject"])
+        XCTAssertEqual(someNonCoreComponent.expressionCallTypeNames, ["NonCoreObject", "SharedObject", "shared"])
         XCTAssertEqual(someNonCoreComponent.name, "SomeNonCoreComponent")
         XCTAssertEqual(someNonCoreComponent.dependencyProtocolName, "SomeNonCoreDependency")
         XCTAssertEqual(someNonCoreComponent.properties.count, 2)
