@@ -49,7 +49,7 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
             if let substructure = item as? [String: SourceKitRepresentable] {
                 if substructure.isComponent {
                     let dependencyProtocolName = substructure.dependencyProtocolName(for: "Component")
-                    components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.expressionCallNames))
+                    components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
                 } else if substructure.isDependencyProtocol {
                     dependencies.append(Dependency(name: substructure.name, properties: substructure.properties))
                 }
