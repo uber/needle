@@ -23,30 +23,36 @@ import Utility
 /// specified source path, excluding files with specified suffixes. It then
 /// generates the necessary dependency provider code and export to the specified
 /// destination path.
-class GenerateCommand: Command {
+class GenerateCommand: AbstractCommand {
 
-    /// The name of the command.
-    let name = "generate"
-
-    private let overview = "Generate DI code based on all Swift source files in a directory."
-    private let destinationPath: PositionalArgument<String>
-    private let sourceRootPaths: PositionalArgument<[String]>
-    private let suffixes: OptionArgument<[String]>
-    private let additionalImports: OptionArgument<[String]>
-    private let scanPlugins: OptionArgument<Bool>
-    private let headerDocPath: OptionArgument<String>
-
-    required init(parser: ArgumentParser) {
-        let subparser = parser.add(subparser: name, overview: overview)
-        destinationPath = subparser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
-        sourceRootPaths = subparser.add(positional: "sourceRootPaths", kind: [String].self, strategy: ArrayParsingStrategy.upToNextOption, usage: "Paths to the root folders of Swift source files.", completion: .filename)
-        suffixes = subparser.add(option: "--suffixes", shortName: "-sfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
-        scanPlugins = subparser.add(option: "--pluginized", shortName: "-p", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
-        additionalImports = subparser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
-        headerDocPath = subparser.add(option: "--header-doc", shortName: "-hd", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
+    /// Initializer.
+    ///
+    /// - parameter parser: The argument parser to use.
+    init(parser: ArgumentParser) {
+        super.init(name: "generate", overview: "Generate DI code based on all Swift source files in a directory.", parser: parser)
     }
 
-    func execute(with arguments: ArgumentParser.Result) {
+    /// Setup the arguments using the given parser.
+    ///
+    /// - parameter parser: The argument parser to use.
+    override func setupArguments(with parser: ArgumentParser) {
+        super.setupArguments(with: parser)
+
+        destinationPath = parser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
+        sourceRootPaths = parser.add(positional: "sourceRootPaths", kind: [String].self, strategy: ArrayParsingStrategy.upToNextOption, usage: "Paths to the root folders of Swift source files.", completion: .filename)
+        suffixes = parser.add(option: "--suffixes", shortName: "-sfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
+        scanPlugins = parser.add(option: "--pluginized", shortName: "-p", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
+        additionalImports = parser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
+        headerDocPath = parser.add(option: "--header-doc", shortName: "-hd", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
+    }
+
+    /// Execute the command.
+    ///
+    /// - parameter arguments: The command line arguments to execute the
+    /// command with.
+    override func execute(with arguments: ArgumentParser.Result) {
+        super.execute(with: arguments)
+
         if let destinationPath = arguments.get(destinationPath) {
             if let sourceRootPaths = arguments.get(sourceRootPaths) {
                 let suffixes = arguments.get(self.suffixes) ?? []
@@ -65,4 +71,13 @@ class GenerateCommand: Command {
             fatalError("Missing destination path.")
         }
     }
+
+    // MARK: - Private
+
+    private var destinationPath: PositionalArgument<String>!
+    private var sourceRootPaths: PositionalArgument<[String]>!
+    private var suffixes: OptionArgument<[String]>!
+    private var additionalImports: OptionArgument<[String]>!
+    private var scanPlugins: OptionArgument<Bool>!
+    private var headerDocPath: OptionArgument<String>!
 }

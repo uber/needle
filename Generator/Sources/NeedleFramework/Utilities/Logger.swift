@@ -14,18 +14,90 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import Foundation
 
-/// Log the given warning message.
+/// The various levels of logging.
+public enum LoggingLevel: Int {
+    /// The most verbose level including all logs.
+    case debug
+    /// The level that includes everything except debug logs.
+    case info
+    /// The level that only includes warning logs.
+    case warning
+
+    /// An cute emoticon describing the log level.
+    public var emoticon: String {
+        switch self {
+        case .debug: return "🐞"
+        case .info: return "📋"
+        case .warning: return "❗️"
+        }
+    }
+
+    /// Retrieve the logging level based on the given String value.
+    ///
+    /// - parameter value: The `String` value to parse from.
+    /// - returns: The corresponding `LoggingLevel` if there is one.
+    /// `nil` otherwise.
+    public static func level(from value: String) -> LoggingLevel? {
+        switch value {
+        case "debug": return .debug
+        case "info": return .info
+        case "warning": return .warning
+        default: return nil
+        }
+    }
+}
+
+// Use `AtomicInt` since logging may be invoked from multiple threads.
+private let minLoggingOutputLevel = AtomicInt(initialValue: LoggingLevel.warning.rawValue)
+
+/// Set the minimum logging level required to output a message.
+///
+/// - parameter minLoggingOutputLevel: The minimum logging level.
+public func set(minLoggingOutputLevel level: LoggingLevel) {
+    minLoggingOutputLevel.value = level.rawValue
+}
+
+/// Log the given message at the `debug` level.
 ///
 /// - parameter message: The message to log.
-public func warning(_ message: String) {
-    #if DEBUG
-        UnitTestLogger.instance.log(message)
-    #else
-        print(message)
-    #endif
+/// - note: The mesasge is only logged if the current `minLoggingOutputLevel`
+/// is set at or below the `debug` level.
+public func debug(_ message: String) {
+    log(message, atLevel: .debug)
 }
+
+/// Log the given message at the `info` level.
+///
+/// - parameter message: The message to log.
+/// - note: The mesasge is only logged if the current `minLoggingOutputLevel`
+/// is set at or below the `info` level.
+public func info(_ message: String) {
+    log(message, atLevel: .info)
+}
+
+/// Log the given message at the `warning` level.
+///
+/// - parameter message: The message to log.
+/// - note: The mesasge is only logged if the current `minLoggingOutputLevel`
+/// is set at or below the `warning` level.
+public func warning(_ message: String) {
+    log(message, atLevel: .warning)
+}
+
+private func log(_ message: String, atLevel level: LoggingLevel) {
+    #if DEBUG
+        UnitTestLogger.instance.log(message, at: level)
+    #endif
+
+    if level.rawValue >= minLoggingOutputLevel.value {
+        print("\(level.emoticon) \(message)")
+    }
+}
+
+// MARK: - Unit Test
 
 /// A logger that accumulates log messages to support unit testing.
 class UnitTestLogger {
@@ -44,8 +116,7 @@ class UnitTestLogger {
 
     private init() {}
 
-    fileprivate func log(_ message: String) {
-        print(message)
+    fileprivate func log(_ message: String, at level: LoggingLevel) {
         lockedMessages.append(message)
     }
 }

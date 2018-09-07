@@ -17,13 +17,15 @@
 import Foundation
 import Utility
 
-/// Each available command for needle (needle <command> <params>) has a
-/// name that is used to decide which subparser to use by main().
+/// A specific Needle instruction to be executed based on a set of input
+/// arguments.
 protocol Command {
-    /// Name used to check which of the Commands to apply.
+    /// Name used to check if this command should be executed.
     var name: String { get }
-    /// Initializer, sets up the command-line flags.
-    init(parser: ArgumentParser)
+
     /// Execute the command.
+    ///
+    /// - parameter arguments: The command line arguments to execute the
+    /// command with.
     func execute(with arguments: ArgumentParser.Result)
 }

@@ -21,22 +21,31 @@ import Utility
 
 func main() {
     let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Needle DI code generator.")
-    let commandsTypes: [Command.Type] = [GenerateCommand.self]
-    let commands = commandsTypes.map { $0.init(parser: parser) }
+    let commands = initializeCommands(with: parser)
     let inputs = Array(CommandLine.arguments.dropFirst())
     do {
         let args = try parser.parse(inputs)
-        if let subparserName = args.subparser(parser) {
-            for command in commands {
-                if subparserName == command.name {
-                    command.execute(with: args)
-                }
-            }
-        } else {
-            parser.printUsage(on: stdoutStream)
-        }
+        execute(commands, with: parser, args)
     } catch {
-        warning("Command-line pasing error (use --help for help): \(error)")
+        fatalError("Command-line pasing error (use --help for help): \(error)")
+    }
+}
+
+private func initializeCommands(with parser: ArgumentParser) -> [Command] {
+    return [
+        GenerateCommand(parser: parser)
+    ]
+}
+
+private func execute(_ commands: [Command], with parser: ArgumentParser, _ args: ArgumentParser.Result) {
+    if let subparserName = args.subparser(parser) {
+        for command in commands {
+            if subparserName == command.name {
+                command.execute(with: args)
+            }
+        }
+    } else {
+        parser.printUsage(on: stdoutStream)
     }
 }
 
