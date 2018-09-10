@@ -104,7 +104,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
                     let isPrivate = (accessibility == "source.lang.swift.accessibility.private")
                     let isFilePrivate = (accessibility == "source.lang.swift.accessibility.fileprivate")
                     if isPrivate || isFilePrivate {
-                        warning("\(self.name) (\(propertyItem.property.name): \(propertyItem.property.type)) property is \(isPrivate ? "private" : "fileprivate"), therefore inaccessible on DI graph.")
+                        info("\(self.name) (\(propertyItem.property.name): \(propertyItem.property.type)) property is \(isPrivate ? "private" : "fileprivate"), therefore inaccessible on DI graph.")
                         return nil
                     } else {
                         return propertyItem.property
