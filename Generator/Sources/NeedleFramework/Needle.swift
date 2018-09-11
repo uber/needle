@@ -28,13 +28,18 @@ public class Needle {
     /// dependency provider code and export to the specified destination path.
     ///
     /// - parameter sourceRootPaths: The directories of source files to parse.
-    /// - parameter exclusionSuffixes: The file suffixes to exclude from parsing.
+    /// - parameter exclusionSuffixes: The list of file name suffixes to
+    /// check from. If a filename's suffix matches any in the this list,
+    /// the file will not be parsed.
+    /// - parameter exclusionPaths: The list of path components to check.
+    /// If a file's URL path contains any elements in this list, the file
+    /// will not be parsed.
     /// - parameter additionalImports: The additional import statements to add
     /// to the ones parsed from source files.
     /// - parameter headerDocPath: The path to custom header doc file to be
     /// included at the top of the generated file.
     /// - parameter destinationPath: The path to export generated code to.
-    public static func generate(from sourceRootPaths: [String], excludingFilesWith exclusionSuffixes: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String) {
+    public static func generate(from sourceRootPaths: [String], excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String) {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(fileURLWithPath: path)
         }
@@ -45,7 +50,7 @@ public class Needle {
         #endif
         let parser = DependencyGraphParser()
         do {
-            let (components, imports) = try parser.parse(from: sourceRootUrls, excludingFilesWith: exclusionSuffixes, using: executor)
+            let (components, imports) = try parser.parse(from: sourceRootUrls, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
             let exporter = DependencyGraphExporter()
             try exporter.export(components, with: imports + additionalImports, to: destinationPath, using: executor, include: headerDocPath)
         } catch DependencyGraphParserError.timeout(let sourcePath) {
