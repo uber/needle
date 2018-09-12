@@ -29,7 +29,7 @@ class FileFilterTaskTests: AbstractParserTests {
 
     func test_execute_nonSwiftSource_verifyFilter() {
         let fileUrl = fixtureUrl(for: "NonSwift.json")
-        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = task.execute()
         switch result {
@@ -43,7 +43,7 @@ class FileFilterTaskTests: AbstractParserTests {
     func test_execute_excludedSuffix_verifyFilter() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
-        let excludeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"])
+        let excludeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"], exclusionPaths: [])
 
         var result = excludeSuffixTask.execute()
 
@@ -54,7 +54,7 @@ class FileFilterTaskTests: AbstractParserTests {
             break
         }
 
-        let includeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let includeSuffixTask = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
         result = includeSuffixTask.execute()
 
@@ -69,7 +69,7 @@ class FileFilterTaskTests: AbstractParserTests {
 
     func test_execute_nonNeedleComponent_verifyFilter() {
         let fixturesURL = fixtureUrl(for: "NonNeedleComponent.swift")
-        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = task.execute()
 
@@ -83,7 +83,7 @@ class FileFilterTaskTests: AbstractParserTests {
 
     func test_execute_nonInheritanceComponent_verifyFilter() {
         let fixturesURL = fixtureUrl(for: "NonInheritanceComponent.swift")
-        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [])
+        let task = FileFilterTask(url: fixturesURL, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = task.execute()
 
@@ -98,7 +98,7 @@ class FileFilterTaskTests: AbstractParserTests {
     func test_execute_actualComponent_verifyResult() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = task.execute()
 
@@ -114,7 +114,7 @@ class FileFilterTaskTests: AbstractParserTests {
     func test_execute_onlyDependency_verifyResult() {
         let fileUrl = fixtureUrl(for: "OnlyDependency.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = task.execute()
 
@@ -130,7 +130,7 @@ class FileFilterTaskTests: AbstractParserTests {
     func test_execute_namespacedComponent_verifyResult() {
         let fileUrl = fixtureUrl(for: "NamespacedComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
-        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [])
+        let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
         let result = task.execute()
 

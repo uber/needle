@@ -24,18 +24,21 @@ class UrlFilter: FileFilter {
     /// - parameter url: The file URL to read from.
     /// - parameter exclusionSuffixes: The list of file name suffixes to
     /// check from. If the given URL filename's suffix matches any in the
-    /// this list, the file will not be parsed.
-    init(url: URL, exclusionSuffixes: [String]) {
+    /// this list, the URL will be excluded.
+    /// - parameter exclusionPaths: The list of path components to check.
+    /// If the given URL's path contains any elements in this list, the
+    /// URL will be excluded.
+    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
+        self.exclusionPaths = exclusionPaths
     }
 
     /// Execute the filter.
     ///
-    /// - returns: `true` if the URL is a Swift source file and its file
-    /// name suffix is not in the exclusion list.
+    /// - returns: `true` if the URL should be parsed. `false` otherwise.
     func filter() -> Bool {
-        if !isUrlSwiftSource || urlHasExcludedSuffix {
+        if !isUrlSwiftSource || urlHasExcludedSuffix || urlHasExcludedPath {
             return false
         }
         return true
@@ -45,6 +48,7 @@ class UrlFilter: FileFilter {
 
     private let url: URL
     private let exclusionSuffixes: [String]
+    private let exclusionPaths: [String]
 
     private var isUrlSwiftSource: Bool {
         return url.pathExtension == "swift"
@@ -54,6 +58,16 @@ class UrlFilter: FileFilter {
         let name = url.deletingPathExtension().lastPathComponent
         for suffix in exclusionSuffixes {
             if name.hasSuffix(suffix) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private var urlHasExcludedPath: Bool {
+        let path = url.absoluteString
+        for component in exclusionPaths {
+            if path.contains(component) {
                 return true
             }
         }

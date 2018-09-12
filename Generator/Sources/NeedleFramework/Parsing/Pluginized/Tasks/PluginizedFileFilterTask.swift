@@ -28,10 +28,14 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
     /// - parameter url: The file URL to read from.
     /// - parameter exclusionSuffixes: The list of file name suffixes to
     /// check from. If the given URL filename's suffix matches any in the
-    /// this list, the file will not be parsed.
-    init(url: URL, exclusionSuffixes: [String]) {
+    /// this list, the URL will be excluded.
+    /// - parameter exclusionPaths: The list of path components to check.
+    /// If the given URL's path contains any elements in this list, the
+    /// URL will be excluded.
+    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
+        self.exclusionPaths = exclusionPaths
     }
 
     /// Execute the task and returns the filter result indicating if the file
@@ -39,7 +43,7 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
     ///
     /// - returns: The `FilterResult`.
     override func execute() -> FilterResult {
-        let urlFilter = UrlFilter(url: url, exclusionSuffixes: exclusionSuffixes)
+        let urlFilter = UrlFilter(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
         if !urlFilter.filter() {
             return FilterResult.skip
         }
@@ -61,4 +65,5 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
 
     private let url: URL
     private let exclusionSuffixes: [String]
+    private let exclusionPaths: [String]
 }
