@@ -10,6 +10,7 @@ matrix:
 
       script:
         - set -o pipefail
+        - gem install xcpretty
         - cd Sample/MVC
         - carthage update --platform iOS
         - cd TicTacToe
