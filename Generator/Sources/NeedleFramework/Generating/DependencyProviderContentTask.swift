@@ -52,7 +52,7 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
             do {
                 return try process(provider)
             } catch DependencyProviderContentError.propertyNotFound(let info) {
-                var message = "Could not find a provider for \(info.name): \(info.type) which was required by \(info.dependency)."
+                var message = "Could not find a provider for (\(info.name): \(info.type)) which was required by \(info.dependency), in the DI branch of \(provider.pathString)."
                 if let possibleMatchComponent = info.possibleMatchComponent {
                     message += " Found possible matches \(info.possibleNames) at \(possibleMatchComponent)."
                 }
