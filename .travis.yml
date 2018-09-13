@@ -18,10 +18,10 @@ matrix:
         - instruments -s devices
         - xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
         - xcodebuild -scheme "TicTacToe" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
-	- cd ../../Pluginized
-	- carthage update --platform iOS
-	- cd TicTacToe
-	- xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
+        - cd ../../Pluginized
+        - carthage update --platform iOS
+        - cd TicTacToe
+        - xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
         - xcodebuild -scheme "TicTacToe" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
 
 branches:
