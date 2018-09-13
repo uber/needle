@@ -26,8 +26,6 @@ public protocol ComponentType: AnyObject {
     var path: [String] { get }
 
     /// The parent of this component.
-    // This property cannot be of `ComponentType`, since the root of the dependency graph
-    // must have a parent that does not have a parent.
     var parent: ComponentType { get }
 }
 
