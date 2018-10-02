@@ -49,9 +49,9 @@ class CycleValidator: Processor {
         // Use DFS to detect cycles faster. Given the limited number of
         // elements, using a more complex algorithm like Tarjan's seems
         // unnecessary.
-        let alreadyVisited = visitedComponents.contains(where: { (element: ASTComponent) -> Bool in
+        let alreadyVisited = visitedComponents.contains { (element: ASTComponent) -> Bool in
             element.name == component.name
-        })
+        }
         if alreadyVisited {
             return visitedComponents
         } else {
