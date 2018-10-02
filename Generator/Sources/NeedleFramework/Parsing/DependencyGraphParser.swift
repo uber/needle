@@ -112,7 +112,8 @@ class DependencyGraphParser {
         let processors: [Processor] = [
             DuplicateValidator(components: components, dependencies: dependencies),
             ParentLinker(components: components),
-            DependencyLinker(components: components, dependencies: dependencies)
+            DependencyLinker(components: components, dependencies: dependencies),
+            CycleValidator(components: components)
         ]
         for processor in processors {
             do {
