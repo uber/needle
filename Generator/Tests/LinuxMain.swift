@@ -38,4 +38,5 @@ XCTMain([
     testCase(PluginizedDependencyProviderContentTaskTests.allTests),
     testCase(PluginizedPropertiesSerializerTests.allTests),
     testCase(PluginizedDependencyGraphExporterTests.allTests),
+    testCase(CycleValidatorTests.allTests),
 ])

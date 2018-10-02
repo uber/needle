@@ -118,7 +118,8 @@ class PluginizedDependencyGraphParser {
             ParentLinker(components: allComponents),
             DependencyLinker(components: allComponents, dependencies: dependencies),
             NonCoreComponentLinker(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents),
-            PluginExtensionLinker(pluginizedComponents: pluginizedComponents, pluginExtensions: pluginExtensions)
+            PluginExtensionLinker(pluginizedComponents: pluginizedComponents, pluginExtensions: pluginExtensions),
+            CycleValidator(components: allComponents)
         ]
         for processor in processors {
             do {
