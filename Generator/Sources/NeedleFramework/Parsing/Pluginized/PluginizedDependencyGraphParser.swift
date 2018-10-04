@@ -61,8 +61,8 @@ class PluginizedDependencyGraphParser {
                 }
             } catch {
                 switch error {
-                case FileEnumerationError.failedToReadSourcesList(let sourceListUrl):
-                    fatalError("Failed to read source paths from list file at \(sourceListUrl)")
+                case FileEnumerationError.failedToReadSourcesList(let sourceListUrl, let error):
+                    fatalError("Failed to read source paths from list file at \(sourceListUrl) \(error)")
                 case FileEnumerationError.failedToTraverseDirectory(let dirUrl):
                     fatalError("Failed traverse \(dirUrl)")
                 default:
