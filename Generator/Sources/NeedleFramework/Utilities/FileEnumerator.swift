@@ -19,20 +19,42 @@ import Foundation
 /// A utility class that provides file enumeration from a root directory.
 class FileEnumerator {
 
-    /// Enumerate all the files in the root directory URL, recursively.
+    /// Enumerate all the files in the root URL. If the given URL is a
+    /// directory, it is traversed recursively to surface all file URLs.
+    /// If the given URL is a file, it is treated as a text file where
+    /// each line is assumed to be a path to a file.
     ///
-    /// - parameter rootUrl: The root directory URL to enumerate from.
+    /// - parameter rootUrl: The root URL to enumerate from.
     /// - parameter handler: The closure to invoke when a file URL is found.
     func enumerate(from rootUrl: URL, handler: (URL) -> Void) {
-        let enumerator = newFileEnumerator(for: rootUrl)
-        while let nextObjc = enumerator.nextObject() {
-            if let fileUrl = nextObjc as? URL {
+        if rootUrl.isFileURL {
+            let fileUrls = self.fileUrls(fromSourcesList: rootUrl)
+            for fileUrl in fileUrls {
                 handler(fileUrl)
+            }
+        } else {
+            let enumerator = newFileEnumerator(for: rootUrl)
+            while let nextObjc = enumerator.nextObject() {
+                if let fileUrl = nextObjc as? URL {
+                    handler(fileUrl)
+                }
             }
         }
     }
 
     // MARK: - Private
+
+    private func fileUrls(fromSourcesList listUrl: URL) -> [URL] {
+        do {
+            let content = try String(contentsOf: listUrl)
+            let paths = content.split(separator: "\n").map { (substring: Substring) -> URL in
+                URL(fileURLWithPath: String(substring))
+            }
+            return paths
+        } catch {
+            fatalError("Failed to read source paths from list file at \(listUrl)")
+        }
+    }
 
     private func newFileEnumerator(for rootUrl: URL) -> FileManager.DirectoryEnumerator {
         let errorHandler = { (url: URL, error: Error) -> Bool in
