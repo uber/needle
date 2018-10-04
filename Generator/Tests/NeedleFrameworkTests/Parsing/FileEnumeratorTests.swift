@@ -96,7 +96,7 @@ class FileEnumeratorTests: AbstractParserTests {
             XCTFail()
         } catch {
             switch error {
-            case FileEnumerationError.failedToReadSourcesList(let url):
+            case FileEnumerationError.failedToReadSourcesList(let url, _):
                 XCTAssertEqual(url, sourcesListUrl)
             default:
                 XCTFail()

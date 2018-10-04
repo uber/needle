@@ -38,7 +38,7 @@ public class PluginizedNeedle {
     /// - parameter destinationPath: The path to export generated code to.
     public static func generate(from sourceRootPaths: [String], excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String) {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
-            URL(fileURLWithPath: path)
+            URL(path: path)
         }
         #if DEBUG
             let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive)

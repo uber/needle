@@ -43,4 +43,33 @@ extension String {
         }
         return String(self[range])
     }
+
+    /// Check if this path represents a directory.
+    ///
+    /// - note: Use this property instead of `URL.isFileURL` property, since
+    /// that property only checks for URL scheme, which can be inaccurate.
+    var isDirectory: Bool {
+        var isDirectory = ObjCBool(false)
+        FileManager.default.fileExists(atPath: self, isDirectory: &isDirectory)
+        return isDirectory.boolValue
+    }
+}
+
+/// Utility URL extensions.
+extension URL {
+
+    /// Initializer.
+    ///
+    /// - note: This initializer first checks if the given path is a directory.
+    /// If so, it initializes a directory URL. Otherwise a URL with the `file`
+    /// scheme is initialized. This allows the returned URL to correctly return
+    /// the `isFileURL` property.
+    /// - parameter path: The `String` path to use.
+    init(path: String) {
+        if path.isDirectory {
+            self.init(string: path)!
+        } else {
+            self.init(fileURLWithPath: path)
+        }
+    }
 }

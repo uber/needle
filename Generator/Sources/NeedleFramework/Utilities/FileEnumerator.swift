@@ -20,7 +20,7 @@ import Foundation
 enum FileEnumerationError: Error {
     /// Failed to read the text file that is supposed to contain a list
     /// of paths on each line.
-    case failedToReadSourcesList(URL)
+    case failedToReadSourcesList(URL, Error)
     /// Failed to traverse a directory specified by given URL.
     case failedToTraverseDirectory(URL)
 }
@@ -68,7 +68,7 @@ class FileEnumerator {
                 }
             return paths
         } catch {
-            throw FileEnumerationError.failedToReadSourcesList(listUrl)
+            throw FileEnumerationError.failedToReadSourcesList(listUrl, error)
         }
     }
 
