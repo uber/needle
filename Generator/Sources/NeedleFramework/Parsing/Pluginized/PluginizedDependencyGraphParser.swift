@@ -53,10 +53,21 @@ class PluginizedDependencyGraphParser {
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         for url in rootUrls {
-            enumerator.enumerate(from: url) { (fileUrl: URL) in
-                let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
-                let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
-                taskHandleTuples.append((taskHandle, fileUrl))
+            do {
+                try enumerator.enumerate(from: url) { (fileUrl: URL) in
+                    let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
+                    let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
+                    taskHandleTuples.append((taskHandle, fileUrl))
+                }
+            } catch {
+                switch error {
+                case FileEnumerationError.failedToReadSourcesList(let sourceListUrl):
+                    fatalError("Failed to read source paths from list file at \(sourceListUrl)")
+                case FileEnumerationError.failedToTraverseDirectory(let dirUrl):
+                    fatalError("Failed traverse \(dirUrl)")
+                default:
+                    fatalError("Unknown file enumeration error \(error)")
+                }
             }
         }
 

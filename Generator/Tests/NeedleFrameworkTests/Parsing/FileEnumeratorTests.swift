@@ -29,7 +29,7 @@ class FileEnumeratorTests: AbstractParserTests {
         let sourcesListUrl = fixtureUrl(for: "sources_list.txt")
         let enumerator = FileEnumerator()
         var urls = [String]()
-        enumerator.enumerate(from: sourcesListUrl) { (url: URL) in
+        try! enumerator.enumerate(from: sourcesListUrl) { (url: URL) in
             urls.append(url.absoluteString)
         }
 
@@ -75,5 +75,32 @@ class FileEnumeratorTests: AbstractParserTests {
         ]
 
         XCTAssertEqual(urls, expectedUrls)
+    }
+
+    func test_enumerate_withEmptySourcesFile_verifyUrls() {
+        let sourcesListUrl = fixtureUrl(for: "empty_lines_sources_list.txt")
+        let enumerator = FileEnumerator()
+        var urls = [String]()
+        try! enumerator.enumerate(from: sourcesListUrl) { (url: URL) in
+            urls.append(url.absoluteString)
+        }
+
+        XCTAssertTrue(urls.isEmpty)
+    }
+
+    func test_enumerate_withNonexistentSourcesFile_verifyUrls() {
+        let sourcesListUrl = fixtureUrl(for: "doesNotExist.txt")
+        let enumerator = FileEnumerator()
+        do {
+            try enumerator.enumerate(from: sourcesListUrl) { _ in }
+            XCTFail()
+        } catch {
+            switch error {
+            case FileEnumerationError.failedToReadSourcesList(let url):
+                XCTAssertEqual(url, sourcesListUrl)
+            default:
+                XCTFail()
+            }
+        }
     }
 }
