@@ -200,6 +200,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4139096520A0F2BD00A26FF5 /* Build configuration list for PBXNativeTarget "TicTacToe" */;
 			buildPhases = (
+				41E465B6216D5A3600C9509F /* ShellScript */,
 				4139094F20A0F2BC00A26FF5 /* Sources */,
 				4139095020A0F2BC00A26FF5 /* Frameworks */,
 				4139095120A0F2BC00A26FF5 /* Resources */,
@@ -329,6 +330,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+		41E465B6216D5A3600C9509F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/needle/Generator/bin/needle generate Sources/NeedleGenerated.swift Sources/ --header-doc ../../copyright_header.txt";
 		};
 /* End PBXShellScriptBuildPhase section */
 
