@@ -34,14 +34,14 @@ public enum PluginizedScopeLifecycle {
 
 /// The object that allows an observer to be disposed, thereby ending the
 /// observation.
-public protocol ObserverDisposable {
+public protocol ObserverDisposable: AnyObject {
 
     /// Dispose the observation.
     func dispose()
 }
 
 /// The observable of the lifecycle events of a pluginized scope.
-public protocol PluginizedScopeLifecycleObservable {
+public protocol PluginizedScopeLifecycleObservable: AnyObject {
 
     /// Observe the lifecycle events with given observer.
     ///
