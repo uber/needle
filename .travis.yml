@@ -2,4 +2,4 @@ language: objective-c
 matrix:
     include:
         - name: "NeedleFoundation"
-          script: xcodebuild test -project Foundation/NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=11.3,name=iPhone X'
+          script: xcodebuild test -project Foundation/NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
