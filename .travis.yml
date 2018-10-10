@@ -5,3 +5,4 @@ matrix:
           xcode_project: Foundation/NeedleFoundation.xcodeproj
           xcode_scheme: NeedleFoundationTests
           xcode_destination: platform=iOS Simulator,OS=11.3,name=iPhone X
+          script: xcodebuild test
