@@ -21,10 +21,6 @@ import XCTest
 
 class ExtensionsTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_urlInit_verifyIsFileURL", test_urlInit_verifyIsFileURL),
-    ]
-
     private var filePath: String!
     private var dirPath: String!
 
@@ -32,8 +28,8 @@ class ExtensionsTests: AbstractParserTests {
         super.setUp()
 
         filePath = "\(#file)"
-        let index = filePath.lastIndex(of: "/")
-        dirPath = String(filePath.prefix(upTo: index!))
+        let index = filePath.range(of: "/", options: .backwards)!.lowerBound
+        dirPath = String(filePath.prefix(upTo: index))
     }
 
     func test_isDirectory_verifyResults() {

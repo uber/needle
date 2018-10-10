@@ -19,10 +19,6 @@ import XCTest
 
 class ParentLinkerTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_process_withComponents_verifyLinkages", test_process_withComponents_verifyLinkages),
-    ]
-
     func test_process_withComponents_verifyLinkages() {
         let parentComponent = ASTComponent(name: "ParentComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: ["ChildComp", "someOtherStuff"])
         let childComp = ASTComponent(name: "ChildComp", dependencyProtocolName: "Still doesn't matter", properties: [], expressionCallTypeNames: [])

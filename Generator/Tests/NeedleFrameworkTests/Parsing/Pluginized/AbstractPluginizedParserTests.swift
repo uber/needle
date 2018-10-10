@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+@testable import NeedleFramework
 import XCTest
 
 /// Base class for all pluginized parser related tests.
@@ -25,5 +26,14 @@ class AbstractPluginizedParserTests: AbstractParserTests {
     /// - returns: The fixture file URL.
     func pluginizedFixtureUrl(for file: String) -> URL {
         return URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/Pluginized/\(file)")
+    }
+
+    /// Retrieve the directory URL for the fixture folder.
+    ///
+    /// - returns: The fixture directory URL.
+    func pluginizedFixtureDirUrl() -> URL {
+        let url = fixtureUrl(for: "")
+        let path = url.absoluteString.replacingOccurrences(of: "file://", with: "")
+        return URL(path: path)
     }
 }

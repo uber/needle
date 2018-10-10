@@ -21,10 +21,6 @@ import XCTest
 
 class DependencyProviderContentTaskTests: AbstractGeneratorTests {
 
-    static var allTests = [
-        ("test_execute_withSampleProject_verifyProviderContent", test_execute_withSampleProject_verifyProviderContent),
-    ]
-
     func test_execute_withSampleProject_verifyProviderContent() {
         let (components, imports) = sampleProjectParsed()
         var assertCount = 0

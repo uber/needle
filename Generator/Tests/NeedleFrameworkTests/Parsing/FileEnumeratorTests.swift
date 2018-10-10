@@ -21,10 +21,6 @@ import XCTest
 
 class FileEnumeratorTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_enumerate_withSourcesFile_verifyUrls", test_enumerate_withSourcesFile_verifyUrls),
-    ]
-
     func test_enumerate_withSourcesFile_verifyUrls() {
         let sourcesListUrl = fixtureUrl(for: "sources_list.txt")
         let enumerator = FileEnumerator()

@@ -20,10 +20,6 @@ import XCTest
 
 class ASTParserTaskTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode),
-    ]
-
     func test_execute_withPrivateProperties_verifyLog() {
         let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)

@@ -40,11 +40,13 @@ class AbstractGeneratorTests: XCTestCase {
     ///
     /// - returns: The sample project folder URL.
     func sampleProjectUrl() -> URL {
-        var dir = URL(fileURLWithPath: #file)
+        var url = URL(path: #file)
         for _ in 0 ..< 5 {
-            dir = dir.deletingLastPathComponent()
+            url = url.deletingLastPathComponent()
         }
-        dir.appendPathComponent("Sample/MVC/TicTacToe/Sources/")
-        return dir
+        url.appendPathComponent("Sample/MVC/TicTacToe/Sources/")
+
+        let path = url.absoluteString.replacingOccurrences(of: "file://", with: "")
+        return URL(path: path)
     }
 }

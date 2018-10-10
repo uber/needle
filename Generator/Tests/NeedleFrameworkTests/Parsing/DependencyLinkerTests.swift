@@ -19,11 +19,6 @@ import XCTest
 
 class DependencyLinkerTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_process_withComponents_verifyLinkages", test_process_withComponents_verifyLinkages),
-        ("test_process_withComponentsNoDependency_verifyError", test_process_withComponentsNoDependency_verifyError)
-    ]
-
     func test_process_withComponents_verifyLinkages() {
         let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", properties: [], expressionCallTypeNames: [])
         let dependency = Dependency(name: "ItsDependency", properties: [])

@@ -19,14 +19,6 @@ import XCTest
 
 class FileFilterTaskTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_execute_nonSwiftSource_verifyFilter", test_execute_nonSwiftSource_verifyFilter),
-        ("test_execute_excludedSuffix_verifyFilter", test_execute_excludedSuffix_verifyFilter),
-        ("test_execute_nonNeedleComponent_verifyFilter", test_execute_nonNeedleComponent_verifyFilter),
-        ("test_execute_nonInheritanceComponent_verifyFilter", test_execute_nonInheritanceComponent_verifyFilter),
-        ("test_execute_actualComponent_verifyResult", test_execute_actualComponent_verifyResult),
-    ]
-
     func test_execute_nonSwiftSource_verifyFilter() {
         let fileUrl = fixtureUrl(for: "NonSwift.json")
         let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])

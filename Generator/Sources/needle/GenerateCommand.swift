@@ -29,7 +29,7 @@ class GenerateCommand: AbstractCommand {
     ///
     /// - parameter parser: The argument parser to use.
     init(parser: ArgumentParser) {
-        super.init(name: "generate", overview: "Generate DI code based on all Swift source files in a directory.", parser: parser)
+        super.init(name: "generate", overview: "Generate DI code based on Swift source files in a directory or listed in a single text file.", parser: parser)
     }
 
     /// Setup the arguments using the given parser.

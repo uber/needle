@@ -20,10 +20,6 @@ import XCTest
 
 class PluginizedASTParserTaskTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode", test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode),
-    ]
-
     func test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)

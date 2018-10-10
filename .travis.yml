@@ -3,3 +3,7 @@ matrix:
     include:
         - name: "NeedleFoundationTests"
           script: xcodebuild test -project Foundation/NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+        - name: "NeedleGeneratorTests"
+          script: cd Generator && swift test -Xswiftc -DDEBUG
+        - name: "NeedleGeneratorBinary"
+          script: cd Generator && swift build -c release -Xswiftc -static-stdlib

@@ -41,11 +41,13 @@ class AbstractPluginizedGeneratorTests: XCTestCase {
     ///
     /// - returns: The sample project folder URL.
     func sampleProjectUrl() -> URL {
-        var dir = URL(fileURLWithPath: #file)
+        var url = URL(fileURLWithPath: #file)
         for _ in 0 ..< 6 {
-            dir = dir.deletingLastPathComponent()
+            url = url.deletingLastPathComponent()
         }
-        dir.appendPathComponent("Sample/Pluginized/TicTacToe/")
-        return dir
+        url.appendPathComponent("Sample/Pluginized/TicTacToe/")
+
+        let path = url.absoluteString.replacingOccurrences(of: "file://", with: "")
+        return URL(path: path)
     }
 }

@@ -20,14 +20,9 @@ import XCTest
 
 class DependencyGraphParserTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_parse_withTaskCompleteion_verifyTaskSequence", test_parse_withTaskCompleteion_verifyTaskSequence),
-        ("test_parse_withTaskCompleteion_verifyResults", test_parse_withTaskCompleteion_verifyResults),
-    ]
-
     func test_parse_withTaskCompleteion_verifyTaskSequence() {
         let parser = DependencyGraphParser()
-        let fixturesURL = fixtureUrl(for: "")
+        let fixturesURL = fixtureDirUrl()
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
 
@@ -64,7 +59,7 @@ class DependencyGraphParserTests: AbstractParserTests {
 
     func test_parse_withTaskCompleteion_verifyResults() {
         let parser = DependencyGraphParser()
-        let fixturesURL = fixtureUrl(for: "")
+        let fixturesURL = fixtureDirUrl()
         let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
         let files = enumerator!.allObjects as! [URL]
         let executor = MockSequenceExecutor()

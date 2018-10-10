@@ -19,11 +19,6 @@ import XCTest
 
 class PluginExtensionLinkerTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_process_withComponents_verifyLinkages", test_process_withComponents_verifyLinkages),
-        ("test_process_withComponentsNoPluginExtension_verifyError", test_process_withComponentsNoPluginExtension_verifyError),
-    ]
-
     func test_process_withComponents_verifyLinkages() {
         let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
         let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "MyExtension", nonCoreComponentType: "Doesn't matter")

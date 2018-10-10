@@ -18,13 +18,6 @@ import XCTest
 @testable import NeedleFramework
 
 class DuplicateValidatorTests: XCTestCase {
-
-    static var allTests = [
-        ("test_validateComponent_noDuplicate_verifyResult", test_validateComponent_noDuplicate_verifyResult),
-        ("test_validateComponent_withDuplicates_verifyResult", test_validateComponent_withDuplicates_verifyResult),
-        ("test_validateDependencies_noDuplicate_verifyResult", test_validateDependencies_noDuplicate_verifyResult),
-        ("test_validateDependencies_withDuplicates_verifyResult", test_validateDependencies_withDuplicates_verifyResult),
-    ]
     
     func test_validateComponent_noDuplicate_verifyResult() {
         let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])

@@ -20,12 +20,8 @@ import XCTest
 @testable import NeedleFramework
 
 class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
-    let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/Pluginized")
 
-    @available(OSX 10.12, *)
-    static var allTests = [
-        ("test_export_verifyContent", test_export_verifyContent),
-    ]
+    let fixturesURL = URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/Pluginized")
 
     @available(OSX 10.12, *)
     func test_export_verifyContent() {
