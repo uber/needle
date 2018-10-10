@@ -1,28 +1,5 @@
+language: objective-c
 matrix:
-  include:
-    - language: objective-c
-      osx_image: xcode9
-      env:
-        global:
-        - LC_CTYPE=en_US.UTF-8
-        - LANG=en_US.UTF-8
-        - IOS_SDK=iphonesimulator11.0
-
-      script:
-        - set -o pipefail
-        - cd Sample
-        - carthage update --platform iOS
-        - cd TicTacToe
-        - xcodebuild -version
-        - xcodebuild -showsdks
-        - instruments -s devices
-        - xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
-        - xcodebuild -scheme "TicTacToe" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
-
-branches:
-  except:
-    - gh-pages
-    - assets
-
-notifications:
-  email: false
+    include:
+        - name: "NeedleFoundationTests"
+          script: xcodebuild test -project Foundation/NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
