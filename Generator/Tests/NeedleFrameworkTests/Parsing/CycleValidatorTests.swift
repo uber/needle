@@ -19,11 +19,6 @@ import XCTest
 
 class CycleValidatorTests: XCTestCase {
 
-    static var allTests = [
-        ("test_process_hasCycle", test_process_hasCycle),
-        ("test_process_noCycle", test_process_noCycle),
-    ]
-
     func test_process_hasCycle() {
         let a = ASTComponent(name: "A", dependencyProtocolName: "blah", properties: [], expressionCallTypeNames: [])
         let b = ASTComponent(name: "B", dependencyProtocolName: "blah", properties: [], expressionCallTypeNames: [])

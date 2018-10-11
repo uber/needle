@@ -19,11 +19,6 @@ import XCTest
 
 class NonCoreComponentLinkerTests: AbstractParserTests {
 
-    static var allTests = [
-        ("test_process_withComponents_verifyLinkages", test_process_withComponents_verifyLinkages),
-        ("test_process_withComponentsNoNonCoreComp_verifyError", test_process_withComponentsNoNonCoreComp_verifyError),
-    ]
-
     func test_process_withComponents_verifyLinkages() {
         let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
         let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")

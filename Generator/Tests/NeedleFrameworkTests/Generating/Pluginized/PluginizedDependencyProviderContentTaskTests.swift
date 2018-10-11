@@ -21,56 +21,110 @@ import XCTest
 
 class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorTests {
 
-    static var allTests = [
-        ("test_execute_withSampleProject_verifyProviderContent", test_execute_withSampleProject_verifyProviderContent),
-    ]
-
     func test_execute_withSampleProject_verifyProviderContent() {
         let (components, pluginizedComponents, _) = pluginizedSampleProjectParsed()
 
-
-        var allProviders = [DependencyProvider]()
         for component in components {
-            let task = DependencyProviderDeclarerTask(component: component)
-            allProviders.append(contentsOf: task.execute())
+            let declareTask = DependencyProviderDeclarerTask(component: component)
+            let providers = declareTask.execute()
+            let contentTask = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents)
+            let processedProviders = contentTask.execute()
+
+            switch component.name {
+            case "LoggedOutComponent":
+                verifyLoggedOutComponent(processedProviders)
+            case "RootComponent":
+                verifyRootComponent(processedProviders)
+            case "ScoreSheetComponent":
+                verifyScoreSheetComponent(processedProviders)
+            case "GameNonCoreComponent":
+                verifyGameNonCoreComponent(processedProviders)
+            case "LoggedInNonCoreComponent":
+                verifyLoggedInNonCoreComponent(processedProviders)
+            default:
+                XCTFail("Unverified component with name: \(component.name)")
+            }
         }
+
         for component in pluginizedComponents {
-            let task = DependencyProviderDeclarerTask(component: component.data)
-            allProviders.append(contentsOf: task.execute())
+            let declareTask = DependencyProviderDeclarerTask(component: component.data)
+            let providers = declareTask.execute()
+            let contentTask = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents)
+            let processedProviders = contentTask.execute()
+
+            switch component.data.name {
+            case "GameComponent":
+                verifyGameComponent(processedProviders)
+            case "LoggedInComponent":
+                verifyLoggedInComponent(processedProviders)
+            default:
+                XCTFail("Unverified component with name: \(component.data.name)")
+            }
         }
-
-        let task = PluginizedDependencyProviderContentTask(providers: allProviders, pluginizedComponents: pluginizedComponents)
-        let allProcessedProviders = task.execute()
-
-        XCTAssertEqual(allProcessedProviders.count, 8)
-        verify(allProcessedProviders)
     }
 
-    private func verify(_ providers: [PluginizedProcessedDependencyProvider]) {
+    private func verifyLoggedOutComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 1)
+        XCTAssertEqual(providers[0].data.levelMap.count, 1)
         XCTAssertEqual(providers[0].data.levelMap["RootComponent"], 1)
+        XCTAssertEqual(providers[0].processedProperties.count, 1)
         XCTAssertEqual(providers[0].processedProperties[0].data.unprocessed.name, "mutablePlayersStream")
         XCTAssertEqual(providers[0].processedProperties[0].data.sourceComponentType, "RootComponent")
         XCTAssertEqual(providers[0].processedProperties[0].auxillarySourceType, nil)
+    }
 
-        XCTAssertEqual(providers[2].data.levelMap["LoggedInComponent"], 3)
-        XCTAssertEqual(providers[2].processedProperties[0].data.unprocessed.name, "scoreStream")
-        XCTAssertEqual(providers[2].processedProperties[0].auxillarySourceName, "LoggedInNonCoreComponent")
-        XCTAssertEqual(providers[2].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
-        XCTAssertEqual(providers[2].processedProperties[0].auxillarySourceType, .nonCoreComponent)
+    private func verifyRootComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 1)
+        XCTAssertTrue(providers[0].data.levelMap.isEmpty)
+        XCTAssertTrue(providers[0].processedProperties.isEmpty)
+    }
 
-        XCTAssertEqual(providers[3].data.levelMap["LoggedInNonCoreComponent"], 1)
-        XCTAssertEqual(providers[3].processedProperties[0].data.unprocessed.name, "scoreStream")
-        XCTAssertEqual(providers[3].processedProperties[0].data.sourceComponentType, "LoggedInNonCoreComponent")
-        XCTAssertEqual(providers[3].processedProperties[0].auxillarySourceType, nil)
+    private func verifyScoreSheetComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 2)
+        XCTAssertEqual(providers[0].data.levelMap.count, 1)
+        XCTAssertEqual(providers[0].data.levelMap["LoggedInComponent"], 3)
+        XCTAssertEqual(providers[0].processedProperties.count, 1)
+        XCTAssertEqual(providers[0].processedProperties[0].data.unprocessed.name, "scoreStream")
+        XCTAssertEqual(providers[0].processedProperties[0].auxillarySourceName, "LoggedInNonCoreComponent")
+        XCTAssertEqual(providers[0].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
+        XCTAssertEqual(providers[0].processedProperties[0].auxillarySourceType, .nonCoreComponent)
+        XCTAssertEqual(providers[0].data.levelMap.count, 1)
+        XCTAssertEqual(providers[1].data.levelMap["LoggedInNonCoreComponent"], 1)
+        XCTAssertEqual(providers[0].processedProperties.count, 1)
+        XCTAssertEqual(providers[1].processedProperties[0].data.unprocessed.name, "scoreStream")
+        XCTAssertEqual(providers[1].processedProperties[0].data.sourceComponentType, "LoggedInNonCoreComponent")
+        XCTAssertEqual(providers[1].processedProperties[0].auxillarySourceType, nil)
+    }
 
-        XCTAssertEqual(providers[6].data.levelMap["LoggedInComponent"], 1)
-        XCTAssertEqual(providers[6].data.levelMap["RootComponent"], 2)
-        XCTAssertEqual(providers[6].processedProperties[0].data.unprocessed.name, "mutableScoreStream")
-        XCTAssertEqual(providers[6].processedProperties[0].auxillarySourceName, "LoggedInPluginExtension")
-        XCTAssertEqual(providers[6].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
-        XCTAssertEqual(providers[6].processedProperties[0].auxillarySourceType, .pluginExtension)
-        XCTAssertEqual(providers[6].processedProperties[1].data.unprocessed.name, "playersStream")
-        XCTAssertEqual(providers[6].processedProperties[1].data.sourceComponentType, "RootComponent")
-        XCTAssertEqual(providers[6].processedProperties[1].auxillarySourceType, nil)
+    private func verifyGameNonCoreComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 1)
+        XCTAssertTrue(providers[0].data.levelMap.isEmpty)
+        XCTAssertTrue(providers[0].processedProperties.isEmpty)
+    }
+
+    private func verifyLoggedInNonCoreComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 1)
+        XCTAssertTrue(providers[0].data.levelMap.isEmpty)
+        XCTAssertTrue(providers[0].processedProperties.isEmpty)
+    }
+
+    private func verifyGameComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 1)
+        XCTAssertEqual(providers[0].data.levelMap.count, 2)
+        XCTAssertEqual(providers[0].data.levelMap["LoggedInComponent"], 1)
+        XCTAssertEqual(providers[0].data.levelMap["RootComponent"], 2)
+        XCTAssertEqual(providers[0].processedProperties.count, 2)
+        XCTAssertEqual(providers[0].processedProperties[0].data.unprocessed.name, "mutableScoreStream")
+        XCTAssertEqual(providers[0].processedProperties[0].data.sourceComponentType, "LoggedInComponent")
+        XCTAssertEqual(providers[0].processedProperties[0].auxillarySourceType, .pluginExtension)
+        XCTAssertEqual(providers[0].processedProperties[1].data.unprocessed.name, "playersStream")
+        XCTAssertEqual(providers[0].processedProperties[1].data.sourceComponentType, "RootComponent")
+        XCTAssertEqual(providers[0].processedProperties[1].auxillarySourceType, nil)
+    }
+
+    private func verifyLoggedInComponent(_ providers: [PluginizedProcessedDependencyProvider]) {
+        XCTAssertEqual(providers.count, 1)
+        XCTAssertTrue(providers[0].data.levelMap.isEmpty)
+        XCTAssertTrue(providers[0].processedProperties.isEmpty)
     }
 }

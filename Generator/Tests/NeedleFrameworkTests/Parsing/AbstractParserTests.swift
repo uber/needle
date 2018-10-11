@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+@testable import NeedleFramework
 import XCTest
 
 /// Base class for all parser related tests.
@@ -25,5 +26,14 @@ class AbstractParserTests: XCTestCase {
     /// - returns: The fixture file URL.
     func fixtureUrl(for file: String) -> URL {
         return URL(fileURLWithPath: #file).deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Fixtures/\(file)")
+    }
+
+    /// Retrieve the directory URL for the fixture folder.
+    ///
+    /// - returns: The fixture directory URL.
+    func fixtureDirUrl() -> URL {
+        let url = fixtureUrl(for: "")
+        let path = url.absoluteString.replacingOccurrences(of: "file://", with: "")
+        return URL(path: path)
     }
 }

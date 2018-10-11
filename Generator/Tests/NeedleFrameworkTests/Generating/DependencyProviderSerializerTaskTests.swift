@@ -21,96 +21,41 @@ import XCTest
 
 class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
 
-    static var allTests = [
-        ("test_execute_withSampleProject_verifySerialization", test_execute_withSampleProject_verifySerialization),
-    ]
-
     func test_execute_withSampleProject_verifySerialization() {
-        var flattenRegistrations = ""
-        var flattenContents = ""
-
         let (components, imports) = sampleProjectParsed()
         for component in components {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
             let processedProviders = DependencyProviderContentTask(providers: providers).execute()
-            let serializedProviders = DependencyProviderSerializerTask(providers: processedProviders).execute()
-            for item in serializedProviders {
-                flattenRegistrations += item.registration
-                flattenContents += item.content
+            for provider in processedProviders {
+                let serializedProviders = DependencyProviderSerializerTask(providers: [provider]).execute()
+                XCTAssertEqual(serializedProviders.count, 1)
+                verify(provider, against: serializedProviders[0])
             }
         }
 
-        let expectedRegistration = """
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
-            return GameDependency1ab5926a977f706d3195Provider(component: component)
-        }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent") { component in
-            return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)
-        }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
-            return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)
-        }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
-            return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
-        }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
-            return EmptyDependencyProvider(component: component)
-        }
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-            return EmptyDependencyProvider(component: component)
-        }\n
-        """
-        XCTAssertEqual(flattenRegistrations, expectedRegistration)
-
-        let expectedContents = """
-        /// ^->RootComponent->LoggedInComponent->GameComponent
-        private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
-            var mutableScoreStream: MutableScoreStream {
-                return loggedInComponent.mutableScoreStream
-            }
-            var playersStream: PlayersStream {
-                return rootComponent.playersStream
-            }
-            private let loggedInComponent: LoggedInComponent
-            private let rootComponent: RootComponent
-            init(component: NeedleFoundation.ComponentType) {
-                loggedInComponent = component.parent as! LoggedInComponent
-                rootComponent = component.parent.parent as! RootComponent
-            }
-        }
-        /// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent
-        private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {
-            var scoreStream: ScoreStream {
-                return loggedInComponent.scoreStream
-            }
-            private let loggedInComponent: LoggedInComponent
-            init(component: NeedleFoundation.ComponentType) {
-                loggedInComponent = component.parent.parent as! LoggedInComponent
-            }
-        }
-        /// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
-        private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency {
-            var scoreStream: ScoreStream {
-                return loggedInComponent.scoreStream
-            }
-            private let loggedInComponent: LoggedInComponent
-            init(component: NeedleFoundation.ComponentType) {
-                loggedInComponent = component.parent as! LoggedInComponent
-            }
-        }
-        /// ^->RootComponent->LoggedOutComponent
-        private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
-            var mutablePlayersStream: MutablePlayersStream {
-                return rootComponent.mutablePlayersStream
-            }
-            private let rootComponent: RootComponent
-            init(component: NeedleFoundation.ComponentType) {
-                rootComponent = component.parent as! RootComponent
-            }
-        }\n
-        """
-
-        XCTAssertEqual(flattenContents, expectedContents)
         XCTAssertEqual(imports, ["import NeedleFoundation", "import RxSwift", "import UIKit"])
+    }
+
+    private func verify(_ provider: ProcessedDependencyProvider, against serializedProvider: SerializedProvider) {
+        switch provider.unprocessed.pathString {
+        case "^->RootComponent->LoggedInComponent->GameComponent":
+            XCTAssertEqual(serializedProvider.registration, "__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent\") { component in\n    return GameDependency1ab5926a977f706d3195Provider(component: component)\n}\n")
+            XCTAssertEqual(serializedProvider.content, "/// ^->RootComponent->LoggedInComponent->GameComponent\nprivate class GameDependency1ab5926a977f706d3195Provider: GameDependency {\n    var mutableScoreStream: MutableScoreStream {\n        return loggedInComponent.mutableScoreStream\n    }\n    var playersStream: PlayersStream {\n        return rootComponent.playersStream\n    }\n    private let loggedInComponent: LoggedInComponent\n    private let rootComponent: RootComponent\n    init(component: NeedleFoundation.ComponentType) {\n        loggedInComponent = component.parent as! LoggedInComponent\n        rootComponent = component.parent.parent as! RootComponent\n    }\n}\n")
+        case "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent":
+            XCTAssertEqual(serializedProvider.registration, "__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\") { component in\n    return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)\n}\n")
+            XCTAssertEqual(serializedProvider.content, "/// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\nprivate class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {\n    var scoreStream: ScoreStream {\n        return loggedInComponent.scoreStream\n    }\n    private let loggedInComponent: LoggedInComponent\n    init(component: NeedleFoundation.ComponentType) {\n        loggedInComponent = component.parent.parent as! LoggedInComponent\n    }\n}\n")
+        case "^->RootComponent->LoggedInComponent->ScoreSheetComponent":
+            XCTAssertEqual(serializedProvider.registration, "__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->ScoreSheetComponent\") { component in\n    return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)\n}\n")
+            XCTAssertEqual(serializedProvider.content, "/// ^->RootComponent->LoggedInComponent->ScoreSheetComponent\nprivate class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency {\n    var scoreStream: ScoreStream {\n        return loggedInComponent.scoreStream\n    }\n    private let loggedInComponent: LoggedInComponent\n    init(component: NeedleFoundation.ComponentType) {\n        loggedInComponent = component.parent as! LoggedInComponent\n    }\n}\n")
+        case "^->RootComponent->LoggedOutComponent":
+            XCTAssertEqual(serializedProvider.registration, "__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedOutComponent\") { component in\n    return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)\n}\n")
+            XCTAssertEqual(serializedProvider.content, "/// ^->RootComponent->LoggedOutComponent\nprivate class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {\n    var mutablePlayersStream: MutablePlayersStream {\n        return rootComponent.mutablePlayersStream\n    }\n    private let rootComponent: RootComponent\n    init(component: NeedleFoundation.ComponentType) {\n        rootComponent = component.parent as! RootComponent\n    }\n}\n")
+        case "^->RootComponent->LoggedInComponent":
+            XCTAssertEqual(serializedProvider.registration, "__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent\") { component in\n    return EmptyDependencyProvider(component: component)\n}\n")
+        case "^->RootComponent":
+            XCTAssertEqual(serializedProvider.registration, "__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent\") { component in\n    return EmptyDependencyProvider(component: component)\n}\n")
+        default:
+            XCTFail("Unverified provider with path \(provider.unprocessed.pathString)")
+        }
     }
 }
