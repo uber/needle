@@ -22,63 +22,21 @@ import XCTest
 class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
 
     func test_execute_withSampleProject_verifySerialization() {
-        var flattenRegistrations = ""
-        var flattenContents = ""
-
         let (_, pluginizedComponents, _) = pluginizedSampleProjectParsed()
 
         for pluginizedComponent in pluginizedComponents {
             let provider = PluginExtensionSerializerTask(component: pluginizedComponent).execute()
-            flattenRegistrations += provider.registration + "\n"
-            flattenContents += provider.content + "\n"
-        }
 
-        let expectedRegistrations =
-        """
-        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "GameComponent") { component in
-            return GamePluginExtensionProvider(component: component)
-        }
-
-        __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: "LoggedInComponent") { component in
-            return LoggedInPluginExtensionProvider(component: component)
-        }
-
-
-        """
-
-        let expectedContents =
-        """
-        /// GameComponent plugin extension
-        private class GamePluginExtensionProvider: GamePluginExtension {
-            var scoreSheetBuilder: ScoreSheetBuilder {
-                return gameNonCoreComponent.scoreSheetBuilder
-            }
-            private unowned let gameNonCoreComponent: GameNonCoreComponent
-            init(component: NeedleFoundation.ComponentType) {
-                let gameComponent = component as! GameComponent
-                gameNonCoreComponent = gameComponent.nonCoreComponent as! GameNonCoreComponent
+            switch pluginizedComponent.data.name {
+            case "GameComponent":
+                XCTAssertEqual(provider.registration, "__PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: \"GameComponent\") { component in\n    return GamePluginExtensionProvider(component: component)\n}\n")
+                XCTAssertEqual(provider.content, "/// GameComponent plugin extension\nprivate class GamePluginExtensionProvider: GamePluginExtension {\n    var scoreSheetBuilder: ScoreSheetBuilder {\n        return gameNonCoreComponent.scoreSheetBuilder\n    }\n    private unowned let gameNonCoreComponent: GameNonCoreComponent\n    init(component: NeedleFoundation.ComponentType) {\n        let gameComponent = component as! GameComponent\n        gameNonCoreComponent = gameComponent.nonCoreComponent as! GameNonCoreComponent\n    }\n}\n")
+            case "LoggedInComponent":
+                XCTAssertEqual(provider.registration, "__PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: \"LoggedInComponent\") { component in\n    return LoggedInPluginExtensionProvider(component: component)\n}\n")
+                XCTAssertEqual(provider.content, "/// LoggedInComponent plugin extension\nprivate class LoggedInPluginExtensionProvider: LoggedInPluginExtension {\n    var scoreSheetBuilder: ScoreSheetBuilder {\n        return loggedInNonCoreComponent.scoreSheetBuilder\n    }\n    var mutableScoreStream: MutableScoreStream {\n        return loggedInNonCoreComponent.mutableScoreStream\n    }\n    private unowned let loggedInNonCoreComponent: LoggedInNonCoreComponent\n    init(component: NeedleFoundation.ComponentType) {\n        let loggedInComponent = component as! LoggedInComponent\n        loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent\n    }\n}\n")
+            default:
+                XCTFail("Unverified provider for component: \(pluginizedComponent.data.name)")
             }
         }
-
-        /// LoggedInComponent plugin extension
-        private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
-            var scoreSheetBuilder: ScoreSheetBuilder {
-                return loggedInNonCoreComponent.scoreSheetBuilder
-            }
-            var mutableScoreStream: MutableScoreStream {
-                return loggedInNonCoreComponent.mutableScoreStream
-            }
-            private unowned let loggedInNonCoreComponent: LoggedInNonCoreComponent
-            init(component: NeedleFoundation.ComponentType) {
-                let loggedInComponent = component as! LoggedInComponent
-                loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent
-            }
-        }
-
-
-        """
-
-        XCTAssertEqual(flattenRegistrations, expectedRegistrations)
-        XCTAssertEqual(flattenContents, expectedContents)
     }
 }

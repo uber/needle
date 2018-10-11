@@ -22,8 +22,6 @@ import XCTest
 class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
 
     func test_execute_withSampleProject_verifySerialization() {
-        var flattenContents = ""
-
         let (components, pluginizedComponents, _) = pluginizedSampleProjectParsed()
         for component in components {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
@@ -33,7 +31,17 @@ class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
                     continue
                 }
                 let serializedProperties = PluginizedPropertiesSerializer(provider: provider).serialize()
-                flattenContents += serializedProperties + "\n"
+
+                switch provider.data.unprocessed.pathString {
+                case "^->RootComponent->LoggedOutComponent":
+                    XCTAssertEqual(serializedProperties, "    var mutablePlayersStream: MutablePlayersStream {\n        return rootComponent.mutablePlayersStream\n    }")
+                case "^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent":
+                    XCTAssertEqual(serializedProperties, "    var scoreStream: ScoreStream {\n        return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream\n    }")
+                case "^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent":
+                    XCTAssertEqual(serializedProperties, "    var scoreStream: ScoreStream {\n        return loggedInNonCoreComponent.scoreStream\n    }")
+                default:
+                    XCTFail("Unverified provider path: \(provider.data.unprocessed.pathString)")
+                }
             }
         }
 
@@ -42,31 +50,16 @@ class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
             let processedProviders = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()
             for provider in processedProviders {
                 let serializedProperties = PluginizedPropertiesSerializer(provider: provider).serialize()
-                flattenContents += serializedProperties + "\n"
+
+                switch provider.data.unprocessed.pathString {
+                case "^->RootComponent->LoggedInComponent->GameComponent":
+                    XCTAssertEqual(serializedProperties, "    var mutableScoreStream: MutableScoreStream {\n        return loggedInComponent.pluginExtension.mutableScoreStream\n    }\n    var playersStream: PlayersStream {\n        return rootComponent.playersStream\n    }")
+                case "^->RootComponent->LoggedInComponent":
+                    XCTAssertEqual(serializedProperties, "")
+                default:
+                    XCTFail("Unverified provider path: \(provider.data.unprocessed.pathString)")
+                }
             }
         }
-
-        let expected =
-        """
-            var mutablePlayersStream: MutablePlayersStream {
-                return rootComponent.mutablePlayersStream
-            }
-            var scoreStream: ScoreStream {
-                return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
-            }
-            var scoreStream: ScoreStream {
-                return loggedInNonCoreComponent.scoreStream
-            }
-            var mutableScoreStream: MutableScoreStream {
-                return loggedInComponent.pluginExtension.mutableScoreStream
-            }
-            var playersStream: PlayersStream {
-                return rootComponent.playersStream
-            }
-
-
-        """
-
-        XCTAssertEqual(flattenContents, expected)
     }
 }
