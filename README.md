@@ -4,6 +4,8 @@ Needle is a dependency injection system for Swift iOS apps. Unlike other iOS DI 
 
 ## [Why use dependency injection?](https://github.com/uber/needle/WHY_DI.md)
 
+The linked document uses a somewhat real iOS example to explain what the dependency injection pattern is, and its benefits.
+
 ## Pre-release usage instructions
 
 Needle is currently in pre-release mode. We (Uber) are migrating all of our apps to Needle, therefore we haven't had the chance to finish the documentation. If you want to explore yourself feel free to use the following crude guide:
