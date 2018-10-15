@@ -4,7 +4,7 @@ This document describes the basics of the dependency injection pattern; what it 
 
 ## A somewhat real example to illustrate
 
-Instead of describing the pattern in abstract terms, let's use a simple iOS example to understand it. If you are interested in an abstract description, Wikipedia has [a great article](https://en.wikipedia.org/wiki/Dependency_injection).
+Instead of describing the pattern in abstract terms, let's use a simple view controller based example to understand it. If you are interested in an abstract description, Wikipedia has [a great article](https://en.wikipedia.org/wiki/Dependency_injection).
 
 Let's say we are developing a photo browsing app, where we have a view controller that displays a set of photos retrieved from the server. In this extremely simple app, we have a `PhotosViewController` that displays the photos, and a `PhotosService` that encapsulates the logic of requesting photos from our server. The `PhotosViewController` implements the view logic while the `PhotosService` contains the HTTP request sending and response parsing logic.  Without using DI, our `PhotosViewController` would instantiate a new instance of the `PhotosService` in its `init` or `viewDidLoad` method. Then it can use the service object to request photos when it sees fit.
 
