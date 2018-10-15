@@ -1,10 +1,10 @@
 # Needle
 
-Needle is a dependency injection system for Swift iOS apps. Unlike other iOS DI frameworks, such as [Cleanse](https://github.com/square/Cleanse), [Swinject](https://github.com/Swinject/Swinject), Needle encourages **hierarchical DI structure and utilizes code generation to ensure compile-time safety**. This allows us to develop our apps and making changes with confidence. **If it compiles, it works.** In this aspect, Needle is more similar to [Android Dagger](https://google.github.io/dagger/).
+Needle is a dependency injection system for Swift. Unlike other DI frameworks, such as [Cleanse](https://github.com/square/Cleanse), [Swinject](https://github.com/Swinject/Swinject), Needle encourages **hierarchical DI structure and utilizes code generation to ensure compile-time safety**. This allows us to develop our apps and making changes with confidence. **If it compiles, it works.** In this aspect, Needle is more similar to [Android Dagger](https://google.github.io/dagger/).
 
 ## [Why use dependency injection?](https://github.com/uber/needle/WHY_DI.md)
 
-The linked document uses a somewhat real iOS example to explain what the dependency injection pattern is, and its benefits.
+The linked document uses a somewhat real example to explain what the dependency injection pattern is, and its benefits.
 
 ## Pre-release usage instructions
 
