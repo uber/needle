@@ -5,8 +5,8 @@ This document will explain the Needle API and what classes one uses to interact 
 1. [Introduction and Terminology](#intro)
 2. [Components](#components)
 3. [Dependencies](#dependencies)
-4. [Using the Component](#using)
-4. [Tree-structure](#tree)
+4. [Using the Component](#using-the-component)
+4. [Tree-structure](#tree-structure)
 
 # Introduction and Terminology
 
@@ -54,9 +54,9 @@ The real power comes from being able to fetch items from ancestor `Components` w
 In order to do this, we specify the dependencies we'd like to fetch from ancestor components in a protocol referred to as a `Dependency Protocol`. At Uber, the dependency protocol associated with a `NameEntryComponent` would be called `NameEntryDependency`. Here is an example (**Note:** We've already used this protocol above in the generic parameter of `Component` class) :
 
 ```swift
-protocol LoginDependency: Dependency {
-	var imageCache: ImageCache { get }
-	var networkService: NetworkService { get }
+protocol LoggedInDependency: Dependency {
+    var imageCache: ImageCache { get }
+    var networkService: NetworkService { get }
 }
 ```
 
@@ -67,9 +67,9 @@ The nice thing is that you're now ready to write and compile code even though yo
 The example only uses items that are created at the current `Scope`. If we also wanted to pass items into our ViewController which we expect to fetch from other Scopes, then the loginViewController would look like:
 
 ```swift
-var loginViewController: UIViewController {
-   return LoginViewController(tokenProvider: tokenProvider, imageCache: dependency.imageCache, button: okButton)
-}
+    var loginViewController: UIViewController {
+        return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent, imageCache: dependency.imageCache)
+    }
 ```
 
 # Tree-Structure
@@ -77,18 +77,19 @@ var loginViewController: UIViewController {
 The final piece of the puzzle is the question of how we let the system know where the items we listed in the dependency protocol actually come from. All of the `Component` subclasses that we've created need to be connected together as a tree. This is done by letting the system know about parent-child relationships between all your Components. You specify these relationships by simply writing a constructor for a child component in the parent. This looks something like this:
 
 ```swift
-class LoginComponent: Component {
-    var tokenProvider: TokenProvider {
-    	return TokenProviderImpl()
+class LoggedInComponent: Component {
+
+    ...
+	
+    var loginViewController: UIViewController {
+        return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent, imageCache: dependency.imageCache)
     }
-    
-	...
+   
+    // MARK: - Children
 	
-	// MARK: - Children
-	
-	var postLoginComponent: PostLoginComponent {
-		return PostLoginComponent(parent: self)
-	}
+    var gameComponent: GameComponent {
+    	return GameComponent(parent: self)
+    }
 }
 ```
 Once this tree structure has been declared in code, the needle command-line tool uses it to decide where the dependencies for a particular Scope come from. The algorithm is simple, for each item that this scope requires, we walk up the chain of parents. The **nearest parent** that is able to provide an item (we match both the name and the type of the variable declared in the dependency protocol), is the one we fetch that property from.
