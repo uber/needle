@@ -45,7 +45,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            _ = try parser.parse(from: [fixturesURL], excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor)
+            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor)
         } catch {
             XCTFail("\(error)")
         }
@@ -67,7 +67,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            let (components, pluginizedComponents, imports) = try parser.parse(from: [fixturesURL], excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor)
+            let (components, pluginizedComponents, imports) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor)
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)

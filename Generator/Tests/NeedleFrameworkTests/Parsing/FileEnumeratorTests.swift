@@ -25,7 +25,7 @@ class FileEnumeratorTests: AbstractParserTests {
         let sourcesListUrl = fixtureUrl(for: "sources_list.txt")
         let enumerator = FileEnumerator()
         var urls = [String]()
-        try! enumerator.enumerate(from: sourcesListUrl) { (url: URL) in
+        try! enumerator.enumerate(from: sourcesListUrl, withSourcesListFormat: nil) { (url: URL) in
             urls.append(url.absoluteString)
         }
 
@@ -77,7 +77,7 @@ class FileEnumeratorTests: AbstractParserTests {
         let sourcesListUrl = fixtureUrl(for: "empty_lines_sources_list.txt")
         let enumerator = FileEnumerator()
         var urls = [String]()
-        try! enumerator.enumerate(from: sourcesListUrl) { (url: URL) in
+        try! enumerator.enumerate(from: sourcesListUrl, withSourcesListFormat: nil) { (url: URL) in
             urls.append(url.absoluteString)
         }
 
@@ -88,7 +88,7 @@ class FileEnumeratorTests: AbstractParserTests {
         let sourcesListUrl = fixtureUrl(for: "doesNotExist.txt")
         let enumerator = FileEnumerator()
         do {
-            try enumerator.enumerate(from: sourcesListUrl) { _ in }
+            try enumerator.enumerate(from: sourcesListUrl, withSourcesListFormat: nil) { _ in }
             XCTFail()
         } catch {
             switch error {
@@ -98,5 +98,45 @@ class FileEnumeratorTests: AbstractParserTests {
                 XCTFail()
             }
         }
+    }
+
+    func test_enumerate_withMinimallyEscapedFormat_verifyUrls() {
+        let sourcesListUrl = fixtureUrl(for: "sources_list_minescaped.txt")
+        let enumerator = FileEnumerator()
+        var urls = [String]()
+        try! enumerator.enumerate(from: sourcesListUrl, withSourcesListFormat: "minescaping") { (url: URL) in
+            urls.append(url.absoluteString)
+        }
+
+        let expectedUrls = [
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/AppStartup/LaunchSteps/NetworkingStep.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/AppStartup/LaunchSteps/RootRIBStep.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/AppStartup/LaunchSteps/StacktraceGenerationStep.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/AppStartup/LaunchSteps/StartupReasonReporterStep.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/AppStartup/LaunchSteps/StorageStep.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/DeliveryRatingsBuilder.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/DeliveryRatingsHistogramContainerView.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/DeliveryRatingsInteractor.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/DeliveryRatingsRouter.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/DeliveryRatingsSummaryViewController.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/DeliveryRatingsViewController.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/Late%20Delivery/DeliveriesRatingLateTripBuilder.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/Late%20Delivery/DeliveriesRatingLateTripInteractor.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/Late%20Delivery/DeliveriesRatingLateTripRouter.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/Late%20Delivery/DeliveriesRatingLateTripViewController.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/Late%20Delivery/Views/DeliveriesRatingLateTripDescriptionCell.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/PluginFeatures/ProfileRatings/ProfileRatings/Rides%20&%20Deliveries/Deliveries/Late%20Delivery/Views/DeliveriesRatingLateTripItemCell.swift",
+            "file:///Users/yiw/Uber/ios/libraries/common/ContactPicker/ContactPicker/View%20Models/ContactViewModel.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/AccountBuilder.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/AccountInteractor.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/AccountRouter.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/AccountViewController.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/Component/AccountComponent+AccountNonCore.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/Component/AccountComponent+VehicleSelection.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/Views/AccountItemCell.swift",
+            "file:///Users/yiw/Uber/ios/apps/carbon/Driver/DriverCore/DriverCore/Account/Views/AccountSignOutCell.swift",
+            ]
+
+        XCTAssertEqual(urls, expectedUrls)
     }
 }
