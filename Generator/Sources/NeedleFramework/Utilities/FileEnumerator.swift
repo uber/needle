@@ -33,8 +33,8 @@ enum SourcesListFileFormat {
     /// string does not match any supported formats.
     static func format(with value: String) -> SourcesListFileFormat? {
         switch value.lowercased() {
-        case "newline": return SourcesListFileFormat.newline
-        case "minescaping": return SourcesListFileFormat.minEscaping
+        case "newline": return .newline
+        case "minescaping": return .minEscaping
         default: return nil
         }
     }
