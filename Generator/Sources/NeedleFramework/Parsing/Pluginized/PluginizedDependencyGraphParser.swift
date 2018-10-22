@@ -27,6 +27,12 @@ class PluginizedDependencyGraphParser {
     /// exclusion list. Parsing sources concurrently using the given executor.
     ///
     /// - parameter rootUrls: The URLs of the directories to scan from.
+    /// - parameter sourcesListFormatValue: The optional `String` value of
+    /// the format used by the sources list file. If `nil` and the the given
+    /// `rootUrl` is a file containing a list of Swift source paths, the
+    /// `SourcesListFileFormat.newline` format is used. If the given `rootUrl`
+    /// is not a file containing a list of Swift source paths, this value is
+    /// ignored.
     /// - parameter exclusionSuffixes: The list of file name suffixes to
     /// check from. If a filename's suffix matches any in the this list,
     /// the file will not be parsed.
@@ -39,22 +45,22 @@ class PluginizedDependencyGraphParser {
     /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrls: [URL], excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizedComponent], [String]) {
-        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrls, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
+    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizedComponent], [String]) {
+        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
         return process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrls: [URL], excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
+    private func enqueueParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<PluginizedDependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         for url in rootUrls {
             do {
-                try enumerator.enumerate(from: url) { (fileUrl: URL) in
+                try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
                     let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
                     let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
                     taskHandleTuples.append((taskHandle, fileUrl))
