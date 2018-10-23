@@ -35,11 +35,19 @@ class ComponentTests: XCTestCase {
         XCTAssertTrue(component.share2 === component.share2)
         XCTAssertFalse(component.share === component.share2)
     }
+
+    func test_shared_optional() {
+        let component = TestComponent(parent: BootstrapComponent())
+        XCTAssert(component.optionalShare === component.expectedOptionalShare)
+    }
 }
 
 class TestComponent: Component<EmptyDependency> {
 
     fileprivate var callCount: Int = 0
+    fileprivate var expectedOptionalShare: ClassProtocol? = {
+        return ClassProtocolImpl()
+    }()
 
     var share: NSObject {
         callCount += 1
@@ -49,4 +57,16 @@ class TestComponent: Component<EmptyDependency> {
     var share2: NSObject {
         return shared { NSObject() }
     }
+
+    fileprivate var optionalShare: ClassProtocol? {
+        return shared { self.expectedOptionalShare }
+    }
+}
+
+private protocol ClassProtocol: AnyObject {
+
+}
+
+private class ClassProtocolImpl: ClassProtocol {
+
 }
