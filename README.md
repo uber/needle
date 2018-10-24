@@ -8,7 +8,7 @@ The linked document uses a somewhat real example to explain what the dependency 
 
 ## Getting started with Needle
 
-Each of the following steps has detailed instructions and explanations in the linked documents.
+Using and integrating with Needle has three steps. Each of the following steps has detailed instructions and explanations in the linked documents.
 
 1. Include `NeedleFoundation` module in your Swift project.
 2. [Integrate Needle's code generator with your Swift project](./GENERATOR.md).

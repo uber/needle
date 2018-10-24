@@ -66,10 +66,16 @@ If multiple sources list files are given to the `generate` command, they all hav
 #### Optional parameters
 
 `--sources-list-format`: The format of the Swift sources list file. If this parameter is not specified, any sources list file is assumed to use the `newline` format. Please see "Sources list file" section above for details.
+
 `--exclude-suffixes`: A list of file name suffixes to ignore for parsing. For example with `--exclude-suffixes Tests Mocks`, the generator will ignore any file whose name, excluding the file extension, ends with either "Test" or "Mocks".
+
 `--exclude-paths`: A list of path strings to ignore for parsing. For example with `--exclude-paths /sample /tests`, the generator will ignore any file whose path contains either "/sample" or "/tests".
+
 `--header-doc`: A path to a text file whose content is used as the header doc for the generated DI code file. In the TicTacToe samples included, we specify `--header-doc ../../copyright_header.txt` to add copyright header to the generated file.
-`--additional-imports`: Any additional import statements to include in the generated DI code. Needle's generator automatically parses and includes all import statements in Swift source files that contain `Component` and `Dependency` constructs, in the generated code. With certain module structure, such as the one used internally at Uber, the top-level module is never directly imported. Therefore using this parameter allows the generated file to correctly import the top-level module. For example, for the Rider app at Uber `import Rider` is specified.
+
+`--additional-imports`: Any additional import statements to include in the generated DI code. Needle's generator automatically parses and includes all import statements in Swift source files that contain `Component` and `Dependency` constructs, in the
+generated code. With certain module structure, such as the one used internally at Uber, the top-level module is never directly imported. Therefore using this parameter allows the generated file to correctly import the top-level module. For example, for the Rider app at Uber `import Rider` is specified.
+
 `--pluginized`: If specified, the generator will parse and generate plugin-based DI graphs. This is generally not useful. Uber's plugin architecture uses this.
 
 ## Integrate generated code
