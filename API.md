@@ -94,22 +94,10 @@ class LoggedInComponent: Component {
 ```
 Once this tree structure has been declared in code, the needle command-line tool uses it to decide where the dependencies for a particular Scope come from. The algorithm is simple, for each item that this scope requires, we walk up the chain of parents. The **nearest parent** that is able to provide an item (we match both the name and the type of the variable declared in the dependency protocol), is the one we fetch that property from.
 
-# Putting it all together
+# Bootstrap Root
 
-At this point, we've covered the key pieces of the Needle API. However, you may still have a lot of questions right now. For example 
+TODO
 
-- "If the ViewController is created in the Component, how does this happen in practice? Does the 'Parent' ViewController have a pointer to the child component and use it to create the child view-controller?" (*btw, the answer is yes*)
-- or "When exactly is the child component instantiated and by whom?".
-
-It's difficult for us to anticipate all of these questions, and this is where perusing the sample **TicTacToe** project provided should help answer most of these "how does it all fit together in practice" line of questions. Look for where the Components and ViewControllers are being instantiated. Also, look for what gets passed into the constructors of various classes.
-
-Bootstrapping all this when your application starts is another big question. There are two important items to be aware of:
-
-- You **must** call `registerProviderFactories` in your `AppDelegate` in order for the Needle runtime to work.
-- Typically, you'll instantiate the `RootComponent` in your application delegate and use it to get a hold of the `rootViewController` to get things started.
-
-Again, look in our sample's `AppDelegate.swift` to see how it's put together.
-
-# Exceptions
+# Flexibility
 
 Only after you have your project working and you feel like you have a good understanding of the Needle API and DI in general, would we suggest you try to break away from the recommendations/conventions above. For instance, we recommend each `ViewController` has a corresponding `Component`, but nothing in the API prevents you from sharing one `Component` subclass between multiple ViewControllers.
