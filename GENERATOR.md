@@ -1,6 +1,6 @@
 # Needle code generator
 
-This document describes what the Needle code generator and how it works at a high-level. More importantly, this document details how to use the generator and how to integrate it with a Xcode project to ensure compile-time safety of DI code.
+This document describes what the Needle code generator is and how it works at a high-level. More importantly, this document details how to use the generator and how to integrate it with a Xcode project to ensure compile-time safety of DI code.
 
 ## Overview
 
@@ -8,9 +8,9 @@ Needle code generator is a command-line utility that generates Swift source code
 
 ## Compile-time safety
 
-One of the biggest advantages of Needle, over other DI frameworks, is its compile-time safety guarantees. If a dependency required by a `Component` cannot be fulfilled by any of its reachable ancestor `Component`s, the generated Swift code will fail to compile. In this case Needle's generator returns an error describing the specific unsatified dependency. For example, `Could not find a provider for (scoreStream: MyScoreStream) which was required by ScoreSheetDependency, along the DI branch of RootComponent->LoggedInComponent->ScoreSheetComponent.`
+One of the biggest advantages of Needle, over other DI frameworks, is its compile-time safety guarantees. If a dependency required by a `Component` cannot be fulfilled by any of its reachable ancestor `Component`s, the generated Swift code will fail to compile. In this case Needle's generator returns an error describing the specific unsatisfied dependency. For example, `Could not find a provider for (scoreStream: MyScoreStream) which was required by ScoreSheetDependency, along the DI branch of RootComponent->LoggedInComponent->ScoreSheetComponent.`
 
-When integrated with Xcode, as described below, Xcode build will fail in case a dependency cannot be fulfilled. This allows a quick feedback and iteration cycle when developing features. Without running the app, developers can debug where the DI graph might be incorrect. With this guarantee, developers can write and modify DI code with confidence. If Xcode build succeeds, the changes to DI code are correct.
+When integrated with Xcode, as described below, Xcode build will fail in case a dependency cannot be fulfilled. This allows a quick feedback and iteration cycle when developing features. Without running the app, developers can debug where the DI graph might be incorrect. With this guarantee, developers can write and modify DI code with confidence. If the Xcode build succeeds, the changes to DI code are correct.
 
 ## High-level algorithm overview
 
@@ -28,7 +28,7 @@ Needle's generator parses the above Swift code and deduces that `LoggedInCompone
 
 Third, for each `Component`'s dependency declared in its `Dependency` protocol, the generator traverses upwards, starting from the said `Component`, to visit all its ancestor `Component`s in search for the dependency object. A match is only found when both the property's variable name **and** its type are matched. Because the generator traverses upwards, the lowest level and therefore the closest match is always used, when viewed with the root of the DI graph at the top. This is the stage if a dependency cannot be fulfilled, the generator exists with an error described in the section above. As fulfillments are found, the generator stores the paths in memory to be used in the next stage.
 
-At the fourth stage, the generator produces a `DependencyProvider` class that conforms to the `Dependency` protocol of a `Component`, to provide the dependencies via the paths found in the previous stage. These generated classes also provide a second-level of compile-time safety. If for whatever reason the previous stage incorrectly produced a path, the generated `DependencyProvider` class will not compile since its conformance to the `Dependency` protocol would have been invalid. For each produced `DependencyProvider`, a piece of provider registration code is also generated for the DI graph path that leads to the `Component` the provider provides for. This is where the method `registerProviderFactories` is from when we discussed Needle's [API](./API.md).
+During the fourth stage, the generator produces a `DependencyProvider` class that conforms to the `Dependency` protocol of a `Component`, to provide the dependencies via the paths found in the previous stage. These generated classes also provide a second-level of compile-time safety. If for whatever reason the previous stage incorrectly produced a path, the generated `DependencyProvider` class will not compile since its conformance to the `Dependency` protocol would have been invalid. For each produced `DependencyProvider`, a piece of provider registration code is also generated for the DI graph path that leads to the `Component` the provider provides for. This is where the method `registerProviderFactories` is from when we discussed Needle's [API](./API.md).
 
 Finally at the fifth and last stage, all the generated `DependencyProvider` classes along with their registration code are serialized to a Swift file. This Swift file should be included in the Xcode project just like any other source file.
 
