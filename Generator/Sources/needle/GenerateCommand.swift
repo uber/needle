@@ -39,7 +39,7 @@ class GenerateCommand: AbstractCommand {
         super.setupArguments(with: parser)
 
         destinationPath = parser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
-        sourceRootPaths = parser.add(positional: "sourceRootPaths", kind: [String].self, strategy: ArrayParsingStrategy.upToNextOption, usage: "Paths to the root folders of Swift source files, or text files containing paths of Swift source files separated by new-line.", completion: .filename)
+        sourceRootPaths = parser.add(positional: "sourceRootPaths", kind: [String].self, strategy: ArrayParsingStrategy.upToNextOption, usage: "Paths to the root folders of Swift source files, or text files containing paths of Swift source files with specified format.", completion: .filename)
         sourcesListFormat = parser.add(option: "--sources-list-format", shortName: "-srclf", kind: String.self, usage: "The format of the Swift sources list file. See SourcesListFileFormat for supported format details", completion: .filename)
         excludeSuffixes = parser.add(option: "--exclude-suffixes", shortName: "-esfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
         excludePaths = parser.add(option: "--exclude-paths", shortName: "-epaths", kind: [String].self, usage: "Paths components to exclude from parsing.")
