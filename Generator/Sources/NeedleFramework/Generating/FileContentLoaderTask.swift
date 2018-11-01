@@ -26,6 +26,7 @@ class FileContentLoaderTask: AbstractTask<String> {
     /// - parameter filePath: The path to the file to be loaded.
     init(filePath: String) {
         self.filePath = filePath
+        super.init(id: TaskIds.fileContentLoaderTask.rawValue)
     }
 
     /// Execute the task and returns the file content.

@@ -26,6 +26,7 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
     /// - parameter ast: The AST of the file to parse.
     init(ast: AST) {
         self.ast = ast
+        super.init(id: TaskIds.astParserTask.rawValue)
     }
 
     /// Execute the task and returns the dependency graph data model.

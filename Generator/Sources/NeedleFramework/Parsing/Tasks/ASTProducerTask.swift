@@ -29,6 +29,7 @@ class ASTProducerTask: AbstractTask<AST> {
     init(sourceUrl: URL, sourceContent: String) {
         self.sourceUrl = sourceUrl
         self.sourceContent = sourceContent
+        super.init(id: TaskIds.astProducerTask.rawValue)
     }
 
     /// Execute the task and return the AST structure data model.
