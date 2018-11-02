@@ -27,6 +27,7 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
     /// - parameter ast: The AST of the file to parse.
     init(ast: AST) {
         self.ast = ast
+        super.init(id: TaskIds.pluginizedASTParserTask.rawValue)
     }
 
     /// Execute the task and returns the dependency graph data model.

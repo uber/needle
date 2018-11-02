@@ -42,6 +42,7 @@ class FileFilterTask: AbstractTask<FilterResult> {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
         self.exclusionPaths = exclusionPaths
+        super.init(id: TaskIds.fileFilterTask.rawValue)
     }
 
     /// Execute the task and returns the filter result indicating if the file

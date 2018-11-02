@@ -41,6 +41,7 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
     /// - parameter providers: The list of providers that we need to fill in
     init(providers: [DependencyProvider]) {
         self.providers = providers
+        super.init(id: TaskIds.dependencyProviderContentTask.rawValue)
     }
 
     /// Execute the task and returns the processed in-memory dependency graph

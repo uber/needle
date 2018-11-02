@@ -45,6 +45,8 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
         self.nonCoreComponentMap = nonCoreComponentMap
         self.pluginExtensionMap = pluginExtensionMap
         self.auxilarySourceParentDependency = auxilarySourceParentDependency
+
+        super.init(id: TaskIds.pluginizedDependencyProviderContentTask.rawValue)
     }
 
     /// Execute the task and returns the processed in-memory dependency graph

@@ -4,10 +4,10 @@
 
 ### Compiling from source:
 
-First fetch the dependencies:
+First resolve the dependencies:
 
 ```
-$ swift package fetch
+$ swift package resolve
 ```
 
 You can then build from the command-line:

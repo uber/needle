@@ -27,6 +27,7 @@ class PluginExtensionSerializerTask : AbstractTask<SerializedProvider> {
     /// plugin extension provider.
     init(component: PluginizedComponent) {
         self.component = component
+        super.init(id: TaskIds.pluginExtensionSerializerTask.rawValue)
     }
 
     /// Execute the task and returns the data model.

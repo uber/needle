@@ -27,6 +27,7 @@ class DependencyProviderDeclarerTask: AbstractTask<[DependencyProvider]> {
     /// provider.
     init(component: Component) {
         self.component = component
+        super.init(id: TaskIds.dependencyProviderDeclarerTask.rawValue)
     }
 
     /// Execute the task and returns the in-memory dependency graph data models.

@@ -26,6 +26,7 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
     /// - parameter providers: The processed dependency provider to serialize.
     init(providers: [ProcessedDependencyProvider]) {
         self.providers = providers
+        super.init(id: TaskIds.dependencyProviderSerializerTask.rawValue)
     }
 
     /// Execute the task and returns the in-memory serialized dependency
