@@ -16,7 +16,7 @@
 
 import Foundation
 
-/// A list of IDs of tasks used in the generator.
+/// A list of IDs of task types used in the generator.
 enum TaskIds: Int {
     /// File filtering task IDs.
     case fileFilterTask = 1
