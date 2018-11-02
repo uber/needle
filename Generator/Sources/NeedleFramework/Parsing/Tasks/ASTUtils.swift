@@ -22,8 +22,41 @@ import SourceKittenFramework
 extension Structure {
 
     /// The substructures of this structure.
-    var substructures: [SourceKitRepresentable] {
-        return (dictionary["key.substructure"]  as? [SourceKitRepresentable]) ?? []
+    var substructures: [Structure] {
+        let substructures = (dictionary["key.substructure"]  as? [SourceKitRepresentable]) ?? []
+
+        let result = substructures.compactMap { (substructure: SourceKitRepresentable) -> Structure? in
+            if let structure = substructure as? [String: SourceKitRepresentable] {
+                return Structure(sourceKitResponse: structure)
+            } else {
+                return nil
+            }
+        }
+        return result
+    }
+
+    var isComponent: Bool {
+        return dictionary.isComponent
+    }
+
+    var isDependencyProtocol: Bool {
+        return dictionary.isDependencyProtocol
+    }
+
+    var name: String {
+        return dictionary.name
+    }
+
+    func dependencyProtocolName(for componentType: String) -> String {
+        return dictionary.dependencyProtocolName(for: componentType)
+    }
+
+    var properties: [Property] {
+        return dictionary.properties
+    }
+
+    var uniqueExpressionCallNames: [String] {
+        return dictionary.uniqueExpressionCallNames
     }
 }
 

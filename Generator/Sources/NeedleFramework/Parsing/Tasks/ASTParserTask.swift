@@ -16,7 +16,6 @@
 
 import Concurrency
 import Foundation
-import SourceKittenFramework
 
 /// A task that parses Swift AST into dependency graph data models.
 class ASTParserTask: AbstractTask<DependencyGraphNode> {
@@ -46,14 +45,12 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
         var dependencies = [Dependency]()
 
         let substructures = ast.structure.substructures
-        for item in substructures {
-            if let substructure = item as? [String: SourceKitRepresentable] {
-                if substructure.isComponent {
-                    let dependencyProtocolName = substructure.dependencyProtocolName(for: "Component")
-                    components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
-                } else if substructure.isDependencyProtocol {
-                    dependencies.append(Dependency(name: substructure.name, properties: substructure.properties))
-                }
+        for substructure in substructures {
+            if substructure.isComponent {
+                let dependencyProtocolName = substructure.dependencyProtocolName(for: "Component")
+                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
+            } else if substructure.isDependencyProtocol {
+                dependencies.append(Dependency(name: substructure.name, properties: substructure.properties))
             }
         }
         return (components, dependencies)
