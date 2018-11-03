@@ -50,19 +50,17 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
         var pluginExtensions = [PluginExtension]()
 
         let substructures = ast.structure.substructures
-        for item in substructures {
-            if let substructure = item as? [String: SourceKitRepresentable] {
-                if substructure.isPluginizedComponent {
-                    let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = substructure.pluginizedGenerics
-                    let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
-                    pluginizedComponents.append(PluginizedASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
-                } else if substructure.isNonCoreComponent {
-                    let dependencyProtocolName = substructure.dependencyProtocolName(for: "NonCoreComponent")
-                    let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
-                    nonCoreComponents.append(component)
-                } else if substructure.isPluginExtension {
-                    pluginExtensions.append(PluginExtension(name: substructure.name, properties: substructure.properties))
-                }
+        for substructure in substructures {
+            if substructure.isPluginizedComponent {
+                let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = substructure.pluginizedGenerics
+                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
+                pluginizedComponents.append(PluginizedASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
+            } else if substructure.isNonCoreComponent {
+                let dependencyProtocolName = substructure.dependencyProtocolName(for: "NonCoreComponent")
+                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
+                nonCoreComponents.append(component)
+            } else if substructure.isPluginExtension {
+                pluginExtensions.append(PluginExtension(name: substructure.name, properties: substructure.properties))
             }
         }
 
@@ -71,6 +69,24 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 }
 
 // MARK: - SourceKit AST Parsing Utilities
+
+extension Structure {
+    var isPluginizedComponent: Bool {
+        return dictionary.isPluginizedComponent
+    }
+
+    var isNonCoreComponent: Bool {
+        return dictionary.isNonCoreComponent
+    }
+
+    var isPluginExtension: Bool {
+        return dictionary.isPluginExtension
+    }
+
+    var pluginizedGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {
+        return dictionary.pluginizedGenerics
+    }
+}
 
 private extension Dictionary where Key: ExpressibleByStringLiteral {
 
