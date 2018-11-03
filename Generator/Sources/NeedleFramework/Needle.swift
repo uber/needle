@@ -42,28 +42,29 @@ public class Needle {
     /// - parameter headerDocPath: The path to custom header doc file to be
     /// included at the top of the generated file.
     /// - parameter destinationPath: The path to export generated code to.
-    /// - parameter shouldTackTaskId: `true` if task IDs should be tracked
-    /// as tasks are executed. `false` otherwise. By tracking the task IDs,
-    /// if waiting on the completion of a task sequence times out, the
-    /// reported error contains the ID of the task that was being executed
-    /// when the timeout occurred. The tracking does incur a minor
-    /// performance cost. This value defaults to `false`.
-    public static func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldTackTaskId: Bool) {
+    /// - parameter shouldCollectParsingInfo: `true` if dependency graph
+    /// parsing information should be collected as tasks are executed. `false`
+    /// otherwise. By collecting execution information, if waiting on the
+    /// completion of a task sequence in the dependency parsing phase times out,
+    /// the reported error contains the relevant information when the timeout
+    /// occurred. The tracking does incur a minor performance cost. This value
+    /// defaults to `false`.
+    public static func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool) {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(path: path)
         }
         #if DEBUG
-            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTackTaskId: shouldTackTaskId)
+            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTackTaskId: shouldCollectParsingInfo)
         #else
-            let executor = ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTackTaskId: shouldTackTaskId)
+            let executor = ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTackTaskId: shouldCollectParsingInfo)
         #endif
         let parser = DependencyGraphParser()
         do {
             let (components, imports) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
             let exporter = DependencyGraphExporter()
             try exporter.export(components, with: imports + additionalImports, to: destinationPath, using: executor, include: headerDocPath)
-        } catch DependencyGraphParserError.timeout(let sourcePath, let taskId) {
-            fatalError("Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId).")
+        } catch DependencyGraphParserError.timeout(let sourcePath, let taskId, let isSourceKitRunning) {
+            fatalError("Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit deamon process status: \(isSourceKitRunning).")
         } catch DependencyGraphExporterError.timeout(let componentName) {
             fatalError("Generating dependency provider for \(componentName) timed out.")
         } catch DependencyGraphExporterError.unableToWriteFile(let outputFile) {
