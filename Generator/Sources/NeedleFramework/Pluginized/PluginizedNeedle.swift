@@ -51,9 +51,9 @@ public class PluginizedNeedle {
             URL(path: path)
         }
         #if DEBUG
-            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive, shouldTackTaskId: shouldCollectParsingInfo)
+            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive, shouldTrackTaskId: shouldCollectParsingInfo)
         #else
-            let executor = ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive, shouldTackTaskId: shouldCollectParsingInfo)
+            let executor = ConcurrentSequenceExecutor(name: "PluginizedNeedle.generate", qos: .userInteractive, shouldTrackTaskId: shouldCollectParsingInfo)
         #endif
         let parser = PluginizedDependencyGraphParser()
         do {

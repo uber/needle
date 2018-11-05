@@ -54,9 +54,9 @@ public class Needle {
             URL(path: path)
         }
         #if DEBUG
-            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTackTaskId: shouldCollectParsingInfo)
+            let executor: SequenceExecutor = ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTrackTaskId: shouldCollectParsingInfo)
         #else
-            let executor = ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTackTaskId: shouldCollectParsingInfo)
+            let executor = ConcurrentSequenceExecutor(name: "Needle.generate", qos: .userInteractive, shouldTrackTaskId: shouldCollectParsingInfo)
         #endif
         let parser = DependencyGraphParser()
         do {
