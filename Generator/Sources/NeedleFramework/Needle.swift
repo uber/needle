@@ -64,7 +64,7 @@ public class Needle {
             let exporter = DependencyGraphExporter()
             try exporter.export(components, with: imports + additionalImports, to: destinationPath, using: executor, include: headerDocPath)
         } catch DependencyGraphParserError.timeout(let sourcePath, let taskId, let isSourceKitRunning) {
-            fatalError("Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit deamon process status: \(isSourceKitRunning).")
+            fatalError("Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit daemon process status: \(isSourceKitRunning).")
         } catch DependencyGraphExporterError.timeout(let componentName) {
             fatalError("Generating dependency provider for \(componentName) timed out.")
         } catch DependencyGraphExporterError.unableToWriteFile(let outputFile) {

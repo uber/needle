@@ -16,12 +16,14 @@
 
 import Foundation
 
-/// Check if the sourcekit deamon process is running by searching through
+/// Check if the sourcekit daemon process is running by searching through
 /// all processes without ttys.
 var isSourceKitRunning: Bool {
     // Select processes without controlling ttys in jobs format.
-    let result = ProcessUtilities.execute(process: "/bin/ps", withArguments: ["-xj"])
-    return result.lowercased().contains("sourcekit")
+    let result = ProcessUtilities.execute(process: "/bin/ps", withArguments: ["-xj"]).lowercased()
+    // These process names are found in library_wrapper_sourcekitd.swift
+    // of SourceKittenFramework.
+    return result.contains("libsourcekitdInProc") || result.contains("sourcekitd.framework")
 }
 
 /// A set of utility functions for running processes.
