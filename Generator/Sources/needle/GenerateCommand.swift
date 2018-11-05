@@ -46,7 +46,7 @@ class GenerateCommand: AbstractCommand {
         scanPlugins = parser.add(option: "--pluginized", shortName: "-p", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
         additionalImports = parser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
         headerDocPath = parser.add(option: "--header-doc", shortName: "-hd", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
-        shouldTackTaskId = parser.add(option: "--track-task", shortName: "-tt", kind: Bool.self, usage: "Whether or not to track task IDs.")
+        shouldCollectParsingInfo = parser.add(option: "--collect-parsing-info", shortName: "-cpi", kind: Bool.self, usage: "Whether or not to collect information for parsing execution timeout errors.")
     }
 
     /// Execute the command.
@@ -64,11 +64,11 @@ class GenerateCommand: AbstractCommand {
                 let additionalImports = arguments.get(self.additionalImports) ?? []
                 let scanPlugins = arguments.get(self.scanPlugins) ?? false
                 let headerDocPath = arguments.get(self.headerDocPath) ?? nil
-                let shouldTackTaskId = arguments.get(self.shouldTackTaskId) ?? false
+                let shouldCollectParsingInfo = arguments.get(self.shouldCollectParsingInfo) ?? false
                 if scanPlugins {
-                    PluginizedNeedle.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldTackTaskId: shouldTackTaskId)
+                    PluginizedNeedle.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo)
                 } else {
-                    Needle.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldTackTaskId: shouldTackTaskId)
+                    Needle.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo)
                 }
             } else {
                 fatalError("Missing source files root directories.")
@@ -88,5 +88,5 @@ class GenerateCommand: AbstractCommand {
     private var additionalImports: OptionArgument<[String]>!
     private var scanPlugins: OptionArgument<Bool>!
     private var headerDocPath: OptionArgument<String>!
-    private var shouldTackTaskId: OptionArgument<Bool>!
+    private var shouldCollectParsingInfo: OptionArgument<Bool>!
 }

@@ -21,9 +21,10 @@ import Foundation
 /// Swift sources.
 enum DependencyGraphParserError: Error {
     /// Parsing a particular source file timed out. The associated values
-    /// are the path of the file being parsed and the ID of the task that
-    /// was being executed when the timeout occurred.
-    case timeout(String, Int)
+    /// are the path of the file being parsed, the ID of the task that
+    /// was being executed when the timeout occurred, and if the sourcekit
+    /// process was running when the timeout occurred.
+    case timeout(String, Int, Bool)
 }
 
 /// The entry utility for the parsing phase. The parser deeply scans a
@@ -119,7 +120,7 @@ class DependencyGraphParser {
                     imports.insert(statement)
                 }
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
-                throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
+                throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId, isSourceKitRunning)
             } catch {
                 fatalError("Unhandled task execution error \(error)")
             }

@@ -116,7 +116,7 @@ class PluginizedDependencyGraphParser {
                     imports.insert(statement)
                 }
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
-                throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
+                throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId, isSourceKitRunning)
             } catch {
                 fatalError("Unhandled task execution error \(error)")
             }
