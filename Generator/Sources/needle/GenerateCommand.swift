@@ -47,6 +47,7 @@ class GenerateCommand: AbstractCommand {
         additionalImports = parser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
         headerDocPath = parser.add(option: "--header-doc", shortName: "-hd", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
         shouldCollectParsingInfo = parser.add(option: "--collect-parsing-info", shortName: "-cpi", kind: Bool.self, usage: "Whether or not to collect information for parsing execution timeout errors.")
+        retryParsingOnTimeoutLimit = parser.add(option: "--retry-parsing-limit", shortName: "-rpl", kind: Int.self, usage: "The maximum number of times parsing Swift source files should be retried in case of timeouts.")
     }
 
     /// Execute the command.
@@ -65,10 +66,14 @@ class GenerateCommand: AbstractCommand {
                 let scanPlugins = arguments.get(self.scanPlugins) ?? false
                 let headerDocPath = arguments.get(self.headerDocPath) ?? nil
                 let shouldCollectParsingInfo = arguments.get(self.shouldCollectParsingInfo) ?? false
-                if scanPlugins {
-                    PluginizedNeedle.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo)
-                } else {
-                    Needle.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo)
+                let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
+                let generator: Generator = scanPlugins ? PluginizedGenerator() : Generator()
+                do {
+                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit)
+                } catch GeneratorError.withMessage(let message) {
+                    fatalError(message)
+                } catch {
+                    fatalError("Unknown error: \(error)")
                 }
             } else {
                 fatalError("Missing source files root directories.")
@@ -89,4 +94,5 @@ class GenerateCommand: AbstractCommand {
     private var scanPlugins: OptionArgument<Bool>!
     private var headerDocPath: OptionArgument<String>!
     private var shouldCollectParsingInfo: OptionArgument<Bool>!
+    private var retryParsingOnTimeoutLimit: OptionArgument<Int>!
 }
