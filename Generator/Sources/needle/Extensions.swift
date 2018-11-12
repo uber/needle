@@ -15,6 +15,15 @@
 //
 
 import Foundation
+import Utility
 
-/// The name of the NeedleFoundation module.
-let needleModuleName = "NeedleFoundation"
+extension ArgumentParser.Result {
+
+    func get(_ arg: OptionArgument<Int>, withDefaultValue defaultValue: Double) -> Double {
+        if let value = get(arg) {
+            return Double(value)
+        } else {
+            return defaultValue
+        }
+    }
+}

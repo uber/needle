@@ -48,19 +48,21 @@ class DependencyGraphExporter {
     /// - parameter to: Path to file where we want the results written to.
     /// - parameter using: The executor to use for concurrent computation of
     /// the dependency provider bodies.
+    /// - parameter timeout: The timeout value, in seconds, to use for
+    /// waiting on exporting tasks.
     /// - parameter headerDocPath: The path to custom header doc file to be
     /// included at the top of the generated file.
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
     /// write fails.
-    func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor, include headerDocPath: String?) throws {
+    func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: Double, include headerDocPath: String?) throws {
         // Enqueue tasks.
         let taskHandleTuples = enqueueExportDependencyProviders(for: components, using: executor)
         let headerDocContentHandle = enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
 
         // Wait for execution to complete.
-        let providers = try awaitSerialization(using: taskHandleTuples)
-        let headerDocContent = try headerDocContentHandle?.await(withTimeout: defaultTimeout) ?? ""
+        let providers = try awaitSerialization(using: taskHandleTuples, upTo: timeout)
+        let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
         let fileContents = OutputSerializer(providers: providers, imports: imports, headerDocContent: headerDocContent).serialize()
         do {
@@ -108,12 +110,12 @@ class DependencyGraphExporter {
         return taskHandleTuples
     }
 
-    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)]) throws -> [SerializedProvider] {
+    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], upTo timeout: Double) throws -> [SerializedProvider] {
         // Wait for all the generation to complete so we can write all the output into a single file
         var providers = [SerializedProvider]()
         for (taskHandle, compnentName) in taskHandleTuples {
             do {
-                let provider = try taskHandle.await(withTimeout: defaultTimeout)
+                let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
             } catch SequenceExecutionError.awaitTimeout  {
                 throw DependencyGraphExporterError.timeout(compnentName)

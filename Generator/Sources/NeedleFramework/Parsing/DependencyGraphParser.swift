@@ -51,13 +51,15 @@ class DependencyGraphParser {
     /// will not be parsed.
     /// - parameter executor: The executor to use for concurrent processing
     /// of files.
+    /// - parameter timeout: The timeout value, in seconds, to use for
+    /// waiting on parsing tasks.
     /// - returns: The list of component data models and sorted import
     /// statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor) throws -> (components: [Component], imports: [String]) {
+    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> (components: [Component], imports: [String]) {
         let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
-        let (components, dependencies, imports) = try collectDataModels(with: urlHandles)
+        let (components, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
         return process(components, dependencies, imports)
     }
 
@@ -107,13 +109,13 @@ class DependencyGraphParser {
         }
     }
 
-    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([ASTComponent], [Dependency], Set<String>) {
+    private func collectDataModels(with urlHandles: [UrlSequenceHandle], waitUpTo timeout: Double) throws -> ([ASTComponent], [Dependency], Set<String>) {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
         var imports = Set<String>()
         for urlHandle in urlHandles {
             do {
-                let node = try urlHandle.handle.await(withTimeout: defaultTimeout)
+                let node = try urlHandle.handle.await(withTimeout: timeout)
                 components.append(contentsOf: node.components)
                 dependencies.append(contentsOf: node.dependencies)
                 for statement in node.imports {

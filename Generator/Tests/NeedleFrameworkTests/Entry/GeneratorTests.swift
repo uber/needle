@@ -25,7 +25,7 @@ class GeneratorTests: XCTestCase {
 
         XCTAssertEqual(generator.generateCallCount, 0)
 
-        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, retryParsingOnTimeoutLimit: 1000)
+        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000)
 
         XCTAssertEqual(generator.generateCallCount, 1)
     }
@@ -39,7 +39,7 @@ class GeneratorTests: XCTestCase {
         XCTAssertEqual(generator.generateCallCount, 0)
 
         do {
-            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, retryParsingOnTimeoutLimit: 3)
+            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 3)
             XCTFail()
         } catch {
             XCTAssertTrue(error is GeneratorError)
@@ -57,7 +57,7 @@ class GeneratorTests: XCTestCase {
         XCTAssertEqual(generator.generateCallCount, 0)
 
         do {
-            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, retryParsingOnTimeoutLimit: 0)
+            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 0)
             XCTFail()
         } catch {
             XCTAssertTrue(error is GeneratorError)
@@ -72,7 +72,7 @@ private class MockGenerator: Generator {
     fileprivate var generateCallCount = 0
     fileprivate var generateClosure: (() throws -> ())? = nil
 
-    override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor) throws {
+    override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: Double, exportingTimeout: Double) throws {
         generateCallCount += 1
         try generateClosure?()
     }

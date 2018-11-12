@@ -45,7 +45,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor)
+            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor, withTimeout: 10)
         } catch {
             XCTFail("\(error)")
         }
@@ -67,7 +67,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            let (components, imports) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor)
+            let (components, imports) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor, withTimeout: 10)
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
