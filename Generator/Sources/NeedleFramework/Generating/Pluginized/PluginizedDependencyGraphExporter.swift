@@ -49,7 +49,7 @@ class PluginizedDependencyGraphExporter {
         let headerDocContentHandle = enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
 
         // Wait for execution to complete.
-        let serializedProviders = try awaitSerialization(using: dependencyProviderHandleTuples + pluginExtensionHandleTuples, upTo: timeout)
+        let serializedProviders = try awaitSerialization(using: dependencyProviderHandleTuples + pluginExtensionHandleTuples, withTimeout: timeout)
         let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
         let fileContents = OutputSerializer(providers: serializedProviders, imports: imports, headerDocContent: headerDocContent).serialize()
@@ -115,7 +115,7 @@ class PluginizedDependencyGraphExporter {
         return taskHandleTuples
     }
 
-    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], upTo timeout: Double) throws -> [SerializedProvider] {
+    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: Double) throws -> [SerializedProvider] {
         var providers = [SerializedProvider]()
         for (taskHandle, compnentName) in taskHandleTuples {
             do {
