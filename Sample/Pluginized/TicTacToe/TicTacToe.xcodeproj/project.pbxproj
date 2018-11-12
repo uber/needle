@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14EB5F5A219983DE00714A03 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14EB5F57219983B300714A03 /* NeedleFoundation.framework */; };
+		14EB5F5B219983DE00714A03 /* NeedleFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 14EB5F57219983B300714A03 /* NeedleFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		191B41ED20C73BE80052C6CE /* ScoreSheet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 191B41E420C73BE80052C6CE /* ScoreSheet.framework */; };
 		191B41F420C73BE80052C6CE /* ScoreSheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 191B41F320C73BE80052C6CE /* ScoreSheetTests.swift */; };
 		191B41F920C73BE80052C6CE /* ScoreSheet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 191B41E420C73BE80052C6CE /* ScoreSheet.framework */; };
@@ -21,7 +23,6 @@
 		4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139095620A0F2BC00A26FF5 /* AppDelegate.swift */; };
 		4139095E20A0F2BD00A26FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4139095D20A0F2BD00A26FF5 /* Assets.xcassets */; };
 		4139096120A0F2BD00A26FF5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */; };
-		4139097220A0F6B100A26FF5 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */; };
 		4139097520A1060300A26FF5 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097420A1060300A26FF5 /* RootViewController.swift */; };
 		4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
 		4139097920A1111900A26FF5 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097820A1111900A26FF5 /* RootComponent.swift */; };
@@ -41,6 +42,41 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		14EB5F56219983B300714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation::Product";
+			remoteInfo = NeedleFoundation;
+		};
+		14EB5F58219983B300714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTests::Product";
+			remoteInfo = NeedleFoundationTests;
+		};
+		14EB5F5C219983DE00714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
+			remoteInfo = NeedleFoundation;
+		};
+		14EB5F5E2199840E00714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
+			remoteInfo = NeedleFoundation;
+		};
+		14EB5F602199841500714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
+			remoteInfo = NeedleFoundation;
+		};
 		191B41EE20C73BE80052C6CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4139094B20A0F2BC00A26FF5 /* Project object */;
@@ -93,6 +129,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				19EF7EC820C855FC005099BA /* TicTacToeIntegrations.framework in Embed Frameworks */,
+				14EB5F5B219983DE00714A03 /* NeedleFoundation.framework in Embed Frameworks */,
 				191B41FA20C73BE80052C6CE /* ScoreSheet.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -101,6 +138,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NeedleFoundation.xcodeproj; path = ../../../Foundation/NeedleFoundation.xcodeproj; sourceTree = "<group>"; };
 		191B41E420C73BE80052C6CE /* ScoreSheet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ScoreSheet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		191B41E720C73BE80052C6CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		191B41EC20C73BE80052C6CE /* ScoreSheetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScoreSheetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -171,8 +209,8 @@
 				191B41F920C73BE80052C6CE /* ScoreSheet.framework in Frameworks */,
 				19EF7EC720C855FC005099BA /* TicTacToeIntegrations.framework in Frameworks */,
 				F7DA7AE420A3BF760037FF17 /* RxCocoa.framework in Frameworks */,
+				14EB5F5A219983DE00714A03 /* NeedleFoundation.framework in Frameworks */,
 				4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */,
-				4139097220A0F6B100A26FF5 /* NeedleFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +224,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14EB5F52219983B300714A03 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				14EB5F57219983B300714A03 /* NeedleFoundation.framework */,
+				14EB5F59219983B300714A03 /* NeedleFoundationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		191B41E520C73BE80052C6CE /* ScoreSheet */ = {
 			isa = PBXGroup;
 			children = (
@@ -219,6 +266,7 @@
 		4139094A20A0F2BC00A26FF5 = {
 			isa = PBXGroup;
 			children = (
+				14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */,
 				4139095520A0F2BC00A26FF5 /* TicTacToeCore */,
 				4139098C20A22B3900A26FF5 /* TicTacToeCoreTests */,
 				191B41E520C73BE80052C6CE /* ScoreSheet */,
@@ -349,6 +397,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				14EB5F612199841500714A03 /* PBXTargetDependency */,
 			);
 			name = ScoreSheet;
 			productName = ScoreSheet;
@@ -386,6 +435,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				14EB5F5F2199840E00714A03 /* PBXTargetDependency */,
 				419C193E20CAFC500035DD51 /* PBXTargetDependency */,
 			);
 			name = TicTacToeIntegrations;
@@ -409,6 +459,7 @@
 			dependencies = (
 				191B41F820C73BE80052C6CE /* PBXTargetDependency */,
 				19EF7EC620C855FC005099BA /* PBXTargetDependency */,
+				14EB5F5D219983DE00714A03 /* PBXTargetDependency */,
 			);
 			name = TicTacToe;
 			productName = TicTacToe;
@@ -474,6 +525,12 @@
 			mainGroup = 4139094A20A0F2BC00A26FF5;
 			productRefGroup = 4139095420A0F2BC00A26FF5 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 14EB5F52219983B300714A03 /* Products */;
+					ProjectRef = 14EB5F51219983B300714A03 /* NeedleFoundation.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4139095220A0F2BC00A26FF5 /* TicTacToe */,
@@ -484,6 +541,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		14EB5F57219983B300714A03 /* NeedleFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = NeedleFoundation.framework;
+			remoteRef = 14EB5F56219983B300714A03 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		14EB5F59219983B300714A03 /* NeedleFoundationTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = NeedleFoundationTests.xctest;
+			remoteRef = 14EB5F58219983B300714A03 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		191B41E220C73BE80052C6CE /* Resources */ = {
@@ -532,20 +606,18 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/../Carthage/Build/iOS/NeedleFoundation.framework",
 				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
 				"$(SRCROOT)/../Carthage/Build/iOS/SnapKit.framework",
 				"$(SRCROOT)/../Carthage/Build/iOS/RxCocoa.framework",
 			);
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NeedleFoundation.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SnapKit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		413909A120A376D800A26FF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -577,7 +649,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/needle/Generator/bin/needle generate TicTacToeCore/NeedleGenerated.swift ../TicTacToe/ --pluginized --exclude-suffixes Tests --header-doc ../../copyright_header.txt";
+			shellScript = "export SOURCEKIT_LOGGING=0 && ../../../Generator/bin/needle generate TicTacToeCore/NeedleGenerated.swift ../TicTacToe/ --pluginized --exclude-suffixes Tests --header-doc ../../copyright_header.txt\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -640,6 +712,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		14EB5F5D219983DE00714A03 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = NeedleFoundation;
+			targetProxy = 14EB5F5C219983DE00714A03 /* PBXContainerItemProxy */;
+		};
+		14EB5F5F2199840E00714A03 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = NeedleFoundation;
+			targetProxy = 14EB5F5E2199840E00714A03 /* PBXContainerItemProxy */;
+		};
+		14EB5F612199841500714A03 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = NeedleFoundation;
+			targetProxy = 14EB5F602199841500714A03 /* PBXContainerItemProxy */;
+		};
 		191B41EF20C73BE80052C6CE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 191B41E320C73BE80052C6CE /* ScoreSheet */;

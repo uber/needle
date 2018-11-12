@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14EB5F73219984CC00714A03 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14EB5F682199848400714A03 /* NeedleFoundation.framework */; };
 		4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139095620A0F2BC00A26FF5 /* AppDelegate.swift */; };
 		4139095E20A0F2BD00A26FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4139095D20A0F2BD00A26FF5 /* Assets.xcassets */; };
 		4139096120A0F2BD00A26FF5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */; };
-		4139097220A0F6B100A26FF5 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */; };
 		4139097520A1060300A26FF5 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097420A1060300A26FF5 /* RootViewController.swift */; };
 		4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
 		4139097920A1111900A26FF5 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097820A1111900A26FF5 /* RootComponent.swift */; };
@@ -31,6 +31,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		14EB5F672199848400714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation::Product";
+			remoteInfo = NeedleFoundation;
+		};
+		14EB5F692199848400714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTests::Product";
+			remoteInfo = NeedleFoundationTests;
+		};
+		14EB5F70219984B500714A03 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
+			remoteInfo = NeedleFoundation;
+		};
 		4139099020A22B3900A26FF5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4139094B20A0F2BC00A26FF5 /* Project object */;
@@ -41,6 +62,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NeedleFoundation.xcodeproj; path = ../../../Foundation/NeedleFoundation.xcodeproj; sourceTree = "<group>"; };
 		4139095320A0F2BC00A26FF5 /* TicTacToe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicTacToe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4139095620A0F2BC00A26FF5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4139095D20A0F2BD00A26FF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -73,10 +95,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14EB5F73219984CC00714A03 /* NeedleFoundation.framework in Frameworks */,
 				4139098420A2211F00A26FF5 /* SnapKit.framework in Frameworks */,
 				F7DA7AE420A3BF760037FF17 /* RxCocoa.framework in Frameworks */,
 				4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */,
-				4139097220A0F6B100A26FF5 /* NeedleFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,9 +112,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14EB5F632199848400714A03 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				14EB5F682199848400714A03 /* NeedleFoundation.framework */,
+				14EB5F6A2199848400714A03 /* NeedleFoundationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4139094A20A0F2BC00A26FF5 = {
 			isa = PBXGroup;
 			children = (
+				14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */,
 				4139095520A0F2BC00A26FF5 /* Sources */,
 				4139098C20A22B3900A26FF5 /* Tests */,
 				4139095420A0F2BC00A26FF5 /* Products */,
@@ -209,6 +241,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				14EB5F71219984B500714A03 /* PBXTargetDependency */,
 			);
 			name = TicTacToe;
 			productName = TicTacToe;
@@ -263,6 +296,12 @@
 			mainGroup = 4139094A20A0F2BC00A26FF5;
 			productRefGroup = 4139095420A0F2BC00A26FF5 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 14EB5F632199848400714A03 /* Products */;
+					ProjectRef = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4139095220A0F2BC00A26FF5 /* TicTacToe */,
@@ -270,6 +309,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		14EB5F682199848400714A03 /* NeedleFoundation.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = NeedleFoundation.framework;
+			remoteRef = 14EB5F672199848400714A03 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		14EB5F6A2199848400714A03 /* NeedleFoundationTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = NeedleFoundationTests.xctest;
+			remoteRef = 14EB5F692199848400714A03 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4139095120A0F2BC00A26FF5 /* Resources */ = {
@@ -297,20 +353,18 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/../Carthage/Build/iOS/NeedleFoundation.framework",
 				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
 				"$(SRCROOT)/../Carthage/Build/iOS/SnapKit.framework",
 				"$(SRCROOT)/../Carthage/Build/iOS/RxCocoa.framework",
 			);
 			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NeedleFoundation.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SnapKit.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		413909A120A376D800A26FF5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -342,7 +396,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/needle/Generator/bin/needle generate Sources/NeedleGenerated.swift Sources/ --header-doc ../../copyright_header.txt";
+			shellScript = "export SOURCEKIT_LOGGING=0 && ../../../Generator/bin/needle generate Sources/NeedleGenerated.swift Sources/ --header-doc ../../copyright_header.txt\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -379,6 +433,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		14EB5F71219984B500714A03 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = NeedleFoundation;
+			targetProxy = 14EB5F70219984B500714A03 /* PBXContainerItemProxy */;
+		};
 		4139099120A22B3900A26FF5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4139095220A0F2BC00A26FF5 /* TicTacToe */;
