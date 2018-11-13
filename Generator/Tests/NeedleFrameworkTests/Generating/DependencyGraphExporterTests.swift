@@ -31,7 +31,7 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
 
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("generated.swift")
         let headerDocPath = fixturesURL.appendingPathComponent("HeaderDoc.txt").path
-        try? exporter.export(components, with: imports, to: outputURL.path, using: executor, include: headerDocPath)
+        try? exporter.export(components, with: imports, to: outputURL.path, using: executor, withTimeout: 10, include: headerDocPath)
         let generated = try? String(contentsOf: outputURL)
         XCTAssertNotNil(generated, "Could not read the generated file")
 

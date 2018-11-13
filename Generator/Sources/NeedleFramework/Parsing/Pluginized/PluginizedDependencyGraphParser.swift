@@ -41,13 +41,15 @@ class PluginizedDependencyGraphParser {
     /// will not be parsed.
     /// - parameter executor: The executor to use for concurrent processing
     /// of files.
+    /// - parameter timeout: The timeout value, in seconds, to use for
+    /// waiting on parsing tasks.
     /// - returns: The list of component data models, pluginized component
     /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor) throws -> ([Component], [PluginizedComponent], [String]) {
+    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> ([Component], [PluginizedComponent], [String]) {
         let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
-        let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles)
+        let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
         return process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
@@ -97,7 +99,7 @@ class PluginizedDependencyGraphParser {
         }
     }
 
-    private func collectDataModels(with urlHandles: [UrlSequenceHandle]) throws -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension], [ASTComponent], [Dependency], Set<String>) {
+    private func collectDataModels(with urlHandles: [UrlSequenceHandle], waitUpTo timeout: Double) throws -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension], [ASTComponent], [Dependency], Set<String>) {
         var pluginizedComponents = [PluginizedASTComponent]()
         var nonCoreComponents = [ASTComponent]()
         var pluginExtensions = [PluginExtension]()
@@ -106,7 +108,7 @@ class PluginizedDependencyGraphParser {
         var imports = Set<String>()
         for urlHandle in urlHandles {
             do {
-                let node = try urlHandle.handle.await(withTimeout: defaultTimeout)
+                let node = try urlHandle.handle.await(withTimeout: timeout)
                 pluginizedComponents.append(contentsOf: node.pluginizedComponents)
                 nonCoreComponents.append(contentsOf: node.nonCoreComponents)
                 pluginExtensions.append(contentsOf: node.pluginExtensions)

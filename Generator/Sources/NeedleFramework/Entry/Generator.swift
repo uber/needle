@@ -57,10 +57,14 @@ public class Generator {
     /// the reported error contains the relevant information when the timeout
     /// occurred. The tracking does incur a minor performance cost. This value
     /// defaults to `false`.
+    /// - parameter parsingTimeout: The timeout value, in seconds, to use for
+    /// waiting on parsing tasks.
+    /// - parameter exportingTimeout: The timeout value, in seconds, to use for
+    /// waiting on exporting tasks.
     /// - parameter retryParsingOnTimeoutLimit: The maximum number of times
     /// parsing Swift source files should be retried in case of timeouts.
     /// - throws: `GeneratorError`.
-    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, retryParsingOnTimeoutLimit: Int) throws {
+    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: Double, exportingTimeout: Double, retryParsingOnTimeoutLimit: Int) throws {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(path: path)
         }
@@ -69,7 +73,7 @@ public class Generator {
         var retryParsingCount = 0
         while true {
             do {
-                try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor)
+                try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor, withParsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout)
                 break
             } catch DependencyGraphParserError.timeout(let sourcePath, let taskId, let isSourceKitRunning) {
                 retryParsingCount += 1
@@ -88,11 +92,11 @@ public class Generator {
 
     // MARK: - Internal
 
-    func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor) throws {
+    func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: Double, exportingTimeout: Double) throws {
         let parser = DependencyGraphParser()
-        let (components, imports) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
+        let (components, imports) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, withTimeout: parsingTimeout)
         let exporter = DependencyGraphExporter()
-        try exporter.export(components, with: imports + additionalImports, to: destinationPath, using: executor, include: headerDocPath)
+        try exporter.export(components, with: imports + additionalImports, to: destinationPath, using: executor, withTimeout: exportingTimeout, include: headerDocPath)
     }
 
     // MARK: - Private
