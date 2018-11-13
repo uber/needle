@@ -71,8 +71,8 @@ class GenerateCommand: AbstractCommand {
                 let scanPlugins = arguments.get(self.scanPlugins) ?? false
                 let headerDocPath = arguments.get(self.headerDocPath) ?? nil
                 let shouldCollectParsingInfo = arguments.get(self.shouldCollectParsingInfo) ?? false
-                let parsingTimeout = arguments.get(self.parsingTimeout, withDefaultValue: defaultTimeout)
-                let exportingTimeout = arguments.get(self.exportingTimeout, withDefaultValue: defaultTimeout)
+                let parsingTimeout = arguments.get(self.parsingTimeout, withDefault: defaultTimeout)
+                let exportingTimeout = arguments.get(self.exportingTimeout, withDefault: defaultTimeout)
                 let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
                 let generator: Generator = scanPlugins ? PluginizedGenerator() : Generator()
                 do {

@@ -19,7 +19,7 @@ import Utility
 
 extension ArgumentParser.Result {
 
-    func get(_ arg: OptionArgument<Int>, withDefaultValue defaultValue: Double) -> Double {
+    func get(_ arg: OptionArgument<Int>, withDefault defaultValue: Double) -> Double {
         if let value = get(arg) {
             return Double(value)
         } else {
