@@ -74,7 +74,8 @@ class GenerateCommand: AbstractCommand {
                 let parsingTimeout = arguments.get(self.parsingTimeout, withDefault: defaultTimeout)
                 let exportingTimeout = arguments.get(self.exportingTimeout, withDefault: defaultTimeout)
                 let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
-                let generator: Generator = scanPlugins ? PluginizedGenerator() : Generator()
+                let sourceKitUtilities = SourceKitUtilitiesImpl(processUtilities: ProcessUtilitiesImpl())
+                let generator: Generator = scanPlugins ? PluginizedGenerator(sourceKitUtilities: sourceKitUtilities) : Generator(sourceKitUtilities: sourceKitUtilities)
                 do {
                     try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit)
                 } catch GeneratorError.withMessage(let message) {

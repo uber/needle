@@ -27,7 +27,12 @@ public enum GeneratorError: Error {
 public class Generator {
 
     /// Initializer.
-    public init() {}
+    ///
+    /// - parameter sourceKitUtilities: The utilities used to perform
+    /// SourceKit operations.
+    public init(sourceKitUtilities: SourceKitUtilities) {
+        self.sourceKitUtilities = sourceKitUtilities
+    }
 
     /// Parse Swift source files by recurively scanning the given directories
     /// or source files included in the given source list files, excluding
@@ -68,6 +73,7 @@ public class Generator {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(path: path)
         }
+        
         let executor = createExecutor(withName: "Needle.generate", shouldTrackTaskId: shouldCollectParsingInfo)
 
         var retryParsingCount = 0
@@ -75,10 +81,21 @@ public class Generator {
             do {
                 try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor, withParsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout)
                 break
-            } catch DependencyGraphParserError.timeout(let sourcePath, let taskId, let isSourceKitRunning) {
+            } catch DependencyGraphParserError.timeout(let sourcePath, let taskId) {
                 retryParsingCount += 1
+                let message = "Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit daemon process status: \(sourceKitUtilities.isSourceKitRunning)."
                 if retryParsingCount >= retryParsingOnTimeoutLimit {
-                    throw GeneratorError.withMessage("Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit daemon process status: \(isSourceKitRunning).")
+                    throw GeneratorError.withMessage(message)
+                } else {
+                    warning(message)
+                    warning("Attempt to retry parsing by killing SourceKitService.")
+                    // Killing the SourceKit process instead of issuing a SourceKit shutdown command, since the SourceKit
+                    // process is likely hung at this point.
+                    let didKill = sourceKitUtilities.killProcess()
+                    if !didKill {
+                        warning("Failed to kill SourceKitService.")
+                    }
+                    sourceKitUtilities.initialize()
                 }
             } catch DependencyGraphExporterError.timeout(let componentName) {
                 throw GeneratorError.withMessage("Generating dependency provider for \(componentName) timed out.")
@@ -100,6 +117,8 @@ public class Generator {
     }
 
     // MARK: - Private
+    
+    private let sourceKitUtilities: SourceKitUtilities
 
     private func createExecutor(withName name: String, shouldTrackTaskId: Bool) -> SequenceExecutor {
         #if DEBUG
