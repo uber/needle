@@ -7,7 +7,7 @@
 First resolve the dependencies:
 
 ```
-$ swift package resolve
+$ swift package update
 ```
 
 You can then build from the command-line:
