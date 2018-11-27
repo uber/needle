@@ -2,3 +2,7 @@
 /.build
 /Packages
 /Carthage
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
