@@ -1,0 +1,3 @@
+github "Mantle/Mantle" "1.5.8"
+github "ReactiveCocoa/ReactiveCocoa" "v2.5"
+github "octokit/octokit.objc" "0.7.8"
