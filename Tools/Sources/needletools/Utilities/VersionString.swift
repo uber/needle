@@ -37,7 +37,7 @@ extension String {
                 var string = String(substring)
                 string.removeAll { (c: Character) -> Bool in
                     let cSet = CharacterSet(charactersIn: String(c))
-                    return !CharacterSet.letters.intersection(cSet).isEmpty
+                    return CharacterSet.decimalDigits.intersection(cSet).isEmpty
                 }
                 return string
             }
