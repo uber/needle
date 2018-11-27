@@ -18,7 +18,7 @@ import Foundation
 
 /// A set of paths used within the Needle project.
 class Paths {
-    
+
     /// The Needle reposiroty's root directory path.
     static let repoRoot: String = {
         let result = ProcessUtilities.execute(processName: "git", withArguments: ["rev-parse", "--show-toplevel"])
@@ -28,22 +28,22 @@ class Paths {
         let path = result.output.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         return path.hasSuffix("/") ? path : path + "/"
     }()
-    
+
     /// The generator directory path.
     static let generator: String = {
         return repoRoot + "Generator/"
     }()
-    
+
     /// The generator binary's path.
     static let generatorBin: String = {
         return generator + "bin/"
     }()
-    
+
     /// The generator archieve's path.
     static let generatorArchieve: String = {
         return generator + "./.build/release/needle"
     }()
-    
+
     /// The generator binary's path.
     static let generatorBinary: String = {
         return generatorBin + "needle"
