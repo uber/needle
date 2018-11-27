@@ -67,7 +67,7 @@ class DeployCommand: AbstractCommand {
     private func assertDeploy(with versionString: String) -> Bool {
         print("Are you sure you want to deploy a new version of Needle with the version \(versionString)? [y/n]")
         let response = readLine(strippingNewline: true)?.lowercased() ?? ""
-        return response == "y"
+        return response.first == "y"
     }
     
     private func archieveGenerator() {
