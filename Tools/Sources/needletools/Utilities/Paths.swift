@@ -48,4 +48,10 @@ class Paths {
     static let generatorBinary: String = {
         return generatorBin + "needle"
     }()
+
+
+    /// The file that contains the version number.
+    static let versionFile: String = {
+        return generator + "Sources/needle/Version.swift"
+    }()
 }
