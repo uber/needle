@@ -51,7 +51,7 @@ class DeployCommand: AbstractCommand {
                     checkoutMaster()
                     archieveGenerator()
                     pushBinary(with: newVersion)
-                    createTag(with: versionString)
+                    createTag(with: newVersion)
                     updateVersion(to: newVersion)
                     print("Finished deploying \(newVersion.stringValue)")
                 }
@@ -128,13 +128,14 @@ class DeployCommand: AbstractCommand {
             try newVersion.setAsCurrent()
         } catch {
             fatalError("Failed to update version file to \(newVersion.stringValue)")
+        }
     }
 
-    private func createTag(with versionString: String) {
-        print("Creating and pushing a new tag \(versionString)...")
+    private func createTag(with version: Version) {
+        print("Creating and pushing a new tag \(version.stringValue)...")
 
         do {
-            try GitUtilities.createTag(withVersion: versionString)
+            try GitUtilities.createTag(withVersion: version.stringValue)
         } catch {
             fatalError("\(error)")
         }
