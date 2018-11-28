@@ -63,12 +63,15 @@ class Version: Comparable {
 
     /// Set this version as the current version.
     ///
+    /// - parameter isDryRun: `true` if this execution is a dry run.
     /// - throws: `VersionErrors.invalidFormat` if the version file parsing
     /// failed.
-    func setAsCurrent() throws {
+    func setAsCurrent(isDryRun: Bool) throws {
         if let versionFileContent = Version.versionFileContent, let versionFileVersionStartIndex = Version.versionFileVersionStartIndex, let versionFileVersionEndIndex = Version.versionFileVersionEndIndex {
             let newContent = versionFileContent.replacingCharacters(in: versionFileVersionStartIndex..<versionFileVersionEndIndex, with: "\(major).\(minor).\(patch)")
-            try newContent.write(toFile: Paths.versionFile, atomically: true, encoding: .utf8)
+            if !isDryRun {
+                try newContent.write(toFile: Paths.versionFile, atomically: true, encoding: .utf8)
+            }
         } else {
             throw VersionErrors.invalidFormat
         }
@@ -94,10 +97,10 @@ class Version: Comparable {
         if lhs.major > rhs.major {
             return false
         }
-        if lhs.minor > rhs.minor {
+        if lhs.major == rhs.major && lhs.minor > rhs.minor {
             return false
         }
-        if lhs.patch > rhs.patch {
+        if lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch > rhs.patch {
             return false
         }
         return lhs != rhs

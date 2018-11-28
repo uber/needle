@@ -19,11 +19,11 @@ import Foundation
 /// Swift compiler utilities.
 class CompilerUtilities {
 
-    /// Compile and archive the DI code generator.
+    /// Build the DI code generator.
     ///
-    /// - returns: `true` is archiving succeeded. `false` otherwise.
+    /// - returns: `true` if building succeeded. `false` otherwise.
     /// If failed, the result contains the error message.
-    static func archiveGenerator() -> (status: Bool, error: String) {
+    static func buildGenerator() -> (status: Bool, error: String) {
         let arguments = [
             "build",
             "--package-path", Paths.generator,

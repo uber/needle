@@ -39,11 +39,26 @@ class AbstractCommand: Command {
     /// Setup the arguments using the given parser.
     ///
     /// - parameter parser: The argument parser to use.
-    func setupArguments(with parser: ArgumentParser) {}
+    func setupArguments(with parser: ArgumentParser) {
+        isDryRunArg = parser.add(option: "--dry-run", shortName: "-dr", kind: Bool.self, usage: "If this is a dry run.")
+    }
 
     /// Execute the command.
     ///
     /// - parameter arguments: The command line arguments to execute the
     /// command with.
     func execute(with arguments: ArgumentParser.Result) {}
+
+    /// If this command execution is a dry run.
+    ///
+    /// - parameter arguments: The command line arguments to execute the
+    /// command with.
+    /// - returns: `true` if this execution is a dry run.
+    func isDryRun(with arguments: ArgumentParser.Result) -> Bool {
+        return arguments.get(isDryRunArg) ?? false
+    }
+
+    // MARK: - Private
+
+    private var isDryRunArg: OptionArgument<Bool>!
 }

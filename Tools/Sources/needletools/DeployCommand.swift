@@ -48,11 +48,12 @@ class DeployCommand: AbstractCommand {
             do {
                 let newVersion = try Version(string: versionNumberString)
                 if assert(newVersion: newVersion) {
-                    checkoutMaster()
-                    archieveGenerator()
-                    pushBinary(with: newVersion)
-                    createTag(with: newVersion)
-                    updateVersion(to: newVersion)
+                    let isDryRun = self.isDryRun(with: arguments)
+                    checkoutMaster(isDryRun: isDryRun)
+                    archieveGenerator(isDryRun: isDryRun)
+                    pushBinary(with: newVersion, isDryRun: isDryRun)
+                    createTag(with: newVersion, isDryRun: isDryRun)
+                    updateVersion(to: newVersion, isDryRun: isDryRun)
                     print("Finished deploying \(newVersion.stringValue)")
                 }
             } catch {
@@ -87,57 +88,58 @@ class DeployCommand: AbstractCommand {
         return shouldContinue
     }
 
-    private func checkoutMaster() {
+    private func checkoutMaster(isDryRun: Bool) {
         print("Switching to `master` branch...")
 
         do  {
-            try GitUtilities.checkoutMaster()
+            try GitUtilities.checkoutMaster(isDryRun: isDryRun)
         } catch {
             fatalError("\(error)")
         }
     }
 
-    private func archieveGenerator() {
+    private func archieveGenerator(isDryRun: Bool) {
         print("Archiving generator binary...")
 
-        let archieveResult = CompilerUtilities.archiveGenerator()
-        if !archieveResult.status {
-            fatalError(archieveResult.error)
+        let buildResult = CompilerUtilities.buildGenerator()
+        if !buildResult.status {
+            fatalError(buildResult.error)
         }
 
-        let moveResult = ProcessUtilities.move(Paths.generatorArchieve, to: Paths.generatorBin)
+        let moveResult = ProcessUtilities.move(Paths.generatorArchieve, to: Paths.generatorBin, isDryRun: isDryRun)
         if !moveResult.status {
             fatalError(moveResult.error)
         }
     }
 
-    private func pushBinary(with version: Version) {
+    private func pushBinary(with version: Version, isDryRun: Bool) {
         print("Pushing new binary (\(Paths.generatorBinary)) to Git remote master branch...")
 
         do {
-            try GitUtilities.push(file: Paths.generatorBinary, withVersion: version.stringValue)
+            try GitUtilities.push(file: Paths.generatorBinary, withMessage: "\(version.stringValue) generator binary", isDryRun: isDryRun)
         } catch {
             fatalError("\(error)")
         }
     }
 
-    private func updateVersion(to newVersion: Version) {
-        print("Recording new version number \(newVersion.stringValue)...")
-
-        do {
-            try newVersion.setAsCurrent()
-        } catch {
-            fatalError("Failed to update version file to \(newVersion.stringValue)")
-        }
-    }
-
-    private func createTag(with version: Version) {
+    private func createTag(with version: Version, isDryRun: Bool) {
         print("Creating and pushing a new tag \(version.stringValue)...")
 
         do {
-            try GitUtilities.createTag(withVersion: version.stringValue)
+            try GitUtilities.createTag(withVersion: version.stringValue, isDryRun: isDryRun)
         } catch {
             fatalError("\(error)")
+        }
+    }
+
+    private func updateVersion(to newVersion: Version, isDryRun: Bool) {
+        print("Recording new version number \(newVersion.stringValue)...")
+
+        do {
+            try newVersion.setAsCurrent(isDryRun: isDryRun)
+            try GitUtilities.push(file: Paths.versionFile, withMessage: "Update version", isDryRun: isDryRun)
+        } catch {
+            fatalError("Failed to update version file to \(newVersion.stringValue)")
         }
     }
 }
