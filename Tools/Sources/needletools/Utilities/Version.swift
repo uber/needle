@@ -44,21 +44,21 @@ class Version: Comparable {
     /// digits.
     init(string: String) throws {
         let parts = string.split(separator: ".")
-            .map { (substring: Substring) -> String in
+            .map { (substring: Substring) -> Int in
                 var string = String(substring)
                 string.removeAll { (c: Character) -> Bool in
                     let cSet = CharacterSet(charactersIn: String(c))
                     return CharacterSet.decimalDigits.intersection(cSet).isEmpty
                 }
-                return string
+                return Int(string)!
         }
         if parts.count != 3 {
             throw VersionErrors.invalidFormat
         }
 
-        major = Int(parts[0])!
-        minor = Int(parts[1])!
-        patch = Int(parts[2])!
+        major = parts[0]
+        minor = parts[1]
+        patch = parts[2]
     }
 
     /// Set this version as the current version.
@@ -91,16 +91,16 @@ class Version: Comparable {
     // MARK: - Comparable
 
     static func < (lhs: Version, rhs: Version) -> Bool {
-        if lhs.major < rhs.major {
-            return true
+        if lhs.major > rhs.major {
+            return false
         }
-        if lhs.minor < rhs.minor {
-            return true
+        if lhs.minor > rhs.minor {
+            return false
         }
-        if lhs.patch < rhs.patch {
-            return true
+        if lhs.patch > rhs.patch {
+            return false
         }
-        return false
+        return lhs != rhs
     }
 
     static func == (lhs: Version, rhs: Version) -> Bool {
