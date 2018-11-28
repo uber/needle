@@ -46,11 +46,12 @@ class DeployCommand: AbstractCommand {
 
         if let versionNumberString = arguments.get(self.versionNumberString) {
             do {
-                let versionString = try versionNumberString.formattedVersionString()
-                if assertDeploy(with: versionString) {
+                let newVersion = try Version(string: versionNumberString)
+                if assert(newVersion: newVersion) {
                     archieveGenerator()
-                    pushBinary(with: versionString)
-                    print("Finished deploying \(versionString)")
+                    pushBinary(with: newVersion)
+                    updateVersion(to: newVersion)
+                    print("Finished deploying \(newVersion.stringValue)")
                 }
             } catch {
                 fatalError("Invalid version string format. The version must be in the format of `major.minor.patch`, where all components are numbers only.")
@@ -64,10 +65,23 @@ class DeployCommand: AbstractCommand {
     
     private var versionNumberString: PositionalArgument<String>!
     
-    private func assertDeploy(with versionString: String) -> Bool {
-        print("Are you sure you want to deploy a new version of Needle with the version \(versionString)? [y/n]")
+    private func assert(newVersion: Version) -> Bool {
+        print("Are you sure you want to deploy a new version of Needle with the version \(newVersion.stringValue)? [y/n]")
         let response = readLine(strippingNewline: true)?.lowercased() ?? ""
-        return response.first == "y"
+        let shouldContinue = response.first == "y"
+
+        if shouldContinue {
+            do  {
+                let currentVersion = try Version.currentVersion()
+                if newVersion <= currentVersion {
+                    fatalError("New version must be greater than current version \(currentVersion.stringValue)")
+                }
+            } catch {
+                fatalError("Failed to parse current version.")
+            }
+        }
+
+        return shouldContinue
     }
     
     private func archieveGenerator() {
@@ -84,13 +98,23 @@ class DeployCommand: AbstractCommand {
         }
     }
     
-    private func pushBinary(with versionString: String) {
+    private func pushBinary(with version: Version) {
         print("Pushing new binary (\(Paths.generatorBinary)) to Git remote master branch...")
 
         do {
-            try GitUtilities.push(file: Paths.generatorBinary, withVersion: versionString)
+            try GitUtilities.push(file: Paths.generatorBinary, withVersion: version.stringValue)
         } catch {
             fatalError("\(error)")
+        }
+    }
+
+    private func updateVersion(to newVersion: Version) {
+        print("Recording new version number \(newVersion.stringValue)...")
+
+        do {
+            try newVersion.setAsCurrent()
+        } catch {
+            fatalError("Failed to update version file to \(newVersion.stringValue)")
         }
     }
 }
