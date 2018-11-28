@@ -20,7 +20,7 @@ import Utility
 /// The command to deploy a new version of Needle to all distribution
 /// channels.
 class DeployCommand: AbstractCommand {
-    
+
     /// Initializer.
     ///
     /// - parameter parser: The argument parser to use.
@@ -36,7 +36,7 @@ class DeployCommand: AbstractCommand {
 
         versionNumberString = parser.add(positional: "versionNumberString", kind: String.self, usage: "The version number string.")
     }
-    
+
     /// Execute the command.
     ///
     /// - parameter arguments: The command line arguments to execute the
@@ -48,8 +48,10 @@ class DeployCommand: AbstractCommand {
             do {
                 let newVersion = try Version(string: versionNumberString)
                 if assert(newVersion: newVersion) {
+                    checkoutMaster()
                     archieveGenerator()
                     pushBinary(with: newVersion)
+                    createTag(with: newVersion)
                     updateVersion(to: newVersion)
                     print("Finished deploying \(newVersion.stringValue)")
                 }
@@ -60,13 +62,14 @@ class DeployCommand: AbstractCommand {
             fatalError("Version number string must be specified.")
         }
     }
-    
+
     // MARK: - Private
-    
+
     private var versionNumberString: PositionalArgument<String>!
-    
+
     private func assert(newVersion: Version) -> Bool {
         print("Are you sure you want to deploy a new version of Needle with the version \(newVersion.stringValue)? [y/n]")
+
         let response = readLine(strippingNewline: true)?.lowercased() ?? ""
         let shouldContinue = response.first == "y"
 
@@ -83,7 +86,17 @@ class DeployCommand: AbstractCommand {
 
         return shouldContinue
     }
-    
+
+    private func checkoutMaster() {
+        print("Switching to `master` branch...")
+
+        do  {
+            try GitUtilities.checkoutMaster()
+        } catch {
+            fatalError("\(error)")
+        }
+    }
+
     private func archieveGenerator() {
         print("Archiving generator binary...")
 
@@ -97,7 +110,7 @@ class DeployCommand: AbstractCommand {
             fatalError(moveResult.error)
         }
     }
-    
+
     private func pushBinary(with version: Version) {
         print("Pushing new binary (\(Paths.generatorBinary)) to Git remote master branch...")
 
@@ -115,6 +128,16 @@ class DeployCommand: AbstractCommand {
             try newVersion.setAsCurrent()
         } catch {
             fatalError("Failed to update version file to \(newVersion.stringValue)")
+        }
+    }
+
+    private func createTag(with version: Version) {
+        print("Creating and pushing a new tag \(version.stringValue)...")
+
+        do {
+            try GitUtilities.createTag(withVersion: version.stringValue)
+        } catch {
+            fatalError("\(error)")
         }
     }
 }

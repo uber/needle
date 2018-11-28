@@ -29,7 +29,7 @@ class ProcessUtilities {
         let result = execute(path: "/bin/", processName: "mv", withArguments: [source, destination])
         return (result.error.isEmpty, result.error)
     }
-    
+
     /// Execute the given process with given arguments and return the
     /// standard output as a `String`.
     ///
@@ -42,7 +42,7 @@ class ProcessUtilities {
     static func execute(path: String = "/usr/bin/", processName: String, withArguments arguments: [String] = []) -> (output: String, error: String) {
         let justName = processName.starts(with: "/") ? String(processName.suffix(from: processName.index(processName.startIndex, offsetBy: 1))) : processName
         let justPath = path.hasSuffix("/") ? path : path + "/"
-        
+
         let task = Process()
         task.launchPath = justPath + justName
         task.arguments = arguments
@@ -51,14 +51,14 @@ class ProcessUtilities {
         let errorPipe = Pipe()
         task.standardError = errorPipe
         task.launch()
-        
+
         let output = read(pipe: outputPipe) ?? ""
         let error = read(pipe: errorPipe) ?? ""
         return (output, error)
     }
-    
+
     // MARK: - Private
-    
+
     static private func read(pipe: Pipe) -> String? {
         let handle = pipe.fileHandleForReading
         let data = handle.readDataToEndOfFile()
