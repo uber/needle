@@ -67,7 +67,7 @@ class GitUtilities {
             }
         }
 
-        _ = ProcessUtilities.execute(processName: "git", withArguments: ["push", "origin", "--tags"].compose(isDryRun: isDryRun))
+        _ = ProcessUtilities.execute(processName: "git", withArguments: ["push", "origin", "\(version)"].compose(isDryRun: isDryRun))
     }
 
     /// Push a single file change to remote master branch.
