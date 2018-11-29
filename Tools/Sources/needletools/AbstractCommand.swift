@@ -15,7 +15,6 @@
 //
 
 import Foundation
-import NeedleToolsFramework
 import Utility
 
 /// The base class of all commands that perform a set of logic common

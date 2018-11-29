@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import Utility
 
 /// Errors that can occur when parsing the properly formatted version
 /// `String`.
@@ -24,41 +25,11 @@ enum VersionErrors: Error {
     case invalidFormat
 }
 
-/// The utilities of package version.
-class Version: Comparable {
+extension Version {
 
-    /// The major part.
-    let major: Int
-    /// The minor part.
-    let minor: Int
-    /// The patch part.
-    let patch: Int
     /// The string representation of this version.
-    lazy var stringValue = "v\(major).\(minor).\(patch)"
-
-    /// Initializer.
-    ///
-    /// - parameter string: The `String` to parse a version from.
-    /// - throws: `VersionErrors.invalidFormat` if the given `String` value
-    /// is not in the format for `major.minor.patch` where all parts are
-    /// digits.
-    init(string: String) throws {
-        let parts = string.split(separator: ".")
-            .map { (substring: Substring) -> Int in
-                var string = String(substring)
-                string.removeAll { (c: Character) -> Bool in
-                    let cSet = CharacterSet(charactersIn: String(c))
-                    return CharacterSet.decimalDigits.intersection(cSet).isEmpty
-                }
-                return Int(string)!
-        }
-        if parts.count != 3 {
-            throw VersionErrors.invalidFormat
-        }
-
-        major = parts[0]
-        minor = parts[1]
-        patch = parts[2]
+    var stringValue: String {
+        return "v\(major).\(minor).\(patch)"
     }
 
     /// Set this version as the current version.
@@ -77,6 +48,20 @@ class Version: Comparable {
         }
     }
 
+    /// Create a version from the given `String`.
+    ///
+    /// - parameter string: The `String` to parse a version from.
+    /// - throws: `VersionErrors.invalidFormat` if the given `String` value
+    /// is not in the format for `major.minor.patch` where all parts are
+    /// digits.
+    static func from(string: String) throws -> Version {
+        if let version = Version(string: string) {
+            return version
+        } else {
+            throw VersionErrors.invalidFormat
+        }
+    }
+
     /// Retrieve the current version of the release.
     ///
     /// - returns: The current `Version`.
@@ -85,39 +70,20 @@ class Version: Comparable {
     static func currentVersion() throws -> Version {
         if let versionFileContent = versionFileContent, let versionFileVersionStartIndex = versionFileVersionStartIndex, let versionFileVersionEndIndex = versionFileVersionEndIndex {
             let stringValue = String(versionFileContent[versionFileVersionStartIndex..<versionFileVersionEndIndex])
-            return try Version(string: stringValue)
+            return try Version.from(string: stringValue)
         } else {
             throw VersionErrors.invalidFormat
         }
     }
 
-    // MARK: - Comparable
-
-    static func < (lhs: Version, rhs: Version) -> Bool {
-        if lhs.major > rhs.major {
-            return false
-        }
-        if lhs.major == rhs.major && lhs.minor > rhs.minor {
-            return false
-        }
-        if lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch > rhs.patch {
-            return false
-        }
-        return lhs != rhs
-    }
-
-    static func == (lhs: Version, rhs: Version) -> Bool {
-        return lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch
-    }
-
     // MARK: - Private
 
-    static var versionFileContent: String? = {
+    private static var versionFileContent: String? = {
         let versionFileUrl = URL(fileURLWithPath: Paths.versionFile)
         return try? String(contentsOf: versionFileUrl)
     }()
 
-    static var versionFileVersionStartIndex: String.Index? = {
+    private static var versionFileVersionStartIndex: String.Index? = {
         let startExpression = try? NSRegularExpression(pattern: "let *version *= *\"", options: [])
         if let startExpression = startExpression, let versionFileContent = versionFileContent {
             let startMatch = startExpression.firstMatch(in: versionFileContent, options: [], range: NSRange(location:0, length:versionFileContent.count))
@@ -129,7 +95,7 @@ class Version: Comparable {
         return nil
     }()
 
-    static var versionFileVersionEndIndex: String.Index? = {
+    private static var versionFileVersionEndIndex: String.Index? = {
         let wholeExpression = try? NSRegularExpression(pattern: "let *version *= *\"[\\d.]+", options: [])
         if let wholeExpression = wholeExpression, let versionFileContent = versionFileContent {
             let wholeMatch = wholeExpression.firstMatch(in: versionFileContent, options: [], range: NSRange(location:0, length:versionFileContent.count))

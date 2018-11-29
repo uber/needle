@@ -46,7 +46,7 @@ class DeployCommand: AbstractCommand {
 
         if let versionNumberString = arguments.get(self.versionNumberString) {
             do {
-                let newVersion = try Version(string: versionNumberString)
+                let newVersion = try Version.from(string: versionNumberString)
                 if assert(newVersion: newVersion) {
                     let isDryRun = self.isDryRun(with: arguments)
                     checkoutMaster(isDryRun: isDryRun)

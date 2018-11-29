@@ -97,10 +97,8 @@ class GitUtilities {
 private extension Array where Element == String {
 
     func compose(isDryRun: Bool) -> [String] {
-        var arguments = self
-        if isDryRun {
-            arguments.append("--dry-run")
-        }
-        return arguments
+        // Cannot use `return self + (isDryRun ? ["--dry-run"] : [])`, since
+        // it crashes the Swift compiler with release configuration.
+        return isDryRun ? self + ["--dry-run"] : self
     }
 }
