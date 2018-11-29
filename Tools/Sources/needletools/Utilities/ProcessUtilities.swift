@@ -23,11 +23,21 @@ class ProcessUtilities {
     ///
     /// - parameter source: The path to the source to move.
     /// - parameter destination: The destionation path to move to.
+    /// - parameter isDryRun: `true` if this execution is a dry run.
     /// - returns: `true` if succeeded. `false` otherwise. If failed,
     /// the error message is included in the result.
-    static func move(_ source: String, to destination: String) -> (status: Bool, error: String) {
-        let result = execute(path: "/bin/", processName: "mv", withArguments: [source, destination])
-        return (result.error.isEmpty, result.error)
+    static func move(_ source: String, to destination: String, isDryRun: Bool) -> (status: Bool, error: String) {
+        if isDryRun {
+            let sourceResult = execute(path: "/bin/", processName: "ls", withArguments: [source])
+            if !sourceResult.error.isEmpty {
+                return (false, sourceResult.error)
+            }
+            let destinationResult = execute(path: "/bin/", processName: "ls", withArguments: [destination])
+            return (destinationResult.error.isEmpty, destinationResult.error)
+        } else {
+            let result = execute(path: "/bin/", processName: "mv", withArguments: [source, destination])
+            return (result.error.isEmpty, result.error)
+        }
     }
 
     /// Execute the given process with given arguments and return the

@@ -41,8 +41,12 @@ class GitUtilities {
 
     /// Switch the master branch.
     ///
+    /// - parameter isDryRun: `true` if this execution is a dry run.
     /// - throws: `GitErrors.generic` if checkout failed.
-    static func checkoutMaster() throws {
+    static func checkoutMaster(isDryRun: Bool) throws {
+        guard !isDryRun else {
+            return
+        }
         let result = ProcessUtilities.execute(processName: "git", withArguments: ["checkout", "master"])
         if result.error != "Switched to branch \'master\'\n" && result.error != "Already on \'master\'\n" {
             throw GitErrors.generic(result.error)
@@ -51,35 +55,50 @@ class GitUtilities {
 
     /// Create a new tag with given version and push it to remote.
     ///
+    /// - parameter version: The `String` version number to use for
+    /// the tag.
+    /// - parameter isDryRun: `true` if this execution is a dry run.
     /// - throws: If creating the tag failed.
-    static func createTag(withVersion version: String) throws {
-        let result = ProcessUtilities.execute(processName: "git", withArguments: ["tag", version])
-        if result.error.contains("fatal") {
-            throw GitErrors.generic(result.error)
+    static func createTag(withVersion version: String, isDryRun: Bool) throws {
+        if !isDryRun {
+            let result = ProcessUtilities.execute(processName: "git", withArguments: ["tag", version])
+            if result.error.contains("fatal") {
+                throw GitErrors.generic(result.error)
+            }
         }
 
-        _ = ProcessUtilities.execute(processName: "git", withArguments: ["push", "origin", "--tags"])
+        _ = ProcessUtilities.execute(processName: "git", withArguments: ["push", "origin", "--tags"].compose(isDryRun: isDryRun))
     }
 
     /// Push a single file change to remote master branch.
     ///
     /// - parameter file: The single file to be committed and pushed.
-    /// - parameter version: The version number of the release.
+    /// - parameter message: The commit message.
+    /// - parameter isDryRun: `true` if this execution is a dry run.
     /// - throws: If pushing the file failed.
-    static func push(file: String, withVersion version: String) throws {
+    static func push(file: String, withMessage message: String, isDryRun: Bool) throws {
         var result = ProcessUtilities.execute(processName: "git", withArguments: ["add", file])
         if !result.error.isEmpty {
             throw GitErrors.generic(result.error)
         }
 
-        result = ProcessUtilities.execute(processName: "git", withArguments: ["commit", "-m", "'\(version)'"])
+        result = ProcessUtilities.execute(processName: "git", withArguments: ["commit", "-m", "'\(message)'"].compose(isDryRun: isDryRun))
         if !result.error.isEmpty {
             throw GitErrors.generic(result.error)
         }
 
-        result = ProcessUtilities.execute(processName: "git", withArguments: ["push", "origin", "master"])
+        result = ProcessUtilities.execute(processName: "git", withArguments: ["push", "origin", "master"].compose(isDryRun: isDryRun))
         if !result.output.isEmpty {
             throw GitErrors.generic(result.error)
         }
+    }
+}
+
+private extension Array where Element == String {
+
+    func compose(isDryRun: Bool) -> [String] {
+        // Cannot use `return self + (isDryRun ? ["--dry-run"] : [])`, since
+        // it crashes the Swift compiler with release configuration.
+        return isDryRun ? self + ["--dry-run"] : self
     }
 }
