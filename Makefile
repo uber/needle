@@ -11,7 +11,7 @@ clean:
 build:
 	cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUILD_FLAGS)
 
-install: clean build
+install: uninstall clean build
 	install -d "$(BINARY_FOLDER)"
 	install "$(shell cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/needle" "$(BINARY_FOLDER)"
 
