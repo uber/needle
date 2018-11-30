@@ -1,7 +1,7 @@
 BINARY_FOLDER_PREFIX?=/usr/local
 BINARY_FOLDER=$(BINARY_FOLDER_PREFIX)/bin/
 GENERATOR_FOLDER=Generator
-SWIFT_BUILD_FLAGS=-c release -Xswiftc -static-stdlib
+SWIFT_BUILD_FLAGS=--disable-sandbox -c release -Xswiftc -static-stdlib
 
 .PHONY: clean build install uninstall
 
