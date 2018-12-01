@@ -29,9 +29,9 @@ publish: checkout_master archive_generator
 	@:
 	git add $(GENERATOR_FOLDER)/bin/needle
 	git add $(GENERATOR_VERSION_FILE_PATH)
-	git commit -m "Update generator binary and version file"
-	git push origin master
 	$(eval NEW_VERSION_TAG := v$(NEW_VERSION))
+	git commit -m "Update generator binary and version file for $(NEW_VERSION_TAG)"
+	git push origin master
 	git tag $(NEW_VERSION_TAG)
 	git push origin $(NEW_VERSION_TAG)
 	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(shell git rev-parse $(NEW_VERSION_TAG)) needle
