@@ -43,16 +43,17 @@ class GenerateCommand: AbstractCommand {
 
         destinationPath = parser.add(positional: "destinationPath", kind: String.self, usage: "Path to the destination file of generated Swift DI code.", completion: .filename)
         sourceRootPaths = parser.add(positional: "sourceRootPaths", kind: [String].self, strategy: ArrayParsingStrategy.upToNextOption, usage: "Paths to the root folders of Swift source files, or text files containing paths of Swift source files with specified format.", completion: .filename)
-        sourcesListFormat = parser.add(option: "--sources-list-format", shortName: "-srclf", kind: String.self, usage: "The format of the Swift sources list file. See SourcesListFileFormat for supported format details", completion: .filename)
-        excludeSuffixes = parser.add(option: "--exclude-suffixes", shortName: "-esfx", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
-        excludePaths = parser.add(option: "--exclude-paths", shortName: "-epaths", kind: [String].self, usage: "Paths components to exclude from parsing.")
-        scanPlugins = parser.add(option: "--pluginized", shortName: "-p", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
-        additionalImports = parser.add(option: "--additional-imports", shortName: "-ai", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
-        headerDocPath = parser.add(option: "--header-doc", shortName: "-hd", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
+        sourcesListFormat = parser.add(option: "--sources-list-format", kind: String.self, usage: "The format of the Swift sources list file. See SourcesListFileFormat for supported format details", completion: .filename)
+        excludeSuffixes = parser.add(option: "--exclude-suffixes", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
+        excludePaths = parser.add(option: "--exclude-paths", kind: [String].self, usage: "Paths components to exclude from parsing.")
+        scanPlugins = parser.add(option: "--pluginized", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
+        additionalImports = parser.add(option: "--additional-imports", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
+        headerDocPath = parser.add(option: "--header-doc", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
         shouldCollectParsingInfo = parser.add(option: "--collect-parsing-info", shortName: "-cpi", kind: Bool.self, usage: "Whether or not to collect information for parsing execution timeout errors.")
-        parsingTimeout = parser.add(option: "--parsing-timeout", shortName: "-pto", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on parsing tasks.")
-        exportingTimeout = parser.add(option: "--exporting-timeout", shortName: "-eto", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on exporting tasks.")
-        retryParsingOnTimeoutLimit = parser.add(option: "--retry-parsing-limit", shortName: "-rpl", kind: Int.self, usage: "The maximum number of times parsing Swift source files should be retried in case of timeouts.")
+        parsingTimeout = parser.add(option: "--parsing-timeout", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on parsing tasks.")
+        exportingTimeout = parser.add(option: "--exporting-timeout", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on exporting tasks.")
+        retryParsingOnTimeoutLimit = parser.add(option: "--retry-parsing-limit", kind: Int.self, usage: "The maximum number of times parsing Swift source files should be retried in case of timeouts.")
+        concurrencyLimit = parser.add(option: "--concurrency-limit", kind: Int.self, usage: "The maximum number of tasks to execute concurrently.")
     }
 
     /// Execute the command.
@@ -74,10 +75,12 @@ class GenerateCommand: AbstractCommand {
                 let parsingTimeout = arguments.get(self.parsingTimeout, withDefault: defaultTimeout)
                 let exportingTimeout = arguments.get(self.exportingTimeout, withDefault: defaultTimeout)
                 let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
+                let concurrencyLimit = arguments.get(self.concurrencyLimit) ?? nil
+
                 let sourceKitUtilities = SourceKitUtilitiesImpl(processUtilities: ProcessUtilitiesImpl())
                 let generator: Generator = scanPlugins ? PluginizedGenerator(sourceKitUtilities: sourceKitUtilities) : Generator(sourceKitUtilities: sourceKitUtilities)
                 do {
-                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit)
+                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
                 } catch GeneratorError.withMessage(let message) {
                     fatalError(message)
                 } catch {
@@ -105,4 +108,5 @@ class GenerateCommand: AbstractCommand {
     private var parsingTimeout: OptionArgument<Int>!
     private var exportingTimeout: OptionArgument<Int>!
     private var retryParsingOnTimeoutLimit: OptionArgument<Int>!
+    private var concurrencyLimit: OptionArgument<Int>!
 }

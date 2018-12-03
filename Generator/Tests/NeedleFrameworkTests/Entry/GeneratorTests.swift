@@ -26,7 +26,7 @@ class GeneratorTests: XCTestCase {
 
         XCTAssertEqual(generator.generateCallCount, 0)
 
-        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000)
+        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000, concurrencyLimit: nil)
 
         XCTAssertEqual(generator.generateCallCount, 1)
     }
@@ -51,7 +51,7 @@ class GeneratorTests: XCTestCase {
         XCTAssertEqual(sourceKitUtilities.killProcessCallCount, 0)
 
         do {
-            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 3)
+            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 3, concurrencyLimit: nil)
             XCTFail()
         } catch {
             XCTAssertTrue(error is GeneratorError)
@@ -80,7 +80,7 @@ class GeneratorTests: XCTestCase {
         XCTAssertEqual(generator.generateCallCount, 0)
 
         do {
-            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 0)
+            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 0, concurrencyLimit: nil)
             XCTFail()
         } catch {
             XCTAssertTrue(error is GeneratorError)

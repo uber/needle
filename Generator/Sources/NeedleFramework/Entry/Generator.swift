@@ -68,13 +68,15 @@ public class Generator {
     /// waiting on exporting tasks.
     /// - parameter retryParsingOnTimeoutLimit: The maximum number of times
     /// parsing Swift source files should be retried in case of timeouts.
+    /// - parameter concurrencyLimit: The maximum number of tasks to execute
+    /// concurrently. `nil` if no limit is set.
     /// - throws: `GeneratorError`.
-    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: Double, exportingTimeout: Double, retryParsingOnTimeoutLimit: Int) throws {
+    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: Double, exportingTimeout: Double, retryParsingOnTimeoutLimit: Int, concurrencyLimit: Int?) throws {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(path: path)
         }
         
-        let executor = createExecutor(withName: "Needle.generate", shouldTrackTaskId: shouldCollectParsingInfo)
+        let executor = createExecutor(withName: "Needle.generate", shouldTrackTaskId: shouldCollectParsingInfo, concurrencyLimit: concurrencyLimit)
 
         var retryParsingCount = 0
         while true {
@@ -120,11 +122,11 @@ public class Generator {
     
     private let sourceKitUtilities: SourceKitUtilities
 
-    private func createExecutor(withName name: String, shouldTrackTaskId: Bool) -> SequenceExecutor {
+    private func createExecutor(withName name: String, shouldTrackTaskId: Bool, concurrencyLimit: Int?) -> SequenceExecutor {
         #if DEBUG
             return ProcessInfo().environment["SINGLE_THREADED"] != nil ? SerialSequenceExecutor() : ConcurrentSequenceExecutor(name: name, qos: .userInteractive, shouldTrackTaskId: shouldTrackTaskId)
         #else
-            return ConcurrentSequenceExecutor(name: name, qos: .userInteractive, shouldTrackTaskId: shouldTrackTaskId)
+            return ConcurrentSequenceExecutor(name: name, qos: .userInteractive, shouldTrackTaskId: shouldTrackTaskId, maxConcurrentTasks: concurrencyLimit)
         #endif
     }
 }
