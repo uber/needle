@@ -17,7 +17,7 @@
 import XCTest
 @testable import NeedleFramework
 
-class CycleValidatorTests: XCTestCase {
+class AncestorCycleValidatorTests: XCTestCase {
 
     func test_process_hasCycle() {
         let a = ASTComponent(name: "A", dependencyProtocolName: "blah", properties: [], expressionCallTypeNames: [])
@@ -29,7 +29,7 @@ class CycleValidatorTests: XCTestCase {
         b.parents = [c, d]
         c.parents = [b]
 
-        let processor = CycleValidator(components: [a, b, c, d, m])
+        let processor = AncestorCycleValidator(components: [a, b, c, d, m])
         do {
             try processor.process()
             XCTFail()
@@ -47,7 +47,7 @@ class CycleValidatorTests: XCTestCase {
         b.parents = [c, d]
         c.parents = [m]
 
-        let processor = CycleValidator(components: [a, b, c, d, m])
+        let processor = AncestorCycleValidator(components: [a, b, c, d, m])
         do {
             try processor.process()
         } catch {
