@@ -134,7 +134,7 @@ class DependencyGraphParser {
             DuplicateValidator(components: components, dependencies: dependencies),
             ParentLinker(components: components),
             DependencyLinker(components: components, dependencies: dependencies),
-            CycleValidator(components: components)
+            AncestorCycleValidator(components: components)
         ]
         for processor in processors {
             do {

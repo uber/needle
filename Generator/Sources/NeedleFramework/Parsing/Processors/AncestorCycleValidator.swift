@@ -17,8 +17,8 @@
 import Foundation
 
 /// A post processing utility class that checks if there are any cycles
-/// in the dependency graph.
-class CycleValidator: Processor {
+/// in the dependency graph's ancestor paths.
+class AncestorCycleValidator: Processor {
 
     /// Initializer.
     ///
@@ -32,7 +32,7 @@ class CycleValidator: Processor {
     /// - throws: `ProcessingError` if any cycles are detected.
     func process() throws {
         for component in components {
-            if let cyclePath = findCycle(component, visitedComponents: []) {
+            if let cyclePath = findAncestorCycle(component, visitedComponents: []) {
                 let pathNames = cyclePath.map { (element: ASTComponent) -> String in
                     element.name
                 } + [component.name]
@@ -45,7 +45,7 @@ class CycleValidator: Processor {
 
     private let components: [ASTComponent]
 
-    private func findCycle(_ component: ASTComponent, visitedComponents: [ASTComponent]) -> [ASTComponent]? {
+    private func findAncestorCycle(_ component: ASTComponent, visitedComponents: [ASTComponent]) -> [ASTComponent]? {
         // Use DFS to detect cycles faster. Given the limited number of
         // elements, using a more complex algorithm like Tarjan's seems
         // unnecessary.
@@ -56,7 +56,7 @@ class CycleValidator: Processor {
             return visitedComponents
         } else {
             for ancestor in component.parents {
-                if let cyclePath = findCycle(ancestor, visitedComponents: visitedComponents + [component]) {
+                if let cyclePath = findAncestorCycle(ancestor, visitedComponents: visitedComponents + [component]) {
                     return cyclePath
                 }
             }

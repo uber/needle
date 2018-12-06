@@ -18,7 +18,7 @@ import Foundation
 
 /// A data model representing a dependency property that is either provided by a
 /// `Component` or required by one.
-struct Property: Equatable {
+struct Property: Hashable {
     /// The variable name.
     let name: String
     /// The property type `String`.
