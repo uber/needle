@@ -72,25 +72,6 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 
 extension Structure {
     var isPluginizedComponent: Bool {
-        return dictionary.isPluginizedComponent
-    }
-
-    var isNonCoreComponent: Bool {
-        return dictionary.isNonCoreComponent
-    }
-
-    var isPluginExtension: Bool {
-        return dictionary.isPluginExtension
-    }
-
-    var pluginizedGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {
-        return dictionary.pluginizedGenerics
-    }
-}
-
-private extension Dictionary where Key: ExpressibleByStringLiteral {
-
-    var isPluginizedComponent: Bool {
         let regex = Regex("^(\(needleModuleName).)?PluginizedComponent *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil

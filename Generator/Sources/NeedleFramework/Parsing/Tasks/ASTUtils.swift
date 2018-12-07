@@ -35,34 +35,6 @@ extension Structure {
         return result
     }
 
-    var isComponent: Bool {
-        return dictionary.isComponent
-    }
-
-    var isDependencyProtocol: Bool {
-        return dictionary.isDependencyProtocol
-    }
-
-    var name: String {
-        return dictionary.name
-    }
-
-    func dependencyProtocolName(for componentType: String) -> String {
-        return dictionary.dependencyProtocolName(for: componentType)
-    }
-
-    var properties: [Property] {
-        return dictionary.properties
-    }
-
-    var uniqueExpressionCallNames: [String] {
-        return dictionary.uniqueExpressionCallNames
-    }
-}
-
-/// Extension of `Dictionary` to provide easy access to AST properties.
-extension Dictionary where Key: ExpressibleByStringLiteral {
-
     /// Check if this structure represents a `Component` subclass.
     var isComponent: Bool {
         let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
@@ -78,8 +50,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// The type name of this structure.
     var name: String {
-        // A type must have a name.
-        return self["key.name"] as! String
+        return dictionary.name
     }
 
     /// Parse the dependency protocol's type name for the component with
@@ -121,7 +92,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// The properties of this structure.
     var properties: [Property] {
-        return filterSubstructure(by: "source.lang.swift.decl.var.instance")
+        return dictionary.filterSubstructure(by: "source.lang.swift.decl.var.instance")
             .map { (item: [String: SourceKitRepresentable]) -> (Property, [String: SourceKitRepresentable]) in
                 if let variableName = item["key.name"] as? String {
                     if let typeName = item["key.typename"] as? String {
@@ -144,12 +115,12 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
                     }
                 }
                 fatalError("Property missing accessibility identifier.")
-            }
+        }
     }
 
     /// The unique set of expression call types in this structure.
     var uniqueExpressionCallNames: [String] {
-        let allNames = filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
+        let allNames = dictionary.filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
             .map { (item: [String: SourceKitRepresentable]) -> String in
                 item.name
             }
@@ -159,15 +130,25 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     /// The name of the inherited types of this structure.
     var inheritedTypes: [String] {
-        let types = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
+        let types = dictionary["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return types.compactMap { (item: SourceKitRepresentable) -> String? in
             (item as? [String: String])?["key.name"]
         }
     }
+}
+
+/// Extension of `Dictionary` to provide easy access to AST properties.
+extension Dictionary where Key: ExpressibleByStringLiteral {
+
+    /// The type name of this structure.
+    var name: String {
+        // A type must have a name.
+        return self["key.name"] as! String
+    }
 
     // MARK: - Private
 
-    private func filterSubstructure(by kind: String, recursively: Bool = false) -> [[String: SourceKitRepresentable]] {
+    fileprivate func filterSubstructure(by kind: String, recursively: Bool = false) -> [[String: SourceKitRepresentable]] {
         let subsctructures = self["key.substructure"] as? [[String: SourceKitRepresentable]] ?? []
         let currentLevelSubstructures = subsctructures.compactMap { (itemMap: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? in
             if itemMap["key.kind"] as? String == kind {
