@@ -70,7 +70,7 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 
 // MARK: - SourceKit AST Parsing Utilities
 
-extension Structure {
+private extension Structure {
     var isPluginizedComponent: Bool {
         let regex = Regex("^(\(needleModuleName).)?PluginizedComponent *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in

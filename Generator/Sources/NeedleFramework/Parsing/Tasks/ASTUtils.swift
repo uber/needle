@@ -50,7 +50,8 @@ extension Structure {
 
     /// The type name of this structure.
     var name: String {
-        return dictionary.name
+        /// The type name of this structure.
+        return dictionary["key.name"] as! String
     }
 
     /// Parse the dependency protocol's type name for the component with
@@ -92,10 +93,10 @@ extension Structure {
 
     /// The properties of this structure.
     var properties: [Property] {
-        return dictionary.filterSubstructure(by: "source.lang.swift.decl.var.instance")
-            .map { (item: [String: SourceKitRepresentable]) -> (Property, [String: SourceKitRepresentable]) in
-                if let variableName = item["key.name"] as? String {
-                    if let typeName = item["key.typename"] as? String {
+        return filterSubstructure(by: "source.lang.swift.decl.var.instance")
+            .map { (item: Structure) -> (Property, Structure) in
+                if let variableName = item.dictionary["key.name"] as? String {
+                    if let typeName = item.dictionary["key.typename"] as? String {
                         return (Property(name: variableName, type: typeName), item)
                     } else {
                         fatalError("Missing explicit type annotation for property \"\(variableName)\" in \(self.name)")
@@ -103,8 +104,8 @@ extension Structure {
                 }
                 fatalError("Property \(item) does not have a name.")
             }
-            .compactMap { (propertyItem: (property: Property, item: [String: SourceKitRepresentable])) -> Property? in
-                if let accessibility = propertyItem.item["key.accessibility"] as? String {
+            .compactMap { (propertyItem: (property: Property, item: Structure)) -> Property? in
+                if let accessibility = propertyItem.item.dictionary["key.accessibility"] as? String {
                     let isPrivate = (accessibility == "source.lang.swift.accessibility.private")
                     let isFilePrivate = (accessibility == "source.lang.swift.accessibility.fileprivate")
                     if isPrivate || isFilePrivate {
@@ -120,9 +121,9 @@ extension Structure {
 
     /// The unique set of expression call types in this structure.
     var uniqueExpressionCallNames: [String] {
-        let allNames = dictionary.filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
-            .map { (item: [String: SourceKitRepresentable]) -> String in
-                item.name
+        let allNames = filterSubstructure(by: "source.lang.swift.expr.call", recursively: true)
+            .map { (substructure: Structure) -> String in
+                substructure.name
             }
         let set = Set<String>(allNames)
         return Array(set).sorted()
@@ -135,29 +136,17 @@ extension Structure {
             (item as? [String: String])?["key.name"]
         }
     }
-}
 
-/// Extension of `Dictionary` to provide easy access to AST properties.
-extension Dictionary where Key: ExpressibleByStringLiteral {
-
-    /// The type name of this structure.
-    var name: String {
-        // A type must have a name.
-        return self["key.name"] as! String
-    }
-
-    // MARK: - Private
-
-    fileprivate func filterSubstructure(by kind: String, recursively: Bool = false) -> [[String: SourceKitRepresentable]] {
-        let subsctructures = self["key.substructure"] as? [[String: SourceKitRepresentable]] ?? []
-        let currentLevelSubstructures = subsctructures.compactMap { (itemMap: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? in
-            if itemMap["key.kind"] as? String == kind {
-                return itemMap
+    private func filterSubstructure(by kind: String, recursively: Bool = false) -> [Structure] {
+        let substructures = self.substructures
+        let currentLevelSubstructures = substructures.compactMap { (substructure: Structure) -> Structure? in
+            if substructure.dictionary["key.kind"] as? String == kind {
+                return substructure
             }
             return nil
         }
-        if recursively && !subsctructures.isEmpty {
-            return currentLevelSubstructures + subsctructures.flatMap { (substructure: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] in
+        if recursively && !substructures.isEmpty {
+            return currentLevelSubstructures + substructures.flatMap { (substructure: Structure) -> [Structure] in
                 substructure.filterSubstructure(by: kind, recursively: recursively)
             }
         } else {
