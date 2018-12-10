@@ -38,7 +38,7 @@ class UrlFilter: FileFilter {
     ///
     /// - returns: `true` if the URL should be parsed. `false` otherwise.
     func filter() -> Bool {
-        if !isUrlSwiftSource || urlHasExcludedSuffix || urlHasExcludedPath {
+        if !url.isSwiftSource || urlHasExcludedSuffix || urlHasExcludedPath {
             return false
         }
         return true
@@ -49,10 +49,6 @@ class UrlFilter: FileFilter {
     private let url: URL
     private let exclusionSuffixes: [String]
     private let exclusionPaths: [String]
-
-    private var isUrlSwiftSource: Bool {
-        return url.pathExtension == "swift"
-    }
 
     private var urlHasExcludedSuffix: Bool {
         let name = url.deletingPathExtension().lastPathComponent
