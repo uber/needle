@@ -14,7 +14,7 @@ This document will explain the Needle API and what classes one uses to interact 
 The primary reasons to use Dependency Injection (DI, from this point forward) is explained in a separate [doc](./WHY_DI.md). Please read that before proceeding if you're unsure whether your application can benefit from DI.
 
 ## Key pieces
-At the very core, there's really just one class to master -- the `Component`. Needle can be used for any application which has a hierarchical structure. For the purposes of this tutorial, we'll assume we're talking about a classic `MVC` app (We use `UIViewController` in the text, but everything should easily apply to an `NSViewController` or equivalent concept from an architecture different from `MVC`). 
+At the very core, there's really just one class to master -- the `Component`. Needle can be used for any application which has a hierarchical structure. For the purposes of this tutorial, we'll assume we're talking about a classic `MVC` app (We use `UIViewController` in the text, but everything should easily apply to an `NSViewController` or equivalent concept from an architecture different from `MVC`).
 
 So, for every `UIViewController` in your app, you would typically have a `Component` subclass to go with it. For a class called `WelcomeViewController` the component is typically named `WelcomeComponent`.
 
@@ -49,7 +49,7 @@ You could also use the component to construct the `ViewController` that is paire
 
 If components ended here, they would simply be a container to hold all the "dependencies" of each `ViewController`. This, in itself, is useful as it allows for better unit-tests for your `ViewController` class. Of course, `UIViewController` subclasses are often not easily unit-testable, which is why our RIB architecture (and many others) splits out the "business logic" into a separate class which is easily unit testable.
 
-The real power comes from being able to fetch items from ancestor `Components` within the same tree as well. 
+The real power comes from being able to fetch items from ancestor `Components` within the same tree as well.
 
 In order to do this, we specify the dependencies we'd like to fetch from ancestor components in a protocol referred to as a `Dependency Protocol`. At Uber, the dependency protocol associated with a `NameEntryComponent` would be called `NameEntryDependency`. Here is an example (**Note:** We've already used this protocol above in the generic parameter of `Component` class) :
 
@@ -80,13 +80,13 @@ The final piece of the puzzle is the question of how we let the system know wher
 class LoggedInComponent: Component {
 
     ...
-	
+
     var loginViewController: UIViewController {
         return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent, imageCache: dependency.imageCache)
     }
-   
+
     // MARK: - Children
-	
+
     var gameComponent: GameComponent {
     	return GameComponent(parent: self)
     }
@@ -96,7 +96,27 @@ Once this tree structure has been declared in code, the needle command-line tool
 
 # Bootstrap Root
 
-TODO
+Since the root of a DI tree does not have a parent component, we bootstrap the root scope using the special `BootstrapComponent` class
+```swift
+let rootComponent = RootComponent(parent: BootstrapComponent())
+
+class RootComponent: Component<EmptyDependency> {
+    /// Root component code...
+}
+```
+Notice also the `RootComponent` uses the special `EmptyDependency` protocol to signal that it has no dependencies from its ancestors. In this case, root does not have any ancestors to speak of anyways.
+
+The `EmptyDependency` protocol can also be used for any other scopes that do not pull down dependencies from their ancestor DI branches.
+
+For better encapsulation, we can also define a custom initializer to a Root scope
+```swift
+class RootComponent: Component<EmptyDependency> {
+    init() {
+        super.init(parent: BootstrapComponent())
+    }
+}
+```
+This allows component subclass to encapsulate the special `BootstrapComponent` usage. In application code, we can simply invoke `RootComponent()` to instantiate the root scope.
 
 # Flexibility
 
