@@ -70,10 +70,14 @@ class FileEnumerator {
     /// - throws: `FileEnumerationError` if any errors occurred.
     func enumerate(from rootUrl: URL, withSourcesListFormat sourcesListFormatValue: String?, handler: (URL) -> Void) throws {
         if rootUrl.isFileURL {
-            let format = try sourcesListFileFormat(from: sourcesListFormatValue, withDefault: .newline)
-            let fileUrls = try self.fileUrls(fromSourcesList: rootUrl, with: format)
-            for fileUrl in fileUrls {
-                handler(fileUrl)
+            if rootUrl.isSwiftSource {
+                handler(rootUrl)
+            } else {
+                let format = try sourcesListFileFormat(from: sourcesListFormatValue, withDefault: .newline)
+                let fileUrls = try self.fileUrls(fromSourcesList: rootUrl, with: format)
+                for fileUrl in fileUrls {
+                    handler(fileUrl)
+                }
             }
         } else {
             let enumerator = try newFileEnumerator(for: rootUrl)

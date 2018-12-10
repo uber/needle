@@ -72,4 +72,13 @@ extension URL {
             self.init(fileURLWithPath: path)
         }
     }
+
+    /// Check if this URL represents a Swift source file by examining its
+    /// file extenson.
+    ///
+    /// - returns: `true` if the URL is a Swift source file. `false`
+    /// otherwise.
+    var isSwiftSource: Bool {
+        return pathExtension == "swift"
+    }
 }
