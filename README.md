@@ -14,22 +14,22 @@ The linked document uses a somewhat real example to explain what the dependency 
 
 Needle has two parts, the `NeedleFoundation` framework and the executable code generator. Both parts need to be integrated with your Swift project in order to use Needle as your DI system.
 
-### Install `NeedleFoundation` framework via [Carthage](https://github.com/Carthage/Carthage)
+#### Install `NeedleFoundation` framework via [Carthage](https://github.com/Carthage/Carthage)
 
 Please follow the standard [Carthage installation process](https://github.com/Carthage/Carthage#quick-start) to integrate the `NeedleFoundation` framework with your Swift project.
 ```
 github "https://github.com/uber/needle.git" ~> VERSION_OF_NEEDLE
 ```
 
-### Install `NeedleFoundation` framework via [CocoaPods](https://github.com/CocoaPods/CocoaPods)
+#### Install `NeedleFoundation` framework via [CocoaPods](https://github.com/CocoaPods/CocoaPods)
 
 Coming soon!
 
-### Install code generator via [Carthage](https://github.com/Carthage/Carthage)
+#### Install code generator via [Carthage](https://github.com/Carthage/Carthage)
 
 If Carthage is used to integrate  the `NeedleFoundation` framework, then a copy of the code generator executable of the corresponding version is already downloaded in the Carthage folder. It can be found at `Carthage/Checkouts/needle/Generator/bin/needle`.
 
-### Install code generator via [Homebrew](https://github.com/Homebrew/brew)
+#### Install code generator via [Homebrew](https://github.com/Homebrew/brew)
 
 Coming soon!
 
