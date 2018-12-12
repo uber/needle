@@ -37,9 +37,8 @@ Coming soon!
 
 Using and integrating with Needle has three steps. Each of the following steps has detailed instructions and explanations in the linked documents.
 
-1. Include `NeedleFoundation` module in your Swift project.
-2. [Integrate Needle's code generator with your Swift project](./GENERATOR.md).
-3. [Write application DI code following NeedleFoundation's API](./API.md).
+1. [Integrate Needle's code generator with your Swift project](./GENERATOR.md).
+2. [Write application DI code following NeedleFoundation's API](./API.md).
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuber%2Fswift-concurrency.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuber%2Fswift-concurrency?ref=badge_large)
