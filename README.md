@@ -35,7 +35,7 @@ Coming soon!
 
 ## Getting started with Needle
 
-Using and integrating with Needle has three steps. Each of the following steps has detailed instructions and explanations in the linked documents.
+Using and integrating with Needle has two steps. Each of the following steps has detailed instructions and explanations in the linked documents.
 
 1. [Integrate Needle's code generator with your Swift project](./GENERATOR.md).
 2. [Write application DI code following NeedleFoundation's API](./API.md).
