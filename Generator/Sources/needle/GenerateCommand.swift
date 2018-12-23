@@ -18,9 +18,6 @@ import Foundation
 import NeedleFramework
 import Utility
 
-/// The default value for waiting timeout in seconds.
-fileprivate let defaultTimeout = 30.0
-
 /// The generate command provides the core functionality of needle. It parses
 /// Swift source files by recurively scan the directories starting from the
 /// specified source path, excluding files with specified suffixes. It then

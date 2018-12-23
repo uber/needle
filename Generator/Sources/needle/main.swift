@@ -34,7 +34,8 @@ func main() {
 private func initializeCommands(with parser: ArgumentParser) -> [Command] {
     return [
         VersionCommand(parser: parser),
-        GenerateCommand(parser: parser)
+        GenerateCommand(parser: parser),
+        PrintDependencyTreeCommand(parser: parser)
     ]
 }
 
