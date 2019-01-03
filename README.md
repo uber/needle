@@ -33,7 +33,7 @@ class MyComponent: Component<MyDependency> {
 }
 ```
 
-This is pretty much it, when writing DI code with Needle. As you can see, everything is real, compilable Swift code. No fragile comments or "annotations". To quickly recap, the three key concepts here are dependency protocol, component and instantiation of child component(s). Please refer to the "Getting started with Needle" section below for more detailed explanations and advanced topics.
+This is pretty much it, when writing DI code with Needle. As you can see, everything is real, compilable Swift code. No fragile comments or "annotations". To quickly recap, the three key concepts here are dependency protocol, component and instantiation of child component(s). Please refer to the [Getting started with Needle section](#getting-started-with-needle) below for more detailed explanations and advanced topics.
 
 ## Getting started with Needle
 
