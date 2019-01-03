@@ -6,6 +6,38 @@
 
 Needle is a dependency injection (DI) system for Swift. Unlike other DI frameworks, such as [Cleanse](https://github.com/square/Cleanse), [Swinject](https://github.com/Swinject/Swinject), Needle encourages **hierarchical DI structure and utilizes code generation to ensure compile-time safety**. This allows us to develop our apps and make changes with confidence. **If it compiles, it works.** In this aspect, Needle is more similar to [Android Dagger](https://google.github.io/dagger/).
 
+## The gist
+
+Using Needle to write DI code for your application is easy and compile-time safe. Each dependency scope is defined by a `Component`. And its dependencies are encapsualted in a Swift `protocol`. The two are linked together using Swift generics.
+
+```swift
+/// This protocol encapsulates the dependencies acquired from ancestor scopes.
+protocol MyDependency: Dependency {
+    /// These are objects obtained from ancestor scopes, not newly introduced at this scope.
+    var chocolate: Food { get }
+    var milk: Food { get }
+}
+
+/// This class defines a new dependency scope that can acquire dependencies from ancestor scopes
+/// via its dependency protocol, provide new objects on the DI graph by declaring properties,
+/// and instantiate child scopes.
+class MyComponent: Component<MyDependency> {
+
+    /// A new obejct, hotChocolate, is added to the dependency graph. Child scope(s) can then
+    /// acquire this via their dependency protocol(s).
+    var hotChocolate: Drink {
+        return HotChocolate(dependency.chocolate, dependency.milk)
+    }
+    
+    /// A child scope is always instantiated by its parent(s) scope(s).
+    var myChildComponent: MyChildComponent {
+        return MyChildComponent(parent: self)
+    }
+}
+```
+
+This is pretty much it, when writing DI code with Needle. As you can see, everything is real, compilable Swift code. No fragile comments or "annotations". To quickly recap, the three key concepts here are dependency protocol, component and instantiation of child component(s). Please refer to the [Getting started with Needle](#getting-started-with-needle) section below for more detailed explanations and advanced topics.
+
 ## Getting started with Needle
 
 Using and integrating with Needle has two steps. Each of the following steps has detailed instructions and explanations in the linked documents.
@@ -17,22 +49,26 @@ Using and integrating with Needle has two steps. Each of the following steps has
 
 Needle has two parts, the `NeedleFoundation` framework and the executable code generator. Both parts need to be integrated with your Swift project in order to use Needle as your DI system.
 
-#### Install `NeedleFoundation` framework via [Carthage](https://github.com/Carthage/Carthage)
+### Install `NeedleFoundation` framework
+
+#### Using [Carthage](https://github.com/Carthage/Carthage)
 
 Please follow the standard [Carthage installation process](https://github.com/Carthage/Carthage#quick-start) to integrate the `NeedleFoundation` framework with your Swift project.
 ```
 github "https://github.com/uber/needle.git" ~> VERSION_OF_NEEDLE
 ```
 
-#### Install `NeedleFoundation` framework via [CocoaPods](https://github.com/CocoaPods/CocoaPods)
+#### Using [CocoaPods](https://github.com/CocoaPods/CocoaPods)
 
 Coming soon!
 
-#### Install code generator via [Carthage](https://github.com/Carthage/Carthage)
+### Install code generator
+
+#### Using [Carthage](https://github.com/Carthage/Carthage)
 
 If Carthage is used to integrate  the `NeedleFoundation` framework, then a copy of the code generator executable of the corresponding version is already downloaded in the Carthage folder. It can be found at `Carthage/Checkouts/needle/Generator/bin/needle`.
 
-#### Install code generator via [Homebrew](https://github.com/Homebrew/brew)
+#### Using [Homebrew](https://github.com/Homebrew/brew)
 
 Coming soon!
 
