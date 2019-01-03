@@ -18,10 +18,13 @@ protocol MyDependency: Dependency {
     var milk: Food { get }
 }
 
-/// This class defines a new dependency scope that can acquire dependencies from ancestor scopes via its dependency protocol, provide new objects on the DI graph by declaring properties, and instantiate child scopes.
+/// This class defines a new dependency scope that can acquire dependencies from ancestor scopes
+/// via its dependency protocol, provide new objects on the DI graph by declaring properties,
+/// and instantiate child scopes.
 class MyComponent: Component<MyDependency> {
 
-    /// A new obejct, hotChocolate, is added to the dependency graph. Child scope(s) can then acquire this via their dependency protocol(s).
+    /// A new obejct, hotChocolate, is added to the dependency graph. Child scope(s) can then
+    /// acquire this via their dependency protocol(s).
     var hotChocolate: Drink {
         return HotChocolate(dependency.chocolate, dependency.milk)
     }
