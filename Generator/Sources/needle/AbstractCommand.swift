@@ -24,6 +24,9 @@ class AbstractCommand: Command {
     /// The name used to check if this command should be executed.
     let name: String
 
+    /// The default value for waiting timeout in seconds.
+    let defaultTimeout = 30.0
+
     /// Initializer.
     ///
     /// - parameter name: The name used to check if this command should
