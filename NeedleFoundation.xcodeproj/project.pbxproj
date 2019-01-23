@@ -670,7 +670,7 @@
       };
       "OBJ_8" = {
          isa = "PBXFileReference";
-         path = "xcode.xcconfig";
+         path = "foundation.xcconfig";
          sourceTree = "<group>";
       };
       "OBJ_9" = {
