@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceKittenFramework
 
 /// A task that parses Swift AST into dependency graph data models.
 class ASTParserTask: AbstractTask<DependencyGraphNode> {
@@ -54,5 +55,23 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
             }
         }
         return (components, dependencies)
+    }
+}
+
+// MARK: - SourceKit AST Parsing Utilities
+
+private extension Structure {
+
+    /// Check if this structure represents a `Component` subclass.
+    var isComponent: Bool {
+        let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
+        return inheritedTypes.contains { (type: String) -> Bool in
+            regex.firstMatch(in: type) != nil
+        }
+    }
+
+    /// Check if this structure represents a `Dependency` protocol.
+    var isDependencyProtocol: Bool {
+        return inheritedTypes.contains("Dependency") || inheritedTypes.contains("\(needleModuleName).Dependency")
     }
 }

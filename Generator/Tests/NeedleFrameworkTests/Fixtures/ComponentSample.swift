@@ -12,7 +12,9 @@ protocol RandomProtocol {
 
 let randomValue = 1234
 
-class MyComponent: NeedleFoundation.Component<MyDependency> {
+class MyComponent: NeedleFoundation.Component<
+MyDependency
+> {
 
     let stream: Stream = Stream()
 
@@ -79,7 +81,10 @@ protocol BExtension: PluginExtension {
     var myPluginPoint: MyPluginPoint { get }
 }
 
-class SomePluginizedComp: PluginizedComponent<ADependency, BExtension, SomeNonCoreComponent>, Stuff {
+class SomePluginizedComp: PluginizedComponent<
+ADependency,
+BExtension, SomeNonCoreComponent
+>, Stuff {
     var tv: Tv {
         return LGOLEDTv()
     }
