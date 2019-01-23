@@ -17,8 +17,8 @@
 import Foundation
 import SourceKittenFramework
 
-/// Extension of SourceKitten `Structure` to provide easy access to AST
-/// properties.
+/// Extension of SourceKitten `Structure` to provide easy access to a set
+/// of common AST properties.
 extension Structure {
 
     /// The substructures of this structure.
@@ -33,19 +33,6 @@ extension Structure {
             }
         }
         return result
-    }
-
-    /// Check if this structure represents a `Component` subclass.
-    var isComponent: Bool {
-        let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
-        return inheritedTypes.contains { (type: String) -> Bool in
-            regex.firstMatch(in: type) != nil
-        }
-    }
-
-    /// Check if this structure represents a `Dependency` protocol.
-    var isDependencyProtocol: Bool {
-        return inheritedTypes.contains("Dependency") || inheritedTypes.contains("\(needleModuleName).Dependency")
     }
 
     /// The type name of this structure.
@@ -133,7 +120,7 @@ extension Structure {
     var inheritedTypes: [String] {
         let types = dictionary["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return types.compactMap { (item: SourceKitRepresentable) -> String? in
-            (item as? [String: String])?["key.name"]
+            ((item as? [String: String])?["key.name"])?.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: " ", with: "")
         }
     }
 
