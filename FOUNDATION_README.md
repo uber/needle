@@ -2,8 +2,6 @@
 
 ## Building and developing
 
-### Compiling from source:
-
 First resolve the dependencies:
 
 ```
