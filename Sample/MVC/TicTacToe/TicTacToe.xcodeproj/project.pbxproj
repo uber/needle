@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		14EB5F73219984CC00714A03 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14EB5F682199848400714A03 /* NeedleFoundation.framework */; };
 		4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139095620A0F2BC00A26FF5 /* AppDelegate.swift */; };
 		4139095E20A0F2BD00A26FF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4139095D20A0F2BD00A26FF5 /* Assets.xcassets */; };
 		4139096120A0F2BD00A26FF5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4139095F20A0F2BD00A26FF5 /* LaunchScreen.storyboard */; };
@@ -31,27 +30,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		14EB5F672199848400714A03 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation::Product";
-			remoteInfo = NeedleFoundation;
-		};
-		14EB5F692199848400714A03 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTests::Product";
-			remoteInfo = NeedleFoundationTests;
-		};
-		14EB5F70219984B500714A03 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
-			remoteInfo = NeedleFoundation;
-		};
 		4139099020A22B3900A26FF5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4139094B20A0F2BC00A26FF5 /* Project object */;
@@ -59,16 +37,35 @@
 			remoteGlobalIDString = 4139095220A0F2BC00A26FF5;
 			remoteInfo = TicTacToe;
 		};
+		4140797B21F808230081B8A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation::Product";
+			remoteInfo = NeedleFoundation;
+		};
+		4140797D21F808230081B8A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTests::Product";
+			remoteInfo = NeedleFoundationTests;
+		};
+		4140798B21F808B30081B8A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
+			remoteInfo = NeedleFoundation;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NeedleFoundation.xcodeproj; path = ../../../Foundation/NeedleFoundation.xcodeproj; sourceTree = "<group>"; };
 		4139095320A0F2BC00A26FF5 /* TicTacToe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TicTacToe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4139095620A0F2BC00A26FF5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4139095D20A0F2BD00A26FF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4139096020A0F2BD00A26FF5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4139096220A0F2BD00A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NeedleFoundation.framework; path = ../Carthage/Build/iOS/NeedleFoundation.framework; sourceTree = "<group>"; };
 		4139097420A1060300A26FF5 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		4139097620A10A6D00A26FF5 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		4139097820A1111900A26FF5 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
@@ -85,6 +82,7 @@
 		4139099A20A2489100A26FF5 /* ScoreStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStream.swift; sourceTree = "<group>"; };
 		413909A320A4E58A00A26FF5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		413909A520A4EA7300A26FF5 /* GameComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponent.swift; sourceTree = "<group>"; };
+		4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NeedleFoundation.xcodeproj; path = ../../../NeedleFoundation.xcodeproj; sourceTree = "<group>"; };
 		F7DA7ADF20A275DA0037FF17 /* ScoreSheetComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetComponent.swift; sourceTree = "<group>"; };
 		F7DA7AE120A275EF0037FF17 /* ScoreSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetViewController.swift; sourceTree = "<group>"; };
 		F7DA7AE320A3BF760037FF17 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = ../Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
@@ -95,7 +93,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14EB5F73219984CC00714A03 /* NeedleFoundation.framework in Frameworks */,
 				4139098420A2211F00A26FF5 /* SnapKit.framework in Frameworks */,
 				F7DA7AE420A3BF760037FF17 /* RxCocoa.framework in Frameworks */,
 				4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */,
@@ -112,19 +109,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		14EB5F632199848400714A03 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				14EB5F682199848400714A03 /* NeedleFoundation.framework */,
-				14EB5F6A2199848400714A03 /* NeedleFoundationTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		4139094A20A0F2BC00A26FF5 = {
 			isa = PBXGroup;
 			children = (
-				14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */,
+				4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */,
 				4139095520A0F2BC00A26FF5 /* Sources */,
 				4139098C20A22B3900A26FF5 /* Tests */,
 				4139095420A0F2BC00A26FF5 /* Products */,
@@ -164,7 +152,6 @@
 				F7DA7AE320A3BF760037FF17 /* RxCocoa.framework */,
 				4139098320A2211F00A26FF5 /* SnapKit.framework */,
 				4139097620A10A6D00A26FF5 /* RxSwift.framework */,
-				4139096920A0F3C000A26FF5 /* NeedleFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -216,6 +203,15 @@
 			path = Game;
 			sourceTree = "<group>";
 		};
+		4140797521F808230081B8A9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4140797C21F808230081B8A9 /* NeedleFoundation.framework */,
+				4140797E21F808230081B8A9 /* NeedleFoundationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F7DA7ADE20A275B00037FF17 /* ScoreSheet */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,7 +237,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				14EB5F71219984B500714A03 /* PBXTargetDependency */,
+				4140798C21F808B30081B8A9 /* PBXTargetDependency */,
 			);
 			name = TicTacToe;
 			productName = TicTacToe;
@@ -298,8 +294,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 14EB5F632199848400714A03 /* Products */;
-					ProjectRef = 14EB5F622199848400714A03 /* NeedleFoundation.xcodeproj */;
+					ProductGroup = 4140797521F808230081B8A9 /* Products */;
+					ProjectRef = 4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -311,18 +307,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		14EB5F682199848400714A03 /* NeedleFoundation.framework */ = {
+		4140797C21F808230081B8A9 /* NeedleFoundation.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = NeedleFoundation.framework;
-			remoteRef = 14EB5F672199848400714A03 /* PBXContainerItemProxy */;
+			remoteRef = 4140797B21F808230081B8A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		14EB5F6A2199848400714A03 /* NeedleFoundationTests.xctest */ = {
+		4140797E21F808230081B8A9 /* NeedleFoundationTests.xctest */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
+			fileType = file;
 			path = NeedleFoundationTests.xctest;
-			remoteRef = 14EB5F692199848400714A03 /* PBXContainerItemProxy */;
+			remoteRef = 4140797D21F808230081B8A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -431,15 +427,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		14EB5F71219984B500714A03 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = NeedleFoundation;
-			targetProxy = 14EB5F70219984B500714A03 /* PBXContainerItemProxy */;
-		};
 		4139099120A22B3900A26FF5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4139095220A0F2BC00A26FF5 /* TicTacToe */;
 			targetProxy = 4139099020A22B3900A26FF5 /* PBXContainerItemProxy */;
+		};
+		4140798C21F808B30081B8A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = NeedleFoundation;
+			targetProxy = 4140798B21F808B30081B8A9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
