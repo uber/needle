@@ -23,7 +23,7 @@ protocol MyDependency: Dependency {
 /// and instantiate child scopes.
 class MyComponent: Component<MyDependency> {
 
-    /// A new obejct, hotChocolate, is added to the dependency graph. Child scope(s) can then
+    /// A new object, hotChocolate, is added to the dependency graph. Child scope(s) can then
     /// acquire this via their dependency protocol(s).
     var hotChocolate: Drink {
         return HotChocolate(dependency.chocolate, dependency.milk)
