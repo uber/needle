@@ -116,9 +116,9 @@ private extension Structure {
             if generics.count < 3 {
                 fatalError("\(name) as a PluginizedComponent should have 3 generic types. Instead of \(genericsString)")
             }
-            let dependencyProtocolName = generics[0].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-            let pluginExtensionName = generics[1].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-            let nonCoreComponentName = generics[2].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let dependencyProtocolName = String(generics[0])
+            let pluginExtensionName = String(generics[1])
+            let nonCoreComponentName = String(generics[2])
             return (dependencyProtocolName, pluginExtensionName, nonCoreComponentName)
         } else {
             fatalError("\(name) is being parsed as a PluginizedComponent. Yet its generic types cannot be parsed. \(inheritedTypes)")
