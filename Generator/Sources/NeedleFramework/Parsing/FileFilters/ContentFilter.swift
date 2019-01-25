@@ -16,8 +16,8 @@
 
 import Foundation
 
-/// The regex pattern that matches any component instantiation expressions
-/// with the first capture group capturing the name of the component.
+/// The regex pattern that matches any class instantiation expressions
+/// with the first capture group capturing the name of the class.
 let componentInstantiationRegex = Regex("\\s+([A-Z]\\w+)\\s*\\(\\s*parent\\s*:\\s*")
 
 /// A filter that performs checks based on source file content.

@@ -53,7 +53,7 @@ class ComponentInstantiationValidator: Processor {
                     let rootArg = content.substring(with: rootArgRange)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 
                     if let arg = arg, !validate(componentInstantiationArg: arg, and: rootArg) {
-                        throw GeneratorError.withMessage("\(componentName) is instantiated incorrectly. All components must be instantiated by parent components.")
+                        throw GeneratorError.withMessage("\(componentName) is instantiated incorrectly. All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter.")
                     }
                 }
             }
