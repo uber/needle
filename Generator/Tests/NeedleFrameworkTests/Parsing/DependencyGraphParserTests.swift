@@ -91,7 +91,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         } catch {
             switch error {
             case GeneratorError.withMessage(let message):
-                XCTAssertTrue(message.contains("is instantiated incorrectly. All components must be instantiated by parent components."))
+                XCTAssertTrue(message.contains("is instantiated incorrectly. All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter."))
             default:
                 XCTFail()
             }
