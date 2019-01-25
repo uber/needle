@@ -57,34 +57,23 @@ class DependencyGraphParser {
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
     func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> (components: [Component], imports: [String]) {
-        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
+        let urlHandles: [UrlSequenceHandle] = try enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (components, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
-        return process(components, dependencies, imports)
+        return try process(components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
+    private func enqueueParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) throws -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         for url in rootUrls {
-            do {
-                try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
-                    let task = FileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
-                    let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
-                    taskHandleTuples.append((taskHandle, fileUrl))
-                }
-            } catch {
-                switch error {
-                case FileEnumerationError.failedToReadSourcesList(let sourceListUrl, let error):
-                    fatalError("Failed to read source paths from list file at \(sourceListUrl) \(error)")
-                case FileEnumerationError.failedToTraverseDirectory(let dirUrl):
-                    fatalError("Failed traverse \(dirUrl)")
-                default:
-                    fatalError("Unknown file enumeration error \(error)")
-                }
+            try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
+                let task = FileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
+                let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
+                taskHandleTuples.append((taskHandle, fileUrl))
             }
         }
 
@@ -123,13 +112,13 @@ class DependencyGraphParser {
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
                 throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
             } catch {
-                fatalError("Unhandled task execution error \(error)")
+                throw error
             }
         }
         return (components, dependencies, imports)
     }
 
-    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [String]) {
+    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) throws -> ([Component], [String]) {
         let processors: [Processor] = [
             DuplicateValidator(components: components, dependencies: dependencies),
             ParentLinker(components: components),
@@ -137,11 +126,7 @@ class DependencyGraphParser {
             AncestorCycleValidator(components: components)
         ]
         for processor in processors {
-            do {
-                try processor.process()
-            } catch {
-                fatalError("\(error)")
-            }
+            try processor.process()
         }
 
         let valueTypeComponents = components.map { (astComponent: ASTComponent) -> Component in

@@ -27,11 +27,6 @@ struct PropertyNotFoundErrorInfo {
     let possibleMatchComponent: String?
 }
 
-/// Enum of possible errors we may throw from this task.
-enum DependencyProviderContentError: Error {
-    case propertyNotFound(PropertyNotFoundErrorInfo)
-}
-
 /// The task that walks through the chain of parents for each dependency
 /// item of the dependency protocol that this provider class needs to satisfy.
 class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]> {
@@ -48,19 +43,10 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
     /// data models.
     ///
     /// - returns: The list of `ProcessedDependencyProvider`.
-    override func execute() -> [ProcessedDependencyProvider] {
-        return providers.map { (provider: DependencyProvider) -> ProcessedDependencyProvider in
-            do {
-                return try process(provider)
-            } catch DependencyProviderContentError.propertyNotFound(let info) {
-                var message = "Could not find a provider for (\(info.name): \(info.type)) which was required by \(info.dependency), along the DI branch of \(provider.pathString)."
-                if let possibleMatchComponent = info.possibleMatchComponent {
-                    message += " Found possible matches \(info.possibleNames) at \(possibleMatchComponent)."
-                }
-                fatalError(message)
-            } catch {
-                fatalError("Unhandled error while processing dependency provider content: \(error)")
-            }
+    /// - throws: Any error occurred during execution.
+    override func execute() throws -> [ProcessedDependencyProvider] {
+        return try providers.map { (provider: DependencyProvider) throws -> ProcessedDependencyProvider in
+            try process(provider)
         }
     }
 
@@ -99,12 +85,15 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
                     break
                 }
             }
-            let info = PropertyNotFoundErrorInfo(dependency: provider.dependency.name, name: property.name, type: property.type, possibleNames: possibleMatches, possibleMatchComponent: possibleMatchComponent)
-            throw DependencyProviderContentError.propertyNotFound(info)
+
+            // Throw error with informative message.
+            var message = "Could not find a provider for (\(property.name): \(property.type)) which was required by \(provider.dependency.name), along the DI branch of \(provider.pathString)."
+            if let possibleMatchComponent = possibleMatchComponent {
+                message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
+            }
+            throw GeneratorError.withMessage(message)
         }
 
         return ProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)
     }
-
 }
-

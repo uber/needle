@@ -46,7 +46,9 @@ extension Structure {
     ///
     /// - parameter componentType: The type name of the component.
     /// - returns: The dependency protocol type name.
-    func dependencyProtocolName(for componentType: String) -> String {
+    /// - throws: 'GeneratorError` if parsing dependency protocol name from
+    /// generics failed.
+    func dependencyProtocolName(for componentType: String) throws -> String {
         let regex = Regex("^(\(needleModuleName).)?\(componentType) *<")
         let result = inheritedTypes
             .compactMap { (type: String) -> String? in
@@ -74,24 +76,26 @@ extension Structure {
             }
             return result
         } else {
-            fatalError("\(name) is being parsed as a Component. Yet its generic dependency type cannot be parsed. \(inheritedTypes)")
+            throw GeneratorError.withMessage("\(name) is being parsed as a Component. Yet its generic dependency type cannot be parsed. \(inheritedTypes)")
         }
     }
 
     /// The properties of this structure.
-    var properties: [Property] {
-        return filterSubstructure(by: "source.lang.swift.decl.var.instance")
-            .map { (item: Structure) -> (Property, Structure) in
+    ///
+    /// - throws: `GeneratorError` if parsing properties failed.
+    func properties() throws -> [Property] {
+        return try filterSubstructure(by: "source.lang.swift.decl.var.instance")
+            .map { (item: Structure) throws -> (Property, Structure) in
                 if let variableName = item.dictionary["key.name"] as? String {
                     if let typeName = item.dictionary["key.typename"] as? String {
                         return (Property(name: variableName, type: typeName), item)
                     } else {
-                        fatalError("Missing explicit type annotation for property \"\(variableName)\" in \(self.name)")
+                        throw GeneratorError.withMessage("Missing explicit type annotation for property \"\(variableName)\" in \(self.name)")
                     }
                 }
-                fatalError("Property \(item) does not have a name.")
+                throw GeneratorError.withMessage("Property \(item) does not have a name.")
             }
-            .compactMap { (propertyItem: (property: Property, item: Structure)) -> Property? in
+            .compactMap { (propertyItem: (property: Property, item: Structure)) throws -> Property? in
                 if let accessibility = propertyItem.item.dictionary["key.accessibility"] as? String {
                     let isPrivate = (accessibility == "source.lang.swift.accessibility.private")
                     let isFilePrivate = (accessibility == "source.lang.swift.accessibility.fileprivate")
@@ -102,7 +106,7 @@ extension Structure {
                         return propertyItem.property
                     }
                 }
-                fatalError("Property missing accessibility identifier.")
+                throw GeneratorError.withMessage("Property missing accessibility identifier.")
         }
     }
 

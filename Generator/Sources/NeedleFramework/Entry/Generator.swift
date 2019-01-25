@@ -210,12 +210,8 @@ public class Generator {
                     }
                     sourceKitUtilities.initialize()
                 }
-            } catch DependencyGraphExporterError.timeout(let componentName) {
-                throw GeneratorError.withMessage("Generating dependency provider for \(componentName) timed out.")
-            } catch DependencyGraphExporterError.unableToWriteFile(let outputFile) {
-                throw GeneratorError.withMessage("Failed to export contents to \(outputFile)")
             } catch {
-                throw GeneratorError.withMessage("Unknown error \(error).")
+                throw error
             }
         }
     }

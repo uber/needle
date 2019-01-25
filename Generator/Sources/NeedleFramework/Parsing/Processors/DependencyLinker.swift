@@ -39,7 +39,7 @@ class DependencyLinker: Processor {
             if let dependency = nameToDependency[component.dependencyProtocolName] {
                 component.dependencyProtocol = dependency
             } else if !Dependency.isEmptyDependency(name: component.dependencyProtocolName) {
-                throw ProcessingError.fail("Missing dependency protocol data model with name \(component.dependencyProtocolName), for \(component.name).")
+                throw GeneratorError.withMessage("Missing dependency protocol data model with name \(component.dependencyProtocolName), for \(component.name).")
             }
         }
     }

@@ -33,10 +33,11 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
     /// Execute the task and returns the dependency graph data model.
     ///
     /// - returns: Parsed `PluginizedDependencyGraphNode`.
-    override func execute() -> PluginizedDependencyGraphNode {
+    /// - throws: Any error occurred during execution.
+    override func execute() throws -> PluginizedDependencyGraphNode {
         let baseTask = ASTParserTask(ast: ast)
-        let baseNode = baseTask.execute()
-        let (pluginizedComponents, nonCoreComponents, pluginExtensions) = parsePluginizedStructures()
+        let baseNode = try baseTask.execute()
+        let (pluginizedComponents, nonCoreComponents, pluginExtensions) = try parsePluginizedStructures()
         return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
     }
 
@@ -44,7 +45,7 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 
     private let ast: AST
 
-    private func parsePluginizedStructures() -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension]) {
+    private func parsePluginizedStructures() throws -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension]) {
         var pluginizedComponents = [PluginizedASTComponent]()
         var nonCoreComponents = [ASTComponent]()
         var pluginExtensions = [PluginExtension]()
@@ -52,15 +53,18 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
         let substructures = ast.structure.substructures
         for substructure in substructures {
             if substructure.isPluginizedComponent {
-                let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = substructure.pluginizedGenerics
-                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
+                let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = try substructure.pluginizedGenerics()
+                let properties = try substructure.properties()
+                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
                 pluginizedComponents.append(PluginizedASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
             } else if substructure.isNonCoreComponent {
-                let dependencyProtocolName = substructure.dependencyProtocolName(for: "NonCoreComponent")
-                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
+                let dependencyProtocolName = try substructure.dependencyProtocolName(for: "NonCoreComponent")
+                let properties = try substructure.properties()
+                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
                 nonCoreComponents.append(component)
             } else if substructure.isPluginExtension {
-                pluginExtensions.append(PluginExtension(name: substructure.name, properties: substructure.properties))
+                let properties = try substructure.properties()
+                pluginExtensions.append(PluginExtension(name: substructure.name, properties: properties))
             }
         }
 
@@ -90,7 +94,7 @@ private extension Structure {
         return inheritedTypes.contains("PluginExtension")
     }
 
-    var pluginizedGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {
+    func pluginizedGenerics() throws -> (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {
         let regex = Regex("^(\(needleModuleName).)?PluginizedComponent *<")
         let genericsString = inheritedTypes
             .compactMap { (type: String) -> String? in
@@ -114,15 +118,14 @@ private extension Structure {
         if let genericsString = genericsString {
             let generics = genericsString.split(separator: ",")
             if generics.count < 3 {
-                fatalError("\(name) as a PluginizedComponent should have 3 generic types. Instead of \(genericsString)")
+                throw GeneratorError.withMessage("\(name) as a PluginizedComponent should have 3 generic types. Instead of \(genericsString)")
             }
             let dependencyProtocolName = String(generics[0])
             let pluginExtensionName = String(generics[1])
             let nonCoreComponentName = String(generics[2])
             return (dependencyProtocolName, pluginExtensionName, nonCoreComponentName)
         } else {
-            fatalError("\(name) is being parsed as a PluginizedComponent. Yet its generic types cannot be parsed. \(inheritedTypes)")
+            throw GeneratorError.withMessage("\(name) is being parsed as a PluginizedComponent. Yet its generic types cannot be parsed. \(inheritedTypes)")
         }
-        fatalError()
     }
 }

@@ -48,34 +48,23 @@ class PluginizedDependencyGraphParser {
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
     func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> ([Component], [PluginizedComponent], [String]) {
-        let urlHandles: [UrlSequenceHandle] = enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
+        let urlHandles: [UrlSequenceHandle] = try enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
-        return process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
+        return try process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
     // MARK: - Private
 
-    private func enqueueParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
+    private func enqueueParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) throws -> [(SequenceExecutionHandle<PluginizedDependencyGraphNode>, URL)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<PluginizedDependencyGraphNode>, fileUrl: URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         for url in rootUrls {
-            do {
-                try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
-                    let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
-                    let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
-                    taskHandleTuples.append((taskHandle, fileUrl))
-                }
-            } catch {
-                switch error {
-                case FileEnumerationError.failedToReadSourcesList(let sourceListUrl, let error):
-                    fatalError("Failed to read source paths from list file at \(sourceListUrl) \(error)")
-                case FileEnumerationError.failedToTraverseDirectory(let dirUrl):
-                    fatalError("Failed traverse \(dirUrl)")
-                default:
-                    fatalError("Unknown file enumeration error \(error)")
-                }
+            try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
+                let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
+                let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
+                taskHandleTuples.append((taskHandle, fileUrl))
             }
         }
 
@@ -120,13 +109,13 @@ class PluginizedDependencyGraphParser {
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
                 throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
             } catch {
-                fatalError("Unhandled task execution error \(error)")
+                throw error
             }
         }
         return (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports)
     }
 
-    private func process(_ pluginizedComponents: [PluginizedASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) -> ([Component], [PluginizedComponent], [String]) {
+    private func process(_ pluginizedComponents: [PluginizedASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) throws -> ([Component], [PluginizedComponent], [String]) {
         var allComponents = nonCoreComponents + components
         let pluginizedComponentData = pluginizedComponents.map { (component: PluginizedASTComponent) -> ASTComponent in
             component.data
@@ -142,13 +131,7 @@ class PluginizedDependencyGraphParser {
             PluginExtensionCycleValidator(pluginizedComponents: pluginizedComponents)
         ]
         for processor in processors {
-            do {
-                try processor.process()
-            } catch ProcessingError.fail(let message) {
-                fatalError(message)
-            } catch {
-                fatalError("Unknown error: \(error)")
-            }
+            try processor.process()
         }
 
         // Return back non-core components as well since they can be treated as any regular component.

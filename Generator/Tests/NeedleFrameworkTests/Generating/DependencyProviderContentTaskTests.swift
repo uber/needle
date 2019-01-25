@@ -26,7 +26,7 @@ class DependencyProviderContentTaskTests: AbstractGeneratorTests {
         for component in components {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
             let task = DependencyProviderContentTask(providers: providers)
-            let processedProviders = task.execute()
+            let processedProviders = try! task.execute()
             switch component.name {
             case "GameComponent":
                 verifyGameComponent(processedProviders)

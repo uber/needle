@@ -53,11 +53,7 @@ class PluginizedDependencyGraphExporter {
         let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
         let fileContents = OutputSerializer(providers: serializedProviders, imports: imports, headerDocContent: headerDocContent).serialize()
-        do {
-            try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
-        } catch {
-            throw DependencyGraphExporterError.unableToWriteFile(path)
-        }
+        try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
     }
 
     // MARK: - Private
@@ -68,11 +64,9 @@ class PluginizedDependencyGraphExporter {
         }
         let loaderTask = FileContentLoaderTask(filePath: filePath)
         return executor.executeSequence(from: loaderTask) { (_, result: Any) -> SequenceExecution<String> in
-            if let headerDocContent = result as? String {
-                return .endOfSequence(headerDocContent)
-            } else {
-                fatalError("Loading header doc content failed with result \(result)")
-            }
+            // Cannot throw error here. Also the force cast is safe since that's
+            // the return type of the task.
+            return .endOfSequence(result as! String)
         }
     }
 
@@ -117,14 +111,14 @@ class PluginizedDependencyGraphExporter {
 
     private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: Double) throws -> [SerializedProvider] {
         var providers = [SerializedProvider]()
-        for (taskHandle, compnentName) in taskHandleTuples {
+        for (taskHandle, componentName) in taskHandleTuples {
             do {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
             } catch SequenceExecutionError.awaitTimeout  {
-                throw DependencyGraphExporterError.timeout(compnentName)
+                throw GeneratorError.withMessage("Generating dependency provider for \(componentName) timed out.")
             } catch {
-                fatalError("Unhandled task execution error \(error)")
+                throw error
             }
         }
         return providers

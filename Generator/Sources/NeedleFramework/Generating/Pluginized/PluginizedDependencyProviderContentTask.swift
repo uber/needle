@@ -53,22 +53,13 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     /// data models.
     ///
     /// - returns: The list of `ProcessedDependencyProvider`.
-    override func execute() -> [PluginizedProcessedDependencyProvider] {
-        return providers.map { (provider: DependencyProvider) -> PluginizedProcessedDependencyProvider in
-            do {
-                if provider.pathContains(anyOf: nonCoreComponentNames) {
-                    return try process(provider, withAuxillaryPropertiesFrom: nonCoreComponentMap, auxillarySourceType: .nonCoreComponent)
-                } else {
-                    return try process(provider, withAuxillaryPropertiesFrom: pluginExtensionMap, auxillarySourceType: .pluginExtension)
-                }
-            } catch DependencyProviderContentError.propertyNotFound(let info) {
-                var message = "Could not find a provider for (\(info.name): \(info.type)) which was required by \(info.dependency), along the DI branch of \(provider.pathString)."
-                if let possibleMatchComponent = info.possibleMatchComponent {
-                    message += " Found possible matches \(info.possibleNames) at \(possibleMatchComponent)."
-                }
-                fatalError(message)
-            } catch {
-                fatalError("Unhandled error while processing dependency provider content: \(error)")
+    /// - throws: Any error occurred during execution.
+    override func execute() throws -> [PluginizedProcessedDependencyProvider] {
+        return try providers.map { (provider: DependencyProvider) throws -> PluginizedProcessedDependencyProvider in
+            if provider.pathContains(anyOf: nonCoreComponentNames) {
+                return try process(provider, withAuxillaryPropertiesFrom: nonCoreComponentMap, auxillarySourceType: .nonCoreComponent)
+            } else {
+                return try process(provider, withAuxillaryPropertiesFrom: pluginExtensionMap, auxillarySourceType: .pluginExtension)
             }
         }
     }
@@ -146,8 +137,13 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
                     }
                 }
             }
-            let info = PropertyNotFoundErrorInfo(dependency: provider.dependency.name, name: property.name, type: property.type, possibleNames: possibleMatches, possibleMatchComponent: possibleMatchComponent)
-            throw DependencyProviderContentError.propertyNotFound(info)
+
+            // Throw error with informative message.
+            var message = "Could not find a provider for (\(property.name): \(property.type)) which was required by \(provider.dependency.name), along the DI branch of \(provider.pathString)."
+            if let possibleMatchComponent = possibleMatchComponent {
+                message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
+            }
+            throw GeneratorError.withMessage(message)
         }
 
         return PluginizedProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)

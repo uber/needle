@@ -27,7 +27,7 @@ class PluginizedASTParserTaskTests: AbstractParserTests {
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
         let task = PluginizedASTParserTask(ast: AST(structure: structure, imports: imports))
-        let node = task.execute()
+        let node = try! task.execute()
 
 
         // Regular components.

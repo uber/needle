@@ -57,7 +57,7 @@ class PluginExtensionCycleValidatorTests: AbstractPluginizedParserTests {
         do {
             try validator.process()
             XCTFail()
-        } catch ProcessingError.fail(let message) {
+        } catch GeneratorError.withMessage(let message) {
             XCTAssertTrue(message.contains("(a: A)"))
         } catch {
             XCTFail()

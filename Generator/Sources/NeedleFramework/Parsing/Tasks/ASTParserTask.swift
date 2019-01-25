@@ -32,8 +32,9 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
     /// Execute the task and returns the dependency graph data model.
     ///
     /// - returns: Parsed `DependencyGraphNode`.
-    override func execute() -> DependencyGraphNode {
-        let (components, dependencies) = parseStructures()
+    /// - throws: Any error occurred during execution.
+    override func execute() throws -> DependencyGraphNode {
+        let (components, dependencies) = try parseStructures()
         return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports)
     }
 
@@ -41,17 +42,19 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
 
     private let ast: AST
 
-    private func parseStructures() -> ([ASTComponent], [Dependency]) {
+    private func parseStructures() throws -> ([ASTComponent], [Dependency]) {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
 
         let substructures = ast.structure.substructures
         for substructure in substructures {
             if substructure.isComponent {
-                let dependencyProtocolName = substructure.dependencyProtocolName(for: "Component")
-                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: substructure.properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
+                let dependencyProtocolName = try substructure.dependencyProtocolName(for: "Component")
+                let properties = try substructure.properties()
+                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
             } else if substructure.isDependencyProtocol {
-                dependencies.append(Dependency(name: substructure.name, properties: substructure.properties))
+                let properties = try substructure.properties()
+                dependencies.append(Dependency(name: substructure.name, properties: properties))
             }
         }
         return (components, dependencies)

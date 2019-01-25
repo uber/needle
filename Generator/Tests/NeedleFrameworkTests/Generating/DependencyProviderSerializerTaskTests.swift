@@ -25,7 +25,7 @@ class DependencyProviderSerializerTaskTests: AbstractGeneratorTests {
         let (components, imports) = sampleProjectParsed()
         for component in components {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
-            let processedProviders = DependencyProviderContentTask(providers: providers).execute()
+            let processedProviders = try! DependencyProviderContentTask(providers: providers).execute()
             for provider in processedProviders {
                 let serializedProviders = DependencyProviderSerializerTask(providers: [provider]).execute()
                 XCTAssertEqual(serializedProviders.count, 1)

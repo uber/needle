@@ -49,7 +49,7 @@ class DuplicateValidator: Processor {
             if map[component.name] == nil {
                 map[component.name] = component.name
             } else {
-                throw ProcessingError.fail("Needle does not support components with the same name \(component.name)")
+                throw GeneratorError.withMessage("Needle does not support components with the same name \(component.name)")
             }
         }
     }
@@ -60,7 +60,7 @@ class DuplicateValidator: Processor {
             if map[dependency.name] == nil {
                 map[dependency.name] = dependency.name
             } else {
-                throw ProcessingError.fail("Needle does not support dependency protocols with the same name \(dependency.name)")
+                throw GeneratorError.withMessage("Needle does not support dependency protocols with the same name \(dependency.name)")
             }
         }
     }

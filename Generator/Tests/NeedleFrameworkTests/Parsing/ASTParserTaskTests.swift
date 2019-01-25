@@ -27,7 +27,7 @@ class ASTParserTaskTests: AbstractParserTests {
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
         let task = ASTParserTask(ast: AST(structure: structure, imports: imports))
-        _ = task.execute()
+        _ = try! task.execute()
 
         let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
                         "PrivateDependency (cheese: Cheese) property is fileprivate, therefore inaccessible on DI graph.",
@@ -43,7 +43,7 @@ class ASTParserTaskTests: AbstractParserTests {
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
         let task = ASTParserTask(ast: AST(structure: structure, imports: imports))
-        let node = task.execute()
+        let node = try! task.execute()
 
         XCTAssertEqual(node.components.count, 2)
 
