@@ -23,7 +23,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let fileUrl = fixtureUrl(for: "NonSwift.json")
         let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
         switch result {
         case .shouldParse(_, _):
             XCTFail()
@@ -37,7 +37,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let excludeSuffixTask = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: ["Sample"], exclusionPaths: [])
 
-        var result = excludeSuffixTask.execute()
+        var result = try! excludeSuffixTask.execute()
 
         switch result {
         case .shouldParse(_, _):
@@ -48,7 +48,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
 
         let includeSuffixTask = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        result = includeSuffixTask.execute()
+        result = try! includeSuffixTask.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):
@@ -63,7 +63,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let fixturesURL = fixtureUrl(for: "NonNeedleComponent.swift")
         let task = PluginizedFileFilterTask(url: fixturesURL, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(_, _):
@@ -77,7 +77,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let fixturesURL = fixtureUrl(for: "NonInheritanceComponent.swift")
         let task = PluginizedFileFilterTask(url: fixturesURL, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(_, _):
@@ -92,7 +92,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):
@@ -108,7 +108,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):
@@ -124,7 +124,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):
@@ -140,7 +140,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let task = FileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):
@@ -156,7 +156,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):
@@ -172,7 +172,7 @@ class PluginizedFileFilterTaskTests: AbstractPluginizedParserTests {
         let content = try! String(contentsOf: fileUrl)
         let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
 
-        let result = task.execute()
+        let result = try! task.execute()
 
         switch result {
         case .shouldParse(let sourceUrl, let sourceContent):

@@ -16,17 +16,11 @@
 
 import Foundation
 
-/// The processing error types.
-enum ProcessingError: Error {
-    /// Processing failed with given error.
-    case fail(String)
-}
-
 /// A post parsing utility unit that processes the parssed data model.
 protocol Processor {
 
     /// Process the data models.
     ///
-    /// - throws: `ProcessingError` if any errors occurred during processing.
+    /// - throws: `GeneratorError` if any errors occurred during processing.
     func process() throws
 }

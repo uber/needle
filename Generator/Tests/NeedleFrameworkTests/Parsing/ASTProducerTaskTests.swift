@@ -26,7 +26,7 @@ class ASTProducerTaskTests: AbstractParserTests {
         let astContent = try! Structure(file: File(contents: sourceContent))
 
         let task = ASTProducerTask(sourceUrl: sourceUrl, sourceContent: sourceContent)
-        let result = task.execute()
+        let result = try! task.execute()
 
         XCTAssertEqual(result.structure, astContent)
         XCTAssertEqual(result.imports, ["import UIKit", "import RIBs", "import Foundation"])

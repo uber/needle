@@ -40,17 +40,6 @@ enum SourcesListFileFormat {
     }
 }
 
-/// The set of errors may be thrown by the `FileEnumerator`.
-enum FileEnumerationError: Error {
-    /// Failed to read the text file that is supposed to contain a list
-    /// of paths on each line.
-    case failedToReadSourcesList(URL, Error)
-    /// Failed to traverse a directory specified by given URL.
-    case failedToTraverseDirectory(URL)
-    /// Failed to parse sources list format value.
-    case failedToParseSourcesListFormatValue(String)
-}
-
 /// A utility class that provides file enumeration from a root directory.
 class FileEnumerator {
 
@@ -96,7 +85,7 @@ class FileEnumerator {
             if let parsedFormat = SourcesListFileFormat.format(with: stringValue) {
                 return parsedFormat
             } else {
-                throw FileEnumerationError.failedToParseSourcesListFormatValue(stringValue)
+                throw GeneratorError.withMessage("Failed to parse sources list format \(stringValue)")
             }
         } else {
             return defaultFormat
@@ -120,7 +109,7 @@ class FileEnumerator {
                     URL(fileURLWithPath: path)
                 }
         } catch {
-            throw FileEnumerationError.failedToReadSourcesList(listUrl, error)
+            throw GeneratorError.withMessage("Failed to read source paths from list file at \(listUrl) \(error)")
         }
     }
 
@@ -171,7 +160,7 @@ class FileEnumerator {
         if let enumerator = FileManager.default.enumerator(at: rootUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: errorHandler) {
             return enumerator
         } else {
-            throw FileEnumerationError.failedToTraverseDirectory(rootUrl)
+            throw GeneratorError.withMessage("Failed traverse \(rootUrl)")
         }
     }
 }

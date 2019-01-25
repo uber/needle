@@ -17,19 +17,6 @@
 import Concurrency
 import Foundation
 
-/// Errors that may occur while trying to export the dependency provider
-/// classes.
-enum DependencyGraphExporterError: Error {
-    /// One of the dependecy provider tasks timed out, possibly due to
-    /// some massive
-    /// class or a programming error causing some sort of infinite loop
-    /// String contains the name of the component.
-    case timeout(String)
-    /// Problem while trying to write the generated text to disk
-    /// The String contains the file we were tyingto write to.
-    case unableToWriteFile(String)
-}
-
 /// The generation phase entry class that executes tasks to process dependency
 /// graph components into the necessary dependency providers and their
 /// registrations, then exports the contents to the destination path.
@@ -58,33 +45,27 @@ class DependencyGraphExporter {
     func export(_ components: [Component], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: Double, include headerDocPath: String?) throws {
         // Enqueue tasks.
         let taskHandleTuples = enqueueExportDependencyProviders(for: components, using: executor)
-        let headerDocContentHandle = enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
+        let headerDocContentHandle = try enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
 
         // Wait for execution to complete.
         let providers = try awaitSerialization(using: taskHandleTuples, withTimeout: timeout)
         let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
         let fileContents = OutputSerializer(providers: providers, imports: imports, headerDocContent: headerDocContent).serialize()
-        do {
-            try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
-        } catch {
-            throw DependencyGraphExporterError.unableToWriteFile(path)
-        }
+        try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
     }
 
     // MARK: - Private
 
-    private func enqueueLoadHeaderDoc(from filePath: String?, using executor: SequenceExecutor) -> SequenceExecutionHandle<String>? {
+    private func enqueueLoadHeaderDoc(from filePath: String?, using executor: SequenceExecutor) throws -> SequenceExecutionHandle<String>? {
         guard let filePath = filePath else {
             return nil
         }
         let loaderTask = FileContentLoaderTask(filePath: filePath)
         return executor.executeSequence(from: loaderTask) { (_, result: Any) -> SequenceExecution<String> in
-            if let headerDocContent = result as? String {
-                return .endOfSequence(headerDocContent)
-            } else {
-                fatalError("Loading header doc content failed with result \(result)")
-            }
+            // Cannot throw error here. Also the force cast is safe since that's
+            // the return type of the task.
+            return .endOfSequence(result as! String)
         }
     }
 
@@ -113,14 +94,14 @@ class DependencyGraphExporter {
     private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: Double) throws -> [SerializedProvider] {
         // Wait for all the generation to complete so we can write all the output into a single file
         var providers = [SerializedProvider]()
-        for (taskHandle, compnentName) in taskHandleTuples {
+        for (taskHandle, componentName) in taskHandleTuples {
             do {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
             } catch SequenceExecutionError.awaitTimeout  {
-                throw DependencyGraphExporterError.timeout(compnentName)
+                throw GeneratorError.withMessage("Generating dependency provider for \(componentName) timed out.")
             } catch {
-                fatalError("Unhandled task execution error \(error)")
+                throw error
             }
         }
         return providers

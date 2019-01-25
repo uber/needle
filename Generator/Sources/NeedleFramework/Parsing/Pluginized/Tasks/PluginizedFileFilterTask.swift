@@ -43,7 +43,8 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
     /// should be parsed.
     ///
     /// - returns: The `FilterResult`.
-    override func execute() -> FilterResult {
+    /// - throws: Any error occurred during execution.
+    override func execute() throws -> FilterResult {
         let urlFilter = UrlFilter(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
         if !urlFilter.filter() {
             return FilterResult.skip
@@ -58,7 +59,7 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
                 return FilterResult.skip
             }
         } else {
-            fatalError("Failed to read file at \(url)")
+            throw GeneratorError.withMessage("Failed to read file at \(url)")
         }
     }
 

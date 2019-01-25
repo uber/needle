@@ -38,10 +38,10 @@ class PluginExtensionCycleValidator: Processor {
     func process() throws {
         for component in pluginizedComponents {
             guard let pluginExtension = component.pluginExtension else {
-                throw ProcessingError.fail("\(component.data.name)'s plugin extension has not been linked.")
+                throw GeneratorError.withMessage("\(component.data.name)'s plugin extension has not been linked.")
             }
             guard let nonCoreDependency = component.nonCoreComponent?.dependencyProtocol else {
-                throw ProcessingError.fail("\(component.data.name)'s non-core component dependency has not been linked.")
+                throw GeneratorError.withMessage("\(component.data.name)'s non-core component dependency has not been linked.")
             }
 
             let nonCoreDepProperties = Set<Property>(nonCoreDependency.properties)
@@ -62,7 +62,7 @@ class PluginExtensionCycleValidator: Processor {
                         return "(\(property.name): \(property.type))"
                     }
                     .joined(separator: ", ")
-                throw ProcessingError.fail("\(component.data.name) contains cyclic plugin extension properties \(cyclicPropertiesString).")
+                throw GeneratorError.withMessage("\(component.data.name) contains cyclic plugin extension properties \(cyclicPropertiesString).")
             }
         }
     }

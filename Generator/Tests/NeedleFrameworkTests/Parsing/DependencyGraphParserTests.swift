@@ -89,13 +89,13 @@ class MockSequenceExecutor: SequenceExecutor {
     func executeSequence<SequenceResultType>(from initialTask: Task, with execution: @escaping (Task, Any) -> SequenceExecution<SequenceResultType>) -> SequenceExecutionHandle<SequenceResultType> {
         executeCallCount += 1
 
-        var result = initialTask.typeErasedExecute()
+        var result = try! initialTask.typeErasedExecute()
         var executionResult = execution(initialTask, result)
         executionHandler?(initialTask, result)
         while true {
             switch executionResult {
             case .continueSequence(let task):
-                result = task.typeErasedExecute()
+                result = try! task.typeErasedExecute()
                 executionResult = execution(task, result)
                 executionHandler?(task, result)
             case .endOfSequence(let finalResult):

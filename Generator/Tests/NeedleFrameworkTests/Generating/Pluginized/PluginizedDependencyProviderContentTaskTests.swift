@@ -28,7 +28,7 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
             let declareTask = DependencyProviderDeclarerTask(component: component)
             let providers = declareTask.execute()
             let contentTask = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents)
-            let processedProviders = contentTask.execute()
+            let processedProviders = try! contentTask.execute()
 
             switch component.name {
             case "LoggedOutComponent":
@@ -50,7 +50,7 @@ class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorT
             let declareTask = DependencyProviderDeclarerTask(component: component.data)
             let providers = declareTask.execute()
             let contentTask = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents)
-            let processedProviders = contentTask.execute()
+            let processedProviders = try! contentTask.execute()
 
             switch component.data.name {
             case "GameComponent":

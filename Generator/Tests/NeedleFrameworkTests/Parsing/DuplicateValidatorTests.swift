@@ -38,7 +38,7 @@ class DuplicateValidatorTests: XCTestCase {
 
         do  {
             try validator.process()
-        } catch ProcessingError.fail(let message) {
+        } catch GeneratorError.withMessage(let message) {
             XCTAssertTrue(message.contains("ha1"))
         } catch {
             XCTFail()
@@ -64,7 +64,7 @@ class DuplicateValidatorTests: XCTestCase {
 
         do  {
             try validator.process()
-        } catch ProcessingError.fail(let message) {
+        } catch GeneratorError.withMessage(let message) {
             XCTAssertTrue(message.contains("d1"))
         } catch {
             XCTFail()

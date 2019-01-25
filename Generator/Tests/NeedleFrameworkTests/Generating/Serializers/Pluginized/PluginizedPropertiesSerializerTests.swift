@@ -25,7 +25,7 @@ class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
         let (components, pluginizedComponents, _) = pluginizedSampleProjectParsed()
         for component in components {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
-            let processedProviders = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()
+            let processedProviders = try! PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()
             for provider in processedProviders {
                 if provider.processedProperties.isEmpty {
                     continue
@@ -47,7 +47,7 @@ class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
 
         for pluginizedComponent in pluginizedComponents {
             let providers = DependencyProviderDeclarerTask(component: pluginizedComponent.data).execute()
-            let processedProviders = PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()
+            let processedProviders = try! PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()
             for provider in processedProviders {
                 let serializedProperties = PluginizedPropertiesSerializer(provider: provider).serialize()
 

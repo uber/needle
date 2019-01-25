@@ -36,7 +36,7 @@ class AncestorCycleValidator: Processor {
                 let pathNames = cyclePath.map { (element: ASTComponent) -> String in
                     element.name
                 } + [component.name]
-                throw ProcessingError.fail("Dependency cycle detected along the path of \(pathNames.joined(separator: "->"))")
+                throw GeneratorError.withMessage("Dependency cycle detected along the path of \(pathNames.joined(separator: "->"))")
             }
         }
     }

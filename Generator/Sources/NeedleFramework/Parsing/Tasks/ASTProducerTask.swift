@@ -35,14 +35,15 @@ class ASTProducerTask: AbstractTask<AST> {
     /// Execute the task and return the AST structure data model.
     ///
     /// - returns: The `AST` data model.
-    override func execute() -> AST {
+    /// - throws: Any error occurred during execution.
+    override func execute() throws -> AST {
         let file = File(contents: sourceContent)
         do {
             let structure = try Structure(file: file)
             let imports = parseImports()
             return AST(structure: structure, imports: imports)
         } catch {
-            fatalError("Failed to parse AST for source at \(sourceUrl)")
+            throw GeneratorError.withMessage("Failed to parse AST for source at \(sourceUrl)")
         }
     }
 

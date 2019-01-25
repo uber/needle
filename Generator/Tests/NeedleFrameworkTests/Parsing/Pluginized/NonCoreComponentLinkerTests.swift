@@ -41,7 +41,8 @@ class NonCoreComponentLinkerTests: AbstractParserTests {
         do {
             try linker.process()
             XCTFail()
-        } catch ProcessingError.fail(_) {
+        } catch GeneratorError.withMessage(_) {
+            // Success.
         } catch {
             XCTFail()
         }
