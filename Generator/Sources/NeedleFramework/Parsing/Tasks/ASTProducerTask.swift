@@ -41,7 +41,7 @@ class ASTProducerTask: AbstractTask<AST> {
         do {
             let structure = try Structure(file: file)
             let imports = parseImports()
-            return AST(structure: structure, imports: imports)
+            return AST(structure: structure, imports: imports, sourceContent: sourceContent)
         } catch {
             throw GeneratorError.withMessage("Failed to parse AST for source at \(sourceUrl)")
         }

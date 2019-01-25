@@ -58,8 +58,8 @@ class DependencyGraphParser {
     /// source timed out.
     func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> (components: [Component], imports: [String]) {
         let urlHandles: [UrlSequenceHandle] = try enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
-        let (components, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
-        return try process(components, dependencies, imports)
+        let (components, dependencies, imports, sourceContents) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
+        return try process(components, dependencies, imports, sourceContents)
     }
 
     // MARK: - Private
@@ -86,7 +86,7 @@ class DependencyGraphParser {
             case .shouldParse(let url, let content):
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             case .skip:
-                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
+                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: [], sourceContent: ""))
             }
         } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
             return .continueSequence(ASTParserTask(ast: ast))
@@ -97,10 +97,11 @@ class DependencyGraphParser {
         }
     }
 
-    private func collectDataModels(with urlHandles: [UrlSequenceHandle], waitUpTo timeout: Double) throws -> ([ASTComponent], [Dependency], Set<String>) {
+    private func collectDataModels(with urlHandles: [UrlSequenceHandle], waitUpTo timeout: Double) throws -> ([ASTComponent], [Dependency], Set<String>, [String]) {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
         var imports = Set<String>()
+        var sourceContents = [String]()
         for urlHandle in urlHandles {
             do {
                 let node = try urlHandle.handle.await(withTimeout: timeout)
@@ -109,21 +110,23 @@ class DependencyGraphParser {
                 for statement in node.imports {
                     imports.insert(statement)
                 }
+                sourceContents.append(node.sourceContent)
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
                 throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
             } catch {
                 throw error
             }
         }
-        return (components, dependencies, imports)
+        return (components, dependencies, imports, sourceContents)
     }
 
-    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>) throws -> ([Component], [String]) {
+    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, _ sourceContents: [String]) throws -> ([Component], [String]) {
         let processors: [Processor] = [
             DuplicateValidator(components: components, dependencies: dependencies),
             ParentLinker(components: components),
             DependencyLinker(components: components, dependencies: dependencies),
-            AncestorCycleValidator(components: components)
+            AncestorCycleValidator(components: components),
+            ComponentInstantiationValidator(components: components, fileContents: sourceContents)
         ]
         for processor in processors {
             try processor.process()

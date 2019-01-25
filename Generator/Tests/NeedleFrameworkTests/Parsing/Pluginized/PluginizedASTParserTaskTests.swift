@@ -26,9 +26,8 @@ class PluginizedASTParserTaskTests: AbstractParserTests {
         let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = PluginizedASTParserTask(ast: AST(structure: structure, imports: imports))
+        let task = PluginizedASTParserTask(ast: AST(structure: structure, imports: imports, sourceContent: sourceContent))
         let node = try! task.execute()
-
 
         // Regular components.
         XCTAssertEqual(node.components.count, 2)

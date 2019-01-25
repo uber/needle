@@ -35,7 +35,7 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
     /// - throws: Any error occurred during execution.
     override func execute() throws -> DependencyGraphNode {
         let (components, dependencies) = try parseStructures()
-        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports)
+        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports, sourceContent: ast.sourceContent)
     }
 
     // MARK: - Private

@@ -31,4 +31,6 @@ struct PluginizedDependencyGraphNode {
     let dependencies: [Dependency]
     /// The list of import statements including the `import` keyword.
     let imports: [String]
+    /// The source file content.
+    let sourceContent: String
 }

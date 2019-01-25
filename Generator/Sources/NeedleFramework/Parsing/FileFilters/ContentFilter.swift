@@ -16,6 +16,10 @@
 
 import Foundation
 
+/// The regex pattern that matches any component instantiation expressions
+/// with the first capture group capturing the name of the component.
+let componentInstantiationRegex = Regex("\\s+([A-Z]\\w+)\\s*\\(\\s*parent\\s*:\\s*")
+
 /// A filter that performs checks based on source file content.
 class ContentFilter: FileFilter {
 
@@ -42,6 +46,10 @@ class ContentFilter: FileFilter {
         }
         let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)?Dependency").firstMatch(in: content) != nil)
         if containsDependencyInheritance {
+            return true
+        }
+        let containsComponentInstantiation = (componentInstantiationRegex.firstMatch(in: content) != nil)
+        if containsComponentInstantiation {
             return true
         }
 

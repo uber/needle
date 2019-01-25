@@ -45,15 +45,15 @@ class DependencyGraphParserTests: AbstractParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor, withTimeout: 10)
+            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], using: executor, withTimeout: 10)
         } catch {
             XCTFail("\(error)")
         }
 
         XCTAssertEqual(executor.executeCallCount, files.count)
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 6)
-        XCTAssertEqual(parserCount, 6)
+        XCTAssertEqual(producerCount, 8)
+        XCTAssertEqual(parserCount, 8)
         XCTAssertEqual(producerCount, parserCount)
     }
 
@@ -67,17 +67,35 @@ class DependencyGraphParserTests: AbstractParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            let (components, imports) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor, withTimeout: 10)
+            let (components, imports) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], using: executor, withTimeout: 10)
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
-            XCTAssertEqual(components.count, 7)
-            XCTAssertEqual(imports, ["import Foundation", "import RIBs", "import RxSwift", "import UIKit", "import Utility"])
+            XCTAssertEqual(components.count, 9)
+            XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility"])
         } catch {
             XCTFail("\(error)")
         }
 
         XCTAssertEqual(executor.executeCallCount, files.count)
+    }
+
+    func test_parse_withInvalidComponentInits_verifyError() {
+        let parser = DependencyGraphParser()
+        let fixturesURL = fixtureDirUrl()
+        let executor = MockSequenceExecutor()
+
+        do {
+            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: [], using: executor, withTimeout: 10)
+            XCTFail()
+        } catch {
+            switch error {
+            case GeneratorError.withMessage(let message):
+                XCTAssertTrue(message.contains("is instantiated incorrectly. All components must be instantiated by parent components."))
+            default:
+                XCTFail()
+            }
+        }
     }
 }
 
