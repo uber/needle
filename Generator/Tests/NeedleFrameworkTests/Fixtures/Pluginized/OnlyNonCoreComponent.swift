@@ -1,5 +1,4 @@
 import NeedleFoundation
-import NeedleFoundationExtension
 import ScoreSheet
 
 /// Component for the Game non core scope.
