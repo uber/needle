@@ -50,7 +50,7 @@ class PluginizedDependencyGraphParser {
     func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> ([Component], [PluginizedComponent], [String]) {
         let urlHandles: [UrlSequenceHandle] = try enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports, sourceContents) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
-        return try process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports, sourceContents)
+        return try process(pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports, parsedFrom: sourceContents, with: executor, timeout)
     }
 
     // MARK: - Private
@@ -117,7 +117,7 @@ class PluginizedDependencyGraphParser {
         return (pluginizedComponents, nonCoreComponents, pluginExtensions, components, dependencies, imports, sourceContents)
     }
 
-    private func process(_ pluginizedComponents: [PluginizedASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, _ sourceContents: [String]) throws -> ([Component], [PluginizedComponent], [String]) {
+    private func process(_ pluginizedComponents: [PluginizedASTComponent], _ nonCoreComponents: [ASTComponent], _ pluginExtensions: [PluginExtension], _ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, parsedFrom sourceContents: [String], with executor: SequenceExecutor, _ timeout: Double) throws -> ([Component], [PluginizedComponent], [String]) {
         var allComponents = nonCoreComponents + components
         let pluginizedComponentData = pluginizedComponents.map { (component: PluginizedASTComponent) -> ASTComponent in
             component.data
@@ -131,7 +131,7 @@ class PluginizedDependencyGraphParser {
             PluginExtensionLinker(pluginizedComponents: pluginizedComponents, pluginExtensions: pluginExtensions),
             AncestorCycleValidator(components: allComponents),
             PluginExtensionCycleValidator(pluginizedComponents: pluginizedComponents),
-            ComponentInstantiationValidator(components: allComponents, fileContents: sourceContents)
+            ComponentInstantiationValidator(components: allComponents, fileContents: sourceContents, executor: executor, timeout: timeout)
         ]
         for processor in processors {
             try processor.process()

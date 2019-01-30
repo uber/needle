@@ -37,8 +37,6 @@ class DependencyGraphParserTests: AbstractParserTests {
                 producerCount += 1
             } else if task is ASTParserTask {
                 parserCount += 1
-            } else {
-                XCTFail()
             }
         }
 
@@ -50,7 +48,7 @@ class DependencyGraphParserTests: AbstractParserTests {
             XCTFail("\(error)")
         }
 
-        XCTAssertEqual(executor.executeCallCount, files.count)
+        XCTAssertEqual(executor.executeCallCount, files.count * 2)
         XCTAssertEqual(filterCount, files.count)
         XCTAssertEqual(producerCount, 8)
         XCTAssertEqual(parserCount, 8)
@@ -77,7 +75,7 @@ class DependencyGraphParserTests: AbstractParserTests {
             XCTFail("\(error)")
         }
 
-        XCTAssertEqual(executor.executeCallCount, files.count)
+        XCTAssertEqual(executor.executeCallCount, files.count * 2)
     }
 
     func test_parse_withInvalidComponentInits_verifyError() {
