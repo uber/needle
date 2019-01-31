@@ -59,7 +59,7 @@ class DependencyGraphParser {
     func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> (components: [Component], imports: [String]) {
         let urlHandles: [UrlSequenceHandle] = try enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (components, dependencies, imports, sourceContents) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
-        return try process(components, dependencies, imports, sourceContents)
+        return try process(components, dependencies, imports, parsedFrom: sourceContents, with: executor, timeout)
     }
 
     // MARK: - Private
@@ -120,13 +120,13 @@ class DependencyGraphParser {
         return (components, dependencies, imports, sourceContents)
     }
 
-    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, _ sourceContents: [String]) throws -> ([Component], [String]) {
+    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, parsedFrom sourceContents: [String], with executor: SequenceExecutor, _ timeout: Double) throws -> ([Component], [String]) {
         let processors: [Processor] = [
             DuplicateValidator(components: components, dependencies: dependencies),
             ParentLinker(components: components),
             DependencyLinker(components: components, dependencies: dependencies),
             AncestorCycleValidator(components: components),
-            ComponentInstantiationValidator(components: components, fileContents: sourceContents)
+            ComponentInstantiationValidator(components: components, fileContents: sourceContents, executor: executor, timeout: timeout)
         ]
         for processor in processors {
             try processor.process()

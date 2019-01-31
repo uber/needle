@@ -14,16 +14,25 @@
 //  limitations under the License.
 //
 
+import Concurrency
 import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 
 class ComponentInstantiationValidatorTests: AbstractParserTests {
 
+    private var executor: SequenceExecutor!
+
+    override func setUp() {
+        super.setUp()
+
+        executor = MockSequenceExecutor()
+    }
+
     func test_withValidInstantiations_verifyNoError() {
         let content = self.content(of: "ValidInits.swift")
         let components = [astComponent(withName: "MyComponent"), astComponent(withName: "My1Component"), astComponent(withName: "MyComponent2"), astComponent(withName: "MyCompo3nent"), astComponent(withName: "RootComponent")]
-        let validator = ComponentInstantiationValidator(components: components, fileContents: [content])
+        let validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
         do {
             try validator.process()
         } catch {
@@ -34,7 +43,7 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     func test_withInvalidInstantiations_verifyErrors() {
         var content = self.content(of: "InvalidInits/InvalidInits1.swift")
         let components = [astComponent(withName: "MyComponent"), astComponent(withName: "MyComponent2"), astComponent(withName: "My5Component"), astComponent(withName: "MyComp6onent6"), astComponent(withName: "RootComponent")]
-        var validator = ComponentInstantiationValidator(components: components, fileContents: [content])
+        var validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -43,7 +52,7 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
         }
 
         content = self.content(of: "InvalidInits/InvalidInits2.swift")
-        validator = ComponentInstantiationValidator(components: components, fileContents: [content])
+        validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -52,7 +61,7 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
         }
 
         content = self.content(of: "InvalidInits/InvalidInits3.swift")
-        validator = ComponentInstantiationValidator(components: components, fileContents: [content])
+        validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -61,7 +70,7 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
         }
 
         content = self.content(of: "InvalidInits/InvalidInits4.swift")
-        validator = ComponentInstantiationValidator(components: components, fileContents: [content])
+        validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -73,7 +82,7 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     func test_withInvalidInstantiations_notAComponent_verifyNoError() {
         let content = self.content(of: "InvalidInits/InvalidInits1.swift")
         let components = [astComponent(withName: "ADifferentComponent")]
-        let validator = ComponentInstantiationValidator(components: components, fileContents: [content])
+        let validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
         do {
             try validator.process()
         } catch {
