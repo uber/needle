@@ -20,8 +20,9 @@ import Foundation
 /// with the first capture group capturing the name of the class.
 let componentInstantiationRegex = Regex("\\s+([A-Z]\\w+)\\s*\\(\\s*parent\\s*:\\s*")
 
-/// A filter that performs checks based on source file content.
-class ContentFilter: FileFilter {
+/// A filter that performs checks if the file content contains any
+/// component instantiations.
+class ComponentInitFilter: FileFilter {
 
     /// Initializer.
     ///
@@ -32,22 +33,14 @@ class ContentFilter: FileFilter {
 
     /// Execute the filter.
     ///
-    /// - returns: `true` if the
+    /// - returns: `true` if the file content contains component instantiations.
     func filter() -> Bool {
         // Use simple string matching first since it's more performant.
-        if !content.contains("Component") && !content.contains("Dependency") {
+        if !content.contains("parent") {
             return false
         }
 
-        // Match actual component inheritance using Regex.
-        let containsComponentInheritance = (Regex(": *(\(needleModuleName).)?Component *<").firstMatch(in: content) != nil)
-        if containsComponentInheritance {
-            return true
-        }
-        let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)?Dependency").firstMatch(in: content) != nil)
-        if containsDependencyInheritance {
-            return true
-        }
+        // Match actual syntax using Regex.
         let containsComponentInstantiation = (componentInstantiationRegex.firstMatch(in: content) != nil)
         if containsComponentInstantiation {
             return true

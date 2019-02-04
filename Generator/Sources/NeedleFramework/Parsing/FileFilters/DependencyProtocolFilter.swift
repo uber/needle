@@ -16,9 +16,9 @@
 
 import Foundation
 
-/// A filter that performs checks based on source file content, including
-/// pluginized components and non-core components.
-class PluginizedContentFilter: FileFilter {
+/// A filter that performs checks if the file content contains any
+/// dependency protocol declarations.
+class DependencyProtocolFilter: FileFilter {
 
     /// Initializer.
     ///
@@ -29,33 +29,17 @@ class PluginizedContentFilter: FileFilter {
 
     /// Execute the filter.
     ///
-    /// - returns: `true` if the
+    /// - returns: `true` if the file content contains dependency protocol
+    /// declarations.
     func filter() -> Bool {
-        let baseFilter = ContentFilter(content: content)
-        if baseFilter.filter() {
-            return true
-        }
-
         // Use simple string matching first since it's more performant.
-        if !content.contains("PluginizedComponent") && !content.contains("NonCoreComponent") && !content.contains("Dependency") && !content.contains("PluginExtension") {
+        if !content.contains("Dependency") {
             return false
         }
 
-        // Match actual inheritances using Regex.
-        let containsPluginizedComponentInheritance = (Regex(": *(\(needleModuleName).)?PluginizedComponent *<").firstMatch(in: content) != nil)
-        if containsPluginizedComponentInheritance {
-            return true
-        }
-        let containsNonCoreComponentInheritance = (Regex(": *(\(needleModuleName).)?NonCoreComponent *<").firstMatch(in: content) != nil)
-        if containsNonCoreComponentInheritance {
-            return true
-        }
+        // Match actual syntax using Regex.
         let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)?Dependency").firstMatch(in: content) != nil)
         if containsDependencyInheritance {
-            return true
-        }
-        let containsPluginExtensionInheritance = (Regex(": *(\(needleModuleName).)?PluginExtension").firstMatch(in: content) != nil)
-        if containsPluginExtensionInheritance {
             return true
         }
 

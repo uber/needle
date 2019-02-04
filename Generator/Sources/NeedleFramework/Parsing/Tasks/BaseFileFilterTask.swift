@@ -17,11 +17,17 @@
 import Concurrency
 import Foundation
 
-/// A task that checks the various aspects of a file, including its content
-/// to determine if the file needs to be parsed for AST. If the file should
-/// This task extends the Needle `FileFilterTask` to support pluginized and
-/// non-core component types.
-class PluginizedFileFilterTask: AbstractTask<FilterResult> {
+/// The result of filtering the source file.
+enum FilterResult {
+    /// The source URL and content that should be parsed.
+    case shouldParse(URL, String)
+    /// The file should be skipped.
+    case skip
+}
+
+/// A base task implementation that checks the common aspects of a file
+/// to determine if the file needs to be parsed for AST.
+class BaseFileFilterTask: AbstractTask<FilterResult> {
 
     /// Initializer.
     ///
@@ -32,11 +38,12 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
     /// - parameter exclusionPaths: The list of path components to check.
     /// If the given URL's path contains any elements in this list, the
     /// URL will be excluded.
-    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
+    /// - parameter taskId: The tracking task ID to use.
+    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String], taskId: TaskIds) {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
         self.exclusionPaths = exclusionPaths
-        super.init(id: TaskIds.pluginizedFileFilterTask.rawValue)
+        super.init(id: taskId.rawValue)
     }
 
     /// Execute the task and returns the filter result indicating if the file
@@ -44,7 +51,7 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
     ///
     /// - returns: The `FilterResult`.
     /// - throws: Any error occurred during execution.
-    override func execute() throws -> FilterResult {
+    final override func execute() throws -> FilterResult {
         let urlFilter = UrlFilter(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
         if !urlFilter.filter() {
             return FilterResult.skip
@@ -52,15 +59,27 @@ class PluginizedFileFilterTask: AbstractTask<FilterResult> {
 
         let content = try? String(contentsOf: url)
         if let content = content {
-            let contentFilter = PluginizedContentFilter(content: content)
-            if contentFilter.filter() {
-                return FilterResult.shouldParse(url, content)
-            } else {
-                return FilterResult.skip
+            let filters = self.filters(for: content)
+            for filter in filters {
+                // If any filter passed, the file needs to be parsed.
+                if filter.filter() {
+                    return FilterResult.shouldParse(url, content)
+                }
             }
+
+            return FilterResult.skip
         } else {
             throw GeneratorError.withMessage("Failed to read file at \(url)")
         }
+    }
+
+    /// Create a set of filters for the given file content.
+    ///
+    /// - parameter content: The file content the returned filters should
+    /// be applied on.
+    /// - returns: A set of filters to use on the given content.
+    func filters(for content: String) -> [FileFilter] {
+        return []
     }
 
     // MARK: - Private

@@ -31,7 +31,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         var producerCount = 0
         var parserCount = 0
         executor.executionHandler = { (task: Task, result: Any) in
-            if task is PluginizedFileFilterTask {
+            if task is PluginizedDeclarationsFilterTask {
                 filterCount += 1
             } else if task is ASTProducerTask {
                 producerCount += 1

@@ -53,6 +53,21 @@ extension String {
         FileManager.default.fileExists(atPath: self, isDirectory: &isDirectory)
         return isDirectory.boolValue
     }
+
+    /// Check if this string contains any one of the elements in the
+    /// given array.
+    ///
+    /// - parameter array: The list of elements to check.
+    /// - returns: `true` if this string contains at least one element
+    /// in the given array. `false` otherwise.
+    func containsAny(in array: [String]) -> Bool {
+        for element in array {
+            if contains(element) {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 /// Utility URL extensions.

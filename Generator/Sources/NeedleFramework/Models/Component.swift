@@ -64,3 +64,16 @@ class ASTComponent {
         self.expressionCallTypeNames = expressionCallTypeNames
     }
 }
+
+/// A intermediate data model representing an extension of a component parsed
+/// straight out of the source file AST. This data model does not represent a
+/// complete component scope. Instead it is linked with the `ASTComponent` to
+/// for a complete representation.
+struct ASTComponentExtension {
+    /// The name of the component.
+    let name: String
+    /// A list of properties this component instantiates, thereby provides.
+    let properties: [Property]
+    /// A list of expression call type names.
+    let expressionCallTypeNames: [String]
+}

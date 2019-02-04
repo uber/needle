@@ -16,8 +16,8 @@
 
 import Foundation
 
-/// The base protocol of a file filter used by the `FileFilterTask`. It
-/// determines if the parsing sequence should continue based on the file.
+/// The base protocol of a file filter. It determines if the parsing
+/// sequence should continue based on the file.
 protocol FileFilter: AnyObject {
 
     /// Execute the filter.
