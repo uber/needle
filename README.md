@@ -8,7 +8,7 @@ Needle is a dependency injection (DI) system for Swift. Unlike other DI framewor
 
 Needle aims to achieve the following primary goals:
 1. Provide high reliability by ensuring dependency injection code is compile-time safe.
-2. Ensure code generation is highly performant even when used with extremely large, multi-million-line codebases.
+2. Ensure code generation is highly performant even when used with multi-million-line codebases.
 3. Be compatible with all iOS application architectures, including RIBs, MVx and etc.
 
 ## The gist
