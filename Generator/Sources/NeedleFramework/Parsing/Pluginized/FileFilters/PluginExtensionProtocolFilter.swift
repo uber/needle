@@ -38,7 +38,7 @@ class PluginExtensionProtocolFilter: FileFilter {
         }
 
         // Match actual syntax using Regex.
-        let containsPluginExtensionInheritance = (Regex(": *(\(needleModuleName).)?PluginExtension").firstMatch(in: content) != nil)
+        let containsPluginExtensionInheritance = (Regex.foundationInheritanceRegex(forProtocol: "PluginExtension").firstMatch(in: content) != nil)
         if containsPluginExtensionInheritance {
             return true
         }

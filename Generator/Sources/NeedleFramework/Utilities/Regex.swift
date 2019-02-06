@@ -48,4 +48,24 @@ class Regex {
     func matches(in content: String) -> [NSTextCheckingResult] {
         return expression.matches(in: content, options: [], range: NSRange(location:0, length:content.count))
     }
+
+    /// MARK: - Static Providers
+
+    /// Creates a regular expression for any class that inherits from the
+    /// NeedleFoundation module's base class with given name.
+    ///
+    /// - parameter className: The name of the base class to check.
+    /// - returns: The regular expression.
+    static func foundationInheritanceRegex(forClass className: String) -> Regex {
+        return Regex(": *(\(needleModuleName).)?\(className) *<")
+    }
+
+    /// Creates a regular expression for any protocol that inherits from the
+    /// NeedleFoundation module's base protocol with given name.
+    ///
+    /// - parameter className: The name of the base protocol to check.
+    /// - returns: The regular expression.
+    static func foundationInheritanceRegex(forProtocol protocolName: String) -> Regex {
+        return Regex(": *(\(needleModuleName).)?\(protocolName)")
+    }
 }

@@ -38,7 +38,7 @@ class DependencyProtocolFilter: FileFilter {
         }
 
         // Match actual syntax using Regex.
-        let containsDependencyInheritance = (Regex(": *(\(needleModuleName).)?Dependency").firstMatch(in: content) != nil)
+        let containsDependencyInheritance = (Regex.foundationInheritanceRegex(forProtocol: "Dependency").firstMatch(in: content) != nil)
         if containsDependencyInheritance {
             return true
         }

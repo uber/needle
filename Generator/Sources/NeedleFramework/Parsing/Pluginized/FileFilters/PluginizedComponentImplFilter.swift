@@ -38,7 +38,7 @@ class PluginizedComponentImplFilter: FileFilter {
         }
 
         // Match actual syntax using Regex.
-        let containsPluginizedComponentInheritance = (Regex(": *(\(needleModuleName).)?PluginizedComponent *<").firstMatch(in: content) != nil)
+        let containsPluginizedComponentInheritance = (Regex.foundationInheritanceRegex(forClass: "PluginizedComponent").firstMatch(in: content) != nil)
         if containsPluginizedComponentInheritance {
             return true
         }

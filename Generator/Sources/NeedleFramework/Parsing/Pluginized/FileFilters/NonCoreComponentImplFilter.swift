@@ -38,7 +38,7 @@ class NonCoreComponentImplFilter: FileFilter {
         }
 
         // Match actual syntax using Regex.
-        let containsNonCoreComponentInheritance = (Regex(": *(\(needleModuleName).)?NonCoreComponent *<").firstMatch(in: content) != nil)
+        let containsNonCoreComponentInheritance = (Regex.foundationInheritanceRegex(forClass: "NonCoreComponent").firstMatch(in: content) != nil)
         if containsNonCoreComponentInheritance {
             return true
         }

@@ -72,7 +72,7 @@ class ASTComponent {
 struct ASTComponentExtension {
     /// The name of the component.
     let name: String
-    /// A list of properties this component instantiates, thereby provides.
+    /// A list of properties this component instantiates, and thereby provides.
     let properties: [Property]
     /// A list of expression call type names.
     let expressionCallTypeNames: [String]
