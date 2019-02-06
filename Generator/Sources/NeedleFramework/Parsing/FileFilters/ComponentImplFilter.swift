@@ -18,35 +18,12 @@ import Foundation
 
 /// A filter that performs checks if the file content contains any
 /// component class implementations.
-class ComponentImplFilter: FileFilter {
+class ComponentImplFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        self.content = content
+        super.init(content: content, keyword: "Component", regex: Regex.foundationInheritanceRegex(forClass: "Component"))
     }
-
-    /// Execute the filter.
-    ///
-    /// - returns: `true` if the file content contains component class
-    /// implementations.
-    func filter() -> Bool {
-        // Use simple string matching first since it's more performant.
-        if !content.contains("Component") {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        let containsComponentInheritance = (Regex.foundationInheritanceRegex(forClass: "Component").firstMatch(in: content) != nil)
-        if containsComponentInheritance {
-            return true
-        }
-
-        return false
-    }
-
-    // MARK: - Private
-
-    private let content: String
 }

@@ -18,35 +18,12 @@ import Foundation
 
 /// A filter that performs checks if the file content contains any
 /// Pluginized component class implementations.
-class PluginizedComponentImplFilter: FileFilter {
+class PluginizedComponentImplFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        self.content = content
+        super.init(content: content, keyword: "PluginizedComponent", regex: Regex.foundationInheritanceRegex(forClass: "PluginizedComponent"))
     }
-
-    /// Execute the filter.
-    ///
-    /// - returns: `true` if the file content contains Pluginized component
-    /// class implementations.
-    func filter() -> Bool {
-        // Use simple string matching first since it's more performant.
-        if !content.contains("PluginizedComponent") {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        let containsPluginizedComponentInheritance = (Regex.foundationInheritanceRegex(forClass: "PluginizedComponent").firstMatch(in: content) != nil)
-        if containsPluginizedComponentInheritance {
-            return true
-        }
-
-        return false
-    }
-
-    // MARK: - Private
-
-    private let content: String
 }

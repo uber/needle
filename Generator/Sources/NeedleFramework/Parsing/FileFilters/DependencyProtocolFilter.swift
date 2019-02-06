@@ -18,35 +18,12 @@ import Foundation
 
 /// A filter that performs checks if the file content contains any
 /// dependency protocol declarations.
-class DependencyProtocolFilter: FileFilter {
+class DependencyProtocolFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        self.content = content
+        super.init(content: content, keyword: "Dependency", regex: Regex.foundationInheritanceRegex(forProtocol: "Dependency"))
     }
-
-    /// Execute the filter.
-    ///
-    /// - returns: `true` if the file content contains dependency protocol
-    /// declarations.
-    func filter() -> Bool {
-        // Use simple string matching first since it's more performant.
-        if !content.contains("Dependency") {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        let containsDependencyInheritance = (Regex.foundationInheritanceRegex(forProtocol: "Dependency").firstMatch(in: content) != nil)
-        if containsDependencyInheritance {
-            return true
-        }
-
-        return false
-    }
-
-    // MARK: - Private
-
-    private let content: String
 }

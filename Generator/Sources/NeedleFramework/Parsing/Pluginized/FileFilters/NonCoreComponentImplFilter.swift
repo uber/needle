@@ -18,35 +18,12 @@ import Foundation
 
 /// A filter that performs checks if the file content contains any
 /// non-core component class implementations.
-class NonCoreComponentImplFilter: FileFilter {
+class NonCoreComponentImplFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        self.content = content
+        super.init(content: content, keyword: "NonCoreComponent", regex: Regex.foundationInheritanceRegex(forClass: "NonCoreComponent"))
     }
-
-    /// Execute the filter.
-    ///
-    /// - returns: `true` if the file content contains non-core component
-    /// class implementations.
-    func filter() -> Bool {
-        // Use simple string matching first since it's more performant.
-        if !content.contains("NonCoreComponent") {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        let containsNonCoreComponentInheritance = (Regex.foundationInheritanceRegex(forClass: "NonCoreComponent").firstMatch(in: content) != nil)
-        if containsNonCoreComponentInheritance {
-            return true
-        }
-
-        return false
-    }
-
-    // MARK: - Private
-
-    private let content: String
 }

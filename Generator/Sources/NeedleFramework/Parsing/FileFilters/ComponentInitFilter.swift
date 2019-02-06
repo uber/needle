@@ -22,34 +22,12 @@ let componentInstantiationRegex = Regex("\\s+([A-Z]\\w+)\\s*\\(\\s*parent\\s*:\\
 
 /// A filter that performs checks if the file content contains any
 /// component instantiations.
-class ComponentInitFilter: FileFilter {
+class ComponentInitFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        self.content = content
+        super.init(content: content, keyword: "parent", regex: componentInstantiationRegex)
     }
-
-    /// Execute the filter.
-    ///
-    /// - returns: `true` if the file content contains component instantiations.
-    func filter() -> Bool {
-        // Use simple string matching first since it's more performant.
-        if !content.contains("parent") {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        let containsComponentInstantiation = (componentInstantiationRegex.firstMatch(in: content) != nil)
-        if containsComponentInstantiation {
-            return true
-        }
-
-        return false
-    }
-
-    // MARK: - Private
-
-    private let content: String
 }

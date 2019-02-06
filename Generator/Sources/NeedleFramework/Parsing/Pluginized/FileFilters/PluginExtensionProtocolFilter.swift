@@ -18,35 +18,12 @@ import Foundation
 
 /// A filter that performs checks if the file content contains any
 /// plugin extension protocol declarations.
-class PluginExtensionProtocolFilter: FileFilter {
+class PluginExtensionProtocolFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        self.content = content
+        super.init(content: content, keyword: "PluginExtension", regex: Regex.foundationInheritanceRegex(forProtocol: "PluginExtension"))
     }
-
-    /// Execute the filter.
-    ///
-    /// - returns: `true` if the file content contains plugin extension
-    /// protocol declarations.
-    func filter() -> Bool {
-        // Use simple string matching first since it's more performant.
-        if !content.contains("PluginExtension") {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        let containsPluginExtensionInheritance = (Regex.foundationInheritanceRegex(forProtocol: "PluginExtension").firstMatch(in: content) != nil)
-        if containsPluginExtensionInheritance {
-            return true
-        }
-
-        return false
-    }
-
-    // MARK: - Private
-
-    private let content: String
 }
