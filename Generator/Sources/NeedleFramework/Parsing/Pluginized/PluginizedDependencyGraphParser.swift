@@ -62,7 +62,7 @@ class PluginizedDependencyGraphParser {
         let enumerator = FileEnumerator()
         for url in rootUrls {
             try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
-                let task = PluginizedFileFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
+                let task = PluginizedDeclarationsFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
                 let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
                 taskHandleTuples.append((taskHandle, fileUrl))
             }
@@ -72,7 +72,7 @@ class PluginizedDependencyGraphParser {
     }
 
     private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<PluginizedDependencyGraphNode> {
-        if currentTask is PluginizedFileFilterTask, let filterResult = currentResult as? FilterResult {
+        if currentTask is PluginizedDeclarationsFilterTask, let filterResult = currentResult as? FilterResult {
             switch filterResult {
             case .shouldParse(let url, let content):
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))

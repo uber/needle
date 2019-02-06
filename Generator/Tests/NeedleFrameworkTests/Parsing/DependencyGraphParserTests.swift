@@ -31,7 +31,7 @@ class DependencyGraphParserTests: AbstractParserTests {
         var producerCount = 0
         var parserCount = 0
         executor.executionHandler = { (task: Task, result: Any) in
-            if task is FileFilterTask {
+            if task is DeclarationsFilterTask {
                 filterCount += 1
             } else if task is ASTProducerTask {
                 producerCount += 1

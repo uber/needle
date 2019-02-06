@@ -16,15 +16,18 @@
 
 import Foundation
 
-/// The base protocol of a file filter. It determines if the parsing
-/// sequence should continue based on the file.
-protocol FileFilter: AnyObject {
+/// The regex pattern that matches any class instantiation expressions
+/// with the first capture group capturing the name of the class.
+let componentInstantiationRegex = Regex("\\s+([A-Z]\\w+)\\s*\\(\\s*parent\\s*:\\s*")
 
-    /// Execute the filter.
+/// A filter that performs checks if the file content contains any
+/// component instantiations.
+class ComponentInitFilter: KeywordRegexFilter {
+
+    /// Initializer.
     ///
-    /// - returns: `true` if the filter passed and the task should either
-    /// execute the next filter or move onto the next task in the sequence
-    /// if there are no more filters. `false` if the filter failed, and
-    /// the task sequence should abort.
-    func filter() -> Bool
+    /// - parameter content: The content to be filtered.
+    init(content: String) {
+        super.init(content: content, keyword: "parent", regex: componentInstantiationRegex)
+    }
 }
