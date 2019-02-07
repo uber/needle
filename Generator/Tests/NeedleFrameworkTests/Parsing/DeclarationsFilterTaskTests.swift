@@ -25,7 +25,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
 
         let result = try! task.execute()
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -40,7 +40,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         var result = try! excludeSuffixTask.execute()
 
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -51,7 +51,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         result = try! includeSuffixTask.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -66,7 +66,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -80,7 +80,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -95,7 +95,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -111,7 +111,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -127,7 +127,7 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:

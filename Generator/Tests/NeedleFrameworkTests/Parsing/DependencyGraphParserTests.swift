@@ -35,7 +35,7 @@ class DependencyGraphParserTests: AbstractParserTests {
                 filterCount += 1
             } else if task is ASTProducerTask {
                 producerCount += 1
-            } else if task is ASTParserTask {
+            } else if task is DeclarationsParserTask {
                 parserCount += 1
             }
         }
@@ -48,18 +48,15 @@ class DependencyGraphParserTests: AbstractParserTests {
             XCTFail("\(error)")
         }
 
-        XCTAssertEqual(executor.executeCallCount, files.count * 2)
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 8)
-        XCTAssertEqual(parserCount, 8)
+        XCTAssertEqual(producerCount, 7)
+        XCTAssertEqual(parserCount, 7)
         XCTAssertEqual(producerCount, parserCount)
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {
         let parser = DependencyGraphParser()
         let fixturesURL = fixtureDirUrl()
-        let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
-        let files = enumerator!.allObjects as! [URL]
         let executor = MockSequenceExecutor()
 
         XCTAssertEqual(executor.executeCallCount, 0)
@@ -70,12 +67,10 @@ class DependencyGraphParserTests: AbstractParserTests {
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
             XCTAssertEqual(components.count, 9)
-            XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility"])
+            XCTAssertEqual(imports, ["import Foundation", "import RIBs", "import RxSwift", "import UIKit", "import Utility"])
         } catch {
             XCTFail("\(error)")
         }
-
-        XCTAssertEqual(executor.executeCallCount, files.count * 2)
     }
 
     func test_parse_withInvalidComponentInits_verifyError() {

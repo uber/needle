@@ -57,51 +57,65 @@ class DependencyGraphParser {
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
     func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: Double) throws -> (components: [Component], imports: [String]) {
-        let urlHandles: [UrlSequenceHandle] = try enqueueParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
-        let (components, dependencies, imports, sourceContents) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
-        return try process(components, dependencies, imports, parsedFrom: sourceContents, with: executor, timeout)
+        // Collect data models for component and dependency declarations.
+        let dependencyNodeUrlHandles: [DependencyNodeUrlSequenceHandle] = try enqueueDeclarationParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
+        let (components, dependencies, imports) = try collectDeclarationDataModels(with: dependencyNodeUrlHandles, waitUpTo: timeout)
+
+        // Collect source contents that contain component instantiations for validation.
+        let initsUrlHandles = try enqueueComponentInitsTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
+        let initsSourceContents = try collectInitsDataModels(with: initsUrlHandles, waitUpTo: timeout)
+
+        // Process all the data models.
+        return try process(components, dependencies, imports, initsSourceContents, with: executor, timeout)
     }
 
-    // MARK: - Private
+    // MARK: - Common
 
-    private func enqueueParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) throws -> [(SequenceExecutionHandle<DependencyGraphNode>, URL)] {
-        var taskHandleTuples = [(handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)]()
+    private func executeAndCollectTaskHandles<ResultType>(with rootUrls: [URL], sourcesListFormatValue: String?, execution: (URL) -> SequenceExecutionHandle<ResultType>) throws -> [(SequenceExecutionHandle<ResultType>, URL)] {
+        var urlHandles = [(SequenceExecutionHandle<ResultType>, URL)]()
 
         // Enumerate all files and execute parsing sequences concurrently.
         let enumerator = FileEnumerator()
         for url in rootUrls {
             try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
-                let task = DeclarationsFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
-                let taskHandle = executor.executeSequence(from: task, with: nextExecution(after:with:))
-                taskHandleTuples.append((taskHandle, fileUrl))
+                let taskHandle = execution(fileUrl)
+                urlHandles.append((taskHandle, fileUrl))
             }
         }
 
-        return taskHandleTuples
+        return urlHandles
     }
 
-    private func nextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<DependencyGraphNode> {
+    // MARK: - Declaration Parsing
+
+    private func enqueueDeclarationParsingTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) throws -> [DependencyNodeUrlSequenceHandle] {
+        return try executeAndCollectTaskHandles(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue) { (fileUrl: URL) -> SequenceExecutionHandle<DependencyGraphNode> in
+            let task = DeclarationsFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
+            return executor.executeSequence(from: task, with: declarationNextExecution(after:with:))
+        }
+    }
+
+    private func declarationNextExecution(after currentTask: Task, with currentResult: Any) -> SequenceExecution<DependencyGraphNode> {
         if currentTask is DeclarationsFilterTask, let filterResult = currentResult as? FilterResult {
             switch filterResult {
-            case .shouldParse(let url, let content):
+            case .shouldProcess(let url, let content):
                 return .continueSequence(ASTProducerTask(sourceUrl: url, sourceContent: content))
             case .skip:
-                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: [], sourceContent: ""))
+                return .endOfSequence(DependencyGraphNode(components: [], dependencies: [], imports: []))
             }
         } else if currentTask is ASTProducerTask, let ast = currentResult as? AST {
-            return .continueSequence(ASTParserTask(ast: ast))
-        } else if currentTask is ASTParserTask, let node = currentResult as? DependencyGraphNode {
+            return .continueSequence(DeclarationsParserTask(ast: ast))
+        } else if currentTask is DeclarationsParserTask, let node = currentResult as? DependencyGraphNode {
             return .endOfSequence(node)
         } else {
             fatalError("Unhandled task \(currentTask) with result \(currentResult)")
         }
     }
 
-    private func collectDataModels(with urlHandles: [UrlSequenceHandle], waitUpTo timeout: Double) throws -> ([ASTComponent], [Dependency], Set<String>, [String]) {
+    private func collectDeclarationDataModels(with urlHandles: [DependencyNodeUrlSequenceHandle], waitUpTo timeout: Double) throws -> ([ASTComponent], [Dependency], Set<String>) {
         var components = [ASTComponent]()
         var dependencies = [Dependency]()
         var imports = Set<String>()
-        var sourceContents = [String]()
         for urlHandle in urlHandles {
             do {
                 let node = try urlHandle.handle.await(withTimeout: timeout)
@@ -110,23 +124,61 @@ class DependencyGraphParser {
                 for statement in node.imports {
                     imports.insert(statement)
                 }
-                sourceContents.append(node.sourceContent)
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
                 throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
             } catch {
                 throw error
             }
         }
-        return (components, dependencies, imports, sourceContents)
+        return (components, dependencies, imports)
     }
 
-    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, parsedFrom sourceContents: [String], with executor: SequenceExecutor, _ timeout: Double) throws -> ([Component], [String]) {
+    // MARK: - Component Initializer Parsing
+
+    private func enqueueComponentInitsTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) throws -> [ComponentInitsUrlSequenceHandle] {
+        return try executeAndCollectTaskHandles(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue) { (fileUrl: URL) -> SequenceExecutionHandle<String?> in
+            let task = ComponentInitsFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
+            return executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<String?> in
+                if currentTask is ComponentInitsFilterTask, let filterResult = currentResult as? FilterResult {
+                    switch filterResult {
+                    case .shouldProcess(_, let content):
+                        return .endOfSequence(content)
+                    case .skip:
+                        return .endOfSequence(nil)
+                    }
+                } else {
+                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                }
+            }
+        }
+    }
+
+    private func collectInitsDataModels(with urlHandles: [ComponentInitsUrlSequenceHandle], waitUpTo timeout: Double) throws -> [String] {
+        var sourceContents = [String]()
+        for urlHandle in urlHandles {
+            do {
+                let content = try urlHandle.handle.await(withTimeout: timeout)
+                if let content = content {
+                    sourceContents.append(content)
+                }
+            } catch SequenceExecutionError.awaitTimeout(let taskId) {
+                throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
+            } catch {
+                throw error
+            }
+        }
+        return sourceContents
+    }
+
+    // MARK: - Processing
+
+    private func process(_ components: [ASTComponent], _ dependencies: [Dependency], _ imports: Set<String>, _ initsSourceContents: [String], with executor: SequenceExecutor, _ timeout: Double) throws -> ([Component], [String]) {
         let processors: [Processor] = [
             DuplicateValidator(components: components, dependencies: dependencies),
             ParentLinker(components: components),
             DependencyLinker(components: components, dependencies: dependencies),
             AncestorCycleValidator(components: components),
-            ComponentInstantiationValidator(components: components, fileContents: sourceContents, executor: executor, timeout: timeout)
+            ComponentInstantiationValidator(components: components, fileContents: initsSourceContents, executor: executor, timeout: timeout)
         ]
         for processor in processors {
             try processor.process()
@@ -140,4 +192,5 @@ class DependencyGraphParser {
     }
 }
 
-private typealias UrlSequenceHandle = (handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)
+private typealias DependencyNodeUrlSequenceHandle = (handle: SequenceExecutionHandle<DependencyGraphNode>, fileUrl: URL)
+private typealias ComponentInitsUrlSequenceHandle = (handle: SequenceExecutionHandle<String?>, fileUrl: URL)

@@ -35,7 +35,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
                 filterCount += 1
             } else if task is ASTProducerTask {
                 producerCount += 1
-            } else if task is PluginizedASTParserTask {
+            } else if task is PluginizedDeclarationsParserTask {
                 parserCount += 1
             }
         }
@@ -48,18 +48,15 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
             XCTFail("\(error)")
         }
 
-        XCTAssertEqual(executor.executeCallCount, files.count * 2)
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 11)
-        XCTAssertEqual(parserCount, 11)
+        XCTAssertEqual(producerCount, 12)
+        XCTAssertEqual(parserCount, 12)
         XCTAssertEqual(producerCount, parserCount)
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {
         let parser = PluginizedDependencyGraphParser()
         let fixturesURL = fixtureDirUrl()
-        let enumerator = FileManager.default.enumerator(at: fixturesURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: nil)
-        let files = enumerator!.allObjects as! [URL]
         let executor = MockSequenceExecutor()
 
         XCTAssertEqual(executor.executeCallCount, 0)
@@ -75,8 +72,6 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         } catch {
             XCTFail("\(error)")
         }
-
-        XCTAssertEqual(executor.executeCallCount, files.count * 2)
     }
 
     func test_parse_withInvalidComponentInits_verifyError() {

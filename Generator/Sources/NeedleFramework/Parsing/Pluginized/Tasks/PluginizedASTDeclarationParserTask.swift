@@ -19,15 +19,16 @@ import Foundation
 import SourceKittenFramework
 
 /// The extended AST parser task that parses all components, dependency
-/// protocols and import statements, including pluginized components.
-class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
+/// protocols declarations and import statements, including pluginized
+/// components.
+class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNode> {
 
     /// Initializer.
     ///
     /// - parameter ast: The AST of the file to parse.
     init(ast: AST) {
         self.ast = ast
-        super.init(id: TaskIds.pluginizedASTParserTask.rawValue)
+        super.init(id: TaskIds.pluginizedDeclarationsParserTask.rawValue)
     }
 
     /// Execute the task and returns the dependency graph data model.
@@ -35,10 +36,10 @@ class PluginizedASTParserTask: AbstractTask<PluginizedDependencyGraphNode> {
     /// - returns: Parsed `PluginizedDependencyGraphNode`.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> PluginizedDependencyGraphNode {
-        let baseTask = ASTParserTask(ast: ast)
+        let baseTask = DeclarationsParserTask(ast: ast)
         let baseNode = try baseTask.execute()
         let (pluginizedComponents, nonCoreComponents, pluginExtensions) = try parsePluginizedStructures()
-        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports, sourceContent: ast.sourceContent)
+        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
     }
 
     // MARK: - Private
