@@ -94,7 +94,7 @@ class FileEnumerator {
 
     private func fileUrls(fromSourcesList listUrl: URL, with format: SourcesListFileFormat) throws -> [URL] {
         do {
-            let content = try String(contentsOf: listUrl)
+            let content = try CachedFileReader.instance.content(forUrl: listUrl)
 
             let paths: [String]
             switch format {

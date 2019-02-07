@@ -19,8 +19,8 @@ import Foundation
 
 /// The result of filtering the source file.
 enum FilterResult {
-    /// The source URL and content that should be parsed.
-    case shouldParse(URL, String)
+    /// The source URL and content that should be processed further.
+    case shouldProcess(URL, String)
     /// The file should be skipped.
     case skip
 }
@@ -57,20 +57,16 @@ class BaseFileFilterTask: AbstractTask<FilterResult> {
             return FilterResult.skip
         }
 
-        let content = try? String(contentsOf: url)
-        if let content = content {
-            let filters = self.filters(for: content)
-            for filter in filters {
-                // If any filter passed, the file needs to be parsed.
-                if filter.filter() {
-                    return FilterResult.shouldParse(url, content)
-                }
+        let content = try CachedFileReader.instance.content(forUrl: url)
+        let filters = self.filters(for: content)
+        for filter in filters {
+            // If any filter passed, the file needs to be parsed.
+            if filter.filter() {
+                return FilterResult.shouldProcess(url, content)
             }
-
-            return FilterResult.skip
-        } else {
-            throw GeneratorError.withMessage("Failed to read file at \(url)")
         }
+
+        return FilterResult.skip
     }
 
     /// Create a set of filters for the given file content.

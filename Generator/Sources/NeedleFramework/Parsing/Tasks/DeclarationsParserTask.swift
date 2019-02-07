@@ -18,15 +18,16 @@ import Concurrency
 import Foundation
 import SourceKittenFramework
 
-/// A task that parses Swift AST into dependency graph data models.
-class ASTParserTask: AbstractTask<DependencyGraphNode> {
+/// A task that parses Swift AST component and dependency declarations
+/// into dependency graph data models.
+class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
 
     /// Initializer.
     ///
     /// - parameter ast: The AST of the file to parse.
     init(ast: AST) {
         self.ast = ast
-        super.init(id: TaskIds.astParserTask.rawValue)
+        super.init(id: TaskIds.declarationsParserTask.rawValue)
     }
 
     /// Execute the task and returns the dependency graph data model.
@@ -35,7 +36,7 @@ class ASTParserTask: AbstractTask<DependencyGraphNode> {
     /// - throws: Any error occurred during execution.
     override func execute() throws -> DependencyGraphNode {
         let (components, dependencies) = try parseStructures()
-        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports, sourceContent: ast.sourceContent)
+        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports)
     }
 
     // MARK: - Private

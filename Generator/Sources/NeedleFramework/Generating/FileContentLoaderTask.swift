@@ -35,7 +35,7 @@ class FileContentLoaderTask: AbstractTask<String> {
     /// - throws: Any error occurred during execution.
     override func execute() throws -> String {
         let url = URL(fileURLWithPath: filePath)
-        return try String(contentsOf: url)
+        return try CachedFileReader.instance.content(forUrl: url)
     }
 
     // MARK: - Private

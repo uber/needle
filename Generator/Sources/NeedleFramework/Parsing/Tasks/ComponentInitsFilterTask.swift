@@ -18,9 +18,9 @@ import Concurrency
 import Foundation
 
 /// A task that checks the various aspects of a file, including if its
-/// content contains any component extensions to determine if the file
-/// should to be processed further.
-class ComponentExtensionsFilterTask: BaseFileFilterTask {
+/// content contains any component instantiations, to determine if the
+/// file should to be processed further.
+class ComponentInitsFilterTask: BaseFileFilterTask {
 
     /// Initializer.
     ///
@@ -31,10 +31,8 @@ class ComponentExtensionsFilterTask: BaseFileFilterTask {
     /// - parameter exclusionPaths: The list of path components to check.
     /// If the given URL's path contains any elements in this list, the
     /// URL will be excluded.
-    /// - parameter components: The list of components parsed out.
-    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String], components: [ASTComponent]) {
-        self.components = components
-        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.componentExtensionsFilterTask)
+    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
+        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.componentInitsFilterTask)
     }
 
     /// Create a set of filters for the given file content.
@@ -44,11 +42,7 @@ class ComponentExtensionsFilterTask: BaseFileFilterTask {
     /// - returns: A set of filters to use on the given content.
     override func filters(for content: String) -> [FileFilter] {
         return [
-            ComponentExtensionFilter(content: content, components: components)
+            ComponentInitFilter(content: content)
         ]
     }
-
-    // MARK: - Private
-
-    private let components: [ASTComponent]
 }

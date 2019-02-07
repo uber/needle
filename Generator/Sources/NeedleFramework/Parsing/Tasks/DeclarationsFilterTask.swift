@@ -20,7 +20,7 @@ import Foundation
 /// A task that checks the various aspects of a file, including if its
 /// content contains any component implementations, dependency protocol
 /// declarations or component instantiations, to determine if the file
-/// should to be parsed for AST.
+/// should to be processed further.
 class DeclarationsFilterTask: BaseFileFilterTask {
 
     /// Initializer.
@@ -45,7 +45,6 @@ class DeclarationsFilterTask: BaseFileFilterTask {
         return [
             ComponentImplFilter(content: content),
             DependencyProtocolFilter(content: content),
-            ComponentInitFilter(content: content)
         ]
     }
 }

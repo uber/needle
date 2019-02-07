@@ -25,7 +25,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
 
         let result = try! task.execute()
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -40,7 +40,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         var result = try! excludeSuffixTask.execute()
 
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -51,7 +51,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         result = try! includeSuffixTask.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -66,7 +66,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -80,7 +80,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(_, _):
+        case .shouldProcess(_, _):
             XCTFail()
         case .skip:
             break
@@ -95,7 +95,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -111,7 +111,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -127,7 +127,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -143,7 +143,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -159,7 +159,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:
@@ -175,7 +175,7 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
         let result = try! task.execute()
 
         switch result {
-        case .shouldParse(let sourceUrl, let sourceContent):
+        case .shouldProcess(let sourceUrl, let sourceContent):
             XCTAssertEqual(sourceUrl, fileUrl)
             XCTAssertEqual(sourceContent, content)
         case .skip:

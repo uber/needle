@@ -18,35 +18,19 @@ import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 
-class ASTParserTaskTests: AbstractParserTests {
+class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
 
-    func test_execute_withPrivateProperties_verifyLog() {
-        let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
-        let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
-        let imports = ["import UIKit", "import RIBs", "import Foundation"]
-
-        let task = ASTParserTask(ast: AST(structure: structure, imports: imports, sourceContent: sourceContent))
-        _ = try! task.execute()
-
-        let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
-                        "PrivateDependency (cheese: Cheese) property is fileprivate, therefore inaccessible on DI graph.",
-                        "PrivateComponent (stream: Stream) property is private, therefore inaccessible on DI graph.",
-                        "PrivateComponent (donut: Donut) property is fileprivate, therefore inaccessible on DI graph."]
-        XCTAssertEqual(UnitTestLogger.instance.messages, expected)
-    }
-
-    func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
+    func test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
         let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = ASTParserTask(ast: AST(structure: structure, imports: imports, sourceContent: sourceContent))
+        let task = PluginizedDeclarationsParserTask(ast: AST(structure: structure, imports: imports))
         let node = try! task.execute()
 
+        // Regular components.
         XCTAssertEqual(node.components.count, 2)
-
         let myComponent = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "MyComponent"
         }!
@@ -82,12 +66,46 @@ class ASTParserTaskTests: AbstractParserTests {
             return property.name == "book" && property.type == "Book"
         }
         XCTAssertTrue(containsBook)
-
         let containsOptionalWallet = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "maybeWallet" && property.type == "Wallet?"
         }
         XCTAssertTrue(containsOptionalWallet)
 
+        // Non-core components.
+        XCTAssertEqual(node.nonCoreComponents.count, 1)
+        let someNonCoreComponent = node.nonCoreComponents.first { (component: ASTComponent) -> Bool in
+            component.name == "SomeNonCoreComponent"
+        }!
+        XCTAssertEqual(someNonCoreComponent.expressionCallTypeNames, ["NonCoreObject", "SharedObject", "shared"])
+        XCTAssertEqual(someNonCoreComponent.name, "SomeNonCoreComponent")
+        XCTAssertEqual(someNonCoreComponent.dependencyProtocolName, "SomeNonCoreDependency")
+        XCTAssertEqual(someNonCoreComponent.properties.count, 2)
+        let containsNewNonCoreObject = someNonCoreComponent.properties.contains { (property: Property) -> Bool in
+            return property.name == "newNonCoreObject" && property.type == "NonCoreObject?"
+        }
+        XCTAssertTrue(containsNewNonCoreObject)
+        let containsSharedNonCoreObject = someNonCoreComponent.properties.contains { (property: Property) -> Bool in
+            return property.name == "sharedNonCoreObject" && property.type == "SharedObject"
+        }
+        XCTAssertTrue(containsSharedNonCoreObject)
+
+        // Pluginized components.
+        XCTAssertEqual(node.pluginizedComponents.count, 1)
+        let somePluginizedCompo = node.pluginizedComponents.first { (component: PluginizedASTComponent) -> Bool in
+            component.data.name == "SomePluginizedComp"
+        }!
+        XCTAssertEqual(somePluginizedCompo.data.expressionCallTypeNames, ["LGOLEDTv"])
+        XCTAssertEqual(somePluginizedCompo.data.name, "SomePluginizedComp")
+        XCTAssertEqual(somePluginizedCompo.data.dependencyProtocolName, "ADependency")
+        XCTAssertEqual(somePluginizedCompo.data.properties.count, 1)
+        XCTAssertEqual(somePluginizedCompo.pluginExtensionType, "BExtension")
+        XCTAssertEqual(somePluginizedCompo.nonCoreComponentType, "SomeNonCoreComponent")
+        let containsTv = somePluginizedCompo.data.properties.contains { (property: Property) -> Bool in
+            return property.name == "tv" && property.type == "Tv"
+        }
+        XCTAssertTrue(containsTv)
+
+        // Dependency protocols.
         XCTAssertEqual(node.dependencies.count, 4)
         let myDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
             dependency.name == "MyDependency"
@@ -112,12 +130,48 @@ class ASTParserTaskTests: AbstractParserTests {
             return property.name == "backPack" && property.type == "Pack"
         }
         XCTAssertTrue(containsBackPack)
-
         let containsOptionalMoney = my2Dependency.properties.contains { (property: Property) -> Bool in
             return property.name == "maybeMoney" && property.type == "Dollar?"
         }
         XCTAssertTrue(containsOptionalMoney)
 
+        let someNonCoreDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
+            dependency.name == "SomeNonCoreDependency"
+        }!
+        XCTAssertEqual(someNonCoreDependency.name, "SomeNonCoreDependency")
+        XCTAssertEqual(someNonCoreDependency.properties.count, 2)
+        let containsANonCoreDep = someNonCoreDependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "aNonCoreDep" && property.type == "Dep"
+        }
+        XCTAssertTrue(containsANonCoreDep)
+        let containsMaybeNonCoreDep = someNonCoreDependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "maybeNonCoreDep" && property.type == "MaybeDep?"
+        }
+        XCTAssertTrue(containsMaybeNonCoreDep)
+
+        let aDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
+            dependency.name == "ADependency"
+        }!
+        XCTAssertEqual(aDependency.name, "ADependency")
+        XCTAssertEqual(aDependency.properties.count, 1)
+        let containsMaybe = aDependency.properties.contains { (property: Property) -> Bool in
+            return property.name == "maybe" && property.type == "Maybe?"
+        }
+        XCTAssertTrue(containsMaybe)
+
+        // Plugin extensions.
+        XCTAssertEqual(node.pluginExtensions.count, 1)
+        let bExtension = node.pluginExtensions.first { (pluginExtension: PluginExtension) -> Bool in
+            pluginExtension.name == "BExtension"
+        }!
+        XCTAssertEqual(bExtension.name, "BExtension")
+        XCTAssertEqual(bExtension.properties.count, 1)
+        let containsMyPluginPoint = bExtension.properties.contains { (property: Property) -> Bool in
+            property.name == "myPluginPoint"
+        }
+        XCTAssertTrue(containsMyPluginPoint)
+
+        // Imports.
         XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }
