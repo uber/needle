@@ -29,7 +29,7 @@ class ComponentInstantiationValidator: Processor {
     /// tasks.
     /// - parameter timeout: The timeout value to use to wait for each
     /// individual validations.
-    init(components: [ASTComponent], fileContents: [String], executor: SequenceExecutor, timeout: Double) {
+    init(components: [ASTComponent], fileContents: [String], executor: SequenceExecutor, timeout: TimeInterval) {
         self.componentNames = Set(components.map({ (component: ASTComponent) -> String in
             component.name
         }))
@@ -70,7 +70,7 @@ class ComponentInstantiationValidator: Processor {
     private let componentNames: Set<String>
     private let fileContents: [String]
     private let executor: SequenceExecutor
-    private let timeout: Double
+    private let timeout: TimeInterval
 }
 
 private enum ComponentInstantiationValidationResult {

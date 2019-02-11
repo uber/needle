@@ -23,10 +23,6 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
         return mutableScoreStream
     }
 
-    var mutableScoreStream: MutableScoreStream {
-        return shared { ScoreStreamImpl() }
-    }
-
     var loggedInViewController: UIViewController {
         return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent)
     }
@@ -44,4 +40,12 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 // this allows LoggedInViewController to be initialized lazily.
 protocol LoggedInBuilder {
     var loggedInViewController: UIViewController { get }
+}
+
+// Use extension to show parsing of component extensions.
+extension LoggedInComponent {
+
+    var mutableScoreStream: MutableScoreStream {
+        return shared { ScoreStreamImpl() }
+    }
 }
