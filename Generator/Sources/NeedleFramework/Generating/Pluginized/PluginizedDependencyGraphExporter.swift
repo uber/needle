@@ -42,7 +42,7 @@ class PluginizedDependencyGraphExporter {
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
     /// write fails.
-    func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: Double, include headerDocPath: String?) throws {
+    func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: TimeInterval, include headerDocPath: String?) throws {
         // Enqueue tasks.
         let dependencyProviderHandleTuples = enqueueExportDependencyProviders(for: components, pluginizedComponents, using: executor)
         let pluginExtensionHandleTuples = enqueueExportPluginExtensions(for: pluginizedComponents, using: executor)
@@ -109,7 +109,7 @@ class PluginizedDependencyGraphExporter {
         return taskHandleTuples
     }
 
-    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: Double) throws -> [SerializedProvider] {
+    private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: TimeInterval) throws -> [SerializedProvider] {
         var providers = [SerializedProvider]()
         for (taskHandle, componentName) in taskHandleTuples {
             do {

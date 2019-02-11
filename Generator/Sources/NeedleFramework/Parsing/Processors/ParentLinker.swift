@@ -28,9 +28,8 @@ class ParentLinker: Processor {
 
     /// Process the data models.
     func process() throws {
-        var nameToComponent = [String: ASTComponent]()
-        for component in components {
-            nameToComponent[component.name] = component
+        let nameToComponent = components.createDictionary { (component: ASTComponent) -> (String, ASTComponent) in
+            (component.name, component)
         }
         for component in components {
             for typeName in component.expressionCallTypeNames {

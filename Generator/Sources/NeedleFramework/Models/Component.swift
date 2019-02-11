@@ -40,9 +40,9 @@ class ASTComponent {
     /// The name of the component's dependency protocol.
     let dependencyProtocolName: String
     /// A list of properties this component instantiates, thereby provides.
-    let properties: [Property]
+    var properties: [Property]
     /// A list of expression call type names.
-    let expressionCallTypeNames: [String]
+    var expressionCallTypeNames: [String]
     /// The mutable list of parents.
     var parents = [ASTComponent]()
     /// The referenced dependency protocol data model.

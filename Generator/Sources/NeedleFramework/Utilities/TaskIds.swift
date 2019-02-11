@@ -29,6 +29,7 @@ enum TaskIds: Int {
     case astProducerTask = 4
     /// AST parsing task IDs.
     case declarationsParserTask = 5
+    case componentExtenionsParserTask = 15
     case pluginizedDeclarationsParserTask = 6
     /// Dependency provider declaring task ID.
     case dependencyProviderDeclarerTask = 7
