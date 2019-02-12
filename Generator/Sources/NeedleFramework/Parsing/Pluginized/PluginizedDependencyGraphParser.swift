@@ -58,9 +58,9 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
         let allImports = imports.union(extensionImports)
 
         // Collect source contents that contain component instantiations for validation.
-        let initsSourceContents = try sourceContentsContainComponentInstantiations(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, with: timeout)
+        let initsSourceUrlContents = try sourceUrlContentsContainComponentInstantiations(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, with: timeout)
 
-        return try process(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, regularComponents: regularComponents, with: pluginExtensions, componentExtensions, dependencies, allImports, validate: initsSourceContents, using: executor, with: timeout)
+        return try process(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, regularComponents: regularComponents, with: pluginExtensions, componentExtensions, dependencies, allImports, validate: initsSourceUrlContents, using: executor, with: timeout)
     }
 
     // MARK: - Declaration Parsing
@@ -118,7 +118,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
 
     // MARK: - Processing
 
-    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceContents: [String], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String]) {
+    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String]) {
         let allComponents = commonComponentModel(of: pluginizedComponents, regularComponents: nonCoreComponents + regularComponents)
         let processors: [Processor] = [
             DuplicateValidator(components: allComponents, dependencies: dependencies),
@@ -129,7 +129,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
             PluginExtensionLinker(pluginizedComponents: pluginizedComponents, pluginExtensions: pluginExtensions),
             AncestorCycleValidator(components: allComponents),
             PluginExtensionCycleValidator(pluginizedComponents: pluginizedComponents),
-            ComponentInstantiationValidator(components: allComponents, fileContents: initsSourceContents, executor: executor, timeout: timeout)
+            ComponentInstantiationValidator(components: allComponents, urlFileContents: initsSourceUrlContents, executor: executor, timeout: timeout)
         ]
         for processor in processors {
             try processor.process()

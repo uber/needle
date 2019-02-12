@@ -17,6 +17,8 @@
 import Concurrency
 import Foundation
 
+typealias UrlFileContent = (url: URL, content: String)
+
 /// A post processing utility class that checks if any components are
 /// instantiated incorrectly.
 class ComponentInstantiationValidator: Processor {
@@ -29,11 +31,11 @@ class ComponentInstantiationValidator: Processor {
     /// tasks.
     /// - parameter timeout: The timeout value to use to wait for each
     /// individual validations.
-    init(components: [ASTComponent], fileContents: [String], executor: SequenceExecutor, timeout: TimeInterval) {
+    init(components: [ASTComponent], urlFileContents: [UrlFileContent], executor: SequenceExecutor, timeout: TimeInterval) {
         self.componentNames = Set(components.map({ (component: ASTComponent) -> String in
             component.name
         }))
-        self.fileContents = fileContents
+        self.urlFileContents = urlFileContents
         self.executor = executor
         self.timeout = timeout
     }
@@ -45,8 +47,8 @@ class ComponentInstantiationValidator: Processor {
     func process() throws {
         // Enqueue validation tasks.
         var handles = [SequenceExecutionHandle<ComponentInstantiationValidationResult>]()
-        for content in fileContents {
-            let task = ComponentInstantiationValidationTask(fileContent: content, componentNames: componentNames)
+        for urlFileContent in urlFileContents {
+            let task = ComponentInstantiationValidationTask(urlFileContent: urlFileContent, componentNames: componentNames)
             let handle = executor.executeSequence(from: task) { (_, result: Any) -> SequenceExecution<ComponentInstantiationValidationResult> in
                 SequenceExecution.endOfSequence(result as! ComponentInstantiationValidationResult)
             }
@@ -59,8 +61,8 @@ class ComponentInstantiationValidator: Processor {
             switch result {
             case .success:
                 break
-            case .failure(let componentName):
-                throw GeneratorError.withMessage("\(componentName) is instantiated incorrectly. All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter.")
+            case .failure(let url, let componentName):
+                throw GeneratorError.withMessage("\(componentName) is instantiated incorrectly in \(url). All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter.")
             }
         }
     }
@@ -68,41 +70,41 @@ class ComponentInstantiationValidator: Processor {
     // MARK - Private
 
     private let componentNames: Set<String>
-    private let fileContents: [String]
+    private let urlFileContents: [UrlFileContent]
     private let executor: SequenceExecutor
     private let timeout: TimeInterval
 }
 
 private enum ComponentInstantiationValidationResult {
     case success
-    case failure(String)
+    case failure(URL, String)
 }
 
 private class ComponentInstantiationValidationTask: AbstractTask<ComponentInstantiationValidationResult> {
 
-    fileprivate init(fileContent: String, componentNames: Set<String>) {
-        self.fileContent = fileContent
+    fileprivate init(urlFileContent: UrlFileContent, componentNames: Set<String>) {
+        self.urlFileContent = urlFileContent
         self.componentNames = componentNames
     }
 
     fileprivate override func execute() throws -> ComponentInstantiationValidationResult {
-        let matches = componentInstantiationRegex.matches(in: fileContent)
+        let matches = componentInstantiationRegex.matches(in: urlFileContent.content)
         for match in matches {
-            let componentName = fileContent.substring(with: match.range(at: 1))
+            let componentName = urlFileContent.content.substring(with: match.range(at: 1))
             if let componentName = componentName, componentNames.contains(componentName) {
                 let matchRange = match.range(at: 0)
                 // Use match range + 5 as the range to extract the argument.
                 // This includes one extra character after the expected `self`
                 // argument to check for cases such as `self.blah`.
                 let argRange = NSRange(location: matchRange.location + matchRange.length, length: 5)
-                let arg = fileContent.substring(with: argRange)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                let arg = urlFileContent.content.substring(with: argRange)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
                 // Special case for root component, where it is instantiated
                 // with BootstrapComponent().
                 let rootArgRange = NSRange(location: matchRange.location + matchRange.length, length: 20)
-                let rootArg = fileContent.substring(with: rootArgRange)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                let rootArg = urlFileContent.content.substring(with: rootArgRange)?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 
                 if let arg = arg, !validate(componentInstantiationArg: arg, and: rootArg) {
-                    return .failure(componentName)
+                    return .failure(urlFileContent.url, componentName)
                 }
             }
         }
@@ -112,7 +114,7 @@ private class ComponentInstantiationValidationTask: AbstractTask<ComponentInstan
 
     // MARK: - Private
 
-    private let fileContent: String
+    private let urlFileContent: UrlFileContent
     private let componentNames: Set<String>
 
     private func validate(componentInstantiationArg arg: String, and rootArg: String?) -> Bool {

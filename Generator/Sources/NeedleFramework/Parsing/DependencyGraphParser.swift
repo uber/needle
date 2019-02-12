@@ -57,10 +57,10 @@ class DependencyGraphParser: AbstractDependencyGraphParser {
         let allImports = imports.union(extensionImports)
 
         // Collect source contents that contain component instantiations for validation.
-        let initsSourceContents = try sourceContentsContainComponentInstantiations(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, with: timeout)
+        let initsSourceUrlContents = try sourceUrlContentsContainComponentInstantiations(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, with: timeout)
 
         // Process all the data models.
-        return try process(components, with: componentExtensions, dependencies, allImports, validate: initsSourceContents, using: executor, with: timeout)
+        return try process(components, with: componentExtensions, dependencies, allImports, validate: initsSourceUrlContents, using: executor, with: timeout)
     }
 
     // MARK: - Declaration Parsing
@@ -112,14 +112,14 @@ class DependencyGraphParser: AbstractDependencyGraphParser {
 
     // MARK: - Processing
 
-    private func process(_ components: [ASTComponent], with componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceContents: [String], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [String]) {
+    private func process(_ components: [ASTComponent], with componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [String]) {
         let processors: [Processor] = [
             DuplicateValidator(components: components, dependencies: dependencies),
             ComponentConsolidator(components: components, componentExtensions: componentExtensions),
             ParentLinker(components: components),
             DependencyLinker(components: components, dependencies: dependencies),
             AncestorCycleValidator(components: components),
-            ComponentInstantiationValidator(components: components, fileContents: initsSourceContents, executor: executor, timeout: timeout)
+            ComponentInstantiationValidator(components: components, urlFileContents: initsSourceUrlContents, executor: executor, timeout: timeout)
         ]
         for processor in processors {
             try processor.process()
