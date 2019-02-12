@@ -154,21 +154,21 @@ class AbstractDependencyGraphParser {
     /// of files.
     /// - parameter timeout: The timeout value, in seconds, to use for
     /// waiting on parsing tasks.
-    /// - returns: The source file contents.
+    /// - returns: The source file URL and content pairs.
     /// - throws: If any error occurred during execution.
-    func sourceContentsContainComponentInstantiations(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> [String] {
+    func sourceUrlContentsContainComponentInstantiations(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> [UrlFileContent] {
         let initsUrlHandles = try enqueueComponentInitsTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         return try collectInitsDataModels(with: initsUrlHandles, waitUpTo: timeout)
     }
 
     private func enqueueComponentInitsTasks(with rootUrls: [URL], sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], using executor: SequenceExecutor) throws -> [ComponentInitsUrlSequenceHandle] {
-        return try executeAndCollectTaskHandles(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue) { (fileUrl: URL) -> SequenceExecutionHandle<String?> in
+        return try executeAndCollectTaskHandles(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue) { (fileUrl: URL) -> SequenceExecutionHandle<UrlFileContent?> in
             let task = ComponentInitsFilterTask(url: fileUrl, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths)
-            return executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<String?> in
+            return executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<UrlFileContent?> in
                 if currentTask is ComponentInitsFilterTask, let filterResult = currentResult as? FilterResult {
                     switch filterResult {
-                    case .shouldProcess(_, let content):
-                        return .endOfSequence(content)
+                    case .shouldProcess(let url, let content):
+                        return .endOfSequence((url, content))
                     case .skip:
                         return .endOfSequence(nil)
                     }
@@ -179,13 +179,13 @@ class AbstractDependencyGraphParser {
         }
     }
 
-    private func collectInitsDataModels(with urlHandles: [ComponentInitsUrlSequenceHandle], waitUpTo timeout: TimeInterval) throws -> [String] {
-        var sourceContents = [String]()
+    private func collectInitsDataModels(with urlHandles: [ComponentInitsUrlSequenceHandle], waitUpTo timeout: TimeInterval) throws -> [UrlFileContent] {
+        var sourceUrlContents = [UrlFileContent]()
         for urlHandle in urlHandles {
             do {
-                let content = try urlHandle.handle.await(withTimeout: timeout)
-                if let content = content {
-                    sourceContents.append(content)
+                let urlContent = try urlHandle.handle.await(withTimeout: timeout)
+                if let urlContent = urlContent {
+                    sourceUrlContents.append(urlContent)
                 }
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
                 throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
@@ -193,9 +193,9 @@ class AbstractDependencyGraphParser {
                 throw error
             }
         }
-        return sourceContents
+        return sourceUrlContents
     }
 }
 
 private typealias ComponentExtensionsUrlSequenceHandle = (handle: SequenceExecutionHandle<ComponentExtensionNode>, fileUrl: URL)
-private typealias ComponentInitsUrlSequenceHandle = (handle: SequenceExecutionHandle<String?>, fileUrl: URL)
+private typealias ComponentInitsUrlSequenceHandle = (handle: SequenceExecutionHandle<UrlFileContent?>, fileUrl: URL)

@@ -30,9 +30,9 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     }
 
     func test_withValidInstantiations_verifyNoError() {
-        let content = self.content(of: "ValidInits.swift")
+        let urlContent = self.urlContent(of: "ValidInits.swift")
         let components = [astComponent(withName: "MyComponent"), astComponent(withName: "My1Component"), astComponent(withName: "MyComponent2"), astComponent(withName: "MyCompo3nent"), astComponent(withName: "RootComponent")]
-        let validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
+        let validator = ComponentInstantiationValidator(components: components, urlFileContents: [urlContent], executor: executor, timeout: 3)
         do {
             try validator.process()
         } catch {
@@ -41,9 +41,9 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     }
 
     func test_withInvalidInstantiations_verifyErrors() {
-        var content = self.content(of: "InvalidInits/InvalidInits1.swift")
+        var urlContent = self.urlContent(of: "InvalidInits/InvalidInits1.swift")
         let components = [astComponent(withName: "MyComponent"), astComponent(withName: "MyComponent2"), astComponent(withName: "My5Component"), astComponent(withName: "MyComp6onent6"), astComponent(withName: "RootComponent")]
-        var validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
+        var validator = ComponentInstantiationValidator(components: components, urlFileContents: [urlContent], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -51,8 +51,8 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
             validate(error: error, withComponentName: "MyComponent")
         }
 
-        content = self.content(of: "InvalidInits/InvalidInits2.swift")
-        validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
+        urlContent = self.urlContent(of: "InvalidInits/InvalidInits2.swift")
+        validator = ComponentInstantiationValidator(components: components, urlFileContents: [urlContent], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -60,8 +60,8 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
             validate(error: error, withComponentName: "MyComponent2")
         }
 
-        content = self.content(of: "InvalidInits/InvalidInits3.swift")
-        validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
+        urlContent = self.urlContent(of: "InvalidInits/InvalidInits3.swift")
+        validator = ComponentInstantiationValidator(components: components, urlFileContents: [urlContent], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -69,8 +69,8 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
             validate(error: error, withComponentName: "My5Component")
         }
 
-        content = self.content(of: "InvalidInits/InvalidInits4.swift")
-        validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
+        urlContent = self.urlContent(of: "InvalidInits/InvalidInits4.swift")
+        validator = ComponentInstantiationValidator(components: components, urlFileContents: [urlContent], executor: executor, timeout: 3)
         do {
             try validator.process()
             XCTFail()
@@ -80,9 +80,9 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     }
 
     func test_withInvalidInstantiations_notAComponent_verifyNoError() {
-        let content = self.content(of: "InvalidInits/InvalidInits1.swift")
+        let urlContent = self.urlContent(of: "InvalidInits/InvalidInits1.swift")
         let components = [astComponent(withName: "ADifferentComponent")]
-        let validator = ComponentInstantiationValidator(components: components, fileContents: [content], executor: executor, timeout: 3)
+        let validator = ComponentInstantiationValidator(components: components, urlFileContents: [urlContent], executor: executor, timeout: 3)
         do {
             try validator.process()
         } catch {
@@ -90,9 +90,9 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
         }
     }
 
-    private func content(of fileName: String) -> String {
+    private func urlContent(of fileName: String) -> UrlFileContent {
         let fileUrl = fixtureUrl(for: fileName)
-        return try! String(contentsOf: fileUrl)
+        return try! (fileUrl, String(contentsOf: fileUrl))
     }
 
     private func astComponent(withName name: String) -> ASTComponent{
