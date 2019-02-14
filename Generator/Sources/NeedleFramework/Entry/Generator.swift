@@ -211,7 +211,7 @@ public class Generator {
                     sourceKitUtilities.initialize()
                 }
             } catch {
-                throw error
+                fatalError("\(error)")
             }
         }
     }
