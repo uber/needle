@@ -39,7 +39,7 @@ public class __DependencyProviderRegistry {
     /// - parameter dependencyProviderFactory: The closure that takes in a
     /// component to be injected and returns a provider instance that conforms
     /// to the component's dependency protocol.
-    public func registerDependencyProviderFactory(`for` componentPath: String, _ dependencyProviderFactory: @escaping (ComponentProtocol) -> AnyObject) {
+    public func registerDependencyProviderFactory(`for` componentPath: String, _ dependencyProviderFactory: @escaping (Scope) -> AnyObject) {
         providerFactoryLock.lock()
         defer {
             providerFactoryLock.unlock()
@@ -52,7 +52,7 @@ public class __DependencyProviderRegistry {
     ///
     /// - parameter component: The component that uses the returned dependency provider.
     /// - returns: The dependency provider for the given component.
-    func dependencyProvider(`for` component: ComponentProtocol) -> AnyObject {
+    func dependencyProvider(`for` component: Scope) -> AnyObject {
         providerFactoryLock.lock()
         defer {
             providerFactoryLock.unlock()
@@ -69,7 +69,7 @@ public class __DependencyProviderRegistry {
     }
 
     private let providerFactoryLock = NSRecursiveLock()
-    private var providerFactories = [Int: (ComponentProtocol) -> AnyObject]()
+    private var providerFactories = [Int: (Scope) -> AnyObject]()
 
     private init() {}
 }

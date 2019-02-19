@@ -28,18 +28,18 @@ public class EmptyDependencyProvider: EmptyDependency {
     /// Initializer.
     ///
     /// - parameter component: The component instance.
-    public init(component: ComponentProtocol) {}
+    public init(component: Scope) {}
 }
 
 /// An empty class that can be used as the bootstrap component, the parent
 /// component of the root component in the dependency graph.
-public class BootstrapComponent: ComponentProtocol {
+public class BootstrapComponent: Scope {
 
     /// The path to reach this scope on the dependency graph.
     public let path: [String] = ["^"]
 
     /// This component does not have a parent. Do not access this property.
-    public var parent: ComponentProtocol {
+    public var parent: Scope {
         // With properly generated Needle code, this property should never
         // be accessed.
         fatalError("BootstrapComponent does not have a parent, do not use this property.")

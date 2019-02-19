@@ -45,7 +45,7 @@ class PluginExtensionContentSerializer: Serializer {
         private class \(extensionClassName): \(component.pluginExtension.name) {
         \(properties)
             private unowned let \(nonCoreComponentPropertyName): \(component.nonCoreComponent.name)
-            init(component: NeedleFoundation.ComponentType) {
+            init(component: NeedleFoundation.Scope) {
                 let \(pluginziedComponentPropertyName) = component as! \(component.data.name)
                 \(nonCoreComponentPropertyName) = \(pluginziedComponentPropertyName).nonCoreComponent as! \(component.nonCoreComponent.name)
             }
