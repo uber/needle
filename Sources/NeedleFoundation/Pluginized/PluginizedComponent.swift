@@ -23,7 +23,7 @@ import Foundation
 /// - note: A separate protocol is used to allow the consumer to declare
 /// a pluginized component generic without having to specify the nested
 /// generics.
-public protocol PluginizedComponentType: ComponentType {
+public protocol PluginizedComponentProtocol: ComponentProtocol {
     /// Bind the pluginized component to the given lifecycle. This ensures
     /// the associated non-core component is notified and released according
     /// to the given scope's lifecycle.
@@ -43,7 +43,7 @@ public protocol PluginExtension: AnyObject {}
 
 /// The base pluginized component class. All core components that involve
 /// plugins should inherit from this class.
-open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreComponent: NonCoreComponentType>: Component<DependencyType>, PluginizedComponentType {
+open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreComponent: NonCoreComponentProtocol>: Component<DependencyType>, PluginizedComponentProtocol {
 
     /// The plugin extension granting access to plugin points provided by
     /// the corresponding non-core component of this component.
@@ -64,7 +64,7 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
     /// Initializer.
     ///
     /// - parameter parent: The parent component of this component.
-    public override init(parent: ComponentType) {
+    public override init(parent: ComponentProtocol) {
         super.init(parent: parent)
         releasableNonCoreComponent = NonCoreComponent(parent: self)
         pluginExtension = createPluginExtensionProvider()
@@ -110,7 +110,7 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
 
     // Must retain the non-core component so it doesn't get deallocated before it's used
     // to pull plugin points, since the plugin points are created lazily.
-    private var releasableNonCoreComponent: NonCoreComponentType?
+    private var releasableNonCoreComponent: NonCoreComponentProtocol?
 
     // TODO: Replace this with an `open` method, once Swift supports extension overriding methods.
     private func createPluginExtensionProvider() -> PluginExtensionType {

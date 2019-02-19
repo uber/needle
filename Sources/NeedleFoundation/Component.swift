@@ -21,22 +21,22 @@ public protocol Dependency: AnyObject {}
 
 /// The base protocol of a component. Application code should inherit from the `Component`
 /// base class, instead of using this protocol directly.
-public protocol ComponentType: AnyObject {
+public protocol ComponentProtocol: AnyObject {
     /// The path to reach this component on the dependnecy graph.
     var path: [String] { get }
 
     /// The parent of this component.
-    var parent: ComponentType { get }
+    var parent: ComponentProtocol { get }
 }
 
 /// The base implementation of a dependency injection component. A subclass defines a unique
 /// scope within the dependency injection tree, that contains a set of properties it provides
 /// to units of its scope as well as child scopes. A component instantiates child components
 /// that define child scopes.
-open class Component<DependencyType>: ComponentType {
+open class Component<DependencyType>: ComponentProtocol {
 
     /// The parent of this component.
-    public let parent: ComponentType
+    public let parent: ComponentProtocol
 
     /// The path to reach this scope on the dependnecy graph.
     // Use `lazy var` to avoid computing the path repeatedly. Internally, this is always
@@ -55,7 +55,7 @@ open class Component<DependencyType>: ComponentType {
     /// Initializer.
     ///
     /// - parameter parent: The parent component of this component.
-    public init(parent: ComponentType) {
+    public init(parent: ComponentProtocol) {
         self.parent = parent
         dependency = createDependencyProvider()
     }

@@ -22,11 +22,11 @@ import Foundation
 /// - note: A separate protocol is used to allow `PluginizableComponent`
 /// to declare a non-core component generic without having to specify the
 /// dependency protocol nested generics.
-public protocol NonCoreComponentType: AnyObject {
+public protocol NonCoreComponentProtocol: AnyObject {
     /// Initializer.
     ///
     /// - parameter parent: The parent component of this component.
-    init(parent: ComponentType)
+    init(parent: ComponentProtocol)
 
     /// Indicate the corresponding core scope has become active, thereby
     /// activating this non-core component as well.
@@ -47,12 +47,12 @@ public protocol NonCoreComponentType: AnyObject {
 
 /// The base non-core component class. All non-core components should inherit
 /// from this class.
-open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreComponentType {
+open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreComponentProtocol {
 
     /// Initializer.
     ///
     /// - parameter parent: The parent component of this component.
-    public required override init(parent: ComponentType) {
+    public required override init(parent: ComponentProtocol) {
         super.init(parent: parent)
     }
 
