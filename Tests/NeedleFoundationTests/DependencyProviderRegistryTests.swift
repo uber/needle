@@ -32,7 +32,7 @@ class DependencyProviderRegistryTests: XCTestCase {
         let expectedProvider = MockRootDependencyProvider()
 
         let path = "^->MockAppComponent->MockRootComponent"
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) { (component: ComponentType) -> AnyObject in
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) { (component: Scope) -> AnyObject in
             return expectedProvider
         }
 

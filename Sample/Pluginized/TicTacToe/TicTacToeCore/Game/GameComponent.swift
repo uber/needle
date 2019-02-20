@@ -45,7 +45,7 @@ class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, Ga
 
     let dynamicDependency: String
 
-    override init(parent: ComponentType) {
+    override init(parent: Scope) {
         // Normally if we have a dynamic dependency, this constructor would not exist.
         // This fake value is just to get the code to compile for demonstration of
         // dynamic dependencies.
@@ -54,7 +54,7 @@ class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, Ga
     }
 
     // Dynamic dependency constructor. Dynamic dependency provided by parent scope.
-    init(parent: ComponentType, dynamicDependency: String) {
+    init(parent: Scope, dynamicDependency: String) {
         self.dynamicDependency = dynamicDependency
         super.init(parent: parent)
     }

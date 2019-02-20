@@ -41,7 +41,7 @@ public class __PluginExtensionProviderRegistry {
     /// - parameter pluginExtensionProviderFactory: The closure that takes
     /// in a component to be injected and returns a provider instance that
     /// conforms to the component's plugin extensions protocol.
-    public func registerPluginExtensionProviderFactory(`for` componentName: String, _ pluginExtensionProviderFactory: @escaping (PluginizedComponentType) -> AnyObject) {
+    public func registerPluginExtensionProviderFactory(`for` componentName: String, _ pluginExtensionProviderFactory: @escaping (PluginizedScope) -> AnyObject) {
         // Lock on `providerFactories` access.
         lock.lock()
         defer {
@@ -51,7 +51,7 @@ public class __PluginExtensionProviderRegistry {
         providerFactories[componentName] = pluginExtensionProviderFactory
     }
 
-    func pluginExtensionProvider(`for` component: PluginizedComponentType) -> AnyObject {
+    func pluginExtensionProvider(`for` component: PluginizedScope) -> AnyObject {
         // Lock on `providerFactories` access.
         lock.lock()
         defer {
@@ -70,7 +70,7 @@ public class __PluginExtensionProviderRegistry {
     }
 
     private let lock = NSRecursiveLock()
-    private var providerFactories = [String: (PluginizedComponentType) -> AnyObject]()
+    private var providerFactories = [String: (PluginizedScope) -> AnyObject]()
 
     private init() {}
 }

@@ -53,7 +53,7 @@ class DependencyProviderSerializer: Serializer {
         private class \(classNameSerializer.serialize()): \(provider.unprocessed.dependency.name) {
         \(propertiesSerializer.serialize())
         \(sourceComponentsSerializer.serialize())
-            init(component: NeedleFoundation.ComponentType) {
+            init(component: NeedleFoundation.Scope) {
         \(initBodySerializer.serialize())
             }
         }\n
