@@ -64,7 +64,7 @@ private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependen
         return rootComponent.mutablePlayersStream
     }
     private let rootComponent: RootComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         rootComponent = component.parent as! RootComponent
     }
 }
@@ -74,7 +74,7 @@ private class ScoreSheetDependencyea879b8e06763171478bProvider: ScoreSheetDepend
         return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
     }
     private let loggedInComponent: LoggedInComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         loggedInComponent = component.parent.parent.parent as! LoggedInComponent
     }
 }
@@ -84,7 +84,7 @@ private class ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider: ScoreSheetDepend
         return loggedInNonCoreComponent.scoreStream
     }
     private let loggedInNonCoreComponent: LoggedInNonCoreComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         loggedInNonCoreComponent = component.parent as! LoggedInNonCoreComponent
     }
 }
@@ -98,7 +98,7 @@ private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     }
     private let loggedInComponent: LoggedInComponent
     private let rootComponent: RootComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         loggedInComponent = component.parent as! LoggedInComponent
         rootComponent = component.parent.parent as! RootComponent
     }
@@ -109,7 +109,7 @@ private class GamePluginExtensionProvider: GamePluginExtension {
         return gameNonCoreComponent.scoreSheetBuilder
     }
     private unowned let gameNonCoreComponent: GameNonCoreComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         let gameComponent = component as! GameComponent
         gameNonCoreComponent = gameComponent.nonCoreComponent as! GameNonCoreComponent
     }
@@ -123,7 +123,7 @@ private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
         return loggedInNonCoreComponent.mutableScoreStream
     }
     private unowned let loggedInNonCoreComponent: LoggedInNonCoreComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         let loggedInComponent = component as! LoggedInComponent
         loggedInNonCoreComponent = loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent
     }
