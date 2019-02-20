@@ -54,7 +54,7 @@ private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     }
     private let loggedInComponent: LoggedInComponent
     private let rootComponent: RootComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         loggedInComponent = component.parent as! LoggedInComponent
         rootComponent = component.parent.parent as! RootComponent
     }
@@ -65,7 +65,7 @@ private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDepend
         return loggedInComponent.scoreStream
     }
     private let loggedInComponent: LoggedInComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         loggedInComponent = component.parent.parent as! LoggedInComponent
     }
 }
@@ -75,7 +75,7 @@ private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDepend
         return loggedInComponent.scoreStream
     }
     private let loggedInComponent: LoggedInComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         loggedInComponent = component.parent as! LoggedInComponent
     }
 }
@@ -85,7 +85,7 @@ private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependen
         return rootComponent.mutablePlayersStream
     }
     private let rootComponent: RootComponent
-    init(component: NeedleFoundation.ComponentType) {
+    init(component: NeedleFoundation.Scope) {
         rootComponent = component.parent as! RootComponent
     }
 }
