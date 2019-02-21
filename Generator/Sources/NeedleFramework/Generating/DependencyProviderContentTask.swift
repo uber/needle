@@ -18,16 +18,6 @@ import Concurrency
 import Foundation
 import SourceParsingFramework
 
-/// Struct that gives us detailed information when we cannot find
-/// a dependency after walking up the chain.
-struct PropertyNotFoundErrorInfo {
-    let dependency: String
-    let name: String
-    let type: String
-    let possibleNames: [String]
-    let possibleMatchComponent: String?
-}
-
 /// The task that walks through the chain of parents for each dependency
 /// item of the dependency protocol that this provider class needs to satisfy.
 class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]> {
