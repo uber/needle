@@ -32,6 +32,25 @@ During the fourth stage, the generator produces a `DependencyProvider` class tha
 
 Finally at the fifth and last stage, all the generated `DependencyProvider` classes along with their registration code are serialized to a Swift file. This Swift file should be included in the Xcode project just like any other source file.
 
+## Installation
+
+The generator can be installed via either [Carthage](https://github.com/Carthage/Carthage) or [Homebrew](https://github.com/Homebrew/brew).
+
+### Installation via [Carthage](https://github.com/Carthage/Carthage)
+
+Please follow the standard [Carthage installation process](https://github.com/Carthage/Carthage#quick-start)
+```
+github "https://github.com/uber/needle.git" ~> VERSION_OF_NEEDLE
+```
+Once Carthage is done building, the generator binary is located at `Carthage/Checkouts/needle/Generator/bin/needle`.
+
+### Installation via [Homebrew](https://github.com/Homebrew/brew)
+
+```
+brew install needle
+```
+Once installed the generator binary can be executed directly as `$ needle version`.
+
 ## Xcode integration
 
 Even though Needle's generator can be invoked from the commandline, it is most convenient when it's directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.
@@ -40,8 +59,10 @@ Even though Needle's generator can be invoked from the commandline, it is most c
 2. Add a "Run Script" phase in the application's executable target's "Build Phases" section. ![](Images/build_phases.jpeg)
 3. Make sure the "Shell" value is `/bin/sh`.
 4. Add a shell script that invokes the generator in the script box. For example, the sample TicTacToe app uses the script: `export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/needle/Generator/bin/needle generate Sources/NeedleGenerated.swift Sources/ --header-doc ../../copyright_header.txt`.
+    * If installed via Carthage, the binary can be invoked by pointing to the Carthage checkout relative to where the Xcode project file is. In our sample, this path is `../Carthage/Checkouts/needle/Generator/bin/needle generate`.
+    * If installed via Homebrew, the binary can be executed by directly invoking `needle generate`
 
-The first part of the script `export SOURCEKIT_LOGGING=0` silences the SourceKit logging, otherwise Xcode will display the logs as error messages. This is simply to reduce noise in Xcode. It isn't strictly required. The rest of the script simply invokes the generator executable located at a relative path in the "Carthage" folder, with a few arguments. Please keep in mind that the path to the generator executable binary is relative to the Xcode project's location. In our sample apps, the path is `../Carthage/Checkouts/needle/Generator/bin/needle`. This might be different depending on your project's folder structure. The first argument `generate` tells the executable to run the code generation command. The second argument `Sources/NeedleGenerated.swift` tells the generator to export the generated code to that location. The third argument `Sources/` tells the generator where all the application source code is for parsing. The last optional argument `--header-doc` instructs the generator to use the text in the specified file as the header doc for the exported file that contains the generated code. Please refer to the section below for all possible parameters.
+The first part of the script `export SOURCEKIT_LOGGING=0` silences the SourceKit logging, otherwise Xcode will display the logs as error messages. This is simply to reduce noise in Xcode. It isn't strictly required. The rest of the script simply invokes the generator executable, with a few arguments. If the generator is installed via Carthage, please keep in mind that the path to the generator executable binary is relative to the Xcode project's location. In our sample apps, the path is `../Carthage/Checkouts/needle/Generator/bin/needle`. This might be different depending on your project's folder structure. The first argument `generate` tells the executable to run the code generation command. The second argument `Sources/NeedleGenerated.swift` tells the generator to export the generated code to that location. The third argument `Sources/` tells the generator where all the application source code is for parsing. The last optional argument `--header-doc` instructs the generator to use the text in the specified file as the header doc for the exported file that contains the generated code. Please refer to the section below for all possible parameters.
 
 That's it for the Xcode integration. Now every time Xcode builds the application, Needle's generator is run to generate and output the necessary DI code.
 
