@@ -75,7 +75,10 @@ If Carthage is used to integrate  the `NeedleFoundation` framework, then a copy 
 
 #### Using [Homebrew](https://github.com/Homebrew/brew)
 
-Coming soon!
+Regardless of `NeedleFoundation` framework is integrated into your project, the generator can always be installed via [Homebrew](https://github.com/Homebrew/brew).
+```
+brew install needle
+```
 
 ## [Why use dependency injection?](./WHY_DI.md)
 
