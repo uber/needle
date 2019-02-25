@@ -8,6 +8,31 @@ This document will explain the Needle API and what classes one uses to interact 
 4. [Using the Component](#using-the-component)
 4. [Tree-structure](#tree-structure)
 
+# Installation
+
+## Using [Carthage](https://github.com/Carthage/Carthage)
+
+Please follow the standard [Carthage installation process](https://github.com/Carthage/Carthage#quick-start) to integrate the `NeedleFoundation` framework with your Swift project.
+```
+github "https://github.com/uber/needle.git" ~> VERSION_OF_NEEDLE
+```
+
+## Using [Swift Package Manager](https://github.com/apple/swift-package-manager)
+
+Please specify Needle as a dependency via the standard [Swift Package Manager package definition process](https://github.com/apple/swift-package-manager/blob/master/Documentation/Usage.md) to integrate the `NeedleFoundation` framework with your Swift project.
+```
+dependencies: [
+    .package(url: "https://github.com/uber/needle.git", .upToNextMajor(from: "VERSION_NUMBER")),
+],
+targets: [
+    .target(
+        name: "YOUR_MODULE",
+        dependencies: [
+            "NeedleFoundation",
+        ]),
+],
+```
+
 # Introduction and Terminology
 
 ## Basics
