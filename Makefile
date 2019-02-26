@@ -22,11 +22,12 @@ uninstall:
 	rm -f "$(BINARY_FOLDER)/needle"
 	rm -f "/usr/local/bin/needle"
 
-publish: checkout_master archive_generator
+publish: checkout_master
 	$(eval NEW_VERSION := $(filter-out $@, $(MAKECMDGOALS)))
 	@sed 's/__VERSION_NUMBER__/$(NEW_VERSION)/g' $(GENERATOR_VERSION_FOLDER_PATH)/Version.swift.template > $(GENERATOR_VERSION_FILE_PATH)
 %:
 	@:
+	make archive_generator
 	git add $(GENERATOR_FOLDER)/bin/needle
 	git add $(GENERATOR_VERSION_FILE_PATH)
 	$(eval NEW_VERSION_TAG := v$(NEW_VERSION))
