@@ -29,12 +29,6 @@ Needle is intended to be heavily multi-threaded. This makes stepping through the
 
 ## Releasing
 
-1. Compile a binary executable using the following command:
-
 ```
-$ swift build -c release -Xswiftc -static-stdlib
+make publish VERSION_NUMBER
 ```
-
-2. Copy the resulting binary into the `Generator/bin/` folder, replacing the old binary.
-
-3. Create a new release with the appropriate version number on [GitHub](https://github.com/uber/needle/releases). Make sure the binary executable is included, as an asset, in the GitHub release as well.
