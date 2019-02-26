@@ -22,7 +22,8 @@ uninstall:
 	rm -f "$(BINARY_FOLDER)/needle"
 	rm -f "/usr/local/bin/needle"
 
-publish: checkout_master
+publish:
+	git checkout master
 	$(eval NEW_VERSION := $(filter-out $@, $(MAKECMDGOALS)))
 	@sed 's/__VERSION_NUMBER__/$(NEW_VERSION)/g' $(GENERATOR_VERSION_FOLDER_PATH)/Version.swift.template > $(GENERATOR_VERSION_FILE_PATH)
 %:
@@ -36,9 +37,6 @@ publish: checkout_master
 	git tag $(NEW_VERSION_TAG)
 	git push origin $(NEW_VERSION_TAG)
 	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(shell git rev-parse $(NEW_VERSION_TAG)) needle
-
-checkout_master:
-	git checkout master
 
 archive_generator: clean build
 	mv $(GENERATOR_ARCHIVE_PATH) $(GENERATOR_FOLDER)/bin/
