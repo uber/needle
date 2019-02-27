@@ -14,4 +14,4 @@
 //  limitations under the License.
 //
 
-let version = "0.9.0.gm"
+let version = "0.9.0"
