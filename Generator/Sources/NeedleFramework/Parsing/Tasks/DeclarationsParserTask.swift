@@ -17,6 +17,7 @@
 import Concurrency
 import Foundation
 import SourceKittenFramework
+import SourceParsingFramework
 
 /// A task that parses Swift AST component and dependency declarations
 /// into dependency graph data models.

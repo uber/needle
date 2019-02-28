@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// Struct that gives us detailed information when we cannot find
 /// a dependency after walking up the chain.
@@ -91,7 +92,7 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
             if let possibleMatchComponent = possibleMatchComponent {
                 message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
             }
-            throw GeneratorError.withMessage(message)
+            throw GenericError.withMessage(message)
         }
 
         return ProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)

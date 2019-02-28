@@ -22,7 +22,7 @@ import Foundation
 /// - note: The keyword is always used first since string matching is
 /// more performant. If the content contains the keyword, then regular
 /// expression check is performed.
-class KeywordRegexFilter: FileFilter {
+open class KeywordRegexFilter: FileFilter {
 
     /// Initializer.
     ///
@@ -30,7 +30,7 @@ class KeywordRegexFilter: FileFilter {
     /// - parameter keyword: The keyword the content must contain.
     /// - parameter regex: The regular expression the content must have
     /// at least one match.
-    init(content: String, keyword: String, regex: Regex) {
+    public init(content: String, keyword: String, regex: Regex) {
         self.content = content
         self.keyword = keyword
         self.regex = regex
@@ -41,7 +41,7 @@ class KeywordRegexFilter: FileFilter {
     /// - returns: `true` if the file content contains the keyword and
     /// at least has one match of the regular expression. `false`
     /// otherwise.
-    final func filter() -> Bool {
+    public final func filter() -> Bool {
         // Use simple string matching first since it's more performant.
         if !content.contains(keyword) {
             return false

@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 typealias UrlFileContent = (url: URL, content: String)
 
@@ -62,7 +63,7 @@ class ComponentInstantiationValidator: Processor {
             case .success:
                 break
             case .failure(let url, let componentName):
-                throw GeneratorError.withMessage("\(componentName) is instantiated incorrectly in \(url). All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter.")
+                throw GenericError.withMessage("\(componentName) is instantiated incorrectly in \(url). All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter.")
             }
         }
     }

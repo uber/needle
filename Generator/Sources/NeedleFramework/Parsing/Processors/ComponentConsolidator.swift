@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A post processing utility class that consolidates component extensions
 /// with the corresponding components.
@@ -41,7 +42,7 @@ class ComponentConsolidator: Processor {
                 component.properties.append(contentsOf: componentExtension.properties)
                 component.expressionCallTypeNames.append(contentsOf: componentExtension.expressionCallTypeNames)
             } else {
-                throw GeneratorError.withMessage("\(componentExtension.name) only has extension but missing declaration.")
+                throw GenericError.withMessage("\(componentExtension.name) only has extension but missing declaration.")
             }
         }
     }

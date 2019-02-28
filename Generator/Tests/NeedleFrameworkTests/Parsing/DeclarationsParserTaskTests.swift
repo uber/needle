@@ -17,6 +17,7 @@
 import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
+@testable import SourceParsingFramework
 
 class DeclarationsParserTaskTests: AbstractParserTests {
 

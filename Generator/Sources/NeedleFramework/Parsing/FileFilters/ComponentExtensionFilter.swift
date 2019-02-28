@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A filter that checks if the given content contains an extension of
 /// any one of the components.

@@ -17,6 +17,7 @@
 import Concurrency
 import Foundation
 import SourceKittenFramework
+import SourceParsingFramework
 
 /// The extended AST parser task that parses all components, dependency
 /// protocols declarations and import statements, including pluginized
@@ -119,14 +120,14 @@ private extension Structure {
         if let genericsString = genericsString {
             let generics = genericsString.split(separator: ",")
             if generics.count < 3 {
-                throw GeneratorError.withMessage("\(name) as a PluginizedComponent should have 3 generic types. Instead of \(genericsString)")
+                throw GenericError.withMessage("\(name) as a PluginizedComponent should have 3 generic types. Instead of \(genericsString)")
             }
             let dependencyProtocolName = String(generics[0])
             let pluginExtensionName = String(generics[1])
             let nonCoreComponentName = String(generics[2])
             return (dependencyProtocolName, pluginExtensionName, nonCoreComponentName)
         } else {
-            throw GeneratorError.withMessage("\(name) is being parsed as a PluginizedComponent. Yet its generic types cannot be parsed. \(inheritedTypes)")
+            throw GenericError.withMessage("\(name) is being parsed as a PluginizedComponent. Yet its generic types cannot be parsed. \(inheritedTypes)")
         }
     }
 }

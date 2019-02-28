@@ -16,12 +16,7 @@
 
 import Concurrency
 import Foundation
-
-/// The set of errors the generator can throw.
-public enum GeneratorError: Error {
-    /// The error with a message.
-    case withMessage(String)
-}
+import SourceParsingFramework
 
 /// The entry point to Needle's code generator.
 public class Generator {
@@ -70,7 +65,7 @@ public class Generator {
     /// parsing Swift source files should be retried in case of timeouts.
     /// - parameter concurrencyLimit: The maximum number of tasks to execute
     /// concurrently. `nil` if no limit is set.
-    /// - throws: `GeneratorError`.
+    /// - throws: `GenericError`.
     public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, retryParsingOnTimeoutLimit: Int, concurrencyLimit: Int?) throws {
         let processor: ProcessorType = .generateSource(additionalImports: additionalImports, 
                                                        headerDocPath: headerDocPath, 
@@ -115,7 +110,7 @@ public class Generator {
     /// parsing Swift source files should be retried in case of timeouts.
     /// - parameter concurrencyLimit: The maximum number of tasks to execute
     /// concurrently. `nil` if no limit is set.
-    /// - throws: `GeneratorError`.
+    /// - throws: `GenericError`.
     public final func printDependencyTree(from sourceRootPaths: [String],
                                           withSourcesListFormat sourcesListFormatValue: String? = nil, 
                                           excludingFilesEndingWith exclusionSuffixes: [String], 
@@ -198,7 +193,7 @@ public class Generator {
                 retryParsingCount += 1
                 let message = "Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit daemon process status: \(sourceKitUtilities.isSourceKitRunning)."
                 if retryParsingCount >= retryParsingOnTimeoutLimit {
-                    throw GeneratorError.withMessage(message)
+                    throw GenericError.withMessage(message)
                 } else {
                     warning(message)
                     warning("Attempt to retry parsing by killing SourceKitService.")

@@ -17,13 +17,15 @@
 import Foundation
 import Utility
 
-extension ArgumentParser.Result {
+/// A specific Needle instruction to be executed based on a set of input
+/// arguments.
+public protocol Command {
+    /// Name used to check if this command should be executed.
+    var name: String { get }
 
-    func get(_ arg: OptionArgument<Int>, withDefault defaultValue: Double) -> Double {
-        if let value = get(arg) {
-            return Double(value)
-        } else {
-            return defaultValue
-        }
-    }
+    /// Execute the command.
+    ///
+    /// - parameter arguments: The command line arguments to execute the
+    /// command with.
+    func execute(with arguments: ArgumentParser.Result)
 }

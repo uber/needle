@@ -17,7 +17,7 @@
 import Foundation
 
 /// The supported formats for the sources list file.
-enum SourcesListFileFormat {
+public enum SourcesListFileFormat {
     /// Newline format, where paths are separated by the newline character.
     case newline
     /// Minimum escaping format, where paths that contain spaces are
@@ -31,7 +31,7 @@ enum SourcesListFileFormat {
     /// - parameter value: The `String` value to parse.
     /// - returns: The `SourcesListFileFormat` case. `nil` if the given
     /// string does not match any supported formats.
-    static func format(with value: String) -> SourcesListFileFormat? {
+    public static func format(with value: String) -> SourcesListFileFormat? {
         switch value.lowercased() {
         case "newline": return .newline
         case "minescaping": return .minEscaping
@@ -41,7 +41,10 @@ enum SourcesListFileFormat {
 }
 
 /// A utility class that provides file enumeration from a root directory.
-class FileEnumerator {
+public class FileEnumerator {
+
+    /// Initializer.
+    public init() {}
 
     /// Enumerate all the files in the root URL. If the given URL is a
     /// directory, it is traversed recursively to surface all file URLs.
@@ -57,7 +60,7 @@ class FileEnumerator {
     /// ignored.
     /// - parameter handler: The closure to invoke when a file URL is found.
     /// - throws: `FileEnumerationError` if any errors occurred.
-    func enumerate(from rootUrl: URL, withSourcesListFormat sourcesListFormatValue: String?, handler: (URL) -> Void) throws {
+    public func enumerate(from rootUrl: URL, withSourcesListFormat sourcesListFormatValue: String?, handler: (URL) -> Void) throws {
         if rootUrl.isFileURL {
             if rootUrl.isSwiftSource {
                 handler(rootUrl)
@@ -85,7 +88,7 @@ class FileEnumerator {
             if let parsedFormat = SourcesListFileFormat.format(with: stringValue) {
                 return parsedFormat
             } else {
-                throw GeneratorError.withMessage("Failed to parse sources list format \(stringValue)")
+                throw GenericError.withMessage("Failed to parse sources list format \(stringValue)")
             }
         } else {
             return defaultFormat
@@ -109,7 +112,7 @@ class FileEnumerator {
                     URL(fileURLWithPath: path)
                 }
         } catch {
-            throw GeneratorError.withMessage("Failed to read source paths from list file at \(listUrl) \(error)")
+            throw GenericError.withMessage("Failed to read source paths from list file at \(listUrl) \(error)")
         }
     }
 
@@ -160,7 +163,7 @@ class FileEnumerator {
         if let enumerator = FileManager.default.enumerator(at: rootUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles], errorHandler: errorHandler) {
             return enumerator
         } else {
-            throw GeneratorError.withMessage("Failed traverse \(rootUrl)")
+            throw GenericError.withMessage("Failed traverse \(rootUrl)")
         }
     }
 }

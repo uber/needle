@@ -15,17 +15,17 @@
 //
 
 import Foundation
-import NeedleFramework
+import SourceParsingFramework
 import Utility
 
 /// The base class of all commands that perform a set of logic common
 /// to all commands.
-class AbstractCommand: Command {
+open class AbstractCommand: Command {
     /// The name used to check if this command should be executed.
-    let name: String
+    public let name: String
 
     /// The default value for waiting timeout in seconds.
-    let defaultTimeout = 30.0
+    public let defaultTimeout = 30.0
 
     /// Initializer.
     ///
@@ -33,7 +33,7 @@ class AbstractCommand: Command {
     /// be executed.
     /// - parameter overview: The overview description of this command.
     /// - parameter parser: The argument parser to use.
-    init(name: String, overview: String, parser: ArgumentParser) {
+    public init(name: String, overview: String, parser: ArgumentParser) {
         self.name = name
         let subparser = parser.add(subparser: name, overview: overview)
         setupArguments(with: subparser)
@@ -42,7 +42,7 @@ class AbstractCommand: Command {
     /// Setup the arguments using the given parser.
     ///
     /// - parameter parser: The argument parser to use.
-    func setupArguments(with parser: ArgumentParser) {
+    open func setupArguments(with parser: ArgumentParser) {
         loggingLevel = parser.add(option: "--logging-level", shortName: "-lv", kind: String.self, usage: "The logging level to use.")
     }
 
@@ -50,7 +50,7 @@ class AbstractCommand: Command {
     ///
     /// - parameter arguments: The command line arguments to execute the
     /// command with.
-    func execute(with arguments: ArgumentParser.Result) {
+    open func execute(with arguments: ArgumentParser.Result) {
         if let loggingLevelArg = arguments.get(loggingLevel), let loggingLevel = LoggingLevel.level(from: loggingLevelArg) {
             set(minLoggingOutputLevel: loggingLevel)
         }

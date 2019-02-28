@@ -21,6 +21,6 @@ protocol Processor {
 
     /// Process the data models.
     ///
-    /// - throws: `GeneratorError` if any errors occurred during processing.
+    /// - throws: `GenericError` if any errors occurred during processing.
     func process() throws
 }

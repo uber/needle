@@ -14,9 +14,23 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "needle",
+            name: "SourceParsingFramework",
             dependencies: [
-                "NeedleFramework",
+                "Utility",
+                "Concurrency",
+                "SourceKittenFramework",
+            ]),
+        .testTarget(
+            name: "SourceParsingFrameworkTests",
+            dependencies: ["SourceParsingFramework"],
+            exclude: [
+                "Fixtures",
+            ]),
+        .target(
+            name: "CommandFramework",
+            dependencies: [
+                "Utility",
+                "SourceParsingFramework",
             ]),
         .target(
             name: "NeedleFramework",
@@ -24,12 +38,19 @@ let package = Package(
                 "Utility",
                 "SourceKittenFramework",
                 "Concurrency",
+                "SourceParsingFramework",
             ]),
         .testTarget(
             name: "NeedleFrameworkTests",
             dependencies: ["NeedleFramework"],
             exclude: [
                 "Fixtures",
+            ]),
+        .target(
+            name: "needle",
+            dependencies: [
+                "NeedleFramework",
+                "CommandFramework",
             ]),
     ],
     swiftLanguageVersions: [4]

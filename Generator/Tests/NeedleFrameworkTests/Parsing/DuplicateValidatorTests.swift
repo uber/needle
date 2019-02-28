@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -38,7 +39,7 @@ class DuplicateValidatorTests: XCTestCase {
 
         do  {
             try validator.process()
-        } catch GeneratorError.withMessage(let message) {
+        } catch GenericError.withMessage(let message) {
             XCTAssertTrue(message.contains("ha1"))
         } catch {
             XCTFail()
@@ -64,7 +65,7 @@ class DuplicateValidatorTests: XCTestCase {
 
         do  {
             try validator.process()
-        } catch GeneratorError.withMessage(let message) {
+        } catch GenericError.withMessage(let message) {
             XCTAssertTrue(message.contains("d1"))
         } catch {
             XCTFail()

@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// A task that loads the content of a file path and returns it as a
 /// `String`.

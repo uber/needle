@@ -16,9 +16,9 @@
 
 import SourceKittenFramework
 import XCTest
-@testable import NeedleFramework
+@testable import SourceParsingFramework
 
-class ASTUtilsTests: AbstractParserTests {
+class ASTUtilsTests: AbstractSourceParsingTests {
 
     func test_inheritedTypes_withSingleLine_verifyResult() {
         let structure = ast(for: "SingleLineInheritedTypes.swift").substructures[0]

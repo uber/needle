@@ -14,8 +14,10 @@
 //  limitations under the License.
 //
 
+import CommandFramework
 import Foundation
 import NeedleFramework
+import SourceParsingFramework
 import Utility
 
 /// A command that prints out the static dependency tree starting at RootComponent.
@@ -64,7 +66,7 @@ class PrintDependencyTreeCommand: AbstractCommand {
                 let generator = Generator(sourceKitUtilities: sourceKitUtilities)
                 do {
                     try generator.printDependencyTree(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit, rootComponentName: rootComponentName)
-                } catch GeneratorError.withMessage(let message) {
+                } catch GenericError.withMessage(let message) {
                     fatalError(message)
                 } catch {
                     fatalError("Unknown error: \(error)")

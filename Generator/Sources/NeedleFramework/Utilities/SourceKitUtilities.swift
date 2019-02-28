@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A set of utility functions for the SourceKitService.
 public protocol SourceKitUtilities {

@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A filter that performs checks if the file content contains any
 /// dependency protocol declarations.

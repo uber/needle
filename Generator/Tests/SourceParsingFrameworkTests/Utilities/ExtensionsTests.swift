@@ -14,12 +14,10 @@
 //  limitations under the License.
 //
 
-import Foundation
-
 import XCTest
-@testable import NeedleFramework
+@testable import SourceKittenFramework
 
-class ExtensionsTests: AbstractParserTests {
+class ExtensionsTests: AbstractSourceParsingTests {
 
     private var filePath: String!
     private var dirPath: String!

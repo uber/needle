@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// A task that checks the various aspects of a file, including if its
 /// content contains any component instantiations, to determine if the

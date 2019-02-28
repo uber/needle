@@ -17,6 +17,7 @@
 import Concurrency
 import Foundation
 import SourceKittenFramework
+import SourceParsingFramework
 
 /// A task that parses a Swift source content and produces Swift AST that
 /// can then be parsed into the dependnecy graph.
@@ -43,7 +44,7 @@ class ASTProducerTask: AbstractTask<AST> {
             let imports = parseImports()
             return AST(structure: structure, imports: imports)
         } catch {
-            throw GeneratorError.withMessage("Failed to parse AST for source at \(sourceUrl)")
+            throw GenericError.withMessage("Failed to parse AST for source at \(sourceUrl)")
         }
     }
 

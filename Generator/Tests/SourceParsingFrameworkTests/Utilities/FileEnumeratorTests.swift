@@ -14,12 +14,10 @@
 //  limitations under the License.
 //
 
-import Foundation
-
 import XCTest
-@testable import NeedleFramework
+@testable import SourceParsingFramework
 
-class FileEnumeratorTests: AbstractParserTests {
+class FileEnumeratorTests: AbstractSourceParsingTests {
 
     func test_enumerate_withSourcesFile_verifyUrls() {
         let sourcesListUrl = fixtureUrl(for: "sources_list.txt")
@@ -92,7 +90,7 @@ class FileEnumeratorTests: AbstractParserTests {
             XCTFail()
         } catch {
             switch error {
-            case GeneratorError.withMessage(let message):
+            case GenericError.withMessage(let message):
                 XCTAssertTrue(message.contains(sourcesListUrl.absoluteString))
             default:
                 XCTFail()
