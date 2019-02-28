@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import CommandFramework
 import Foundation
 import NeedleFramework
 import Utility

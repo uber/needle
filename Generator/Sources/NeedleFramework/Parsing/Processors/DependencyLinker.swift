@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A post processing utility class that links components to their dependency
 /// protocols.
@@ -39,7 +40,7 @@ class DependencyLinker: Processor {
             if let dependency = nameToDependency[component.dependencyProtocolName] {
                 component.dependencyProtocol = dependency
             } else if !Dependency.isEmptyDependency(name: component.dependencyProtocolName) {
-                throw GeneratorError.withMessage("Missing dependency protocol data model with name \(component.dependencyProtocolName), for \(component.name).")
+                throw GenericError.withMessage("Missing dependency protocol data model with name \(component.dependencyProtocolName), for \(component.name).")
             }
         }
     }

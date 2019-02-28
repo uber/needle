@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -40,7 +41,7 @@ class PluginExtensionLinkerTests: AbstractParserTests {
         do {
             try linker.process()
             XCTFail()
-        } catch GeneratorError.withMessage(_) {
+        } catch GenericError.withMessage(_) {
             // Success.
         } catch {
             XCTFail()

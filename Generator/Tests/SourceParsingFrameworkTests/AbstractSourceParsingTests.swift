@@ -14,17 +14,16 @@
 //  limitations under the License.
 //
 
-import Foundation
-import SourceParsingFramework
+import XCTest
 
-/// A filter that performs checks if the file content contains any
-/// Pluginized component class implementations.
-class PluginizedComponentImplFilter: KeywordRegexFilter {
+/// Base class for all parser related tests.
+class AbstractSourceParsingTests: XCTestCase {
 
-    /// Initializer.
+    /// Retrieve the URL for a fixture file.
     ///
-    /// - parameter content: The content to be filtered.
-    init(content: String) {
-        super.init(content: content, keyword: "PluginizedComponent", regex: Regex.foundationInheritanceRegex(forClass: "PluginizedComponent"))
+    /// - parameter file: The name of the file including extension.
+    /// - returns: The fixture file URL.
+    func fixtureUrl(for file: String) -> URL {
+        return URL(fileURLWithPath: #file).deletingLastPathComponent().appendingPathComponent("Fixtures/\(file)")
     }
 }

@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A post processing utility class that checks if there are any cycles
 /// in any of the pluginized components their plugin extensions.
@@ -38,10 +39,10 @@ class PluginExtensionCycleValidator: Processor {
     func process() throws {
         for component in pluginizedComponents {
             guard let pluginExtension = component.pluginExtension else {
-                throw GeneratorError.withMessage("\(component.data.name)'s plugin extension has not been linked.")
+                throw GenericError.withMessage("\(component.data.name)'s plugin extension has not been linked.")
             }
             guard let nonCoreDependency = component.nonCoreComponent?.dependencyProtocol else {
-                throw GeneratorError.withMessage("\(component.data.name)'s non-core component dependency has not been linked.")
+                throw GenericError.withMessage("\(component.data.name)'s non-core component dependency has not been linked.")
             }
 
             let nonCoreDepProperties = Set<Property>(nonCoreDependency.properties)
@@ -62,7 +63,7 @@ class PluginExtensionCycleValidator: Processor {
                         return "(\(property.name): \(property.type))"
                     }
                     .joined(separator: ", ")
-                throw GeneratorError.withMessage("\(component.data.name) contains cyclic plugin extension properties \(cyclicPropertiesString).")
+                throw GenericError.withMessage("\(component.data.name) contains cyclic plugin extension properties \(cyclicPropertiesString).")
             }
         }
     }

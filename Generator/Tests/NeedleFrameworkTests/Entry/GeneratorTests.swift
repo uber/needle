@@ -15,6 +15,7 @@
 //
 
 import Concurrency
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -54,7 +55,7 @@ class GeneratorTests: XCTestCase {
             try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 3, concurrencyLimit: nil)
             XCTFail()
         } catch {
-            XCTAssertTrue(error is GeneratorError)
+            XCTAssertTrue(error is GenericError)
         }
 
         XCTAssertEqual(generator.generateCallCount, 3)
@@ -83,7 +84,7 @@ class GeneratorTests: XCTestCase {
             try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 0, concurrencyLimit: nil)
             XCTFail()
         } catch {
-            XCTAssertTrue(error is GeneratorError)
+            XCTAssertTrue(error is GenericError)
         }
 
         XCTAssertEqual(generator.generateCallCount, 1)

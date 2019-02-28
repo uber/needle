@@ -14,86 +14,26 @@
 //  limitations under the License.
 //
 
-import Basic
 import Foundation
+import SourceParsingFramework
 
-/// Utility String extensions.
-extension String {
+extension Regex {
 
-    /// The SHA256 value of this String.
-    var shortSHA256Value: String {
-        return SHA256(self).digestString().substring(with: NSRange(location: 0, length: 20))!
+    /// Creates a regular expression for any class that inherits from the
+    /// NeedleFoundation module's base class with given name.
+    ///
+    /// - parameter className: The name of the base class to check.
+    /// - returns: The regular expression.
+    static func foundationInheritanceRegex(forClass className: String) -> Regex {
+        return Regex(": *(\(needleModuleName).)?\(className) *<")
     }
 
-    /// Return the same String with the first character lowercased.
+    /// Creates a regular expression for any protocol that inherits from the
+    /// NeedleFoundation module's base protocol with given name.
     ///
-    /// - returns: The same String with the first character lowercased.
-    func lowercasedFirstChar() -> String {
-        let ommitFirstCharIndex = index(after: startIndex)
-        return String(self[startIndex]).lowercased() + String(self[ommitFirstCharIndex...])
-    }
-
-    /// Returns the substring of the given range.
-    ///
-    /// - parameter range: The `NSRange` to retrieve substring with.
-    /// - returns: The substring if the range is valid. `nil` otherwise.
-    func substring(with range: NSRange) -> String? {
-        guard let range = Range(range, in: self) else {
-            return nil
-        }
-        return String(self[range])
-    }
-
-    /// Check if this path represents a directory.
-    ///
-    /// - note: Use this property instead of `URL.isFileURL` property, since
-    /// that property only checks for URL scheme, which can be inaccurate.
-    var isDirectory: Bool {
-        var isDirectory = ObjCBool(false)
-        FileManager.default.fileExists(atPath: self, isDirectory: &isDirectory)
-        return isDirectory.boolValue
-    }
-
-    /// Check if this string contains any one of the elements in the
-    /// given array.
-    ///
-    /// - parameter array: The list of elements to check.
-    /// - returns: `true` if this string contains at least one element
-    /// in the given array. `false` otherwise.
-    func containsAny(in array: [String]) -> Bool {
-        for element in array {
-            if contains(element) {
-                return true
-            }
-        }
-        return false
-    }
-}
-
-/// Utility URL extensions.
-extension URL {
-
-    /// Initializer.
-    ///
-    /// - note: This initializer first checks if the given path is a directory.
-    /// If so, it initializes a directory URL. Otherwise a URL with the `file`
-    /// scheme is initialized. This allows the returned URL to correctly return
-    /// the `isFileURL` property.
-    /// - parameter path: The `String` path to use.
-    init(path: String) {
-        if path.isDirectory {
-            self.init(string: path)!
-        } else {
-            self.init(fileURLWithPath: path)
-        }
-    }
-
-    /// Check if this URL represents a Swift source file by examining its
-    /// file extenson.
-    ///
-    /// - returns: `true` if the URL is a Swift source file. `false`
-    /// otherwise.
-    var isSwiftSource: Bool {
-        return pathExtension == "swift"
+    /// - parameter className: The name of the base protocol to check.
+    /// - returns: The regular expression.
+    static func foundationInheritanceRegex(forProtocol protocolName: String) -> Regex {
+        return Regex(": *(\(needleModuleName).)?\(protocolName)")
     }
 }

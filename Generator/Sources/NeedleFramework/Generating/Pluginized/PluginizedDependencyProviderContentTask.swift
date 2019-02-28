@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// The task that walks through the chain of parents as well as auxillary
 /// providers for each dependency item of the dependency protocol that this
@@ -143,7 +144,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
             if let possibleMatchComponent = possibleMatchComponent {
                 message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
             }
-            throw GeneratorError.withMessage(message)
+            throw GenericError.withMessage(message)
         }
 
         return PluginizedProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)

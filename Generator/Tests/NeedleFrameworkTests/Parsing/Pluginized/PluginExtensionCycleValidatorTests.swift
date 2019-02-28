@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -57,7 +58,7 @@ class PluginExtensionCycleValidatorTests: AbstractPluginizedParserTests {
         do {
             try validator.process()
             XCTFail()
-        } catch GeneratorError.withMessage(let message) {
+        } catch GenericError.withMessage(let message) {
             XCTAssertTrue(message.contains("(a: A)"))
         } catch {
             XCTFail()

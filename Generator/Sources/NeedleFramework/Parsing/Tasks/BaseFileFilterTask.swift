@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// The result of filtering the source file.
 enum FilterResult {

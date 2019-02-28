@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -41,7 +42,7 @@ class ComponentConsolidatorTests: AbstractParserTests {
 
             XCTFail()
         } catch {
-            XCTAssertTrue(error is GeneratorError)
+            XCTAssertTrue(error is GenericError)
             XCTAssertTrue("\(error)".contains(componentExtensions[0].name))
         }
     }

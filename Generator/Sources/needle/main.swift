@@ -15,6 +15,7 @@
 //
 
 import Basic
+import CommandFramework
 import Foundation
 import NeedleFramework
 import Utility

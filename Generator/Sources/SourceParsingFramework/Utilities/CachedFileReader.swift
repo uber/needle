@@ -18,10 +18,10 @@ import Foundation
 
 /// A singleton utility providing file content reading functionality
 /// with caching built-in.
-class CachedFileReader {
+public class CachedFileReader {
 
     /// The singleton instance.
-    static let instance = CachedFileReader()
+    public static let instance = CachedFileReader()
 
     /// Retrieve the content at the given URL.
     ///
@@ -30,7 +30,7 @@ class CachedFileReader {
     /// - parameter url: The URL to read the file from.
     /// - returns: The file content at the given URL.
     /// - throws: If reading file failed.
-    func content(forUrl url: URL) throws -> String {
+    public func content(forUrl url: URL) throws -> String {
         let nsUrl = url as NSURL
         if let cachedContent = cache.object(forKey: nsUrl) {
             return cachedContent as String

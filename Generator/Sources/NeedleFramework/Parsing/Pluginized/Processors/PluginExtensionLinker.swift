@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A processor that links pluginized components with their plugin
 /// extensions based on type name.
@@ -43,7 +44,7 @@ class PluginExtensionLinker: Processor {
         for pluginizedComponent in pluginizedComponents {
             pluginizedComponent.pluginExtension = extensionMap[pluginizedComponent.pluginExtensionType]
             if pluginizedComponent.pluginExtension == nil {
-                throw GeneratorError.withMessage("Cannot find \(pluginizedComponent.data.name)'s plugin extension with type name \(pluginizedComponent.pluginExtensionType)")
+                throw GenericError.withMessage("Cannot find \(pluginizedComponent.data.name)'s plugin extension with type name \(pluginizedComponent.pluginExtensionType)")
             }
         }
     }

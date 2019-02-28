@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// The regex pattern that matches any class instantiation expressions
 /// with the first capture group capturing the name of the class.

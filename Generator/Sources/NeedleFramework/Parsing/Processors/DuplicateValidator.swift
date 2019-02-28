@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A post processing utility class that checks if there are any components
 /// or dependency protocols with the same names.
@@ -49,7 +50,7 @@ class DuplicateValidator: Processor {
             if map[component.name] == nil {
                 map[component.name] = component.name
             } else {
-                throw GeneratorError.withMessage("Needle does not support components with the same name \(component.name)")
+                throw GenericError.withMessage("Needle does not support components with the same name \(component.name)")
             }
         }
     }
@@ -60,7 +61,7 @@ class DuplicateValidator: Processor {
             if map[dependency.name] == nil {
                 map[dependency.name] = dependency.name
             } else {
-                throw GeneratorError.withMessage("Needle does not support dependency protocols with the same name \(dependency.name)")
+                throw GenericError.withMessage("Needle does not support dependency protocols with the same name \(dependency.name)")
             }
         }
     }

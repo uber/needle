@@ -15,6 +15,7 @@
 //
 
 import Concurrency
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -84,7 +85,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
             XCTFail()
         } catch {
             switch error {
-            case GeneratorError.withMessage(let message):
+            case GenericError.withMessage(let message):
                 XCTAssertTrue(message.contains("is instantiated incorrectly"))
                 XCTAssertTrue(message.contains("All components must be instantiated by parent components, by passing `self` as the argument to the parent parameter."))
             default:

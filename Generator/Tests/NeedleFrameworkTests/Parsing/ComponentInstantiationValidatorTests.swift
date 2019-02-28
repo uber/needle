@@ -15,7 +15,7 @@
 //
 
 import Concurrency
-import SourceKittenFramework
+import SourceParsingFramework
 import XCTest
 @testable import NeedleFramework
 
@@ -100,9 +100,9 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     }
 
     private func validate(error: Error, withComponentName componentName: String) {
-        XCTAssert(error is GeneratorError)
+        XCTAssert(error is GenericError)
         switch error {
-        case GeneratorError.withMessage(let message):
+        case GenericError.withMessage(let message):
             XCTAssertTrue(message.contains(componentName))
         default:
             XCTFail()

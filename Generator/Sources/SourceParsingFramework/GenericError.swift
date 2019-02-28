@@ -15,16 +15,9 @@
 //
 
 import Foundation
-import SourceParsingFramework
 
-/// A filter that performs checks if the file content contains any
-/// Pluginized component class implementations.
-class PluginizedComponentImplFilter: KeywordRegexFilter {
-
-    /// Initializer.
-    ///
-    /// - parameter content: The content to be filtered.
-    init(content: String) {
-        super.init(content: content, keyword: "PluginizedComponent", regex: Regex.foundationInheritanceRegex(forClass: "PluginizedComponent"))
-    }
+/// A generic error that contains a message.
+public enum GenericError: Error {
+    /// The error with a message.
+    case withMessage(String)
 }

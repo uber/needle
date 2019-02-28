@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// The generation phase entry class that executes tasks to process dependency
 /// graph components into the necessary dependency providers and their
@@ -99,7 +100,7 @@ class DependencyGraphExporter {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
             } catch SequenceExecutionError.awaitTimeout  {
-                throw GeneratorError.withMessage("Generating dependency provider for \(componentName) timed out.")
+                throw GenericError.withMessage("Generating dependency provider for \(componentName) timed out.")
             } catch {
                 throw error
             }

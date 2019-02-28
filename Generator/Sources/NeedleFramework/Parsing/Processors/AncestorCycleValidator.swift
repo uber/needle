@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A post processing utility class that checks if there are any cycles
 /// in the dependency graph's ancestor paths.
@@ -36,7 +37,7 @@ class AncestorCycleValidator: Processor {
                 let pathNames = cyclePath.map { (element: ASTComponent) -> String in
                     element.name
                 } + [component.name]
-                throw GeneratorError.withMessage("Dependency cycle detected along the path of \(pathNames.joined(separator: "->"))")
+                throw GenericError.withMessage("Dependency cycle detected along the path of \(pathNames.joined(separator: "->"))")
             }
         }
     }

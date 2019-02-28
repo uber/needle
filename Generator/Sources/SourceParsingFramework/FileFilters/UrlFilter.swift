@@ -17,7 +17,7 @@
 import Foundation
 
 /// A filter that performs checks based on URL content.
-class UrlFilter: FileFilter {
+public class UrlFilter: FileFilter {
 
     /// Initializer.
     ///
@@ -28,7 +28,7 @@ class UrlFilter: FileFilter {
     /// - parameter exclusionPaths: The list of path components to check.
     /// If the given URL's path contains any elements in this list, the
     /// URL will be excluded.
-    init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
+    public init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
         self.url = url
         self.exclusionSuffixes = exclusionSuffixes
         self.exclusionPaths = exclusionPaths
@@ -37,7 +37,7 @@ class UrlFilter: FileFilter {
     /// Execute the filter.
     ///
     /// - returns: `true` if the URL should be parsed. `false` otherwise.
-    func filter() -> Bool {
+    public func filter() -> Bool {
         if !url.isSwiftSource || urlHasExcludedSuffix || urlHasExcludedPath {
             return false
         }

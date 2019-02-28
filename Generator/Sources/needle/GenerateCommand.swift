@@ -14,8 +14,10 @@
 //  limitations under the License.
 //
 
+import CommandFramework
 import Foundation
 import NeedleFramework
+import SourceParsingFramework
 import Utility
 
 /// The generate command provides the core functionality of needle. It parses
@@ -78,7 +80,7 @@ class GenerateCommand: AbstractCommand {
                 let generator: Generator = scanPlugins ? PluginizedGenerator(sourceKitUtilities: sourceKitUtilities) : Generator(sourceKitUtilities: sourceKitUtilities)
                 do {
                     try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
-                } catch GeneratorError.withMessage(let message) {
+                } catch GenericError.withMessage(let message) {
                     fatalError(message)
                 } catch {
                     fatalError("Unknown error: \(error)")

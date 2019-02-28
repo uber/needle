@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// Errors that can occur during parsing of the dependency graph from
 /// Swift sources.

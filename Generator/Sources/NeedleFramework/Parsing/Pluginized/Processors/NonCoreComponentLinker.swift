@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import SourceParsingFramework
 
 /// A processor that links non-core components to pluginized components
 /// based on type name.
@@ -42,7 +43,7 @@ class NonCoreComponentLinker: Processor {
 
         for pluginizedComponent in pluginizedComponents {
             guard let nonCoreComponent = nonCoreMap[pluginizedComponent.nonCoreComponentType] else {
-                throw GeneratorError.withMessage("Cannot find \(pluginizedComponent.data.name)'s non-core component with type name \(pluginizedComponent.nonCoreComponentType)")
+                throw GenericError.withMessage("Cannot find \(pluginizedComponent.data.name)'s non-core component with type name \(pluginizedComponent.nonCoreComponentType)")
             }
 
             pluginizedComponent.nonCoreComponent = nonCoreComponent
