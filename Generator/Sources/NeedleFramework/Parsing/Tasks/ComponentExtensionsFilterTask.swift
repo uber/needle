@@ -35,7 +35,7 @@ class ComponentExtensionsFilterTask: BaseFileFilterTask {
     /// - parameter components: The list of components parsed out.
     init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String], components: [ASTComponent]) {
         self.components = components
-        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.componentExtensionsFilterTask)
+        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.componentExtensionsFilterTask.rawValue)
     }
 
     /// Create a set of filters for the given file content.

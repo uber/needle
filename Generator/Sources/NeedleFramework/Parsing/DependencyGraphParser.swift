@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// The entry utility for the parsing phase. The parser deeply scans a
 /// directory and parses the relevant Swift source files, and finally

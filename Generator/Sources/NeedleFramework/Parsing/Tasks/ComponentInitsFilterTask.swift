@@ -33,7 +33,7 @@ class ComponentInitsFilterTask: BaseFileFilterTask {
     /// If the given URL's path contains any elements in this list, the
     /// URL will be excluded.
     init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
-        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.componentInitsFilterTask)
+        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.componentInitsFilterTask.rawValue)
     }
 
     /// Create a set of filters for the given file content.
