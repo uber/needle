@@ -34,7 +34,7 @@ class DeclarationsFilterTask: BaseFileFilterTask {
     /// If the given URL's path contains any elements in this list, the
     /// URL will be excluded.
     init(url: URL, exclusionSuffixes: [String], exclusionPaths: [String]) {
-        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.declarationsFilterTask)
+        super.init(url: url, exclusionSuffixes: exclusionSuffixes, exclusionPaths: exclusionPaths, taskId: TaskIds.declarationsFilterTask.rawValue)
     }
 
     /// Create a set of filters for the given file content.
