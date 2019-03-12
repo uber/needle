@@ -28,6 +28,7 @@ publish:
 	@sed 's/__VERSION_NUMBER__/$(NEW_VERSION)/g' $(GENERATOR_VERSION_FOLDER_PATH)/Version.swift.template > $(GENERATOR_VERSION_FILE_PATH)
 %:
 	@:
+	sed -i '' "s/\(s.version.*=.*'\).*\('\)/\1$(NEW_VERSION)\2/" NeedleFoundation.podspec
 	make archive_generator
 	git add $(GENERATOR_FOLDER)/bin/needle
 	git add $(GENERATOR_VERSION_FILE_PATH)
@@ -38,6 +39,7 @@ publish:
 	git push origin $(NEW_VERSION_TAG)
 	$(eval NEW_VERSION_SHA := $(shell git rev-parse $(NEW_VERSION_TAG)))
 	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(NEW_VERSION_SHA) needle
+	pod trunk push
 
 archive_generator: clean build
 	mv $(GENERATOR_ARCHIVE_PATH) $(GENERATOR_FOLDER)/bin/
