@@ -32,6 +32,7 @@ publish:
 	make archive_generator
 	git add $(GENERATOR_FOLDER)/bin/needle
 	git add $(GENERATOR_VERSION_FILE_PATH)
+	git add NeedleFoundation.podspec
 	$(eval NEW_VERSION_TAG := v$(NEW_VERSION))
 	git commit -m "Update generator binary and version file for $(NEW_VERSION_TAG)"
 	git push origin master
