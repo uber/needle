@@ -81,7 +81,7 @@ targets: [
 
 #### Using [CocoaPods](https://github.com/CocoaPods/CocoaPods)
 
-Coming soon!
+Please follow the standard pod integration process and use `NeedleFoundation` pod.
 
 ### Install code generator
 
@@ -91,7 +91,7 @@ If Carthage is used to integrate  the `NeedleFoundation` framework, then a copy 
 
 #### Using [Homebrew](https://github.com/Homebrew/brew)
 
-Regardless of `NeedleFoundation` framework is integrated into your project, the generator can always be installed via [Homebrew](https://github.com/Homebrew/brew).
+Regardless of how `NeedleFoundation` framework is integrated into your project, the generator can always be installed via [Homebrew](https://github.com/Homebrew/brew).
 ```
 brew install needle
 ```
