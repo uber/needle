@@ -55,14 +55,14 @@ Once installed the generator binary can be executed directly as `$ needle versio
 
 Even though Needle's generator can be invoked from the commandline, it is most convenient when it's directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.
 
-1. Download the latest generator binary, either manually from the [Releases page](https://github.com/uber/needle/releases), or if the project is setup using [Carthage](https://github.com/Carthage/Carthage) then a copy of the latest generator binary is already in the Carthage folder.
+1. Download the latest generator binary, either manually from the [Releases page](https://github.com/uber/needle/releases), or using [Carthage](https://github.com/Carthage/Carthage) or [Homebrew](https://github.com/Homebrew/brew).
 2. Add a "Run Script" phase in the application's executable target's "Build Phases" section. ![](Images/build_phases.jpeg)
 3. Make sure the "Shell" value is `/bin/sh`.
 4. Add a shell script that invokes the generator in the script box. For example, the sample TicTacToe app uses the script: `export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/needle/Generator/bin/needle generate Sources/NeedleGenerated.swift Sources/ --header-doc ../../copyright_header.txt`.
     * If installed via Carthage, the binary can be invoked by pointing to the Carthage checkout relative to where the Xcode project file is. In our sample, this path is `../Carthage/Checkouts/needle/Generator/bin/needle generate`.
     * If installed via Homebrew, the binary can be executed by directly invoking `needle generate`
 
-The first part of the script `export SOURCEKIT_LOGGING=0` silences the SourceKit logging, otherwise Xcode will display the logs as error messages. This is simply to reduce noise in Xcode. It isn't strictly required. The rest of the script simply invokes the generator executable, with a few arguments. If the generator is installed via Carthage, please keep in mind that the path to the generator executable binary is relative to the Xcode project's location. In our sample apps, the path is `../Carthage/Checkouts/needle/Generator/bin/needle`. This might be different depending on your project's folder structure. The first argument `generate` tells the executable to run the code generation command. The second argument `Sources/NeedleGenerated.swift` tells the generator to export the generated code to that location. The third argument `Sources/` tells the generator where all the application source code is for parsing. The last optional argument `--header-doc` instructs the generator to use the text in the specified file as the header doc for the exported file that contains the generated code. Please refer to the section below for all possible parameters.
+The first part of the script `export SOURCEKIT_LOGGING=0` silences the SourceKit logging, otherwise Xcode will display the logs as error messages. This is simply to reduce noise in Xcode. It isn't strictly required. The rest of the script invokes the generator executable, with a few arguments. If the generator is installed via Carthage, please keep in mind that the path to the generator executable binary is relative to the Xcode project's location. In our sample apps, the path is `../Carthage/Checkouts/needle/Generator/bin/needle`. This might be different depending on your project's folder structure. The first argument `generate` tells the executable to run the code generation command. The second argument `Sources/NeedleGenerated.swift` tells the generator to export the generated code to that location. The third argument `Sources/` tells the generator where all the application source code is for parsing. The last optional argument `--header-doc` instructs the generator to use the text in the specified file as the header doc for the exported file that contains the generated code. Please refer to the section below for all possible parameters.
 
 That's it for the Xcode integration. Now every time Xcode builds the application, Needle's generator is run to generate and output the necessary DI code.
 
@@ -70,7 +70,8 @@ That's it for the Xcode integration. Now every time Xcode builds the application
 
 ### Available commands
 
-`generate`: Instructs the generator to parse Swift source files, generate DI code and export to the specified destination file. 
+`generate`: Instructs the generator to parse Swift source files, generate DI code and export to the specified destination file.
+`version` prints the version of the generator.
 
 ### `generate` command
 
@@ -80,13 +81,13 @@ That's it for the Xcode integration. Now every time Xcode builds the application
 
 #### Sources list file
 
-The generator can either parse all Swift files inside a directory including the one in sub-directories, or if a file instead of a directory is specified, the generator assumes the file is a text file containing a list of Swift source file paths. The file is referred to as the sources list file. Two formats for this file is supported, `newline` and `minescaping`. With the `newline` format, the generator assumes each line in the sources list file is a single path to a Swift source file to be parsed. The `minescaping` format specifies that paths are escaped with single quotes if escaping is needed,  while paths that don't require escaping are not wrapped with any quotes. All the paths are separated by a single space character. Use the `--sources-list-format` optional parameter to specify the format if necessary.
+The generator can either parse all Swift files inside a directory including the ones in sub-directories, or if a file is specified, the generator assumes the file is a text file containing a list of Swift source file paths. The file is referred to as the sources list file. Two formats for this file are supported, `newline` and `minescaping`. With the `newline` format, the generator assumes each line in the sources list file is a single path to a Swift source file to be parsed. The `minescaping` format specifies that paths are escaped with single quotes if escaping is needed, while paths that don't require escaping are not wrapped with any quotes. All the paths are separated by a single space character. Use the `--sources-list-format` optional parameter to specify the format if necessary.
 
 If multiple sources list files are given to the `generate` command, they all have to have the same format.
 
 #### Optional parameters
 
-`--sources-list-format`: The format of the Swift sources list file. If this parameter is not specified, any sources list file is assumed to use the `newline` format. Please see "Sources list file" section above for details.
+`--sources-list-format`: The format of the Swift sources list file. If this parameter is not specified, all sources list file is assumed to use the `newline` format. Please see [Sources list file](#Sources-list-file) section above for details.
 
 `--exclude-suffixes`: A list of file name suffixes to ignore for parsing. For example with `--exclude-suffixes Tests Mocks`, the generator will ignore any file whose name, excluding the file extension, ends with either "Test" or "Mocks".
 
@@ -98,6 +99,12 @@ If multiple sources list files are given to the `generate` command, they all hav
 generated code. With certain module structure, such as the one used internally at Uber, the top-level module is never directly imported. Therefore using this parameter allows the generated file to correctly import the top-level module. For example, for the Rider app at Uber `import Rider` is specified.
 
 `--pluginized`: If specified, the generator will parse and generate plugin-based DI graphs. This is generally not useful. Uber's plugin architecture uses this.
+
+`--collect-parsing-info`: A boolean value indicating if information should be collected for parsing execution timeout errors. This defaults to `false`.
+
+`--timeout`: The timeout value, in seconds, to use for waiting on parsing and generating tasks. This defaults to 30 seconds.
+
+`--concurrency-limit`: The maximum number of tasks to execute concurrently. This defaults to the maximum concurrency allowed by the hardware.
 
 ## Integrate generated code
 
