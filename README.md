@@ -33,7 +33,7 @@ class MyComponent: Component<MyDependency> {
     var hotChocolate: Drink {
         return HotChocolate(dependency.chocolate, dependency.milk)
     }
-    
+
     /// A child scope is always instantiated by its parent(s) scope(s).
     var myChildComponent: MyChildComponent {
         return MyChildComponent(parent: self)
@@ -91,7 +91,7 @@ If Carthage is used to integrate  the `NeedleFoundation` framework, then a copy 
 
 #### Using [Homebrew](https://github.com/Homebrew/brew)
 
-Regardless of how `NeedleFoundation` framework is integrated into your project, the generator can always be installed via [Homebrew](https://github.com/Homebrew/brew).
+Regardless of how the `NeedleFoundation` framework is integrated into your project, the generator can always be installed via [Homebrew](https://github.com/Homebrew/brew).
 ```
 brew install needle
 ```
