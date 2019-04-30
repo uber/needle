@@ -33,7 +33,7 @@ class ComponentConsolidator: Processor {
 
     /// Process the data models.
     func process() throws {
-        let nameToComponent = components.createDictionary { (component: ASTComponent) -> (String, ASTComponent) in
+        let nameToComponent = components.spm_createDictionary { (component: ASTComponent) -> (String, ASTComponent) in
             (component.name, component)
         }
         for componentExtension in componentExtensions {

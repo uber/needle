@@ -18,7 +18,7 @@ import Basic
 import CommandFramework
 import Foundation
 import NeedleFramework
-import Utility
+import SPMUtility
 
 func main() {
     let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Needle DI code generator.")
