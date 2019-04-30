@@ -21,7 +21,7 @@ import Foundation
 /// inherit from this class instead of the generic `Component` class.
 ///
 /// - SeeAlso: `Component`.
-open class RootComponent<DependencyType>: Component<DependencyType> {
+open class RootComponent: Component<EmptyDependency> {
 
     /// Initializer.
     public init() {
