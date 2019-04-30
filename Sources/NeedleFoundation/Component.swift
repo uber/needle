@@ -30,18 +30,20 @@ public protocol Scope: AnyObject {
     var parent: Scope { get }
 }
 
-/// The base implementation of a dependency injection component. A subclass defines a unique
-/// scope within the dependency injection tree, that contains a set of properties it provides
-/// to units of its scope as well as child scopes. A component instantiates child components
-/// that define child scopes.
+/// The base implementation of a dependency injection component. A subclass
+/// defines a unique scope within the dependency injection tree, that
+/// contains a set of properties it provides to units of its scope as well
+/// as child scopes. A component instantiates child components that define
+/// child scopes.
 open class Component<DependencyType>: Scope {
 
     /// The parent of this component.
     public let parent: Scope
 
     /// The path to reach this scope on the dependnecy graph.
-    // Use `lazy var` to avoid computing the path repeatedly. Internally, this is always
-    // accessed with the `__DependencyProviderRegistry`'s lock acquired.
+    // Use `lazy var` to avoid computing the path repeatedly. Internally,
+    // this is always accessed with the `__DependencyProviderRegistry`'s lock
+    // acquired.
     public lazy var path: [String] = {
         let name = self.name
         return parent.path + ["\(name)"]
@@ -49,8 +51,8 @@ open class Component<DependencyType>: Scope {
 
     /// The dependency of this component.
     ///
-    /// - note: Accessing this property is not thread-safe. It should only be accessed on the
-    /// same thread as the one that instantiated this component.
+    /// - note: Accessing this property is not thread-safe. It should only be
+    /// accessed on the same thread as the one that instantiated this component.
     public private(set) var dependency: DependencyType!
 
     /// Initializer.
@@ -61,27 +63,29 @@ open class Component<DependencyType>: Scope {
         dependency = createDependencyProvider()
     }
 
-    /// Share the enclosed object as a singleton at this scope. This allows this scope as well
-    /// as all child scopes to share a single instance of the object, for as long as this
-    /// component lives.
+    /// Share the enclosed object as a singleton at this scope. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
     ///
-    /// - note: Shared dependency's constructor should avoid switching threads as it may cause
-    /// a deadlock.
+    /// - note: Shared dependency's constructor should avoid switching threads
+    /// as it may cause a deadlock.
     ///
     /// - parameter factory: The closure to construct the dependency object.
     /// - returns: The dependency object instance.
     public final func shared<T>(__function: String = #function, _ factory: () -> T) -> T {
-        // Use function name as the key, since this is unique per component class. At the same time,
-        // this is also 150 times faster than interpolating the type to convert to string, `"\(T.self)"`.
+        // Use function name as the key, since this is unique per component
+        // class. At the same time, this is also 150 times faster than
+        // interpolating the type to convert to string, `"\(T.self)"`.
         sharedInstanceLock.lock()
         defer {
             sharedInstanceLock.unlock()
         }
 
-        // Additional nil coalescing is needed to mitigate a Swift bug appearing in Xcode 10.
-        // see https://bugs.swift.org/browse/SR-8704.
-        // Without this measure, calling `shared` from a function that returns an optional type
-        // will always pass the check below and return nil if the instance is not initialized.
+        // Additional nil coalescing is needed to mitigate a Swift bug appearing
+        // in Xcode 10. see https://bugs.swift.org/browse/SR-8704. Without this
+        // measure, calling `shared` from a function that returns an optional type
+        // will always pass the check below and return nil if the instance is not
+        // initialized.
         if let instance = (sharedInstances[__function] as? T?) ?? nil {
             return instance
         }
@@ -101,7 +105,8 @@ open class Component<DependencyType>: Scope {
         return parts.last ?? fullyQualifiedSelfName
     }()
 
-    // TODO: Replace this with an `open` method, once Swift supports extension overriding methods.
+    // TODO: Replace this with an `open` method, once Swift supports extension
+    // overriding methods.
     private func createDependencyProvider() -> DependencyType {
         let provider = __DependencyProviderRegistry.instance.dependencyProvider(for: self)
         if let dependency = provider as? DependencyType {
