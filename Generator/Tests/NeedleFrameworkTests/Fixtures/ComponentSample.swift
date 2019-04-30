@@ -53,6 +53,14 @@ class SomeNonCoreComponent: NeedleFoundation.NonCoreComponent<    SomeNonCoreDep
     }
 }
 
+class MyRComp: NeedleFoundation.RootComponent {
+    var rootObj: Obj {
+        return shared {
+            Obj()
+        }
+    }
+}
+
 class My2Component: Component<My2Dependency> {
     var book: Book {
         return shared {

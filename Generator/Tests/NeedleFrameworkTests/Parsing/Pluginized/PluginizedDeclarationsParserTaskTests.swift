@@ -30,7 +30,7 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let node = try! task.execute()
 
         // Regular components.
-        XCTAssertEqual(node.components.count, 2)
+        XCTAssertEqual(node.components.count, 3)
         let myComponent = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "MyComponent"
         }!
@@ -70,6 +70,16 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
             return property.name == "maybeWallet" && property.type == "Wallet?"
         }
         XCTAssertTrue(containsOptionalWallet)
+
+        let myRComp = node.components.first { (component: ASTComponent) -> Bool in
+            component.name == "MyRComp"
+            }!
+        XCTAssertEqual(myRComp.expressionCallTypeNames, ["Obj", "shared"])
+        XCTAssertEqual(myRComp.name, "MyRComp")
+        XCTAssertEqual(myRComp.dependencyProtocolName, "EmptyDependency")
+        XCTAssertTrue(myRComp.isRoot)
+        XCTAssertEqual(myRComp.properties.count, 1)
+        XCTAssertEqual(myRComp.properties, [Property(name: "rootObj", type: "Obj")])
 
         // Non-core components.
         XCTAssertEqual(node.nonCoreComponents.count, 1)

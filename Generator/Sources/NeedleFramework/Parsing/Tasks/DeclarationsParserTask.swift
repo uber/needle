@@ -51,9 +51,10 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
         let substructures = ast.structure.substructures
         for substructure in substructures {
             if substructure.isComponent {
-                let dependencyProtocolName = try substructure.dependencyProtocolName(for: "Component")
+                let isRoot = substructure.isRoot
+                let dependencyProtocolName = isRoot ? emptyDependency.name : try substructure.dependencyProtocolName(for: "Component")
                 let properties = try substructure.properties()
-                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
+                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: isRoot, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
             } else if substructure.isDependencyProtocol {
                 let properties = try substructure.properties()
                 dependencies.append(Dependency(name: substructure.name, properties: properties))
@@ -69,6 +70,10 @@ private extension Structure {
 
     /// Check if this structure represents a `Component` subclass.
     var isComponent: Bool {
+        if isRoot {
+            return true
+        }
+
         let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
         return inheritedTypes.contains { (type: String) -> Bool in
             regex.firstMatch(in: type) != nil
@@ -78,5 +83,10 @@ private extension Structure {
     /// Check if this structure represents a `Dependency` protocol.
     var isDependencyProtocol: Bool {
         return inheritedTypes.contains("Dependency") || inheritedTypes.contains("\(needleModuleName).Dependency")
+    }
+
+    /// Check if this structure represents the root of a dependency graph.
+    var isRoot: Bool {
+        return inheritedTypeNames.contains("RootComponent") || inheritedTypeNames.contains("\(needleModuleName).RootComponent")
     }
 }

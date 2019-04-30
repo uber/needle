@@ -46,14 +46,16 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let task = DeclarationsParserTask(ast: AST(structure: structure, imports: imports))
         let node = try! task.execute()
 
-        XCTAssertEqual(node.components.count, 2)
+        XCTAssertEqual(node.components.count, 3)
 
+        // MyComponent.
         let myComponent = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "MyComponent"
         }!
         XCTAssertEqual(myComponent.expressionCallTypeNames, ["Basket", "Donut", "MyChildComponent", "Stream", "shared"])
         XCTAssertEqual(myComponent.name, "MyComponent")
         XCTAssertEqual(myComponent.dependencyProtocolName, "MyDependency")
+        XCTAssertFalse(myComponent.isRoot)
         XCTAssertEqual(myComponent.properties.count, 4)
         let containsStream = myComponent.properties.contains { (property: Property) -> Bool in
             return property.name == "stream" && property.type == "Stream"
@@ -72,12 +74,14 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         }
         XCTAssertTrue(containsChildComponent)
 
+        // My2Component.
         let my2Component = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "My2Component"
         }!
         XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "Wallet", "shared"])
         XCTAssertEqual(my2Component.name, "My2Component")
         XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
+        XCTAssertFalse(my2Component.isRoot)
         XCTAssertEqual(my2Component.properties.count, 2)
         let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "book" && property.type == "Book"
@@ -89,6 +93,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         }
         XCTAssertTrue(containsOptionalWallet)
 
+        // MyDependency.
         XCTAssertEqual(node.dependencies.count, 4)
         let myDependency = node.dependencies.first { (dependency: Dependency) -> Bool in
             dependency.name == "MyDependency"
@@ -104,6 +109,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         }
         XCTAssertTrue(containsCheese)
 
+        // My2Dependency.
         let my2Dependency = node.dependencies.first { (dependency: Dependency) -> Bool in
             dependency.name == "My2Dependency"
         }!
@@ -119,6 +125,18 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         }
         XCTAssertTrue(containsOptionalMoney)
 
+        // MyRComp.
+        let myRComp = node.components.first { (component: ASTComponent) -> Bool in
+            component.name == "MyRComp"
+        }!
+        XCTAssertEqual(myRComp.expressionCallTypeNames, ["Obj", "shared"])
+        XCTAssertEqual(myRComp.name, "MyRComp")
+        XCTAssertEqual(myRComp.dependencyProtocolName, "EmptyDependency")
+        XCTAssertTrue(myRComp.isRoot)
+        XCTAssertEqual(myRComp.properties.count, 1)
+        XCTAssertEqual(myRComp.properties, [Property(name: "rootObj", type: "Obj")])
+
+        // Imports.
         XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }
