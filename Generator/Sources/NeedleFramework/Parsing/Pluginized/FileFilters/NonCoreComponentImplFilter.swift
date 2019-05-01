@@ -25,6 +25,6 @@ class NonCoreComponentImplFilter: KeywordRegexFilter {
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        super.init(content: content, keyword: "NonCoreComponent", regex: Regex.foundationInheritanceRegex(forClass: "NonCoreComponent"))
+        super.init(content: content, keyword: "NonCoreComponent", regex: Regex.foundationGenericInheritanceRegex(forClass: "NonCoreComponent"))
     }
 }

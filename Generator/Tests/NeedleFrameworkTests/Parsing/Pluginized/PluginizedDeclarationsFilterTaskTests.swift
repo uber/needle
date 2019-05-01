@@ -182,4 +182,36 @@ class PluginizedDeclarationsFilterTaskTests: AbstractPluginizedParserTests {
             XCTFail()
         }
     }
+
+    func test_execute_rootComponent_verifyResult() {
+        let fileUrl = fixtureUrl(for: "RootComponentSample.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = PluginizedDeclarationsFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
+
+        let result = try! task.execute()
+
+        switch result {
+        case .shouldProcess(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
+            XCTFail()
+        }
+    }
+
+    func test_execute_namespacedRootComponent_verifyResult() {
+        let fileUrl = fixtureUrl(for: "NamespacedRootComponentSample.swift")
+        let content = try! String(contentsOf: fileUrl)
+        let task = PluginizedDeclarationsFilterTask(url: fileUrl, exclusionSuffixes: [], exclusionPaths: [])
+
+        let result = try! task.execute()
+
+        switch result {
+        case .shouldProcess(let sourceUrl, let sourceContent):
+            XCTAssertEqual(sourceUrl, fileUrl)
+            XCTAssertEqual(sourceContent, content)
+        case .skip:
+            XCTFail()
+        }
+    }
 }
