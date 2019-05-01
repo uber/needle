@@ -21,9 +21,9 @@ import XCTest
 class NonCoreComponentLinkerTests: AbstractParserTests {
 
     func test_process_withComponents_verifyLinkages() {
-        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
+        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", isRoot: true, properties: [], expressionCallTypeNames: [])
         let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")
-        let nonCoreComponent = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", properties: [], expressionCallTypeNames: [])
+        let nonCoreComponent = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, properties: [], expressionCallTypeNames: [])
 
         let linker = NonCoreComponentLinker(pluginizedComponents: [pluginizedComp], nonCoreComponents: [nonCoreComponent])
 
@@ -33,9 +33,9 @@ class NonCoreComponentLinkerTests: AbstractParserTests {
     }
 
     func test_process_withComponentsNoNonCoreComp_verifyError() {
-        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", properties: [], expressionCallTypeNames: [])
+        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", isRoot: false, properties: [], expressionCallTypeNames: [])
         let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "Doesn't matter", nonCoreComponentType: "SomeComp")
-        let nonCoreComponent = ASTComponent(name: "WrongNonCoreComp", dependencyProtocolName: "ItsDependency", properties: [], expressionCallTypeNames: [])
+        let nonCoreComponent = ASTComponent(name: "WrongNonCoreComp", dependencyProtocolName: "ItsDependency", isRoot: true, properties: [], expressionCallTypeNames: [])
 
         let linker = NonCoreComponentLinker(pluginizedComponents: [pluginizedComp], nonCoreComponents: [nonCoreComponent])
 

@@ -22,7 +22,7 @@ class ComponentExtensionFilterTests: AbstractParserTests {
     func test_execute_hasComponentExtension_verifyFilter() {
         let fileUrl = fixtureUrl(for: "HasComponentExtensions.swift")
         let content = try! String(contentsOf: fileUrl)
-        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyScope", dependencyProtocolName: "", properties: [], expressionCallTypeNames: [])])
+        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyScope", dependencyProtocolName: "", isRoot: false, properties: [], expressionCallTypeNames: [])])
 
         XCTAssertTrue(filter.filter())
     }
@@ -30,7 +30,7 @@ class ComponentExtensionFilterTests: AbstractParserTests {
     func test_execute_hasExtensionNotForComponent_verifyFilter() {
         let fileUrl = fixtureUrl(for: "HasComponentExtensions.swift")
         let content = try! String(contentsOf: fileUrl)
-        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "NotRightComponent", dependencyProtocolName: "", properties: [], expressionCallTypeNames: [])])
+        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "NotRightComponent", dependencyProtocolName: "", isRoot: false, properties: [], expressionCallTypeNames: [])])
 
         XCTAssertFalse(filter.filter())
     }
@@ -38,7 +38,7 @@ class ComponentExtensionFilterTests: AbstractParserTests {
     func test_execute_noExtensionHasComponent_verifyFilter() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
-        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyComponent", dependencyProtocolName: "", properties: [], expressionCallTypeNames: [])])
+        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyComponent", dependencyProtocolName: "", isRoot: false, properties: [], expressionCallTypeNames: [])])
 
         XCTAssertFalse(filter.filter())
     }
@@ -46,7 +46,7 @@ class ComponentExtensionFilterTests: AbstractParserTests {
     func test_execute_noExtensionNoComponent_verifyFilter() {
         let fileUrl = fixtureUrl(for: "nocomp.swift")
         let content = try! String(contentsOf: fileUrl)
-        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyComponent", dependencyProtocolName: "", properties: [], expressionCallTypeNames: [])])
+        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyComponent", dependencyProtocolName: "", isRoot: false, properties: [], expressionCallTypeNames: [])])
 
         XCTAssertFalse(filter.filter())
     }

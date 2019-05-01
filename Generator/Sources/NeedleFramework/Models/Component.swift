@@ -21,6 +21,8 @@ import Foundation
 struct Component: Equatable {
     /// The name of the component.
     let name: String
+    /// Indicates if this component is the root of a dependency graph.
+    let isRoot: Bool
     /// A list of properties this component instantiates, thereby provides.
     let properties: [Property]
     /// A list of parent components.
@@ -39,6 +41,8 @@ class ASTComponent {
     let name: String
     /// The name of the component's dependency protocol.
     let dependencyProtocolName: String
+    /// Indicates if this component is the root of a dependency graph.
+    let isRoot: Bool
     /// A list of properties this component instantiates, thereby provides.
     var properties: [Property]
     /// A list of expression call type names.
@@ -53,13 +57,14 @@ class ASTComponent {
         let parentValues = parents.map { (parent: ASTComponent) -> Component in
             parent.valueType
         }
-        return Component(name: name, properties: properties, parents: parentValues, dependency: dependencyProtocol!)
+        return Component(name: name, isRoot: isRoot, properties: properties, parents: parentValues, dependency: dependencyProtocol!)
     }
 
     /// Initializer.
-    init(name: String, dependencyProtocolName: String, properties: [Property], expressionCallTypeNames: [String]) {
+    init(name: String, dependencyProtocolName: String, isRoot: Bool, properties: [Property], expressionCallTypeNames: [String]) {
         self.name = name
         self.dependencyProtocolName = dependencyProtocolName
+        self.isRoot = isRoot
         self.properties = properties
         self.expressionCallTypeNames = expressionCallTypeNames
     }

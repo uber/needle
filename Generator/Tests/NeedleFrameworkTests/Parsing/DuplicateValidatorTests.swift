@@ -21,9 +21,9 @@ import XCTest
 class DuplicateValidatorTests: XCTestCase {
     
     func test_validateComponent_noDuplicate_verifyResult() {
-        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
-        let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
-        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
+        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
+        let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
+        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
@@ -31,9 +31,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateComponent_withDuplicates_verifyResult() {
-        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
-        let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
-        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", properties: [], expressionCallTypeNames: [])
+        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
+        let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
+        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
