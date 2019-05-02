@@ -18,13 +18,13 @@ import Foundation
 import SourceParsingFramework
 
 /// A filter that performs checks if the file content contains any
-/// component class implementations.
-class ComponentImplFilter: KeywordRegexFilter {
+/// root component class implementations.
+class RootComponentImplFilter: KeywordRegexFilter {
 
     /// Initializer.
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        super.init(content: content, keyword: "Component", regex: Regex.foundationGenericInheritanceRegex(forClass: "Component"))
+        super.init(content: content, keyword: "RootComponent", regex: Regex.foundationInheritanceRegex(forClass: "RootComponent"))
     }
 }

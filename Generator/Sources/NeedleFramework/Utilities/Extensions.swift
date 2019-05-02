@@ -25,6 +25,15 @@ extension Regex {
     /// - parameter className: The name of the base class to check.
     /// - returns: The regular expression.
     static func foundationInheritanceRegex(forClass className: String) -> Regex {
+        return Regex(": *(\(needleModuleName).)?\(className)")
+    }
+
+    /// Creates a regular expression for any class that inherits from the
+    /// NeedleFoundation module's base generic class with given name.
+    ///
+    /// - parameter className: The name of the base generic class to check.
+    /// - returns: The regular expression.
+    static func foundationGenericInheritanceRegex(forClass className: String) -> Regex {
         return Regex(": *(\(needleModuleName).)?\(className) *<")
     }
 
