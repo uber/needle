@@ -1,5 +1,7 @@
 language: objective-c
 osx_image: xcode10.1
+before_script:
+- "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | sudo bash"
 matrix:
     include:
         - name: "NeedleFoundationTests"
@@ -23,3 +25,5 @@ matrix:
         - name: "NeedleSamplePluginizedTicTacToeCoreTests"
           install: cd Sample/Pluginized && carthage update --platform ios
           script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+script:
+    - fossa
