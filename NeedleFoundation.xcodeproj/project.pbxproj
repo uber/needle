@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		4185D79A227902BC00BC3A49 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4185D799227902BC00BC3A49 /* RootComponent.swift */; };
 		OBJ_38 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* Bootstrap.swift */; };
 		OBJ_39 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* Component.swift */; };
 		OBJ_40 /* DependencyProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* DependencyProviderRegistry.swift */; };
@@ -54,7 +53,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4185D799227902BC00BC3A49 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
 		"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NeedleFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTests::Product" /* NeedleFoundationTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = NeedleFoundationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_11 /* Bootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bootstrap.swift; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 				OBJ_12 /* Component.swift */,
 				OBJ_13 /* Internal */,
 				OBJ_15 /* Pluginized */,
-				4185D799227902BC00BC3A49 /* RootComponent.swift */,
 			);
 			name = NeedleFoundation;
 			path = Sources/NeedleFoundation;
@@ -169,7 +166,7 @@
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -181,7 +178,6 @@
 				OBJ_29 /* Sample */,
 				OBJ_30 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Configs */ = {
@@ -266,7 +262,7 @@
 				English,
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_30 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -289,7 +285,6 @@
 				OBJ_40 /* DependencyProviderRegistry.swift in Sources */,
 				OBJ_41 /* PluginExtensionProviderRegistry.swift in Sources */,
 				OBJ_42 /* NonCoreComponent.swift in Sources */,
-				4185D79A227902BC00BC3A49 /* RootComponent.swift in Sources */,
 				OBJ_43 /* PluginizedComponent.swift in Sources */,
 				OBJ_44 /* PluginizedScopeLifecycle.swift in Sources */,
 			);

@@ -87,6 +87,6 @@ private extension Structure {
 
     /// Check if this structure represents the root of a dependency graph.
     var isRoot: Bool {
-        return inheritedTypeNames.contains("RootComponent") || inheritedTypeNames.contains("\(needleModuleName).RootComponent")
+        return inheritedTypeNames.contains(bootstrapComponentName) || inheritedTypeNames.contains("\(needleModuleName).\(bootstrapComponentName)")
     }
 }
