@@ -55,7 +55,7 @@ class DependencyProviderDeclarerTask: AbstractTask<[DependencyProvider]> {
                     return DependencyProvider(path: path, dependency: component.dependency)
                 } else {
                     let pathString = path.map { $0.name }.joined(separator: "->")
-                    warning("\(pathString) is an orphan chain, therefore all scopes within the chain are ignored from parsing.")
+                    info("\(pathString) is an orphan chain, therefore all scopes within the chain are ignored from parsing.")
                     return nil
                 }
             }
