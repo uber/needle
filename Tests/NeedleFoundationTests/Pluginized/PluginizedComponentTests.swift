@@ -22,11 +22,15 @@ class PluginizedComponentTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->MockPluginizedComponent") { component in
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->BootstrapComponent") { component in
             return EmptyDependencyProvider(component: component)
         }
 
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->MockPluginizedComponent->MockNonCoreComponent") { component in
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->BootstrapComponent->MockPluginizedComponent") { component in
+            return EmptyDependencyProvider(component: component)
+        }
+
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->BootstrapComponent->MockPluginizedComponent->MockNonCoreComponent") { component in
             return EmptyDependencyProvider(component: component)
         }
 
