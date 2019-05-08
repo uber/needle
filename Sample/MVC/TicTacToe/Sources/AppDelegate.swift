@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
 
-        let rootComponent = RootComponent(parent: BootstrapComponent())
+        let rootComponent = RootComponent()
         window.rootViewController = rootComponent.rootViewController
 
         window.makeKeyAndVisible()

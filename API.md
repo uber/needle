@@ -121,27 +121,17 @@ Once this tree structure has been declared in code, the needle command-line tool
 
 # Bootstrap Root
 
-Since the root of a DI tree does not have a parent component, we bootstrap the root scope using the special `BootstrapComponent` class
+Since the root of a DI tree does not have a parent component, we bootstrap the root scope using the special `NeedleFoundation.RootComponent` class
 ```swift
-let rootComponent = RootComponent(parent: BootstrapComponent())
+let rootComponent = RootComponent()
 
-class RootComponent: Component<EmptyDependency> {
+class RootComponent: NeedleFoundation.RootComponent {
     /// Root component code...
 }
 ```
-Notice also the `RootComponent` uses the special `EmptyDependency` protocol to signal that it has no dependencies from its ancestors. In this case, root does not have any ancestors to speak of anyways.
+Notice the `RootComponent` does not need to specify any dependency protocol by inheriting from `NeedleFoundation.RootComponent`. Root of a DI graph has no parent to acquire dependencies from anyways.
 
-The `EmptyDependency` protocol can also be used for any other scopes that do not pull down dependencies from their ancestor DI branches.
-
-For better encapsulation, we can also define a custom initializer to a Root scope
-```swift
-class RootComponent: Component<EmptyDependency> {
-    init() {
-        super.init(parent: BootstrapComponent())
-    }
-}
-```
-This allows component subclass to encapsulate the special `BootstrapComponent` usage. In application code, we can simply invoke `RootComponent()` to instantiate the root scope.
+Since we know `root` does not have any parents, in application code, we can simply invoke `RootComponent()` to instantiate the root scope.
 
 # Flexibility
 

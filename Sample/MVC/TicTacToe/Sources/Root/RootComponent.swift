@@ -17,7 +17,7 @@
 import NeedleFoundation
 import UIKit
 
-class RootComponent: Component<EmptyDependency> {
+class RootComponent: NeedleFoundation.RootComponent {
 
     var playersStream: PlayersStream {
         return mutablePlayersStream
