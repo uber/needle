@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import SourceParsingFramework
 
 /// The task that generates the declarations of the dependency providers
 /// for a specific component, for all of its ancestor paths.
@@ -34,9 +35,29 @@ class DependencyProviderDeclarerTask: AbstractTask<[DependencyProvider]> {
     ///
     /// - returns: The list of `DependencyProvider`.
     override func execute() -> [DependencyProvider] {
+        // Do not produce a provider if the component is not a root and
+        // has no parents. In this case, the component is just an orphan
+        // scope that should be ignored.
+        if component.parents.isEmpty && !component.isRoot {
+            warning("\(component.name) is an orphan scope therefore ignored from parsing.")
+            return []
+        }
+
         return ancestorPaths(for: component)
-            .map { (path: [Component]) -> DependencyProvider in
-                return DependencyProvider(path: path, dependency: component.dependency)
+            .filter { !$0.isEmpty }
+            .compactMap { (path: [Component]) -> DependencyProvider? in
+                guard let first = path.first else {
+                    return nil
+                }
+
+                // A component's ancestor chain may be an orphan as well.
+                if first.isRoot {
+                    return DependencyProvider(path: path, dependency: component.dependency)
+                } else {
+                    let pathString = path.map { $0.name }.joined(separator: "->")
+                    warning("\(pathString) is an orphan chain, therefore all scopes within the chain are ignored from parsing.")
+                    return nil
+                }
             }
     }
 
