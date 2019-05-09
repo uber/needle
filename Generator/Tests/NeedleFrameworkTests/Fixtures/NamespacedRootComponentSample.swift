@@ -1,4 +1,4 @@
-class NamespacedRootComp: NeedleFoundation.RootComponent {
+class NamespacedRootComp: NeedleFoundation.BootstrapComponent {
     var rootObj: Obj {
         return shared {
             Obj()

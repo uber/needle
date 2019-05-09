@@ -29,7 +29,7 @@ class ComponentTests: XCTestCase {
     }
 
     func test_shared_veirfySingleInstance() {
-        let component = TestComponent(parent: BootstrapComponent())
+        let component = TestComponent()
         XCTAssert(component.share === component.share, "Should have returned same shared object")
 
         XCTAssertTrue(component.share2 === component.share2)
@@ -37,12 +37,12 @@ class ComponentTests: XCTestCase {
     }
 
     func test_shared_optional() {
-        let component = TestComponent(parent: BootstrapComponent())
+        let component = TestComponent()
         XCTAssert(component.optionalShare === component.expectedOptionalShare)
     }
 }
 
-class TestComponent: Component<EmptyDependency> {
+class TestComponent: BootstrapComponent {
 
     fileprivate var callCount: Int = 0
     fileprivate var expectedOptionalShare: ClassProtocol? = {

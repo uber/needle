@@ -44,14 +44,10 @@ class DependencyProviderRegistryTests: XCTestCase {
     }
 }
 
-class MockAppComponent: Component<EmptyDependency> {
+class MockAppComponent: BootstrapComponent {
 
     var rootComponent: MockRootComponent {
         return MockRootComponent(parent: self)
-    }
-
-    init() {
-        super.init(parent: BootstrapComponent())
     }
 }
 

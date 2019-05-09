@@ -53,7 +53,7 @@ class SomeNonCoreComponent: NeedleFoundation.NonCoreComponent<    SomeNonCoreDep
     }
 }
 
-class MyRComp: NeedleFoundation.RootComponent {
+class MyRComp: BootstrapComponent {
     var rootObj: Obj {
         return shared {
             Obj()
