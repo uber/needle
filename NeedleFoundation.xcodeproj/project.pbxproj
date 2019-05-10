@@ -9,11 +9,12 @@
 /* Begin PBXAggregateTarget section */
 		"NeedleFoundation::NeedleFoundationPackageTests::ProductTarget" /* NeedleFoundationPackageTests */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = OBJ_53 /* Build configuration list for PBXAggregateTarget "NeedleFoundationPackageTests" */;
+			buildConfigurationList = OBJ_57 /* Build configuration list for PBXAggregateTarget "NeedleFoundationPackageTests" */;
 			buildPhases = (
 			);
 			dependencies = (
-				OBJ_56 /* PBXTargetDependency */,
+				OBJ_60 /* PBXTargetDependency */,
+				OBJ_62 /* PBXTargetDependency */,
 			);
 			name = NeedleFoundationPackageTests;
 			productName = NeedleFoundationPackageTests;
@@ -21,119 +22,159 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		OBJ_38 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* Bootstrap.swift */; };
-		OBJ_39 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* Component.swift */; };
-		OBJ_40 /* DependencyProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* DependencyProviderRegistry.swift */; };
-		OBJ_41 /* PluginExtensionProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* PluginExtensionProviderRegistry.swift */; };
-		OBJ_42 /* NonCoreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* NonCoreComponent.swift */; };
-		OBJ_43 /* PluginizedComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_19 /* PluginizedComponent.swift */; };
-		OBJ_44 /* PluginizedScopeLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* PluginizedScopeLifecycle.swift */; };
-		OBJ_51 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
-		OBJ_62 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* ComponentTests.swift */; };
-		OBJ_63 /* DependencyProviderRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* DependencyProviderRegistryTests.swift */; };
-		OBJ_64 /* PluginizedComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_26 /* PluginizedComponentTests.swift */; };
-		OBJ_66 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */; };
+		OBJ_42 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Bootstrap.swift */; };
+		OBJ_43 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Component.swift */; };
+		OBJ_44 /* DependencyProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* DependencyProviderRegistry.swift */; };
+		OBJ_45 /* PluginExtensionProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* PluginExtensionProviderRegistry.swift */; };
+		OBJ_46 /* NonCoreComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* NonCoreComponent.swift */; };
+		OBJ_47 /* PluginizedComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* PluginizedComponent.swift */; };
+		OBJ_48 /* PluginizedScopeLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* PluginizedScopeLifecycle.swift */; };
+		OBJ_55 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
+		OBJ_69 /* MockComponentPathBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* MockComponentPathBuilder.swift */; };
+		OBJ_75 /* MockComponentPathBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_28 /* MockComponentPathBuilderTests.swift */; };
+		OBJ_77 /* NeedleFoundationTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "NeedleFoundation::NeedleFoundationTest::Product" /* NeedleFoundationTest.framework */; };
+		OBJ_83 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_23 /* ComponentTests.swift */; };
+		OBJ_84 /* DependencyProviderRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_24 /* DependencyProviderRegistryTests.swift */; };
+		OBJ_85 /* PluginizedComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_26 /* PluginizedComponentTests.swift */; };
+		OBJ_87 /* NeedleFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4185D7972279029E00BC3A49 /* PBXContainerItemProxy */ = {
+		BC7867C922862F3600FE7427 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTest";
+			remoteInfo = NeedleFoundationTest;
+		};
+		BC7867CA22862F3600FE7427 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
 			remoteInfo = NeedleFoundation;
 		};
-		4185D7982279029F00BC3A49 /* PBXContainerItemProxy */ = {
+		BC7867CB22862F3700FE7427 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTests";
 			remoteInfo = NeedleFoundationTests;
 		};
+		BC7867CC22862F3700FE7427 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTestTests";
+			remoteInfo = NeedleFoundationTestTests;
+		};
+		BC7867CD22862FBB00FE7427 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
+			remoteInfo = NeedleFoundation;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NeedleFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"NeedleFoundation::NeedleFoundationTest::Product" /* NeedleFoundationTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NeedleFoundationTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"NeedleFoundation::NeedleFoundationTestTests::Product" /* NeedleFoundationTestTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = NeedleFoundationTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTests::Product" /* NeedleFoundationTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = NeedleFoundationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_11 /* Bootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bootstrap.swift; sourceTree = "<group>"; };
-		OBJ_12 /* Component.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Component.swift; sourceTree = "<group>"; };
-		OBJ_14 /* DependencyProviderRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProviderRegistry.swift; sourceTree = "<group>"; };
-		OBJ_17 /* PluginExtensionProviderRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginExtensionProviderRegistry.swift; sourceTree = "<group>"; };
-		OBJ_18 /* NonCoreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonCoreComponent.swift; sourceTree = "<group>"; };
-		OBJ_19 /* PluginizedComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedComponent.swift; sourceTree = "<group>"; };
-		OBJ_20 /* PluginizedScopeLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedScopeLifecycle.swift; sourceTree = "<group>"; };
+		OBJ_10 /* Component.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Component.swift; sourceTree = "<group>"; };
+		OBJ_12 /* DependencyProviderRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProviderRegistry.swift; sourceTree = "<group>"; };
+		OBJ_15 /* PluginExtensionProviderRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginExtensionProviderRegistry.swift; sourceTree = "<group>"; };
+		OBJ_16 /* NonCoreComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonCoreComponent.swift; sourceTree = "<group>"; };
+		OBJ_17 /* PluginizedComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedComponent.swift; sourceTree = "<group>"; };
+		OBJ_18 /* PluginizedScopeLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedScopeLifecycle.swift; sourceTree = "<group>"; };
+		OBJ_20 /* MockComponentPathBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockComponentPathBuilder.swift; sourceTree = "<group>"; };
 		OBJ_23 /* ComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentTests.swift; sourceTree = "<group>"; };
 		OBJ_24 /* DependencyProviderRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyProviderRegistryTests.swift; sourceTree = "<group>"; };
 		OBJ_26 /* PluginizedComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedComponentTests.swift; sourceTree = "<group>"; };
-		OBJ_27 /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Images; sourceTree = SOURCE_ROOT; };
-		OBJ_28 /* Generator */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Generator; sourceTree = SOURCE_ROOT; };
-		OBJ_29 /* Sample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sample; sourceTree = SOURCE_ROOT; };
+		OBJ_28 /* MockComponentPathBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockComponentPathBuilderTests.swift; sourceTree = "<group>"; };
+		OBJ_29 /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Images; sourceTree = SOURCE_ROOT; };
+		OBJ_30 /* Generator */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Generator; sourceTree = SOURCE_ROOT; };
+		OBJ_31 /* Sample */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sample; sourceTree = SOURCE_ROOT; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_8 /* foundation.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = foundation.xcconfig; sourceTree = "<group>"; };
+		OBJ_9 /* Bootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bootstrap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		OBJ_45 /* Frameworks */ = {
+		OBJ_49 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_65 /* Frameworks */ = {
+		OBJ_70 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_66 /* NeedleFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_76 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_77 /* NeedleFoundationTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_87 /* NeedleFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		OBJ_10 /* NeedleFoundation */ = {
+		OBJ_11 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_11 /* Bootstrap.swift */,
-				OBJ_12 /* Component.swift */,
-				OBJ_13 /* Internal */,
-				OBJ_15 /* Pluginized */,
-			);
-			name = NeedleFoundation;
-			path = Sources/NeedleFoundation;
-			sourceTree = SOURCE_ROOT;
-		};
-		OBJ_13 /* Internal */ = {
-			isa = PBXGroup;
-			children = (
-				OBJ_14 /* DependencyProviderRegistry.swift */,
+				OBJ_12 /* DependencyProviderRegistry.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
 		};
-		OBJ_15 /* Pluginized */ = {
+		OBJ_13 /* Pluginized */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_16 /* Internal */,
-				OBJ_18 /* NonCoreComponent.swift */,
-				OBJ_19 /* PluginizedComponent.swift */,
-				OBJ_20 /* PluginizedScopeLifecycle.swift */,
+				OBJ_14 /* Internal */,
+				OBJ_16 /* NonCoreComponent.swift */,
+				OBJ_17 /* PluginizedComponent.swift */,
+				OBJ_18 /* PluginizedScopeLifecycle.swift */,
 			);
 			path = Pluginized;
 			sourceTree = "<group>";
 		};
-		OBJ_16 /* Internal */ = {
+		OBJ_14 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_17 /* PluginExtensionProviderRegistry.swift */,
+				OBJ_15 /* PluginExtensionProviderRegistry.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
+		};
+		OBJ_19 /* NeedleFoundationTest */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_20 /* MockComponentPathBuilder.swift */,
+			);
+			name = NeedleFoundationTest;
+			path = Sources/NeedleFoundationTest;
+			sourceTree = SOURCE_ROOT;
 		};
 		OBJ_21 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				OBJ_22 /* NeedleFoundationTests */,
+				OBJ_27 /* NeedleFoundationTestTests */,
 			);
 			name = Tests;
 			sourceTree = SOURCE_ROOT;
@@ -157,43 +198,59 @@
 			path = Pluginized;
 			sourceTree = "<group>";
 		};
-		OBJ_30 /* Products */ = {
+		OBJ_27 /* NeedleFoundationTestTests */ = {
 			isa = PBXGroup;
 			children = (
-				"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */,
+				OBJ_28 /* MockComponentPathBuilderTests.swift */,
+			);
+			name = NeedleFoundationTestTests;
+			path = Tests/NeedleFoundationTestTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_32 /* Products */ = {
+			isa = PBXGroup;
+			children = (
 				"NeedleFoundation::NeedleFoundationTests::Product" /* NeedleFoundationTests.xctest */,
+				"NeedleFoundation::NeedleFoundationTest::Product" /* NeedleFoundationTest.framework */,
+				"NeedleFoundation::NeedleFoundationTestTests::Product" /* NeedleFoundationTestTests.xctest */,
+				"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 = {
+		OBJ_5 /*  */ = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
-				OBJ_7 /* Configs */,
-				OBJ_9 /* Sources */,
+				OBJ_7 /* Sources */,
 				OBJ_21 /* Tests */,
-				OBJ_27 /* Images */,
-				OBJ_28 /* Generator */,
-				OBJ_29 /* Sample */,
-				OBJ_30 /* Products */,
+				OBJ_29 /* Images */,
+				OBJ_30 /* Generator */,
+				OBJ_31 /* Sample */,
+				OBJ_32 /* Products */,
 			);
+			name = "";
 			sourceTree = "<group>";
 		};
-		OBJ_7 /* Configs */ = {
+		OBJ_7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_8 /* foundation.xcconfig */,
-			);
-			name = Configs;
-			sourceTree = "<group>";
-		};
-		OBJ_9 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				OBJ_10 /* NeedleFoundation */,
+				OBJ_8 /* NeedleFoundation */,
+				OBJ_19 /* NeedleFoundationTest */,
 			);
 			name = Sources;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_8 /* NeedleFoundation */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_9 /* Bootstrap.swift */,
+				OBJ_10 /* Component.swift */,
+				OBJ_11 /* Internal */,
+				OBJ_13 /* Pluginized */,
+			);
+			name = NeedleFoundation;
+			path = Sources/NeedleFoundation;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
@@ -201,10 +258,10 @@
 /* Begin PBXNativeTarget section */
 		"NeedleFoundation::NeedleFoundation" /* NeedleFoundation */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_34 /* Build configuration list for PBXNativeTarget "NeedleFoundation" */;
+			buildConfigurationList = OBJ_38 /* Build configuration list for PBXNativeTarget "NeedleFoundation" */;
 			buildPhases = (
-				OBJ_37 /* Sources */,
-				OBJ_45 /* Frameworks */,
+				OBJ_41 /* Sources */,
+				OBJ_49 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -215,17 +272,51 @@
 			productReference = "NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		"NeedleFoundation::NeedleFoundationTests" /* NeedleFoundationTests */ = {
+		"NeedleFoundation::NeedleFoundationTest" /* NeedleFoundationTest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_58 /* Build configuration list for PBXNativeTarget "NeedleFoundationTests" */;
+			buildConfigurationList = OBJ_65 /* Build configuration list for PBXNativeTarget "NeedleFoundationTest" */;
 			buildPhases = (
-				OBJ_61 /* Sources */,
-				OBJ_65 /* Frameworks */,
+				OBJ_68 /* Sources */,
+				OBJ_70 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				OBJ_67 /* PBXTargetDependency */,
+				BC7867CE22862FBB00FE7427 /* PBXTargetDependency */,
+			);
+			name = NeedleFoundationTest;
+			productName = NeedleFoundationTest;
+			productReference = "NeedleFoundation::NeedleFoundationTest::Product" /* NeedleFoundationTest.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		"NeedleFoundation::NeedleFoundationTestTests" /* NeedleFoundationTestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_71 /* Build configuration list for PBXNativeTarget "NeedleFoundationTestTests" */;
+			buildPhases = (
+				OBJ_74 /* Sources */,
+				OBJ_76 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_78 /* PBXTargetDependency */,
+			);
+			name = NeedleFoundationTestTests;
+			productName = NeedleFoundationTestTests;
+			productReference = "NeedleFoundation::NeedleFoundationTestTests::Product" /* NeedleFoundationTestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		"NeedleFoundation::NeedleFoundationTests" /* NeedleFoundationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_79 /* Build configuration list for PBXNativeTarget "NeedleFoundationTests" */;
+			buildPhases = (
+				OBJ_82 /* Sources */,
+				OBJ_86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_88 /* PBXTargetDependency */,
 			);
 			name = NeedleFoundationTests;
 			productName = NeedleFoundationTests;
@@ -234,9 +325,9 @@
 		};
 		"NeedleFoundation::SwiftPMPackageDescription" /* NeedleFoundationPackageDescription */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_47 /* Build configuration list for PBXNativeTarget "NeedleFoundationPackageDescription" */;
+			buildConfigurationList = OBJ_51 /* Build configuration list for PBXNativeTarget "NeedleFoundationPackageDescription" */;
 			buildPhases = (
-				OBJ_50 /* Sources */,
+				OBJ_54 /* Sources */,
 			);
 			buildRules = (
 			);
@@ -259,67 +350,99 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 			);
-			mainGroup = OBJ_5;
-			productRefGroup = OBJ_30 /* Products */;
+			mainGroup = OBJ_5 /*  */;
+			productRefGroup = OBJ_32 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				"NeedleFoundation::NeedleFoundation" /* NeedleFoundation */,
 				"NeedleFoundation::SwiftPMPackageDescription" /* NeedleFoundationPackageDescription */,
 				"NeedleFoundation::NeedleFoundationPackageTests::ProductTarget" /* NeedleFoundationPackageTests */,
+				"NeedleFoundation::NeedleFoundationTest" /* NeedleFoundationTest */,
+				"NeedleFoundation::NeedleFoundationTestTests" /* NeedleFoundationTestTests */,
 				"NeedleFoundation::NeedleFoundationTests" /* NeedleFoundationTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		OBJ_37 /* Sources */ = {
+		OBJ_41 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_38 /* Bootstrap.swift in Sources */,
-				OBJ_39 /* Component.swift in Sources */,
-				OBJ_40 /* DependencyProviderRegistry.swift in Sources */,
-				OBJ_41 /* PluginExtensionProviderRegistry.swift in Sources */,
-				OBJ_42 /* NonCoreComponent.swift in Sources */,
-				OBJ_43 /* PluginizedComponent.swift in Sources */,
-				OBJ_44 /* PluginizedScopeLifecycle.swift in Sources */,
+				OBJ_42 /* Bootstrap.swift in Sources */,
+				OBJ_43 /* Component.swift in Sources */,
+				OBJ_44 /* DependencyProviderRegistry.swift in Sources */,
+				OBJ_45 /* PluginExtensionProviderRegistry.swift in Sources */,
+				OBJ_46 /* NonCoreComponent.swift in Sources */,
+				OBJ_47 /* PluginizedComponent.swift in Sources */,
+				OBJ_48 /* PluginizedScopeLifecycle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_50 /* Sources */ = {
+		OBJ_54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_51 /* Package.swift in Sources */,
+				OBJ_55 /* Package.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_61 /* Sources */ = {
+		OBJ_68 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_62 /* ComponentTests.swift in Sources */,
-				OBJ_63 /* DependencyProviderRegistryTests.swift in Sources */,
-				OBJ_64 /* PluginizedComponentTests.swift in Sources */,
+				OBJ_69 /* MockComponentPathBuilder.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_74 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_75 /* MockComponentPathBuilderTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_83 /* ComponentTests.swift in Sources */,
+				OBJ_84 /* DependencyProviderRegistryTests.swift in Sources */,
+				OBJ_85 /* PluginizedComponentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		OBJ_56 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = "NeedleFoundation::NeedleFoundationTests" /* NeedleFoundationTests */;
-			targetProxy = 4185D7982279029F00BC3A49 /* PBXContainerItemProxy */;
-		};
-		OBJ_67 /* PBXTargetDependency */ = {
+		BC7867CE22862FBB00FE7427 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = "NeedleFoundation::NeedleFoundation" /* NeedleFoundation */;
-			targetProxy = 4185D7972279029E00BC3A49 /* PBXContainerItemProxy */;
+			targetProxy = BC7867CD22862FBB00FE7427 /* PBXContainerItemProxy */;
+		};
+		OBJ_60 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "NeedleFoundation::NeedleFoundationTests" /* NeedleFoundationTests */;
+			targetProxy = BC7867CB22862F3700FE7427 /* PBXContainerItemProxy */;
+		};
+		OBJ_62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "NeedleFoundation::NeedleFoundationTestTests" /* NeedleFoundationTestTests */;
+			targetProxy = BC7867CC22862F3700FE7427 /* PBXContainerItemProxy */;
+		};
+		OBJ_78 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "NeedleFoundation::NeedleFoundationTest" /* NeedleFoundationTest */;
+			targetProxy = BC7867C922862F3600FE7427 /* PBXContainerItemProxy */;
+		};
+		OBJ_88 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = "NeedleFoundation::NeedleFoundation" /* NeedleFoundation */;
+			targetProxy = BC7867CA22862F3600FE7427 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -350,9 +473,8 @@
 			};
 			name = Debug;
 		};
-		OBJ_35 /* Debug */ = {
+		OBJ_39 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = OBJ_8 /* foundation.xcconfig */;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -374,31 +496,6 @@
 				TARGET_NAME = NeedleFoundation;
 			};
 			name = Debug;
-		};
-		OBJ_36 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = OBJ_8 /* foundation.xcconfig */;
-			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
-				);
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundation_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
-				OTHER_CFLAGS = "$(inherited)";
-				OTHER_LDFLAGS = "$(inherited)";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = NeedleFoundation;
-				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
-				SWIFT_VERSION = 4.0;
-				TARGET_NAME = NeedleFoundation;
-			};
-			name = Release;
 		};
 		OBJ_4 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -420,7 +517,31 @@
 			};
 			name = Release;
 		};
-		OBJ_48 /* Debug */ = {
+		OBJ_40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundation_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = NeedleFoundation;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = NeedleFoundation;
+			};
+			name = Release;
+		};
+		OBJ_52 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				LD = /usr/bin/true;
@@ -429,7 +550,7 @@
 			};
 			name = Debug;
 		};
-		OBJ_49 /* Release */ = {
+		OBJ_53 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				LD = /usr/bin/true;
@@ -438,21 +559,110 @@
 			};
 			name = Release;
 		};
-		OBJ_54 /* Debug */ = {
+		OBJ_58 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 			};
 			name = Debug;
 		};
-		OBJ_55 /* Release */ = {
+		OBJ_59 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 			};
 			name = Release;
 		};
-		OBJ_59 /* Debug */ = {
+		OBJ_66 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = OBJ_8 /* foundation.xcconfig */;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundationTest_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = NeedleFoundationTest;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = NeedleFoundationTest;
+			};
+			name = Debug;
+		};
+		OBJ_67 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundationTest_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = NeedleFoundationTest;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = NeedleFoundationTest;
+			};
+			name = Release;
+		};
+		OBJ_72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundationTestTests_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = NeedleFoundationTestTests;
+			};
+			name = Debug;
+		};
+		OBJ_73 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundationTestTests_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @loader_path/../Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_VERSION = 4.0;
+				TARGET_NAME = NeedleFoundationTestTests;
+			};
+			name = Release;
+		};
+		OBJ_80 /* Debug */ = {
+			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -472,9 +682,8 @@
 			};
 			name = Debug;
 		};
-		OBJ_60 /* Release */ = {
+		OBJ_81 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = OBJ_8 /* foundation.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -506,38 +715,56 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_34 /* Build configuration list for PBXNativeTarget "NeedleFoundation" */ = {
+		OBJ_38 /* Build configuration list for PBXNativeTarget "NeedleFoundation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_35 /* Debug */,
-				OBJ_36 /* Release */,
+				OBJ_39 /* Debug */,
+				OBJ_40 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_47 /* Build configuration list for PBXNativeTarget "NeedleFoundationPackageDescription" */ = {
+		OBJ_51 /* Build configuration list for PBXNativeTarget "NeedleFoundationPackageDescription" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_48 /* Debug */,
-				OBJ_49 /* Release */,
+				OBJ_52 /* Debug */,
+				OBJ_53 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_53 /* Build configuration list for PBXAggregateTarget "NeedleFoundationPackageTests" */ = {
+		OBJ_57 /* Build configuration list for PBXAggregateTarget "NeedleFoundationPackageTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_54 /* Debug */,
-				OBJ_55 /* Release */,
+				OBJ_58 /* Debug */,
+				OBJ_59 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_58 /* Build configuration list for PBXNativeTarget "NeedleFoundationTests" */ = {
+		OBJ_65 /* Build configuration list for PBXNativeTarget "NeedleFoundationTest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_59 /* Debug */,
-				OBJ_60 /* Release */,
+				OBJ_66 /* Debug */,
+				OBJ_67 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_71 /* Build configuration list for PBXNativeTarget "NeedleFoundationTestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_72 /* Debug */,
+				OBJ_73 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OBJ_79 /* Build configuration list for PBXNativeTarget "NeedleFoundationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_80 /* Debug */,
+				OBJ_81 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

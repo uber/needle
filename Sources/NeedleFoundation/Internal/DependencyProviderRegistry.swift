@@ -48,6 +48,19 @@ public class __DependencyProviderRegistry {
         providerFactories[componentPath.hashValue] = dependencyProviderFactory
     }
 
+    /// Unregister the given factory closure with given key.
+    ///
+    /// - note: This method is thread-safe.
+    /// - parameter componentPath: The dependency graph path of the component
+    /// the provider is for.
+    public func unregisterDependencyProviderFactory(`for` componentPath: String) {
+        providerFactoryLock.lock()
+        defer {
+            providerFactoryLock.unlock()
+        }
+        providerFactories.removeValue(forKey: componentPath.hashValue)
+    }
+
     /// Retrieve the dependency provider for the given component and its parent.
     ///
     /// - parameter component: The component that uses the returned dependency provider.
@@ -68,8 +81,22 @@ public class __DependencyProviderRegistry {
         }
     }
 
+    /// Retrieve the dependency provider for the given componentpath.
+    ///
+    /// - parameter componentpath: The component path that uses the returned dependency provider.
+    /// - returns: The dependency provider for the given componentpath.
+    public func dependencyProviderFactory(`for` componentPath: String) -> ((Scope) -> AnyObject)? {
+        providerFactoryLock.lock()
+        defer {
+            providerFactoryLock.unlock()
+        }
+        
+        return providerFactories[componentPath.hashValue]
+    }
+
     private let providerFactoryLock = NSRecursiveLock()
-    private var providerFactories = [Int: (Scope) -> AnyObject]()
+    // marked internal to allow testing
+    var providerFactories = [Int: (Scope) -> AnyObject]()
 
     private init() {}
 }
