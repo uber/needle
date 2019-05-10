@@ -45,13 +45,9 @@ public final class MockComponentPathBuilder {
      */
     public func extendPath(to componentType: AnyClass) -> MockComponentPathBuilder {
         let nodeName: String
-//        if componentType !== BootstrapComponent.self {
-            let fullyQualifiedSelfName = String(describing: componentType)
-            let parts = fullyQualifiedSelfName.components(separatedBy: ".")
-            nodeName = parts.last ?? fullyQualifiedSelfName
-//        } else {
-//            nodeName = "^"
-//        }
+        let fullyQualifiedSelfName = String(describing: componentType)
+        let parts = fullyQualifiedSelfName.components(separatedBy: ".")
+        nodeName = parts.last ?? fullyQualifiedSelfName
         path.append(nodeName)
         return self
     }
