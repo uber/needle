@@ -81,15 +81,15 @@ class GenerateCommand: AbstractCommand {
                 do {
                     try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
                 } catch GenericError.withMessage(let message) {
-                    fatalError(message)
-                } catch {
-                    fatalError("Unknown error: \(error)")
+                    error(message)
+                } catch (let e) {
+                    error("Unknown error: \(e)")
                 }
             } else {
-                fatalError("Missing source files root directories.")
+                error("Missing source files root directories.")
             }
         } else {
-            fatalError("Missing destination path.")
+            error("Missing destination path.")
         }
     }
 

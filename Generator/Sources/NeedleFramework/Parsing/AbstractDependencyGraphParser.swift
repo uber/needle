@@ -108,7 +108,7 @@ class AbstractDependencyGraphParser {
                 } else if currentTask is ComponentExtensionsParserTask, let node = currentResult as? ComponentExtensionNode {
                     return .endOfSequence(node)
                 } else {
-                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                    error("Unhandled task \(currentTask) with result \(currentResult)")
                 }
             }
         }
@@ -174,7 +174,7 @@ class AbstractDependencyGraphParser {
                         return .endOfSequence(nil)
                     }
                 } else {
-                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                    error("Unhandled task \(currentTask) with result \(currentResult)")
                 }
             }
         }
