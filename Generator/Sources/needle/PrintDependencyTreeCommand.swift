@@ -68,8 +68,8 @@ class PrintDependencyTreeCommand: AbstractCommand {
                     try generator.printDependencyTree(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit, rootComponentName: rootComponentName)
                 } catch GenericError.withMessage(let message) {
                     error(message)
-                } catch {
-                    error("Unknown error: \(error)")
+                } catch (let e) {
+                    error("Unknown error: \(e)")
                 }
         } else {
             error("Missing source files root directories.")

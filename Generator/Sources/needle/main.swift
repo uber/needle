@@ -18,6 +18,7 @@ import Basic
 import CommandFramework
 import Foundation
 import NeedleFramework
+import SourceParsingFramework
 import SPMUtility
 
 func main() {
@@ -27,8 +28,8 @@ func main() {
     do {
         let args = try parser.parse(inputs)
         execute(commands, with: parser, args)
-    } catch {
-        error("Command-line pasing error (use --help for help): \(error)")
+    } catch (let e) {
+        error("Command-line pasing error (use --help for help): \(e)")
     }
 }
 

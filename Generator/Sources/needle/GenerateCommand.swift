@@ -82,8 +82,8 @@ class GenerateCommand: AbstractCommand {
                     try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
                 } catch GenericError.withMessage(let message) {
                     error(message)
-                } catch {
-                    error("Unknown error: \(error)")
+                } catch (let e) {
+                    error("Unknown error: \(e)")
                 }
             } else {
                 error("Missing source files root directories.")
