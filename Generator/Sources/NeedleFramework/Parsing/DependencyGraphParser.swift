@@ -86,7 +86,7 @@ class DependencyGraphParser: AbstractDependencyGraphParser {
         } else if currentTask is DeclarationsParserTask, let node = currentResult as? DependencyGraphNode {
             return .endOfSequence(node)
         } else {
-            fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+            error("Unhandled task \(currentTask) with result \(currentResult)")
         }
     }
 

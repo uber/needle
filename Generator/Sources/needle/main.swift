@@ -28,7 +28,7 @@ func main() {
         let args = try parser.parse(inputs)
         execute(commands, with: parser, args)
     } catch {
-        fatalError("Command-line pasing error (use --help for help): \(error)")
+        error("Command-line pasing error (use --help for help): \(error)")
     }
 }
 

@@ -88,7 +88,7 @@ class PluginizedDependencyGraphExporter {
                 } else if currentTask is PluginizedDependencyProviderSerializerTask, let serializedProviders = currentResult as? [SerializedProvider] {
                     return .endOfSequence(serializedProviders)
                 } else {
-                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                    error("Unhandled task \(currentTask) with result \(currentResult)")
                 }
             }
             taskHandleTuples.append((taskHandle, component.name))
