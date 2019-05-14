@@ -2,7 +2,7 @@ Needle API
 ==========
 This document will explain the Needle API and what classes one uses to interact with Needle in your code.
 
-1. [Introduction and Terminology](#intro)
+1. [Introduction and Terminology](#introduction-and-terminology)
 2. [Components](#components)
 3. [Dependencies](#dependencies)
 4. [Using the Component](#using-the-component)
