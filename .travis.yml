@@ -5,25 +5,27 @@ before_script:
 matrix:
     include:
         - name: "NeedleFoundationTests"
-          script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
+        - name: "NeedleFoundationTestTests"
+          script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundationTestTests -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
         - name: "NeedleGeneratorTests"
           script: cd Generator && swift test -Xswiftc -DDEBUG
         - name: "NeedleGeneratorBinary"
           script: cd Generator && swift build -c release -Xswiftc -static-stdlib
         - name: "NeedleSampleMVCApp"
           install: cd Sample/MVC && carthage update --platform ios
-          script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
         - name: "NeedleSampleMVCTests"
           install: cd Sample/MVC && carthage update --platform ios
-          script: xcodebuild test -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild test -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
         - name: "NeedleSamplePluginizedApp"
           install: cd Sample/Pluginized && carthage update --platform ios
-          script: xcodebuild build -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild build -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
         - name: "NeedleSamplePluginizedScoreSheetTests"
           install: cd Sample/Pluginized && carthage update --platform ios
-          script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
         - name: "NeedleSamplePluginizedTicTacToeCoreTests"
           install: cd Sample/Pluginized && carthage update --platform ios
-          script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
 script:
     - fossa

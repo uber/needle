@@ -95,8 +95,7 @@ public class __DependencyProviderRegistry {
     }
 
     private let providerFactoryLock = NSRecursiveLock()
-    // marked internal to allow testing
-    var providerFactories = [Int: (Scope) -> AnyObject]()
+    private var providerFactories = [Int: (Scope) -> AnyObject]()
 
     private init() {}
 }

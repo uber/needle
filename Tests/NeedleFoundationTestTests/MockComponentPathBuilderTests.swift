@@ -113,10 +113,11 @@ class MockComponentPathBuilderTests: XCTestCase {
         let retrievedDependencyProvider = __DependencyProviderRegistry.instance.dependencyProvider(for: testComponent2)
         XCTAssert(testDependencyProvider === retrievedDependencyProvider, "\nexpected: \(String(describing: testDependencyProvider))\ngot this:- \(String(describing: retrievedDependencyProvider))")
         
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent->TestComponent2".hashValue], "We should get back the right dependency provider after invoking unregister")
+        let dependencyProviderRegistry = __DependencyProviderRegistry.instance
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent->TestComponent2"), "We should get back the right dependency provider after invoking unregister")
         // Unregistering the dependency provider for a component that DID NOT HAVE a pre-existing dependency provider
         componentPath2.unregister()
-        XCTAssertNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent->TestComponent2".hashValue], "We should not get back the right dependency provider after invoking unregister")
+        XCTAssertNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent->TestComponent2"), "We should not get back the right dependency provider after invoking unregister")
     }
 
     func test_componentPathBuilder_unregister_verifyFallbackToPreviouslyRegisteredDependencyProvider() {
@@ -138,14 +139,15 @@ class MockComponentPathBuilderTests: XCTestCase {
         let retrievedDependencyProvider = __DependencyProviderRegistry.instance.dependencyProvider(for: testComponent1)
         XCTAssert(testDependencyProvider === retrievedDependencyProvider, "\nexpected: \(String(describing: testDependencyProvider))\ngot this:- \(String(describing: retrievedDependencyProvider))")
         
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent".hashValue], "We should get back the right dependency provider before invoking unregister")
+        let dependencyProviderRegistry = __DependencyProviderRegistry.instance
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent"), "We should get back the right dependency provider before invoking unregister")
         // Unregistering the dependency provider for a component that HAD a pre-existing dependency provider
         componentPath1.unregister()
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent".hashValue], "We should get back the pre-exisitng dependency provider")
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent"), "We should get back the pre-exisitng dependency provider")
         // Attempting to unregister the dependency provider for a component that had already been unregistered should
         // not remove the pre-existing dependency provider.
         componentPath1.unregister()
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent".hashValue], "We should get back the pre-exisitng dependency provider")
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent"), "We should get back the pre-exisitng dependency provider")
     }
 
     func test_componentPathBuilder_unregister_verifyDoesNotUnregisterPrexistingDependencyProvider() {
@@ -168,14 +170,15 @@ class MockComponentPathBuilderTests: XCTestCase {
         let retrievedDependencyProvider = __DependencyProviderRegistry.instance.dependencyProvider(for: testComponent1)
         XCTAssert(testDependencyProvider === retrievedDependencyProvider, "\nexpected: \(String(describing: testDependencyProvider))\ngot this:- \(String(describing: retrievedDependencyProvider))")
         
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent".hashValue], "We should get back the right dependency provider before invoking unregister")
+        let dependencyProviderRegistry = __DependencyProviderRegistry.instance
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent"), "We should get back the right dependency provider before invoking unregister")
         // Unregistering the dependency provider for a component that HAD a pre-existing dependency provider
         componentPath1.unregister()
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent".hashValue], "We should get back the pre-exisitng dependency provider")
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent"), "We should get back the pre-exisitng dependency provider")
         // Attempting to unregister the dependency provider for a component that had already been unregistered should
         // not remove the pre-existing dependency provider.
         componentPath1.unregister()
-        XCTAssertNotNil(__DependencyProviderRegistry.instance.providerFactories["^->BootstrapComponent->TestComponent".hashValue], "We should get back the pre-exisitng dependency provider")
+        XCTAssertNotNil(dependencyProviderRegistry.dependencyProviderFactory(for: "^->BootstrapComponent->TestComponent"), "We should get back the pre-exisitng dependency provider")
     }
 }
 
