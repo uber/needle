@@ -46,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTestTests"
-               BuildableName = "NeedleFoundationTestTests.xctest"
-               BlueprintName = "NeedleFoundationTestTests"
+               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTests"
+               BuildableName = "NeedleFoundationTests.xctest"
+               BlueprintName = "NeedleFoundationTests"
                ReferencedContainer = "container:NeedleFoundation.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -56,9 +56,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTests"
-               BuildableName = "NeedleFoundationTests.xctest"
-               BlueprintName = "NeedleFoundationTests"
+               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTestTests"
+               BuildableName = "NeedleFoundationTestTests.xctest"
+               BlueprintName = "NeedleFoundationTestTests"
                ReferencedContainer = "container:NeedleFoundation.xcodeproj">
             </BuildableReference>
          </TestableReference>
