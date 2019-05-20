@@ -60,7 +60,22 @@ public class __DependencyProviderRegistry {
         }
         providerFactories.removeValue(forKey: componentPath.hashValue)
     }
-
+    
+    /// Retrieve the dependency provider for the given componentpath.
+    ///
+    /// - parameter componentpath: The component path that uses the returned dependency provider.
+    /// - returns: The dependency provider for the given componentpath.
+    public func dependencyProviderFactory(`for` componentPath: String) -> ((Scope) -> AnyObject)? {
+        providerFactoryLock.lock()
+        defer {
+            providerFactoryLock.unlock()
+        }
+        
+        return providerFactories[componentPath.hashValue]
+    }
+    
+    // MARK: - Internal
+    
     /// Retrieve the dependency provider for the given component and its parent.
     ///
     /// - parameter component: The component that uses the returned dependency provider.
@@ -79,19 +94,6 @@ public class __DependencyProviderRegistry {
             // This is useful for Needle generator development only.
             fatalError("Missing dependency provider factory for \(component.path)")
         }
-    }
-
-    /// Retrieve the dependency provider for the given componentpath.
-    ///
-    /// - parameter componentpath: The component path that uses the returned dependency provider.
-    /// - returns: The dependency provider for the given componentpath.
-    public func dependencyProviderFactory(`for` componentPath: String) -> ((Scope) -> AnyObject)? {
-        providerFactoryLock.lock()
-        defer {
-            providerFactoryLock.unlock()
-        }
-        
-        return providerFactories[componentPath.hashValue]
     }
 
     private let providerFactoryLock = NSRecursiveLock()

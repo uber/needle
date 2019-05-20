@@ -24,17 +24,15 @@ import NeedleFoundation
 ///
 /// - Returns: A mock component path builder.
 public func mockComponentPathBuilder() -> MockComponentPathBuilder {
-    return MockComponentPathBuilder(dependencyProviderRegistry:  __DependencyProviderRegistry.instance)
+    return MockComponentPathBuilder()
 }
 
 /// MockComponentPathBuilder aloows you to build a component path that mirrors the ancestry of a component.
 /// Once the path is created, you can invoke build to create an instance of MockComponentPath. This class is not
 /// intended to be subclassed.
 public final class MockComponentPathBuilder {
-    private let dependencyProviderRegistry: __DependencyProviderRegistry
     private var path: [String] = ["^"]
-    fileprivate init(dependencyProviderRegistry: __DependencyProviderRegistry) {
-        self.dependencyProviderRegistry = dependencyProviderRegistry
+    fileprivate init() {
     }
     
     /// Extend the component path from the leaf component in the current component path to its next child
@@ -54,7 +52,7 @@ public final class MockComponentPathBuilder {
     ///
     /// - Returns: The mock component path built based on the settings provided to the mock component path builder.
     public func build() -> MockComponentPath {
-        return MockComponentPath(path: pathString(), dependencyProviderRegistry: dependencyProviderRegistry)
+        return MockComponentPath(path: pathString())
     }
     
     private func pathString() -> String {
@@ -67,12 +65,11 @@ public final class MockComponentPathBuilder {
 /// intended to be subclassed.
 public final class MockComponentPath {
     private let path: String
-    private let dependencyProviderRegistry: __DependencyProviderRegistry
+    private let dependencyProviderRegistry = __DependencyProviderRegistry.instance
     private var preexistingDependencyProviderFactory: ((Scope) -> AnyObject)? = nil
     private var canUnregister = false
-    fileprivate init(path: String, dependencyProviderRegistry: __DependencyProviderRegistry) {
+    fileprivate init(path: String) {
         self.path = path
-        self.dependencyProviderRegistry = dependencyProviderRegistry
     }
     
     /// Register a dependency provider for the mocked component path.
