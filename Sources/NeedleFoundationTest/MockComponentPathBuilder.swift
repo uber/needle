@@ -65,7 +65,6 @@ public final class MockComponentPathBuilder {
 /// intended to be subclassed.
 public final class MockComponentPath {
     private let path: String
-    private let dependencyProviderRegistry = __DependencyProviderRegistry.instance
     private var preexistingDependencyProviderFactory: ((Scope) -> AnyObject)? = nil
     private var canUnregister = false
     fileprivate init(path: String) {
@@ -74,8 +73,8 @@ public final class MockComponentPath {
     
     /// Register a dependency provider for the mocked component path.
     public func register(dependencyProvider: AnyObject) {
-        preexistingDependencyProviderFactory = dependencyProviderRegistry.dependencyProviderFactory(for: path)
-        dependencyProviderRegistry.registerDependencyProviderFactory(for: path) { _ in
+        preexistingDependencyProviderFactory = __DependencyProviderRegistry.instance.dependencyProviderFactory(for: path)
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path) { _ in
             return dependencyProvider
         }
         canUnregister = true
@@ -84,9 +83,9 @@ public final class MockComponentPath {
     /// Unregister a previously registered dependency provider for the mocked component path.
     public func unregister() {
         guard canUnregister else { return }
-        dependencyProviderRegistry.unregisterDependencyProviderFactory(for: path)
+        __DependencyProviderRegistry.instance.unregisterDependencyProviderFactory(for: path)
         if let preexistingDependencyProviderFactory = preexistingDependencyProviderFactory {
-            dependencyProviderRegistry.registerDependencyProviderFactory(for: path, preexistingDependencyProviderFactory)
+            __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: path, preexistingDependencyProviderFactory)
             self.preexistingDependencyProviderFactory = nil
         }
         canUnregister = false
