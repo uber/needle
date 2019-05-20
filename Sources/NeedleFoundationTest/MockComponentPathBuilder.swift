@@ -73,8 +73,6 @@ public final class MockComponentPath {
     }
     
     /// Register a dependency provider for the mocked component path.
-    ///
-    /// - Parameter dependencyProvider: The dependency provider to handle dependencies for the component.
     public func register(dependencyProvider: AnyObject) {
         preexistingDependencyProviderFactory = dependencyProviderRegistry.dependencyProviderFactory(for: path)
         dependencyProviderRegistry.registerDependencyProviderFactory(for: path) { _ in
