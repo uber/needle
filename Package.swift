@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "NeedleFoundation",
     products: [
-        .library(name: "NeedleFoundation", targets: ["NeedleFoundation"])
+        .library(name: "NeedleFoundation", targets: ["NeedleFoundation"]),
+        .library(name: "NeedleFoundationTest", targets: ["NeedleFoundationTest"])
     ],
     dependencies: [],
     targets: [
@@ -14,6 +15,13 @@ let package = Package(
         .testTarget(
             name: "NeedleFoundationTests",
             dependencies: ["NeedleFoundation"],
+            exclude: []),
+        .target(
+            name: "NeedleFoundationTest",
+            dependencies: []),
+        .testTarget(
+            name: "NeedleFoundationTestTests",
+            dependencies: ["NeedleFoundationTest"],
             exclude: []),
     ],
     swiftLanguageVersions: [4]
