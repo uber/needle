@@ -14,7 +14,7 @@ matrix:
           script: cd Generator && swift build -c release -Xswiftc -static-stdlib
         - name: "NeedleSampleMVCApp"
           install: cd Sample/MVC && carthage update --platform ios
-          script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
+          script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=12.1,name=iPhone X'
         - name: "NeedleSampleMVCTests"
           install: cd Sample/MVC && carthage update --platform ios
           script: xcodebuild test -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=11.4,name=iPhone X'
