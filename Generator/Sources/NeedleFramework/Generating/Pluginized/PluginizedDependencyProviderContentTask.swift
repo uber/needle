@@ -144,7 +144,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
             if let possibleMatchComponent = possibleMatchComponent {
                 message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
             }
-            throw GenericError.withMessage(message)
+            throw DependencyProviderContentError.missingDependency(message)
         }
 
         return PluginizedProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)
