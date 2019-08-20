@@ -101,7 +101,7 @@ class DependencyGraphExporter {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
             } catch DependencyProviderContentError.missingDependency(let message) {
-                print(message)
+                warning(message)
                 missingDependencies = true
             } catch SequenceExecutionError.awaitTimeout  {
                 throw GenericError.withMessage("Generating dependency provider for \(componentName) timed out.")
