@@ -112,15 +112,22 @@ class PluginizedDependencyGraphExporter {
 
     private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: TimeInterval) throws -> [SerializedProvider] {
         var providers = [SerializedProvider]()
+        var isMissingDependencies = false
         for (taskHandle, componentName) in taskHandleTuples {
             do {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
+            } catch DependencyProviderContentError.missingDependency(let message) {
+                warning(message)
+                isMissingDependencies = true
             } catch SequenceExecutionError.awaitTimeout  {
                 throw GenericError.withMessage("Generating dependency provider for \(componentName) timed out.")
             } catch {
                 throw error
             }
+        }
+        if isMissingDependencies {
+            throw GenericError.withMessage("Missing one or more dependencies.")
         }
         return providers
     }
