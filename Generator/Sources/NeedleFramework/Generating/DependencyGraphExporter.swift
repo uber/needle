@@ -95,21 +95,21 @@ class DependencyGraphExporter {
     private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: TimeInterval) throws -> [SerializedProvider] {
         // Wait for all the generation to complete so we can write all the output into a single file
         var providers = [SerializedProvider]()
-        var missingDependencies = false
+        var isMissingDependencies = false
         for (taskHandle, componentName) in taskHandleTuples {
             do {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
             } catch DependencyProviderContentError.missingDependency(let message) {
                 warning(message)
-                missingDependencies = true
+                isMissingDependencies = true
             } catch SequenceExecutionError.awaitTimeout  {
                 throw GenericError.withMessage("Generating dependency provider for \(componentName) timed out.")
             } catch {
                 throw error
             }
         }
-        if missingDependencies {
+        if isMissingDependencies {
             throw GenericError.withMessage("Missing one or more dependencies.")
         }
         return providers
