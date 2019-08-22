@@ -90,7 +90,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     private func process(_ provider: DependencyProvider, withAuxillaryPropertiesFrom auxillaryPropertyMap: [String: AuxillaryProperties], auxillarySourceType: AuxillarySourceType) throws -> PluginizedProcessedDependencyProvider  {
         var levelMap = [String: Int]()
 
-        let properties = try provider.dependency.properties.map { (property : Property) -> PluginizedProcessedProperty in
+        let properties = provider.dependency.properties.compactMap { (property : Property) -> PluginizedProcessedProperty? in
             // Drop first element, since we should not search in the current scope.
             let searchPath = provider.path.reversed().dropFirst()
             // Level start at 1, since we dropped the current scope.
@@ -144,7 +144,12 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
             if let possibleMatchComponent = possibleMatchComponent {
                 message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
             }
-            throw DependencyProviderContentError.missingDependency(message)
+            warning(message)
+            return nil
+        }
+        if properties.count < provider.dependency.properties.count {
+            let scope = provider.path.last?.name ?? "unknown"
+            throw DependencyProviderContentError.missingDependency("Missing one or more dependencies at the \(scope) scope.")
         }
 
         return PluginizedProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)
