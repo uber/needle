@@ -18,6 +18,13 @@ import Concurrency
 import Foundation
 import SourceParsingFramework
 
+/// Errors that can occur during dependency checking stage.
+enum DependencyProviderContentError: Error {
+    /// Could not find a dependency along the path to the root.
+    case missingDependency(String)
+}
+
+
 /// The task that walks through the chain of parents for each dependency
 /// item of the dependency protocol that this provider class needs to satisfy.
 class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]> {
@@ -82,7 +89,7 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
             if let possibleMatchComponent = possibleMatchComponent {
                 message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
             }
-            throw GenericError.withMessage(message)
+            throw DependencyProviderContentError.missingDependency(message)
         }
 
         return ProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)
