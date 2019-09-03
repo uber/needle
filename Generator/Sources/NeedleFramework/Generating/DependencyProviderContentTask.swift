@@ -43,16 +43,20 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
     /// - returns: The list of `ProcessedDependencyProvider`.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> [ProcessedDependencyProvider] {
-        return try providers.map { (provider: DependencyProvider) throws -> ProcessedDependencyProvider in
-            try process(provider)
+        let result = try providers.compactMap { (provider: DependencyProvider) throws -> ProcessedDependencyProvider? in
+            process(provider)
         }
+        if result.count < providers.count {
+            throw DependencyProviderContentError.missingDependency("Missing one or more dependencies at scope.")
+        }
+        return result
     }
 
     // MARK: - Private
 
     private let providers: [DependencyProvider]
 
-    private func process(_ provider: DependencyProvider) throws -> ProcessedDependencyProvider  {
+    private func process(_ provider: DependencyProvider) -> ProcessedDependencyProvider?  {
         var levelMap = [String: Int]()
 
         let properties = provider.dependency.properties.compactMap { (property : Property) -> ProcessedProperty? in
@@ -93,8 +97,7 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
             return nil
         }
         if properties.count < provider.dependency.properties.count {
-            let scope = provider.path.last?.name ?? "unknown"
-            throw DependencyProviderContentError.missingDependency("Missing one or more dependencies at the \(scope) scope.")
+            return nil
         }
 
         return ProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)

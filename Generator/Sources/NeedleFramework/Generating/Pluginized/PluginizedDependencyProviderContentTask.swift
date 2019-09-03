@@ -56,13 +56,17 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     /// - returns: The list of `ProcessedDependencyProvider`.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> [PluginizedProcessedDependencyProvider] {
-        return try providers.map { (provider: DependencyProvider) throws -> PluginizedProcessedDependencyProvider in
+        let result = providers.compactMap { (provider: DependencyProvider) -> PluginizedProcessedDependencyProvider? in
             if provider.pathContains(anyOf: nonCoreComponentNames) {
-                return try process(provider, withAuxillaryPropertiesFrom: nonCoreComponentMap, auxillarySourceType: .nonCoreComponent)
+                return process(provider, withAuxillaryPropertiesFrom: nonCoreComponentMap, auxillarySourceType: .nonCoreComponent)
             } else {
-                return try process(provider, withAuxillaryPropertiesFrom: pluginExtensionMap, auxillarySourceType: .pluginExtension)
+                return process(provider, withAuxillaryPropertiesFrom: pluginExtensionMap, auxillarySourceType: .pluginExtension)
             }
         }
+        if result.count < providers.count {
+            throw DependencyProviderContentError.missingDependency("Missing one or more dependencies at scope.")
+        }
+        return result
     }
 
     // MARK: - Private
@@ -87,7 +91,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
     // extension auxilary property.
     private let auxilarySourceParentDependency: [String: String]
 
-    private func process(_ provider: DependencyProvider, withAuxillaryPropertiesFrom auxillaryPropertyMap: [String: AuxillaryProperties], auxillarySourceType: AuxillarySourceType) throws -> PluginizedProcessedDependencyProvider  {
+    private func process(_ provider: DependencyProvider, withAuxillaryPropertiesFrom auxillaryPropertyMap: [String: AuxillaryProperties], auxillarySourceType: AuxillarySourceType) -> PluginizedProcessedDependencyProvider?  {
         var levelMap = [String: Int]()
 
         let properties = provider.dependency.properties.compactMap { (property : Property) -> PluginizedProcessedProperty? in
@@ -148,8 +152,7 @@ class PluginizedDependencyProviderContentTask: AbstractTask<[PluginizedProcessed
             return nil
         }
         if properties.count < provider.dependency.properties.count {
-            let scope = provider.path.last?.name ?? "unknown"
-            throw DependencyProviderContentError.missingDependency("Missing one or more dependencies at the \(scope) scope.")
+            return nil
         }
 
         return PluginizedProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)
