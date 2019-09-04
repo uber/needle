@@ -17,7 +17,7 @@
 import CommandFramework
 import Foundation
 import NeedleFramework
-import SPMUtility
+import Utility
 
 /// A command that returns the current version of the generator.
 class VersionCommand: AbstractCommand {

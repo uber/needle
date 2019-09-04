@@ -46,3 +46,12 @@ extension Regex {
         return Regex(": *(\(needleModuleName).)?\(protocolName)")
     }
 }
+
+extension Array {
+    /// Create a dictionary with given sequence of elements.
+    public func spm_createDictionary<Key: Hashable, Value>(
+        _ uniqueKeysWithValues: (Element) -> (Key, Value)
+        ) -> [Key: Value] {
+        return Dictionary(uniqueKeysWithValues: self.map(uniqueKeysWithValues))
+    }
+}
