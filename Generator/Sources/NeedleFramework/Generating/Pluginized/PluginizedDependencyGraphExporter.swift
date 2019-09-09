@@ -127,7 +127,7 @@ class PluginizedDependencyGraphExporter {
             }
         }
         if isMissingDependencies {
-            throw GenericError.withMessage("Missing one or more dependencies.")
+            throw GenericError.withMessage("Some dependencies are missing, please look at the warnings above for the list.")
         }
         return providers
     }
