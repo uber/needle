@@ -18,7 +18,7 @@ Let's apply the DI pattern to our app. With DI, we will have a third class, in N
 
 With DI applied, let's revisit the issues we had before:
 1. We can freely change the implementation of `PhotosService` without affecting our `PhotosViewController`.
-2. We can simply update our DI `Component` class to instantiate and pass `PhotosServiceV2` into `PhotosViewController`, as long as the implementaiton still conforms to the `PhotosServicing` protocol. This allows us to freely switch implementations of the photos service without having to change anything in the view controller.
+2. We can simply update our DI `Component` class to instantiate and pass `PhotosServiceV2` into `PhotosViewController`, as long as the implementation still conforms to the `PhotosServicing` protocol. This allows us to freely switch implementations of the photos service without having to change anything in the view controller.
 3. We can properly unit test `PhotosViewController` by injecting, aka passing in, a mock `PhotosServicing` object.
 4. As soon as the `PhotosServicing` protocol is defined, we can independently and concurrently develop `PhotosService` and `PhotosViewController` implementations.
 
