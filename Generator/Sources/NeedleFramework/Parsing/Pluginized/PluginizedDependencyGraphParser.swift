@@ -86,7 +86,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
         } else if currentTask is PluginizedDeclarationsParserTask, let node = currentResult as? PluginizedDependencyGraphNode {
             return .endOfSequence(node)
         } else {
-            fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+            error("Unhandled task \(currentTask) with result \(currentResult)")
         }
     }
 

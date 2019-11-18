@@ -9,7 +9,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.23.1"),
-        .package(url: "https://github.com/apple/swift-package-manager.git", .branch("master")),
+        .package(url: "https://github.com/apple/swift-package-manager.git", .exact("0.3.0")),
         .package(url: "https://github.com/uber/swift-concurrency.git", .upToNextMajor(from: "0.6.5")),
         .package(url: "https://github.com/uber/swift-common.git", .branch("master")),
     ],
@@ -17,7 +17,7 @@ let package = Package(
         .target(
             name: "NeedleFramework",
             dependencies: [
-                "SPMUtility",
+                "Utility",
                 "SourceKittenFramework",
                 "Concurrency",
                 "SourceParsingFramework",

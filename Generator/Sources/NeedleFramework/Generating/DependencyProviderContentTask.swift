@@ -18,6 +18,13 @@ import Concurrency
 import Foundation
 import SourceParsingFramework
 
+/// Errors that can occur during dependency checking stage.
+enum DependencyProviderContentError: Error {
+    /// Could not find a dependency along the path to the root.
+    case missingDependency(String)
+}
+
+
 /// The task that walks through the chain of parents for each dependency
 /// item of the dependency protocol that this provider class needs to satisfy.
 class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]> {
@@ -36,19 +43,23 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
     /// - returns: The list of `ProcessedDependencyProvider`.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> [ProcessedDependencyProvider] {
-        return try providers.map { (provider: DependencyProvider) throws -> ProcessedDependencyProvider in
-            try process(provider)
+        let result = try providers.compactMap { (provider: DependencyProvider) throws -> ProcessedDependencyProvider? in
+            process(provider)
         }
+        if result.count < providers.count {
+            throw DependencyProviderContentError.missingDependency("Missing one or more dependencies at scope.")
+        }
+        return result
     }
 
     // MARK: - Private
 
     private let providers: [DependencyProvider]
 
-    private func process(_ provider: DependencyProvider) throws -> ProcessedDependencyProvider  {
+    private func process(_ provider: DependencyProvider) -> ProcessedDependencyProvider?  {
         var levelMap = [String: Int]()
 
-        let properties = try provider.dependency.properties.map { (property : Property) -> ProcessedProperty in
+        let properties = provider.dependency.properties.compactMap { (property : Property) -> ProcessedProperty? in
             // Drop first element, since we should not search in the current scope.
             let searchPath = provider.path.reversed().dropFirst()
             // Level start at 1, since we dropped the current scope.
@@ -82,7 +93,11 @@ class DependencyProviderContentTask: AbstractTask<[ProcessedDependencyProvider]>
             if let possibleMatchComponent = possibleMatchComponent {
                 message += " Found possible matches \(possibleMatches) at \(possibleMatchComponent)."
             }
-            throw GenericError.withMessage(message)
+            warning(message)
+            return nil
+        }
+        if properties.count < provider.dependency.properties.count {
+            return nil
         }
 
         return ProcessedDependencyProvider(unprocessed: provider, levelMap: levelMap, processedProperties: properties)

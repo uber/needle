@@ -18,7 +18,7 @@ import CommandFramework
 import Foundation
 import NeedleFramework
 import SourceParsingFramework
-import SPMUtility
+import Utility
 
 /// A command that prints out the static dependency tree starting at RootComponent.
 class PrintDependencyTreeCommand: AbstractCommand {
@@ -67,12 +67,12 @@ class PrintDependencyTreeCommand: AbstractCommand {
                 do {
                     try generator.printDependencyTree(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit, rootComponentName: rootComponentName)
                 } catch GenericError.withMessage(let message) {
-                    fatalError(message)
-                } catch {
-                    fatalError("Unknown error: \(error)")
+                    error(message)
+                } catch (let e) {
+                    error("Unknown error: \(e)")
                 }
         } else {
-            fatalError("Missing source files root directories.")
+            error("Missing source files root directories.")
         }
     }
 

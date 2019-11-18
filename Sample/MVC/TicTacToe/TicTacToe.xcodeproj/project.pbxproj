@@ -58,6 +58,20 @@
 			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
 			remoteInfo = NeedleFoundation;
 		};
+		BC1FD60E229320730077EEF3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTest::Product";
+			remoteInfo = NeedleFoundationTest;
+		};
+		BC1FD610229320730077EEF3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTestTests::Product";
+			remoteInfo = NeedleFoundationTestTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -207,6 +221,8 @@
 			isa = PBXGroup;
 			children = (
 				4140797C21F808230081B8A9 /* NeedleFoundation.framework */,
+				BC1FD60F229320730077EEF3 /* NeedleFoundationTest.framework */,
+				BC1FD611229320730077EEF3 /* NeedleFoundationTestTests.xctest */,
 				4140797E21F808230081B8A9 /* NeedleFoundationTests.xctest */,
 			);
 			name = Products;
@@ -319,6 +335,20 @@
 			fileType = file;
 			path = NeedleFoundationTests.xctest;
 			remoteRef = 4140797D21F808230081B8A9 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC1FD60F229320730077EEF3 /* NeedleFoundationTest.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = NeedleFoundationTest.framework;
+			remoteRef = BC1FD60E229320730077EEF3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC1FD611229320730077EEF3 /* NeedleFoundationTestTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = file;
+			path = NeedleFoundationTestTests.xctest;
+			remoteRef = BC1FD610229320730077EEF3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -503,7 +533,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -558,7 +588,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

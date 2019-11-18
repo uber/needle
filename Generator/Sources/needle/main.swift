@@ -18,7 +18,8 @@ import Basic
 import CommandFramework
 import Foundation
 import NeedleFramework
-import SPMUtility
+import SourceParsingFramework
+import Utility
 
 func main() {
     let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Needle DI code generator.")
@@ -27,8 +28,8 @@ func main() {
     do {
         let args = try parser.parse(inputs)
         execute(commands, with: parser, args)
-    } catch {
-        fatalError("Command-line pasing error (use --help for help): \(error)")
+    } catch (let e) {
+        error("Command-line pasing error (use --help for help): \(e)")
     }
 }
 

@@ -88,7 +88,7 @@ class PluginizedDependencyGraphExporter {
                 } else if currentTask is PluginizedDependencyProviderSerializerTask, let serializedProviders = currentResult as? [SerializedProvider] {
                     return .endOfSequence(serializedProviders)
                 } else {
-                    fatalError("Unhandled task \(currentTask) with result \(currentResult)")
+                    error("Unhandled task \(currentTask) with result \(currentResult)")
                 }
             }
             taskHandleTuples.append((taskHandle, component.name))
@@ -112,15 +112,22 @@ class PluginizedDependencyGraphExporter {
 
     private func awaitSerialization(using taskHandleTuples: [(SequenceExecutionHandle<[SerializedProvider]>, String)], withTimeout timeout: TimeInterval) throws -> [SerializedProvider] {
         var providers = [SerializedProvider]()
+        var isMissingDependencies = false
         for (taskHandle, componentName) in taskHandleTuples {
             do {
                 let provider = try taskHandle.await(withTimeout: timeout)
                 providers.append(contentsOf: provider)
+            } catch DependencyProviderContentError.missingDependency(let message) {
+                warning(message)
+                isMissingDependencies = true
             } catch SequenceExecutionError.awaitTimeout  {
                 throw GenericError.withMessage("Generating dependency provider for \(componentName) timed out.")
             } catch {
                 throw error
             }
+        }
+        if isMissingDependencies {
+            throw GenericError.withMessage("Some dependencies are missing, please look at the warnings above for the list.")
         }
         return providers
     }

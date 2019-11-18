@@ -117,6 +117,20 @@
 			remoteGlobalIDString = "NeedleFoundation::NeedleFoundation";
 			remoteInfo = NeedleFoundation;
 		};
+		BC3008AE2293247E00032FE3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 41F6882821F802A000AA3CCA /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTest::Product";
+			remoteInfo = NeedleFoundationTest;
+		};
+		BC3008B02293247E00032FE3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 41F6882821F802A000AA3CCA /* NeedleFoundation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = "NeedleFoundation::NeedleFoundationTestTests::Product";
+			remoteInfo = NeedleFoundationTestTests;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -352,6 +366,8 @@
 			isa = PBXGroup;
 			children = (
 				41F6882E21F802A000AA3CCA /* NeedleFoundation.framework */,
+				BC3008AF2293247E00032FE3 /* NeedleFoundationTest.framework */,
+				BC3008B12293247E00032FE3 /* NeedleFoundationTestTests.xctest */,
 				41F6883021F802A000AA3CCA /* NeedleFoundationTests.xctest */,
 			);
 			name = Products;
@@ -544,9 +560,23 @@
 		};
 		41F6883021F802A000AA3CCA /* NeedleFoundationTests.xctest */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
+			fileType = file;
 			path = NeedleFoundationTests.xctest;
 			remoteRef = 41F6882F21F802A000AA3CCA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC3008AF2293247E00032FE3 /* NeedleFoundationTest.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = NeedleFoundationTest.framework;
+			remoteRef = BC3008AE2293247E00032FE3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC3008B12293247E00032FE3 /* NeedleFoundationTestTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = file;
+			path = NeedleFoundationTestTests.xctest;
+			remoteRef = BC3008B02293247E00032FE3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -968,7 +998,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1023,7 +1053,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
