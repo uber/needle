@@ -38,18 +38,7 @@ class ComponentExtensionFilter: FileFilter {
     /// extensions of the given parsed components.
     func filter() -> Bool {
         // Use simple string matching first since it's more performant.
-        if !content.contains("extension") || !content.containsAny(in: componentNames) {
-            return false
-        }
-
-        // Match actual syntax using Regex.
-        for componentName in componentNames {
-            let containsExtension = (Regex("(public +|internal +|private +|fileprivate +)?extension +\(componentName)").firstMatch(in: content) != nil)
-            if containsExtension {
-                return true
-            }
-        }
-        return false
+        return content.contains("extension")
     }
 
     // MARK: - Private
