@@ -50,9 +50,8 @@ class DependencyGraphParserTests: AbstractParserTests {
         }
 
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 9)
+        XCTAssertEqual(producerCount, 11)
         XCTAssertEqual(parserCount, 9)
-        XCTAssertEqual(producerCount, parserCount)
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {
