@@ -6,15 +6,6 @@ GENERATOR_VERSION_FOLDER_PATH=$(GENERATOR_FOLDER)/Sources/needle
 GENERATOR_VERSION_FILE_PATH=$(GENERATOR_VERSION_FOLDER_PATH)/Version.swift
 SWIFT_BUILD_FLAGS=--disable-sandbox -c release
 
-# Taken from https://github.com/jpsim/SourceKitten/blob/d90296e473d17d1fecbebacfa9b0476682a02456/Makefile
-UNAME=$(shell uname)
-ifeq ($(UNAME), Darwin)
-USE_SWIFT_STATIC_STDLIB:=$(shell test -d $$(dirname $$(xcrun --find swift))/../lib/swift_static/macosx && echo yes)
-ifeq ($(USE_SWIFT_STATIC_STDLIB), yes)
-SWIFT_BUILD_FLAGS+= -Xswiftc -static-stdlib
-endif
-endif
-
 .PHONY: clean build install uninstall
 
 clean:

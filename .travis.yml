@@ -11,7 +11,7 @@ matrix:
         - name: "NeedleGeneratorTests"
           script: cd Generator && swift test -Xswiftc -DDEBUG
         - name: "NeedleGeneratorBinary"
-          script: cd Generator && swift build -c release -Xswiftc -static-stdlib
+          script: cd Generator && swift build -c release
         - name: "NeedleSampleMVCApp"
           install: cd Sample/MVC && carthage update --platform ios
           script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=12.2,name=iPhone X'
