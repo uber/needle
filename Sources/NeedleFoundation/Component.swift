@@ -35,6 +35,7 @@ public protocol Scope: AnyObject {
 /// contains a set of properties it provides to units of its scope as well
 /// as child scopes. A component instantiates child components that define
 /// child scopes.
+@dynamicMemberLookup
 open class Component<DependencyType>: Scope {
 
     /// The parent of this component.
@@ -93,6 +94,10 @@ open class Component<DependencyType>: Scope {
         sharedInstances[__function] = instance
 
         return instance
+    }
+    
+    public subscript<T>(dynamicMember keyPath: KeyPath<DependencyType, T>) -> T {
+        return dependency[keyPath: keyPath]
     }
 
     // MARK: - Private
