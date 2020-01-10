@@ -35,5 +35,5 @@ let package = Package(
                 "CommandFramework",
             ]),
     ],
-    swiftLanguageVersions: [4]
+    swiftLanguageVersions: [4, 5]
 )
