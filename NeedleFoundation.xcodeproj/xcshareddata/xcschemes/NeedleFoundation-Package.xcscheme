@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTest"
-               BuildableName = "NeedleFoundationTest.framework"
-               BlueprintName = "NeedleFoundationTest"
+               BlueprintIdentifier = "NeedleFoundation::NeedleFoundation"
+               BuildableName = "NeedleFoundation.framework"
+               BlueprintName = "NeedleFoundation"
                ReferencedContainer = "container:NeedleFoundation.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,9 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NeedleFoundation::NeedleFoundation"
-               BuildableName = "NeedleFoundation.framework"
-               BlueprintName = "NeedleFoundation"
+               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTest"
+               BuildableName = "NeedleFoundationTest.framework"
+               BlueprintName = "NeedleFoundationTest"
                ReferencedContainer = "container:NeedleFoundation.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,16 +42,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTestTests"
-               BuildableName = "NeedleFoundationTestTests.xctest"
-               BlueprintName = "NeedleFoundationTestTests"
-               ReferencedContainer = "container:NeedleFoundation.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -73,8 +63,6 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -86,17 +74,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "NeedleFoundation::NeedleFoundationTest"
-            BuildableName = "NeedleFoundationTest.framework"
-            BlueprintName = "NeedleFoundationTest"
-            ReferencedContainer = "container:NeedleFoundation.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
