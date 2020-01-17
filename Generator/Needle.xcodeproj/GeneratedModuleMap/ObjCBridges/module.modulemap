@@ -1,4 +1,0 @@
-module ObjCBridges {
-    umbrella "/Users/cameronmcgorian/Documents/dev/needle/Generator/.build/checkouts/swift-concurrency/Sources/ObjCBridges/include"
-    export *
-}
