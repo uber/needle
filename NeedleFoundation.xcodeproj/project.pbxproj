@@ -5,10 +5,10 @@
    objects = {
       "NeedleFoundation::NeedleFoundation" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_52";
+         buildConfigurationList = "OBJ_50";
          buildPhases = (
-            "OBJ_55",
-            "OBJ_63"
+            "OBJ_53",
+            "OBJ_61"
          );
          dependencies = (
          );
@@ -24,24 +24,25 @@
       };
       "NeedleFoundation::NeedleFoundationPackageTests::ProductTarget" = {
          isa = "PBXAggregateTarget";
-         buildConfigurationList = "OBJ_71";
+         buildConfigurationList = "OBJ_69";
          buildPhases = (
          );
          dependencies = (
-            "OBJ_74",
-            "OBJ_76"
+            "OBJ_72",
+            "OBJ_74"
          );
          name = "NeedleFoundationPackageTests";
          productName = "NeedleFoundationPackageTests";
       };
       "NeedleFoundation::NeedleFoundationTest" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_79";
+         buildConfigurationList = "OBJ_77";
          buildPhases = (
-            "OBJ_82",
-            "OBJ_84"
+            "OBJ_80",
+            "OBJ_82"
          );
          dependencies = (
+            "OBJ_84"
          );
          name = "NeedleFoundationTest";
          productName = "NeedleFoundationTest";
@@ -61,7 +62,8 @@
             "OBJ_90"
          );
          dependencies = (
-            "OBJ_92"
+            "OBJ_93",
+            "OBJ_94"
          );
          name = "NeedleFoundationTestTests";
          productName = "NeedleFoundationTestTests";
@@ -75,13 +77,13 @@
       };
       "NeedleFoundation::NeedleFoundationTests" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_93";
+         buildConfigurationList = "OBJ_95";
          buildPhases = (
-            "OBJ_96",
-            "OBJ_100"
+            "OBJ_98",
+            "OBJ_102"
          );
          dependencies = (
-            "OBJ_102"
+            "OBJ_104"
          );
          name = "NeedleFoundationTests";
          productName = "NeedleFoundationTests";
@@ -95,9 +97,9 @@
       };
       "NeedleFoundation::SwiftPMPackageDescription" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_65";
+         buildConfigurationList = "OBJ_63";
          buildPhases = (
-            "OBJ_68"
+            "OBJ_66"
          );
          dependencies = (
          );
@@ -136,16 +138,24 @@
          sourceTree = "<group>";
       };
       "OBJ_100" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-            "OBJ_101"
-         );
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_26";
       };
       "OBJ_101" = {
          isa = "PBXBuildFile";
-         fileRef = "NeedleFoundation::NeedleFoundation::Product";
+         fileRef = "OBJ_28";
       };
       "OBJ_102" = {
+         isa = "PBXFrameworksBuildPhase";
+         files = (
+            "OBJ_103"
+         );
+      };
+      "OBJ_103" = {
+         isa = "PBXBuildFile";
+         fileRef = "NeedleFoundation::NeedleFoundation::Product";
+      };
+      "OBJ_104" = {
          isa = "PBXTargetDependency";
          target = "NeedleFoundation::NeedleFoundation";
       };
@@ -289,10 +299,10 @@
       "OBJ_29" = {
          isa = "PBXGroup";
          children = (
-            "NeedleFoundation::NeedleFoundationTest::Product",
-            "NeedleFoundation::NeedleFoundation::Product",
             "NeedleFoundation::NeedleFoundationTests::Product",
-            "NeedleFoundation::NeedleFoundationTestTests::Product"
+            "NeedleFoundation::NeedleFoundation::Product",
+            "NeedleFoundation::NeedleFoundationTestTests::Product",
+            "NeedleFoundation::NeedleFoundationTest::Product"
          );
          name = "Products";
          path = "";
@@ -357,17 +367,17 @@
       };
       "OBJ_37" = {
          isa = "PBXFileReference";
-         path = "Cartfile.resolved";
+         path = "CODE_OF_CONDUCT.md";
          sourceTree = "<group>";
       };
       "OBJ_38" = {
          isa = "PBXFileReference";
-         path = "CODE_OF_CONDUCT.md";
+         path = "API.md";
          sourceTree = "<group>";
       };
       "OBJ_39" = {
          isa = "PBXFileReference";
-         path = "API.md";
+         path = "NeedleFoundation.podspec";
          sourceTree = "<group>";
       };
       "OBJ_4" = {
@@ -410,52 +420,47 @@
       };
       "OBJ_40" = {
          isa = "PBXFileReference";
-         path = "NeedleFoundation.podspec";
+         path = "GENERATOR.md";
          sourceTree = "<group>";
       };
       "OBJ_41" = {
          isa = "PBXFileReference";
-         path = "GENERATOR.md";
+         path = "Makefile";
          sourceTree = "<group>";
       };
       "OBJ_42" = {
          isa = "PBXFileReference";
-         path = "Makefile";
+         path = "foundation.xcconfig";
          sourceTree = "<group>";
       };
       "OBJ_43" = {
          isa = "PBXFileReference";
-         path = "Cartfile";
+         path = "README.md";
          sourceTree = "<group>";
       };
       "OBJ_44" = {
          isa = "PBXFileReference";
-         path = "foundation.xcconfig";
+         path = "FOUNDATION_README.md";
          sourceTree = "<group>";
       };
       "OBJ_45" = {
          isa = "PBXFileReference";
-         path = "README.md";
+         path = "NOTICE.txt";
          sourceTree = "<group>";
       };
       "OBJ_46" = {
          isa = "PBXFileReference";
-         path = "FOUNDATION_README.md";
+         path = "CONTRIBUTING.md";
          sourceTree = "<group>";
       };
       "OBJ_47" = {
          isa = "PBXFileReference";
-         path = "NOTICE.txt";
+         path = "WHY_DI.md";
          sourceTree = "<group>";
       };
       "OBJ_48" = {
          isa = "PBXFileReference";
-         path = "CONTRIBUTING.md";
-         sourceTree = "<group>";
-      };
-      "OBJ_49" = {
-         isa = "PBXFileReference";
-         path = "WHY_DI.md";
+         path = "LICENSE.txt";
          sourceTree = "<group>";
       };
       "OBJ_5" = {
@@ -479,28 +484,21 @@
             "OBJ_45",
             "OBJ_46",
             "OBJ_47",
-            "OBJ_48",
-            "OBJ_49",
-            "OBJ_50"
+            "OBJ_48"
          );
          path = "";
          sourceTree = "<group>";
       };
       "OBJ_50" = {
-         isa = "PBXFileReference";
-         path = "LICENSE.txt";
-         sourceTree = "<group>";
-      };
-      "OBJ_52" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_53",
-            "OBJ_54"
+            "OBJ_51",
+            "OBJ_52"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
-      "OBJ_53" = {
+      "OBJ_51" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             ENABLE_TESTABILITY = "YES";
@@ -541,7 +539,7 @@
          };
          name = "Debug";
       };
-      "OBJ_54" = {
+      "OBJ_52" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             ENABLE_TESTABILITY = "YES";
@@ -582,33 +580,41 @@
          };
          name = "Release";
       };
-      "OBJ_55" = {
+      "OBJ_53" = {
          isa = "PBXSourcesBuildPhase";
          files = (
+            "OBJ_54",
+            "OBJ_55",
             "OBJ_56",
             "OBJ_57",
             "OBJ_58",
             "OBJ_59",
-            "OBJ_60",
-            "OBJ_61",
-            "OBJ_62"
+            "OBJ_60"
          );
       };
-      "OBJ_56" = {
+      "OBJ_54" = {
          isa = "PBXBuildFile";
          fileRef = "OBJ_9";
       };
-      "OBJ_57" = {
+      "OBJ_55" = {
          isa = "PBXBuildFile";
          fileRef = "OBJ_10";
       };
-      "OBJ_58" = {
+      "OBJ_56" = {
          isa = "PBXBuildFile";
          fileRef = "OBJ_12";
       };
-      "OBJ_59" = {
+      "OBJ_57" = {
          isa = "PBXBuildFile";
          fileRef = "OBJ_15";
+      };
+      "OBJ_58" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_16";
+      };
+      "OBJ_59" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_17";
       };
       "OBJ_6" = {
          isa = "PBXFileReference";
@@ -618,31 +624,23 @@
       };
       "OBJ_60" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_16";
-      };
-      "OBJ_61" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_17";
-      };
-      "OBJ_62" = {
-         isa = "PBXBuildFile";
          fileRef = "OBJ_18";
       };
-      "OBJ_63" = {
+      "OBJ_61" = {
          isa = "PBXFrameworksBuildPhase";
          files = (
          );
       };
-      "OBJ_65" = {
+      "OBJ_63" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_66",
-            "OBJ_67"
+            "OBJ_64",
+            "OBJ_65"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
-      "OBJ_66" = {
+      "OBJ_64" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             LD = "/usr/bin/true";
@@ -662,7 +660,7 @@
          };
          name = "Debug";
       };
-      "OBJ_67" = {
+      "OBJ_65" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             LD = "/usr/bin/true";
@@ -682,15 +680,24 @@
          };
          name = "Release";
       };
-      "OBJ_68" = {
+      "OBJ_66" = {
          isa = "PBXSourcesBuildPhase";
          files = (
-            "OBJ_69"
+            "OBJ_67"
          );
       };
-      "OBJ_69" = {
+      "OBJ_67" = {
          isa = "PBXBuildFile";
          fileRef = "OBJ_6";
+      };
+      "OBJ_69" = {
+         isa = "XCConfigurationList";
+         buildConfigurations = (
+            "OBJ_70",
+            "OBJ_71"
+         );
+         defaultConfigurationIsVisible = "0";
+         defaultConfigurationName = "Release";
       };
       "OBJ_7" = {
          isa = "PBXGroup";
@@ -702,43 +709,116 @@
          path = "";
          sourceTree = "SOURCE_ROOT";
       };
-      "OBJ_71" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_72",
-            "OBJ_73"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_72" = {
+      "OBJ_70" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
          };
          name = "Debug";
       };
-      "OBJ_73" = {
+      "OBJ_71" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
          };
          name = "Release";
       };
+      "OBJ_72" = {
+         isa = "PBXTargetDependency";
+         target = "NeedleFoundation::NeedleFoundationTestTests";
+      };
       "OBJ_74" = {
          isa = "PBXTargetDependency";
          target = "NeedleFoundation::NeedleFoundationTests";
       };
-      "OBJ_76" = {
-         isa = "PBXTargetDependency";
-         target = "NeedleFoundation::NeedleFoundationTestTests";
-      };
-      "OBJ_79" = {
+      "OBJ_77" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_80",
-            "OBJ_81"
+            "OBJ_78",
+            "OBJ_79"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
+      };
+      "OBJ_78" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            ENABLE_TESTABILITY = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)"
+            );
+            INFOPLIST_FILE = "NeedleFoundation.xcodeproj/NeedleFoundationTest_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "8.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.10";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_SWIFT_FLAGS = (
+               "$(inherited)"
+            );
+            PRODUCT_BUNDLE_IDENTIFIER = "NeedleFoundationTest";
+            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+            SKIP_INSTALL = "YES";
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
+            );
+            SWIFT_VERSION = "5.0";
+            TARGET_NAME = "NeedleFoundationTest";
+            TVOS_DEPLOYMENT_TARGET = "9.0";
+            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+         };
+         name = "Debug";
+      };
+      "OBJ_79" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            ENABLE_TESTABILITY = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)"
+            );
+            INFOPLIST_FILE = "NeedleFoundation.xcodeproj/NeedleFoundationTest_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "8.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.10";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_SWIFT_FLAGS = (
+               "$(inherited)"
+            );
+            PRODUCT_BUNDLE_IDENTIFIER = "NeedleFoundationTest";
+            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+            SKIP_INSTALL = "YES";
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
+            );
+            SWIFT_VERSION = "5.0";
+            TARGET_NAME = "NeedleFoundationTest";
+            TVOS_DEPLOYMENT_TARGET = "9.0";
+            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+         };
+         name = "Release";
       };
       "OBJ_8" = {
          isa = "PBXGroup";
@@ -753,101 +833,28 @@
          sourceTree = "SOURCE_ROOT";
       };
       "OBJ_80" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "NeedleFoundation.xcodeproj/NeedleFoundationTest_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "8.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.10";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "NeedleFoundationTest";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "NeedleFoundationTest";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Debug";
+         isa = "PBXSourcesBuildPhase";
+         files = (
+            "OBJ_81"
+         );
       };
       "OBJ_81" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "NeedleFoundation.xcodeproj/NeedleFoundationTest_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "8.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.10";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "NeedleFoundationTest";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "NeedleFoundationTest";
-            TVOS_DEPLOYMENT_TARGET = "9.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
-         };
-         name = "Release";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_20";
       };
       "OBJ_82" = {
-         isa = "PBXSourcesBuildPhase";
+         isa = "PBXFrameworksBuildPhase";
          files = (
             "OBJ_83"
          );
       };
       "OBJ_83" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_20";
+         fileRef = "NeedleFoundation::NeedleFoundation::Product";
       };
       "OBJ_84" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-         );
+         isa = "PBXTargetDependency";
+         target = "NeedleFoundation::NeedleFoundation";
       };
       "OBJ_85" = {
          isa = "XCConfigurationList";
@@ -954,7 +961,8 @@
       "OBJ_90" = {
          isa = "PBXFrameworksBuildPhase";
          files = (
-            "OBJ_91"
+            "OBJ_91",
+            "OBJ_92"
          );
       };
       "OBJ_91" = {
@@ -962,19 +970,27 @@
          fileRef = "NeedleFoundation::NeedleFoundationTest::Product";
       };
       "OBJ_92" = {
+         isa = "PBXBuildFile";
+         fileRef = "NeedleFoundation::NeedleFoundation::Product";
+      };
+      "OBJ_93" = {
          isa = "PBXTargetDependency";
          target = "NeedleFoundation::NeedleFoundationTest";
       };
-      "OBJ_93" = {
+      "OBJ_94" = {
+         isa = "PBXTargetDependency";
+         target = "NeedleFoundation::NeedleFoundation";
+      };
+      "OBJ_95" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_94",
-            "OBJ_95"
+            "OBJ_96",
+            "OBJ_97"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
-      "OBJ_94" = {
+      "OBJ_96" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             CLANG_ENABLE_MODULES = "YES";
@@ -1013,7 +1029,7 @@
          };
          name = "Debug";
       };
-      "OBJ_95" = {
+      "OBJ_97" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             CLANG_ENABLE_MODULES = "YES";
@@ -1052,25 +1068,17 @@
          };
          name = "Release";
       };
-      "OBJ_96" = {
+      "OBJ_98" = {
          isa = "PBXSourcesBuildPhase";
          files = (
-            "OBJ_97",
-            "OBJ_98",
-            "OBJ_99"
+            "OBJ_99",
+            "OBJ_100",
+            "OBJ_101"
          );
-      };
-      "OBJ_97" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_25";
-      };
-      "OBJ_98" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_26";
       };
       "OBJ_99" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_28";
+         fileRef = "OBJ_25";
       };
    };
    rootObject = "OBJ_1";

@@ -19,7 +19,7 @@ let package = Package(
             exclude: []),
         .target(
             name: "NeedleFoundationTest",
-            dependencies: []),
+            dependencies: ["NeedleFoundation"]),
         .testTarget(
             name: "NeedleFoundationTestTests",
             dependencies: ["NeedleFoundationTest"],
