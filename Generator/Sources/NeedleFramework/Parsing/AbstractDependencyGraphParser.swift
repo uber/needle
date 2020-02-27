@@ -121,8 +121,11 @@ class AbstractDependencyGraphParser {
             do {
                 let node = try urlHandle.handle.await(withTimeout: timeout)
                 extensions.append(contentsOf: node.extensions)
-                for statement in node.imports {
-                    imports.insert(statement)
+                // Ignore imports if we don't find anything useful in this file
+                if !node.extensions.isEmpty {
+                    for statement in node.imports {
+                        imports.insert(statement)
+                    }
                 }
             } catch SequenceExecutionError.awaitTimeout(let taskId) {
                 throw DependencyGraphParserError.timeout(urlHandle.fileUrl.absoluteString, taskId)
