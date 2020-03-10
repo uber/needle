@@ -11,7 +11,7 @@ $ make publish 0.13.0
 
 This runs the steps specified in the `Makefile`.
 
-The `Makefile` does support failure recovering yet. If a certain step fails, you might want to figure out which step failed, and start manually run the remaining steps.
+The `Makefile` does not support failure recovery yet. If a certain step fails, you might want to figure out which step failed, and manually run the remaining steps.
 
 ## Create a new Github release
 After all steps in the `Makefile` finish successfully, go to the Releases tab and create a new release.
