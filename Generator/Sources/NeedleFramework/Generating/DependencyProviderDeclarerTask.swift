@@ -39,7 +39,7 @@ class DependencyProviderDeclarerTask: AbstractTask<[DependencyProvider]> {
         // has no parents. In this case, the component is just an orphan
         // scope that should be ignored.
         if component.parents.isEmpty && !component.isRoot {
-            warning("\(component.name) is an orphan scope therefore ignored from parsing.")
+            info("\(component.name) is an orphan scope therefore ignored from parsing.")
             return []
         }
 
