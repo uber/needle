@@ -86,8 +86,11 @@ extension Structure {
                     } else {
                         return propertyItem.property
                     }
+                } else {
+                    // If the accessibility identifier is missing it will be internal or private
+                    // If it's private it will be caught by the compilation step
+                    return propertyItem.property
                 }
-                throw GenericError.withMessage("Property missing accessibility identifier.")
         }
     }
 }
