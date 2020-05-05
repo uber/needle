@@ -35,9 +35,49 @@ class DependencyProviderInitBodySerializer: Serializer {
         return provider.levelMap
             .sorted(by: { $0.key < $1.key })
             .map { (componentType: String, level: Int) in
-            return "        \(componentType.lowercasedFirstChar()) = component\(String(repeating: ".parent", count: level)) as! \(componentType)"
+                return "\(componentType.lowercasedFirstChar()): component\(String(repeating: ".parent", count: level)) as! \(componentType)"
+        }
+        .joined(separator: ", ")
+    }
+
+    // MARK: - Private
+
+    private let provider: ProcessedDependencyProvider
+}
+
+/// A serializer that produces the initializer body code for the dependency
+/// provider.
+class DependencyProviderBaseInitSerializer: Serializer {
+
+    /// Initializer.
+    ///
+    /// - parameter provider: The provider to generate initializer body
+    /// source code for.
+    init(provider: ProcessedDependencyProvider) {
+        self.provider = provider
+    }
+
+    /// Serialize the data model and produce the initializer body code.
+    ///
+    /// - returns: The initializer body source code.
+    func serialize() -> String {
+        let arguments = provider.levelMap
+            .sorted(by: { $0.key < $1.key })
+            .map { (componentType: String, level: Int) in
+                return "\(componentType.lowercasedFirstChar()): \(componentType)"
+        }
+        .joined(separator: ", ")
+        let body = provider.levelMap
+            .sorted(by: { $0.key < $1.key })
+            .map { (componentType: String, level: Int) in
+            return "        self.\(componentType.lowercasedFirstChar()) = \(componentType.lowercasedFirstChar())"
         }
         .joined(separator: "\n")
+        return """
+    init(\(arguments)) {
+\(body)
+    }
+"""
     }
 
     // MARK: - Private

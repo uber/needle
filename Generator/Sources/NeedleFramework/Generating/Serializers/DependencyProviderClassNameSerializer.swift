@@ -38,3 +38,27 @@ class DependencyProviderClassNameSerializer: Serializer {
 
     private let provider: ProcessedDependencyProvider
 }
+
+/// A serializer that produces the class name for the dependency provider base class.
+class DependencyProviderBaseClassNameSerializer: Serializer {
+
+    /// Initializer.
+    ///
+    /// - parameter provider: The provider to generate class name for.
+    /// - parameter counter: When making multiple instances, use a unique value here.
+    init(provider: ProcessedDependencyProvider) {
+        self.provider = provider
+    }
+
+    /// Serialize the data model and produce the class name code.
+    ///
+    /// - returns: The class name code.
+    func serialize() -> String {
+        let pathId = String(provider.unprocessed.pathString.shortSHA256Value)
+        return "\(provider.unprocessed.dependency.name)\(pathId)BaseProvider"
+    }
+
+    // MARK: - Private
+
+    private let provider: ProcessedDependencyProvider
+}
