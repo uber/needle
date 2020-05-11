@@ -4,8 +4,7 @@ Uber welcomes contributions of all kinds and sizes. This includes everything fro
 
 Before we can accept your contributions, we kindly ask you to sign our [Contributor License Agreement](https://cla-assistant.io/uber/needle).
 
-Workflow
---------
+## Workflow
 
 We love GitHub issues!
 
@@ -15,17 +14,15 @@ For big features, please open an issue so that we can agree on the direction, an
 
 Small pull requests for things like typos, bug fixes, etc are always welcome.
 
-DOs and DON'Ts
---------------
+## DOs and DON'Ts
 
-* DO follow our [coding style](https://github.com/raywenderlich/swift-style-guide) 
+* DO follow our [coding style](https://github.com/raywenderlich/swift-style-guide)
 * DO include tests when adding new features. When fixing bugs, start with adding a test that highlights how the current behavior is broken.
 * DO keep the discussions focused. When a new or related topic comes up it's often better to create new issue than to side track the discussion.
 
 * DON'T submit PRs that alter licensing related files or headers. If you believe there's a problem with them, file an issue and we'll be happy to discuss it.
 
-Guiding Principles
-------------------
+## Guiding Principles
 
 * We allow anyone to participate in our projects. Tasks can be carried out by anyone that demonstrates the capability to complete them
 * Always be respectful of one another. Assume the best in others and act with empathy at all times
