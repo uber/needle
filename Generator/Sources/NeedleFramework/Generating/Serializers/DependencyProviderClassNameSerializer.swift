@@ -40,7 +40,7 @@ class DependencyProviderClassNameSerializer: Serializer {
 }
 
 /// A serializer that produces the class name for the dependency provider base class.
-class DependencyProviderBaseClassNameSerializer: Serializer {
+final class DependencyProviderBaseClassNameSerializer: Serializer {
 
     /// Initializer.
     ///

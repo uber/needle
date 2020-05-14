@@ -43,7 +43,7 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
             let properties = provider.processedProperties
             counts[properties, default: []].append(provider)
         }
-        for (_, (_, matchingProviders)) in counts.enumerated() {
+        for matchingProviders in counts.values {
             result.append(contentsOf: serialize(matchingProviders))
         }
         return result
@@ -56,10 +56,10 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
     private func serialize(_ providers: [ProcessedDependencyProvider]) -> [SerializedProvider] {
         var result = [SerializedProvider]()
         let (baseClass, content) = serializedBase(for: providers.first!)
-        if !providers.first!.isEmptyDependency {
+        if providers.first?.isEmptyDependency == false {
             result.append(SerializedProvider(content: content, registration: ""))
         }
-        for (_, provider) in providers.enumerated() {
+        for provider in providers {
             let content = provider.isEmptyDependency ? "" : serializedContent(for: provider, baseClassSerializer: baseClass)
             let registration = DependencyProviderRegistrationSerializer(provider: provider).serialize()
             result.append(SerializedProvider(content: content, registration: registration))

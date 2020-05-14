@@ -18,7 +18,7 @@ import Foundation
 
 /// A serializer that produces the initializer body code for the dependency
 /// provider.
-class DependencyProviderInitBodySerializer: Serializer {
+final class DependencyProviderInitBodySerializer: Serializer {
 
     /// Initializer.
     ///

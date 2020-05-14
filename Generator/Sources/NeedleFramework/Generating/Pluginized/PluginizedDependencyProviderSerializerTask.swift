@@ -57,7 +57,7 @@ class PluginizedDependencyProviderSerializerTask: AbstractTask<[SerializedProvid
     private func serialize(_ providers: [PluginizedProcessedDependencyProvider], baseCounter: Int) -> [SerializedProvider] {
         var result = [SerializedProvider]()
         let (baseClass, content) = serializedBase(for: providers.first!, counter: baseCounter)
-        if !providers.first!.data.isEmptyDependency {
+        if providers.first?.data.isEmptyDependency == false {
             result.append(SerializedProvider(content: content, registration: ""))
         }
         for (_, provider) in providers.enumerated() {
