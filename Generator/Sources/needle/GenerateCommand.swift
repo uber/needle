@@ -46,7 +46,7 @@ class GenerateCommand: AbstractCommand {
         excludeSuffixes = parser.add(option: "--exclude-suffixes", kind: [String].self, usage: "Filename suffix(es) without extensions to exclude from parsing.", completion: .filename)
         excludePaths = parser.add(option: "--exclude-paths", kind: [String].self, usage: "Paths components to exclude from parsing.")
         scanPlugins = parser.add(option: "--pluginized", kind: Bool.self, usage: "Whether or not to consider plugins when parsing.")
-        additionalImports = parser.add(option: "--additional-imports", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: .none)
+        additionalImports = parser.add(option: "--additional-imports", kind: [String].self, usage: "Additional modules to import in the generated file, in addition to the ones parsed from source files.", completion: ShellCompletion.none)
         headerDocPath = parser.add(option: "--header-doc", kind: String.self, usage: "Path to custom header doc file to be included at the top of the generated file.", completion: .filename)
         shouldCollectParsingInfo = parser.add(option: "--collect-parsing-info", shortName: "-cpi", kind: Bool.self, usage: "Whether or not to collect information for parsing execution timeout errors.")
         parsingTimeout = parser.add(option: "--parsing-timeout", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on parsing tasks.")

@@ -34,12 +34,12 @@ extension Structure {
         let result = inheritedTypes
             .compactMap { (type: String) -> String? in
                 if regex.firstMatch(in: type) != nil {
-                    let prefixIndex = type.index { (char: Character) -> Bool in
+                    let prefixIndex = type.firstIndex { (char: Character) -> Bool in
                         char == "<"
                     }
                     if let prefixIndex = prefixIndex {
                         let startIndex = type.index(after: prefixIndex)
-                        let endIndex = type.index { (char: Character) -> Bool in
+                        let endIndex = type.firstIndex { (char: Character) -> Bool in
                             char == ">"
                         }
                         if let endIndex = endIndex {
