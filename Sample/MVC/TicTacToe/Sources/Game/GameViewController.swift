@@ -110,7 +110,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
 
     private func showAlert(with title: String, completionHandler handler: @escaping () -> ()) {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
-        let closeAction = UIAlertAction(title: "Close Game", style: UIAlertActionStyle.default) { _ in
+        let closeAction = UIAlertAction(title: "Close Game", style: UIAlertAction.Style.default) { _ in
             handler()
         }
         alert.addAction(closeAction)
