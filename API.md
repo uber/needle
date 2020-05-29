@@ -121,7 +121,7 @@ Once this tree structure has been declared in code, the needle command-line tool
 
 # Bootstrap Root
 
-Since the root of a DI tree does not have a parent component, we bootstrap the root scope using the special `NeedleFoundation.RootComponent` class
+Since the root of a DI tree does not have a parent component, we bootstrap the root scope using the special `BootstrapComponent` class
 ```swift
 let rootComponent = RootComponent()
 
