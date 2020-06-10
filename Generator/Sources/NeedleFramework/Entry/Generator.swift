@@ -66,12 +66,13 @@ public class Generator {
     /// - parameter concurrencyLimit: The maximum number of tasks to execute
     /// concurrently. `nil` if no limit is set.
     /// - throws: `GenericError`.
-    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, retryParsingOnTimeoutLimit: Int, concurrencyLimit: Int?) throws {
+    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, retryParsingOnTimeoutLimit: Int, concurrencyLimit: Int?, gitRoot: String?) throws {
         let processor: ProcessorType = .generateSource(additionalImports: additionalImports, 
                                                        headerDocPath: headerDocPath, 
                                                        destinationPath: destinationPath, 
                                                        exportingTimeout: exportingTimeout)
-        try processSourceCode(from: sourceRootPaths, 
+        try
+            processSourceCode(from: sourceRootPaths,
                               withSourcesListFormat: sourcesListFormatValue, 
                               excludingFilesEndingWith: exclusionSuffixes, 
                               excludingFilesWithPaths: exclusionPaths, 
@@ -79,6 +80,7 @@ public class Generator {
                               parsingTimeout: parsingTimeout, 
                               retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, 
                               concurrencyLimit: concurrencyLimit,
+                              gitRoot: gitRoot,
                               processorType: processor)
     }
 
@@ -129,12 +131,13 @@ public class Generator {
                               parsingTimeout: parsingTimeout, 
                               retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, 
                               concurrencyLimit: concurrencyLimit,
+                              gitRoot: nil,
                               processorType: processor)
     }
 
     // MARK: - Internal
 
-    func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: TimeInterval, exportingTimeout: TimeInterval) throws {
+    func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, gitRoot: String?) throws {
         let parser = DependencyGraphParser()
         let (components, imports) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, withTimeout: parsingTimeout)
         let exporter = DependencyGraphExporter()
@@ -164,8 +167,9 @@ public class Generator {
                                    excludingFilesWithPaths exclusionPaths: [String], 
                                    shouldCollectParsingInfo: Bool, 
                                    parsingTimeout: TimeInterval,
-                                   retryParsingOnTimeoutLimit: Int, 
+                                   retryParsingOnTimeoutLimit: Int,
                                    concurrencyLimit: Int?,
+                                   gitRoot: String?,
                                    processorType: ProcessorType) throws {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(path: path)
@@ -178,7 +182,7 @@ public class Generator {
             do {
                 switch processorType {
                     case .generateSource(let additionalImports, let headerDocPath, let destinationPath, let exportingTimeout):
-                        try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor, withParsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout)
+                        try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor, withParsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, gitRoot: gitRoot)
                     case .printDIStructure(let rootComponentName):
                         try printDIStructure(from : sourceRootUrls,
                                              withSourcesListFormat: sourcesListFormatValue,

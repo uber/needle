@@ -45,10 +45,10 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
     /// - parameter timeout: The timeout value, in seconds, to use for
     /// waiting on parsing tasks.
     /// - returns: The list of component data models, pluginized component
-    /// data models and sorted import statements.
+    /// data models , sorted import statements and needle version hash
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String]) {
+    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], gitRoot: String?, using executor: SequenceExecutor, withTimeout timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String?) {
         // Collect data models for component and dependency declarations.
         let urlHandles: [DependencyNodeUrlSequenceHandle] = try enqueueDeclarationParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, regularComponents, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
@@ -61,7 +61,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
         // Collect source contents that contain component instantiations for validation.
         let initsSourceUrlContents = try sourceUrlContentsContainComponentInstantiations(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, with: timeout)
 
-        return try process(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, regularComponents: regularComponents, with: pluginExtensions, componentExtensions, dependencies, allImports, validate: initsSourceUrlContents, using: executor, with: timeout)
+        return try process(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, regularComponents: regularComponents, with: pluginExtensions, componentExtensions, dependencies, allImports, validate: initsSourceUrlContents, gitRoot: gitRoot, using: executor, with: timeout)
     }
 
     // MARK: - Declaration Parsing
@@ -119,7 +119,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
 
     // MARK: - Processing
 
-    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String]) {
+    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], gitRoot: String?, using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String?) {
         let allComponents = commonComponentModel(of: pluginizedComponents, regularComponents: nonCoreComponents + regularComponents)
         let processors: [Processor] = [
             DuplicateValidator(components: allComponents, dependencies: dependencies),
@@ -144,7 +144,13 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
             return astComponent.valueType
         }
         let sortedImports = imports.sorted()
-        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports)
+
+        let needleVersionHash = createNeedleVersion(dependencies: dependencies,
+                                                    components: (regularComponents + nonCoreComponents),
+                                                    pluginizedComponents: pluginizedComponents,
+                                                    gitRoot: gitRoot)
+
+        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports, needleVersionHash)
     }
 
     private func commonComponentModel(of pluginizedComponents: [PluginizedASTComponent], regularComponents: [ASTComponent]) -> [ASTComponent] {
@@ -152,6 +158,60 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
             component.data
         }
         return regularComponents + pluginizedComponentData
+    }
+
+    private func createNeedleVersion(dependencies: [Dependency],
+                                     components: [ASTComponent],
+                                     pluginizedComponents: [PluginizedASTComponent],
+                                     gitRoot: String?) -> String? {
+
+        guard let git_dir = gitRoot else {
+            return nil
+        }
+
+        let typeTotypeDeclFileMap = collectTypeToTypeDeclarationFileMapping(gitDir: git_dir);
+        let fileToFileHashMap = collectFileToFileHashMapping(gitDir: git_dir);
+        var dependencyFiles = Set<String>()
+
+        // TODO: Make this function parse types instead of a simple string replacement
+        let simplfyType: (String) -> String = { (type: String) -> String in
+            return type.replacingOccurrences(of: "[\\[\\]<>?]|Observable", with: "", options: .regularExpression, range: nil)
+        }
+
+        for dep in dependencies {
+            for prop in dep.properties {
+                if let propDeclarationFile = typeTotypeDeclFileMap[simplfyType(prop.type)] {
+                    dependencyFiles.formUnion(propDeclarationFile)
+                } else {
+                    print("Could not find a file for type: \(prop.type)")
+                }
+            }
+        }
+
+        for component in components {
+            if let propDeclarationFiles = typeTotypeDeclFileMap[component.name] {
+                dependencyFiles.formUnion(propDeclarationFiles)
+            } else {
+                print("Could not find a file for type: \(component.name)")
+            }
+        }
+
+        for component in pluginizedComponents {
+            if let propDeclarationFiles = typeTotypeDeclFileMap[component.data.name] {
+                dependencyFiles.formUnion(propDeclarationFiles)
+            } else {
+                print("Could not find a file for type: \(component.data.name)")
+            }
+        }
+
+
+        let startTime = DispatchTime.now()
+        let sortedFiles = dependencyFiles.sorted()
+        let hashes = sortedFiles.map({fileToFileHashMap[$0]!})
+        let hash =  MD5(string: hashes.joined(separator: "\n"))
+        let duration = (DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds) / 1000000000
+        print("GOT \(hash) hash in \(duration) s")
+        return hash
     }
 }
 

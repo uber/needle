@@ -53,6 +53,7 @@ class GenerateCommand: AbstractCommand {
         exportingTimeout = parser.add(option: "--exporting-timeout", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on exporting tasks.")
         retryParsingOnTimeoutLimit = parser.add(option: "--retry-parsing-limit", kind: Int.self, usage: "The maximum number of times parsing Swift source files should be retried in case of timeouts.")
         concurrencyLimit = parser.add(option: "--concurrency-limit", kind: Int.self, usage: "The maximum number of tasks to execute concurrently.")
+        gitRoot = parser.add(option: "--git-root", kind: String.self, usage: "The git root that we use for executing some git-commands for generating hash")
     }
 
     /// Execute the command.
@@ -75,11 +76,12 @@ class GenerateCommand: AbstractCommand {
                 let exportingTimeout = arguments.get(self.exportingTimeout, withDefault: defaultTimeout)
                 let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
                 let concurrencyLimit = arguments.get(self.concurrencyLimit) ?? nil
+                let gitRoot = arguments.get(self.gitRoot) ?? nil
 
                 let sourceKitUtilities = SourceKitUtilitiesImpl(processUtilities: ProcessUtilitiesImpl())
                 let generator: Generator = scanPlugins ? PluginizedGenerator(sourceKitUtilities: sourceKitUtilities) : Generator(sourceKitUtilities: sourceKitUtilities)
                 do {
-                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
+                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit, gitRoot: gitRoot)
                 } catch GenericError.withMessage(let message) {
                     error(message)
                 } catch (let e) {
@@ -108,4 +110,5 @@ class GenerateCommand: AbstractCommand {
     private var exportingTimeout: OptionArgument<Int>!
     private var retryParsingOnTimeoutLimit: OptionArgument<Int>!
     private var concurrencyLimit: OptionArgument<Int>!
+    private var gitRoot: OptionArgument<String>!
 }
