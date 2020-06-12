@@ -22,7 +22,7 @@ class ComponentExtensionFilterTests: AbstractParserTests {
     func test_execute_hasComponentExtension_verifyFilter() {
         let fileUrl = fixtureUrl(for: "HasComponentExtensions.swift")
         let content = try! String(contentsOf: fileUrl)
-        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyScope", dependencyProtocolName: "", isRoot: false, properties: [], expressionCallTypeNames: [])])
+        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyScope", dependencyProtocolName: "", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar"), properties: [], expressionCallTypeNames: [])])
 
         XCTAssertTrue(filter.filter())
     }
@@ -30,7 +30,7 @@ class ComponentExtensionFilterTests: AbstractParserTests {
     func test_execute_noExtensionNoComponent_verifyFilter() {
         let fileUrl = fixtureUrl(for: "nocomp.swift")
         let content = try! String(contentsOf: fileUrl)
-        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyComponent", dependencyProtocolName: "", isRoot: false, properties: [], expressionCallTypeNames: [])])
+        let filter = ComponentExtensionFilter(content: content, components: [ASTComponent(name: "MyComponent", dependencyProtocolName: "", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar"), properties: [], expressionCallTypeNames: [])])
 
         XCTAssertFalse(filter.filter())
     }

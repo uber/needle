@@ -25,13 +25,13 @@ class AbstractPluginizedGeneratorTests: XCTestCase {
     ///
     /// - returns: The list of component data models, pluginized component
     /// data models and sorted import statements.
-    func pluginizedSampleProjectParsed() -> ([Component], [PluginizedComponent], [String]) {
+    func pluginizedSampleProjectParsed() -> ([Component], [PluginizedComponent], [String], String?) {
         let parser = PluginizedDependencyGraphParser()
         let fixturesURL = sampleProjectUrl()
         let executor = MockSequenceExecutor()
 
         do {
-            return try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], using: executor, withTimeout: 10)
+            return try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["ha", "yay", "blah"], gitRoot: nil, using: executor, withTimeout: 10)
         } catch {
             fatalError("\(error)")
         }

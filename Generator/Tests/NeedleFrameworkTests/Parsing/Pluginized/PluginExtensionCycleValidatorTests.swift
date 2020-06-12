@@ -23,11 +23,11 @@ class PluginExtensionCycleValidatorTests: AbstractPluginizedParserTests {
     func test_process_withNoCycles_verifyNoError() {
         let pluginExtension = PluginExtension(name: "PE", properties: [Property(name: "a", type: "A")])
 
-        let nonCoreDependency = Dependency(name: "NonCoreDep", properties: [Property(name: "b", type: "B")])
-        let nonCoreComponent = ASTComponent(name: "NonCoreComp", dependencyProtocolName: "NonCoreDep", isRoot: false, properties: [Property(name: "c", type: "D")], expressionCallTypeNames: [])
+        let nonCoreDependency = Dependency(name: "NonCoreDep", properties: [Property(name: "b", type: "B")], sourceURL: URL(fileURLWithPath: "foo/bar/nonCoreFile.swift"))
+        let nonCoreComponent = ASTComponent(name: "NonCoreComp", dependencyProtocolName: "NonCoreDep", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/nonCoreFile.swift"), properties: [Property(name: "c", type: "D")], expressionCallTypeNames: [])
         nonCoreComponent.dependencyProtocol = nonCoreDependency
 
-        let coreComponent = ASTComponent(name: "CoreComp", dependencyProtocolName: "blah", isRoot: true, properties: [Property(name: "e", type: "E")], expressionCallTypeNames: [])
+        let coreComponent = ASTComponent(name: "CoreComp", dependencyProtocolName: "blah", isRoot: true, sourceURL: URL(fileURLWithPath: "foo/bar/CoreCompFile.swift"), properties: [Property(name: "e", type: "E")], expressionCallTypeNames: [])
         let pluginizedComponent = PluginizedASTComponent(data: coreComponent, pluginExtensionType: "PE", nonCoreComponentType: "NonCoreComp")
         pluginizedComponent.pluginExtension = pluginExtension
         pluginizedComponent.nonCoreComponent = nonCoreComponent
@@ -44,11 +44,11 @@ class PluginExtensionCycleValidatorTests: AbstractPluginizedParserTests {
     func test_process_withCycles_verifyThrowError() {
         let pluginExtension = PluginExtension(name: "PE", properties: [Property(name: "a", type: "A")])
 
-        let nonCoreDependency = Dependency(name: "NonCoreDep", properties: [Property(name: "a", type: "A")])
-        let nonCoreComponent = ASTComponent(name: "NonCoreComp", dependencyProtocolName: "NonCoreDep", isRoot: false, properties: [Property(name: "c", type: "D")], expressionCallTypeNames: [])
+        let nonCoreDependency = Dependency(name: "NonCoreDep", properties: [Property(name: "a", type: "A")], sourceURL: URL(fileURLWithPath: "foo/bar/NonCoreFile.swift"))
+        let nonCoreComponent = ASTComponent(name: "NonCoreComp", dependencyProtocolName: "NonCoreDep", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/NonCoreFile.swift"), properties: [Property(name: "c", type: "D")], expressionCallTypeNames: [])
         nonCoreComponent.dependencyProtocol = nonCoreDependency
 
-        let coreComponent = ASTComponent(name: "CoreComp", dependencyProtocolName: "blah", isRoot: true, properties: [Property(name: "a", type: "A")], expressionCallTypeNames: [])
+        let coreComponent = ASTComponent(name: "CoreComp", dependencyProtocolName: "blah", isRoot: true, sourceURL: URL(fileURLWithPath: "foo/bar/CoreComp.swift"), properties: [Property(name: "a", type: "A")], expressionCallTypeNames: [])
         let pluginizedComponent = PluginizedASTComponent(data: coreComponent, pluginExtensionType: "PE", nonCoreComponentType: "NonCoreComp")
         pluginizedComponent.pluginExtension = pluginExtension
         pluginizedComponent.nonCoreComponent = nonCoreComponent

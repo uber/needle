@@ -25,13 +25,13 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
 
     @available(OSX 10.12, *)
     func test_export_verifyContent() {
-        let (components, pluginizedComponents, imports) = pluginizedSampleProjectParsed()
+        let (components, pluginizedComponents, imports, _) = pluginizedSampleProjectParsed()
         let executor = MockSequenceExecutor()
         let exporter = PluginizedDependencyGraphExporter()
 
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("generated_pluginized.swift")
         let headerDocPath = fixturesURL.deletingLastPathComponent().appendingPathComponent("HeaderDoc.txt").path
-        try? exporter.export(components, pluginizedComponents, with: imports, to: outputURL.path, using: executor, withTimeout: 10, include: headerDocPath)
+        try? exporter.export(components, pluginizedComponents, with: imports, to: outputURL.path, using: executor, withTimeout: 10, include: headerDocPath, needleVersionHash: "needleVersionHash")
         let generated = try? String(contentsOf: outputURL)
         XCTAssertNotNil(generated, "Could not read the generated file")
 

@@ -21,9 +21,9 @@ import XCTest
 class DuplicateValidatorTests: XCTestCase {
     
     func test_validateComponent_noDuplicate_verifyResult() {
-        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
+        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/ha1"), properties: [], expressionCallTypeNames: [])
+        let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/ha2"), properties: [], expressionCallTypeNames: [])
+        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/ha3"), properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
@@ -31,9 +31,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateComponent_withDuplicates_verifyResult() {
-        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, properties: [], expressionCallTypeNames: [])
+        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/ha1"), properties: [], expressionCallTypeNames: [])
+        let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/ha2"), properties: [], expressionCallTypeNames: [])
+        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/ha3"), properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
@@ -47,9 +47,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateDependencies_noDuplicate_verifyResult() {
-        let dep1 = Dependency(name: "d1", properties: [])
-        let dep2 = Dependency(name: "d2", properties: [])
-        let dep3 = Dependency(name: "d3", properties: [])
+        let dep1 = Dependency(name: "d1", properties: [], sourceURL: URL(fileURLWithPath: "foo/bar/d1"))
+        let dep2 = Dependency(name: "d2", properties: [], sourceURL: URL(fileURLWithPath: "foo/bar/d2"))
+        let dep3 = Dependency(name: "d3", properties: [], sourceURL: URL(fileURLWithPath: "foo/bar/d3"))
 
         let validator = DuplicateValidator(components: [], dependencies: [dep1, dep2, dep3])
 
@@ -57,9 +57,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateDependencies_withDuplicates_verifyResult() {
-        let dep1 = Dependency(name: "d1", properties: [])
-        let dep2 = Dependency(name: "d1", properties: [])
-        let dep3 = Dependency(name: "d3", properties: [])
+        let dep1 = Dependency(name: "d1", properties: [], sourceURL: URL(fileURLWithPath: "foo/bar/d1"))
+        let dep2 = Dependency(name: "d1", properties: [], sourceURL: URL(fileURLWithPath: "foo/bar/d2"))
+        let dep3 = Dependency(name: "d3", properties: [], sourceURL: URL(fileURLWithPath: "foo/bar/d3"))
 
         let validator = DuplicateValidator(components: [], dependencies: [dep1, dep2, dep3])
 

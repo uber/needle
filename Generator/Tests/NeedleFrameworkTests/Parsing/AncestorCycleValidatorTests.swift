@@ -20,11 +20,11 @@ import XCTest
 class AncestorCycleValidatorTests: XCTestCase {
 
     func test_process_hasCycle() {
-        let a = ASTComponent(name: "A", dependencyProtocolName: "blah", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let b = ASTComponent(name: "B", dependencyProtocolName: "blah", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let c = ASTComponent(name: "C", dependencyProtocolName: "blah", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let d = ASTComponent(name: "D", dependencyProtocolName: "blah", isRoot: true, properties: [], expressionCallTypeNames: [])
-        let m = ASTComponent(name: "M", dependencyProtocolName: "blah", isRoot: true, properties: [], expressionCallTypeNames: [])
+        let a = ASTComponent(name: "A", dependencyProtocolName: "blah", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/A"), properties: [], expressionCallTypeNames: [])
+        let b = ASTComponent(name: "B", dependencyProtocolName: "blah", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/B"), properties: [], expressionCallTypeNames: [])
+        let c = ASTComponent(name: "C", dependencyProtocolName: "blah", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/C"), properties: [], expressionCallTypeNames: [])
+        let d = ASTComponent(name: "D", dependencyProtocolName: "blah", isRoot: true, sourceURL: URL(fileURLWithPath: "foo/bar/D"), properties: [], expressionCallTypeNames: [])
+        let m = ASTComponent(name: "M", dependencyProtocolName: "blah", isRoot: true, sourceURL: URL(fileURLWithPath: "foo/bar/M"), properties: [], expressionCallTypeNames: [])
         a.parents = [b, m]
         b.parents = [c, d]
         c.parents = [b]
@@ -38,11 +38,11 @@ class AncestorCycleValidatorTests: XCTestCase {
     }
 
     func test_process_noCycle() {
-        let a = ASTComponent(name: "A", dependencyProtocolName: "blah", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let b = ASTComponent(name: "B", dependencyProtocolName: "blah", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let c = ASTComponent(name: "C", dependencyProtocolName: "blah", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let d = ASTComponent(name: "D", dependencyProtocolName: "blah", isRoot: true, properties: [], expressionCallTypeNames: [])
-        let m = ASTComponent(name: "M", dependencyProtocolName: "blah", isRoot: true, properties: [], expressionCallTypeNames: [])
+        let a = ASTComponent(name: "A", dependencyProtocolName: "blah", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/A"), properties: [], expressionCallTypeNames: [])
+        let b = ASTComponent(name: "B", dependencyProtocolName: "blah", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/B"), properties: [], expressionCallTypeNames: [])
+        let c = ASTComponent(name: "C", dependencyProtocolName: "blah", isRoot: false, sourceURL: URL(fileURLWithPath: "foo/bar/C"), properties: [], expressionCallTypeNames: [])
+        let d = ASTComponent(name: "D", dependencyProtocolName: "blah", isRoot: true, sourceURL: URL(fileURLWithPath: "foo/bar/D"), properties: [], expressionCallTypeNames: [])
+        let m = ASTComponent(name: "M", dependencyProtocolName: "blah", isRoot: true, sourceURL: URL(fileURLWithPath: "foo/bar/M"), properties: [], expressionCallTypeNames: [])
         a.parents = [b, m]
         b.parents = [c, d]
         c.parents = [m]

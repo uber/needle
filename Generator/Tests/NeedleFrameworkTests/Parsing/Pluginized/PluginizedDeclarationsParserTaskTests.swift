@@ -26,7 +26,7 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = PluginizedDeclarationsParserTask(ast: AST(structure: structure, imports: imports))
+        let task = PluginizedDeclarationsParserTask(ast: AST(sourceURL: sourceUrl, structure: structure, imports: imports))
         let node = try! task.execute()
 
         // Regular components.

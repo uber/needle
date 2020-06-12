@@ -44,7 +44,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], using: executor, withTimeout: 10)
+            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], gitRoot: nil, using: executor, withTimeout: 10)
         } catch {
             XCTFail("\(error)")
         }
@@ -62,7 +62,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            let (components, pluginizedComponents, imports) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], using: executor, withTimeout: 10)
+            let (components, pluginizedComponents, imports, _) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], gitRoot: nil, using: executor, withTimeout: 10)
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
@@ -80,7 +80,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         let executor = MockSequenceExecutor()
 
         do {
-            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: [], using: executor, withTimeout: 10)
+            _ = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: [], gitRoot: nil, using: executor, withTimeout: 10)
             XCTFail()
         } catch {
             switch error {

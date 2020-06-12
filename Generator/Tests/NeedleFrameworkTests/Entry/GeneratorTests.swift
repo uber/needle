@@ -27,7 +27,7 @@ class GeneratorTests: XCTestCase {
 
         XCTAssertEqual(generator.generateCallCount, 0)
 
-        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000, concurrencyLimit: nil)
+        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000, concurrencyLimit: nil, gitRoot: nil)
 
         XCTAssertEqual(generator.generateCallCount, 1)
     }
@@ -52,7 +52,7 @@ class GeneratorTests: XCTestCase {
         XCTAssertEqual(sourceKitUtilities.killProcessCallCount, 0)
 
         do {
-            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 3, concurrencyLimit: nil)
+            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 3, concurrencyLimit: nil, gitRoot: nil)
             XCTFail()
         } catch {
             XCTAssertTrue(error is GenericError)
@@ -81,7 +81,7 @@ class GeneratorTests: XCTestCase {
         XCTAssertEqual(generator.generateCallCount, 0)
 
         do {
-            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 0, concurrencyLimit: nil)
+            try generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 0, concurrencyLimit: nil, gitRoot: nil)
             XCTFail()
         } catch {
             XCTAssertTrue(error is GenericError)
@@ -99,7 +99,7 @@ private class MockGenerator: Generator {
     fileprivate var generateCallCount = 0
     fileprivate var generateClosure: (() throws -> ())? = nil
 
-    override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: Double, exportingTimeout: Double) throws {
+    override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: Double, exportingTimeout: Double, gitRoot: String?) throws {
         generateCallCount += 1
         try generateClosure?()
     }
