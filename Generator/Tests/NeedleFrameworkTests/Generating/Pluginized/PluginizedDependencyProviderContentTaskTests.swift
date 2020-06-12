@@ -22,7 +22,7 @@ import XCTest
 class PluginizedDependencyProviderContentTaskTests: AbstractPluginizedGeneratorTests {
 
     func test_execute_withSampleProject_verifyProviderContent() {
-        let (components, pluginizedComponents, _) = pluginizedSampleProjectParsed()
+        let (components, pluginizedComponents, _, _) = pluginizedSampleProjectParsed()
 
         for component in components {
             let declareTask = DependencyProviderDeclarerTask(component: component)

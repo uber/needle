@@ -27,7 +27,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = DeclarationsParserTask(ast: AST(structure: structure, imports: imports))
+        let task = DeclarationsParserTask(ast: AST(sourceHash: MD5(string: "SomePluginizedCompHash"), structure: structure, imports: imports))
         _ = try! task.execute()
 
         let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
@@ -43,7 +43,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
 
-        let task = DeclarationsParserTask(ast: AST(structure: structure, imports: imports))
+        let task = DeclarationsParserTask(ast: AST(sourceHash: MD5(string: sourceContent), structure: structure, imports: imports))
         let node = try! task.execute()
 
         XCTAssertEqual(node.components.count, 3)

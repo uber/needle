@@ -20,6 +20,8 @@ import SourceKittenFramework
 /// A data model representing a abstract syntax tree of a Swift source
 /// file including its import statements.
 struct AST {
+    /// The  hash of the source file of this ast
+    let sourceHash: String
     /// The AST structure.
     let structure: Structure
     /// The import statements including the `import` keyword.

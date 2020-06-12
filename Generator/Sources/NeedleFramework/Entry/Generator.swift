@@ -80,6 +80,7 @@ public class Generator {
                               retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, 
                               concurrencyLimit: concurrencyLimit,
                               processorType: processor)
+        Benchmark.printDiagnostics()
     }
 
     /// Parse Swift source files by recurively scanning the given directories

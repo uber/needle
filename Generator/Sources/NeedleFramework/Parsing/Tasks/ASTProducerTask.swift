@@ -42,7 +42,7 @@ class ASTProducerTask: AbstractTask<AST> {
         do {
             let structure = try Structure(file: file)
             let imports = parseImports()
-            return AST(structure: structure, imports: imports)
+            return AST(sourceHash: Benchmark.instance(group: "MD5_HASH").execute(block: MD5(string: sourceContent)), structure: structure, imports: imports)
         } catch {
             throw GenericError.withMessage("Failed to parse AST for source at \(sourceUrl)")
         }

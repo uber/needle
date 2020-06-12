@@ -48,7 +48,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
     /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String]) {
+    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String) {
         // Collect data models for component and dependency declarations.
         let urlHandles: [DependencyNodeUrlSequenceHandle] = try enqueueDeclarationParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, regularComponents, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
@@ -119,7 +119,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
 
     // MARK: - Processing
 
-    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String]) {
+    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String) {
         let allComponents = commonComponentModel(of: pluginizedComponents, regularComponents: nonCoreComponents + regularComponents)
         let processors: [Processor] = [
             DuplicateValidator(components: allComponents, dependencies: dependencies),
@@ -144,7 +144,11 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
             return astComponent.valueType
         }
         let sortedImports = imports.sorted()
-        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports)
+
+        let needleVersionHash = createNeedleHash(dependencies: dependencies,
+                                                    components: (regularComponents + nonCoreComponents),
+                                                    pluginizedComponents: pluginizedComponents)
+        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports, needleVersionHash)
     }
 
     private func commonComponentModel(of pluginizedComponents: [PluginizedASTComponent], regularComponents: [ASTComponent]) -> [ASTComponent] {
@@ -152,6 +156,19 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
             component.data
         }
         return regularComponents + pluginizedComponentData
+    }
+
+    private func createNeedleHash(dependencies: [Dependency],
+                                     components: [ASTComponent],
+                                     pluginizedComponents: [PluginizedASTComponent]) -> String {
+        
+
+        var hashEntries : Set<HashEntry> = []
+        hashEntries.formUnion(dependencies.map({ HashEntry(name: $0.name, hash: $0.sourceHash) }))
+        hashEntries.formUnion(pluginizedComponents.map({ HashEntry(name: $0.data.name, hash: $0.data.sourceHash) }))
+        hashEntries.formUnion(components.map({ HashEntry(name: $0.name, hash: $0.sourceHash) }))
+        
+        return generateCumulativeHash(hashEntries: hashEntries)
     }
 }
 

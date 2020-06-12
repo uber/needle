@@ -26,10 +26,11 @@ class OutputSerializer: Serializer {
     /// - parameter imports: The list of import statements to include.
     /// - parameter headerDocContent: The content of the header doc to
     /// include at the top of the output file.
-    init(providers: [SerializedProvider], imports: [String], headerDocContent: String) {
+    init(providers: [SerializedProvider], imports: [String], headerDocContent: String, needleVersionHash: String? = nil) {
         self.providers = providers
         self.imports = imports
         self.headerDocContent = headerDocContent
+        self.needleVersionHash = needleVersionHash
     }
 
     /// Serialize the data model into source code.
@@ -48,6 +49,8 @@ class OutputSerializer: Serializer {
                 provider.content
             }
             .joined()
+        
+        let needleDependenciesHash = needleVersionHash.map { return "\"\($0)\""} ?? "nil"
 
         let importsJoined = imports.joined(separator: "\n")
 
@@ -55,6 +58,8 @@ class OutputSerializer: Serializer {
         \(headerDocContent)
 
         \(importsJoined)
+        
+        let needleDependenciesHash : String? = \(needleDependenciesHash)
 
         // MARK: - Registration
 
@@ -73,4 +78,5 @@ class OutputSerializer: Serializer {
     private let providers: [SerializedProvider]
     private let imports: [String]
     private let headerDocContent: String
+    private let needleVersionHash: String?
 }

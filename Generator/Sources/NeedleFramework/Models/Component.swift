@@ -43,6 +43,8 @@ class ASTComponent {
     let dependencyProtocolName: String
     /// Indicates if this component is the root of a dependency graph.
     let isRoot: Bool
+    /// The  hash of the source file where this ASTComponent was declared
+    let sourceHash: String
     /// A list of properties this component instantiates, thereby provides.
     var properties: [Property]
     /// A list of expression call type names.
@@ -61,10 +63,11 @@ class ASTComponent {
     }
 
     /// Initializer.
-    init(name: String, dependencyProtocolName: String, isRoot: Bool, properties: [Property], expressionCallTypeNames: [String]) {
+    init(name: String, dependencyProtocolName: String, isRoot: Bool, sourceHash: String, properties: [Property], expressionCallTypeNames: [String]) {
         self.name = name
         self.dependencyProtocolName = dependencyProtocolName
         self.isRoot = isRoot
+        self.sourceHash = sourceHash
         self.properties = properties
         self.expressionCallTypeNames = expressionCallTypeNames
     }
