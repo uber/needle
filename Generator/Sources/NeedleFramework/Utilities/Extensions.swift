@@ -55,3 +55,24 @@ extension Array {
         return Dictionary(uniqueKeysWithValues: self.map(uniqueKeysWithValues))
     }
 }
+
+extension URL {
+    
+    func relativePathByStrippingCommonComponents(baseURL: URL) -> String? {
+        
+        guard  self.isFileURL && baseURL.isFileURL else {
+            return nil
+        }
+        
+        let baseComponents = baseURL.pathComponents
+        let destComponents = self.pathComponents
+        
+        var i = 0
+        while i < baseComponents.count && baseComponents[i].lowercased() == destComponents[i].lowercased() {
+            i += 1
+        }
+    
+        return destComponents[i...].joined(separator: "/")
+    }
+
+}

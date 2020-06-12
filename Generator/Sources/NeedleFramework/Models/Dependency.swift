@@ -17,7 +17,7 @@
 import Foundation
 
 /// The special empty dependency data model.
-let emptyDependency = Dependency(name: "EmptyDependency", properties: [])
+let emptyDependency = Dependency(name: "EmptyDependency", properties: [], sourceURL: URL(fileURLWithPath: "/dev/null")) // Not sure about /dev/null
 
 /// A data model representing a dependency protocol of a NeedleFoundation
 /// `Component`.
@@ -28,6 +28,8 @@ struct Dependency: Equatable {
     let name: String
     /// The list of dependency properties.
     let properties: [Property]
+    /// The file where this dependency  is declared
+    let sourceURL: URL
 
     /// `true` if this dependency prootocol is the `EmptyDependency`.
     /// `false` otherwise.

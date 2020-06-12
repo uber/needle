@@ -54,10 +54,10 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
                 let isRoot = substructure.isRoot
                 let dependencyProtocolName = isRoot ? emptyDependency.name : try substructure.dependencyProtocolName(for: "Component")
                 let properties = try substructure.properties()
-                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: isRoot, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
+                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: isRoot, sourceURL: ast.sourceURL, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
             } else if substructure.isDependencyProtocol {
                 let properties = try substructure.properties()
-                dependencies.append(Dependency(name: substructure.name, properties: properties))
+                dependencies.append(Dependency(name: substructure.name, properties: properties, sourceURL: ast.sourceURL))
             }
         }
         return (components, dependencies)

@@ -165,52 +165,17 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
                                      pluginizedComponents: [PluginizedASTComponent],
                                      gitRoot: String?) -> String? {
 
-        guard let git_dir = gitRoot else {
+        guard let gitDirUnwrapped = gitRoot else {
             return nil
         }
 
-        let typeTotypeDeclFileMap = collectTypeToTypeDeclarationFileMapping(gitDir: git_dir);
-        let fileToFileHashMap = collectFileToFileHashMapping(gitDir: git_dir);
-        var dependencyFiles = Set<String>()
-
-        // TODO: Make this function parse types instead of a simple string replacement
-        let simplfyType: (String) -> String = { (type: String) -> String in
-            return type.replacingOccurrences(of: "[\\[\\]<>?]|Observable", with: "", options: .regularExpression, range: nil)
-        }
-
-        for dep in dependencies {
-            for prop in dep.properties {
-                if let propDeclarationFile = typeTotypeDeclFileMap[simplfyType(prop.type)] {
-                    dependencyFiles.formUnion(propDeclarationFile)
-                } else {
-                    print("Could not find a file for type: \(prop.type)")
-                }
-            }
-        }
-
-        for component in components {
-            if let propDeclarationFiles = typeTotypeDeclFileMap[component.name] {
-                dependencyFiles.formUnion(propDeclarationFiles)
-            } else {
-                print("Could not find a file for type: \(component.name)")
-            }
-        }
-
-        for component in pluginizedComponents {
-            if let propDeclarationFiles = typeTotypeDeclFileMap[component.data.name] {
-                dependencyFiles.formUnion(propDeclarationFiles)
-            } else {
-                print("Could not find a file for type: \(component.data.name)")
-            }
-        }
-
-
-        let startTime = DispatchTime.now()
-        let sortedFiles = dependencyFiles.sorted()
-        let hashes = sortedFiles.map({fileToFileHashMap[$0]!})
+        var dependentSourceURLs : Set<URL> = []
+        dependentSourceURLs.formUnion(dependencies.map({ $0.sourceURL }))
+        dependentSourceURLs.formUnion(pluginizedComponents.map({ $0.data.sourceURL }))
+        dependentSourceURLs.formUnion(components.map({ $0.sourceURL }))
+    
+        let hashes = getFileHashsUsingGit(workingDir: gitDirUnwrapped, sourceFileURLs: dependentSourceURLs)
         let hash =  MD5(string: hashes.joined(separator: "\n"))
-        let duration = (DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds) / 1000000000
-        print("GOT \(hash) hash in \(duration) s")
         return hash
     }
 }
