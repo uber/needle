@@ -41,6 +41,7 @@ func MD5(string: String) -> String {
     return digestData.map( { String(format: "%02hhx", $0) }).joined()
 }
 
+/// Generates a cumulative hash of all the hashEntries
 func generateCumulativeHash(hashEntries: Set<HashEntry>) -> String {
     let hashCollection = hashEntries.sorted().reduce(into: "") {
         (resultString, entry) in
