@@ -58,13 +58,13 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
                 let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = try substructure.pluginizedGenerics()
                 let properties = try substructure.properties()
                 // Pluginized components are never root.
-                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: false, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
+                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: false, sourceHash: ast.sourceHash, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
                 pluginizedComponents.append(PluginizedASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
             } else if substructure.isNonCoreComponent {
                 let dependencyProtocolName = try substructure.dependencyProtocolName(for: "NonCoreComponent")
                 let properties = try substructure.properties()
                 // Non-core components are never root.
-                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: false, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
+                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: false, sourceHash: ast.sourceHash, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
                 nonCoreComponents.append(component)
             } else if substructure.isPluginExtension {
                 let properties = try substructure.properties()

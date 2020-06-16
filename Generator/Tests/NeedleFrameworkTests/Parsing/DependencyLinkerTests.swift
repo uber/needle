@@ -21,8 +21,8 @@ import XCTest
 class DependencyLinkerTests: AbstractParserTests {
 
     func test_process_withComponents_verifyLinkages() {
-        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let dependency = Dependency(name: "ItsDependency", properties: [])
+        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, sourceHash: "SomeCompHash", properties: [], expressionCallTypeNames: [])
+        let dependency = Dependency(name: "ItsDependency", properties: [], sourceHash: "ItsDependencyHash")
 
         let linker = DependencyLinker(components: [component], dependencies: [dependency])
 
@@ -32,8 +32,8 @@ class DependencyLinkerTests: AbstractParserTests {
     }
 
     func test_process_withComponentsNoDependency_verifyError() {
-        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, properties: [], expressionCallTypeNames: [])
-        let dependency = Dependency(name: "WrongDep", properties: [])
+        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, sourceHash: "SomeComp", properties: [], expressionCallTypeNames: [])
+        let dependency = Dependency(name: "WrongDep", properties: [], sourceHash: "WrongDepHash")
 
         let linker = DependencyLinker(components: [component], dependencies: [dependency])
 

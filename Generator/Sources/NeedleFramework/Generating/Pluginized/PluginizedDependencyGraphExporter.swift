@@ -40,10 +40,12 @@ class PluginizedDependencyGraphExporter {
     /// waiting on exporting tasks.
     /// - parameter headerDocPath: The path to custom header doc file to be
     /// included at the top of the generated file.
+    /// - parameter needleVersionHash: The needleVersionHash so that we
+    /// can recompile when upstream-dependency files change
     /// - throws: `DependencyGraphExporterError.timeout` if computation times out.
     /// - throws: `DependencyGraphExporterError.unableToWriteFile` if the file
     /// write fails.
-    func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: TimeInterval, include headerDocPath: String?) throws {
+    func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: TimeInterval, include headerDocPath: String?, needleVersionHash: String?) throws {
         // Enqueue tasks.
         let dependencyProviderHandleTuples = enqueueExportDependencyProviders(for: components, pluginizedComponents, using: executor)
         let pluginExtensionHandleTuples = enqueueExportPluginExtensions(for: pluginizedComponents, using: executor)
@@ -53,7 +55,7 @@ class PluginizedDependencyGraphExporter {
         let serializedProviders = try awaitSerialization(using: dependencyProviderHandleTuples + pluginExtensionHandleTuples, withTimeout: timeout)
         let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
-        let fileContents = OutputSerializer(providers: serializedProviders, imports: imports, headerDocContent: headerDocContent).serialize()
+        let fileContents = OutputSerializer(providers: serializedProviders, imports: imports, headerDocContent: headerDocContent, needleVersionHash: needleVersionHash).serialize()
         try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
     }
 
