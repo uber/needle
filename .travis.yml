@@ -5,9 +5,7 @@ before_script:
 matrix:
     include:
         - name: "NeedleFoundationTests"
-          script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundationTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
-        - name: "NeedleFoundationTestTests"
-          script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundationTestTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+          script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundation -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleGeneratorTests"
           script: cd Generator && swift test -Xswiftc -DDEBUG
         - name: "NeedleGeneratorBinary"
