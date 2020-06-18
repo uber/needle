@@ -27,7 +27,7 @@ struct Property: Hashable {
 
 /// A data model representing a single dependency property that has gone through
 /// generation processing.
-struct ProcessedProperty: Equatable {
+struct ProcessedProperty: Equatable, Hashable {
     /// The unprocessed property we started with.
     let unprocessed: Property
     /// Type of the Component where this property is satisfied.
