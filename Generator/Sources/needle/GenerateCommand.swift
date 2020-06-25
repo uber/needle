@@ -18,7 +18,7 @@ import CommandFramework
 import Foundation
 import NeedleFramework
 import SourceParsingFramework
-import Utility
+import TSCUtility
 
 /// The generate command provides the core functionality of needle. It parses
 /// Swift source files by recurively scan the directories starting from the
