@@ -14,12 +14,12 @@
 //  limitations under the License.
 //
 
-import Basic
+import TSCBasic
 import CommandFramework
 import Foundation
 import NeedleFramework
 import SourceParsingFramework
-import Utility
+import TSCUtility
 
 func main() {
     let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Needle DI code generator.")

@@ -1,7 +1,7 @@
 language: objective-c
-osx_image: xcode11.2
+osx_image: xcode11.4
 before_script:
-- "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | sudo bash"
+- "curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash"
 matrix:
     include:
         - name: "NeedleFoundationTests"

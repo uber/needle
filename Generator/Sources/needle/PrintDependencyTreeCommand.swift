@@ -18,7 +18,7 @@ import CommandFramework
 import Foundation
 import NeedleFramework
 import SourceParsingFramework
-import Utility
+import TSCUtility
 
 /// A command that prints out the static dependency tree starting at RootComponent.
 class PrintDependencyTreeCommand: AbstractCommand {
