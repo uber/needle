@@ -59,7 +59,8 @@ class OutputSerializer: Serializer {
 
         \(importsJoined)
         
-        let needleDependenciesHash : String? = \(needleDependenciesHash)
+        // swiftlint:disable unused_declaration
+        private let needleDependenciesHash : String? = \(needleDependenciesHash)
 
         // MARK: - Registration
 
