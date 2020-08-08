@@ -44,7 +44,7 @@ class AbstractGeneratorTests: XCTestCase {
         for _ in 0 ..< 5 {
             url = url.deletingLastPathComponent()
         }
-        url.appendPathComponent("Sample/MVC/TicTacToe/Sources/")
+        url.appendPathComponent("Sample/MVC-rx/TicTacToe/Sources/")
 
         let path = url.absoluteString.replacingOccurrences(of: "file://", with: "")
         return URL(path: path)
