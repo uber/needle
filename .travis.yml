@@ -10,12 +10,18 @@ matrix:
           script: cd Generator && swift test -Xswiftc -DDEBUG
         - name: "NeedleGeneratorBinary"
           script: cd Generator && swift build -c release
-        - name: "NeedleSampleMVCApp"
-          install: cd Sample/MVC && carthage update --platform ios
-          script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
-        - name: "NeedleSampleMVCTests"
-          install: cd Sample/MVC && carthage update --platform ios
-          script: xcodebuild test -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+        - name: "NeedleSampleMVCApp-Rx"
+          install: cd Sample/MVC-rx && carthage update --platform ios
+          script: xcodebuild build -project ../../Sample/MVC-rx/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+        - name: "NeedleSampleMVCTests-Rx"
+          install: cd Sample/MVC-rx && carthage update --platform ios
+          script: xcodebuild test -project ../../Sample/MVC-rx/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+        - name: "NeedleSampleMVCApp-Plain"
+          install: cd Sample/MVC-plain && carthage update --platform ios
+          script: xcodebuild build -project ../../Sample/MVC-plain/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+        - name: "NeedleSampleMVCTests-Plain"
+          install: cd Sample/MVC-plain && carthage update --platform ios
+          script: xcodebuild test -project ../../Sample/MVC-plain/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedApp"
           install: cd Sample/Pluginized && carthage update --platform ios
           script: xcodebuild build -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
