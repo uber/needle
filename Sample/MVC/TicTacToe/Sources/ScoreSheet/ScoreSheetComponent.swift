@@ -15,7 +15,6 @@
 //
 
 import NeedleFoundation
-import RxSwift
 import UIKit
 
 protocol ScoreSheetDependency: Dependency {

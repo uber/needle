@@ -19,16 +19,16 @@ import UIKit
 
 class RootComponent: BootstrapComponent {
 
-    var playersStream: PlayersStream {
-        return mutablePlayersStream
+    var playersStore: PlayersStore {
+        return mutablePlayersStore
     }
 
-    var mutablePlayersStream: MutablePlayersStream {
-        return shared { PlayersStreamImpl() }
+    var mutablePlayersStore: MutablePlayersStore {
+        return shared { PlayersStoreImpl() }
     }
 
     var rootViewController: UIViewController {
-        return RootViewController(playersStream: playersStream, loggedOutBuilder: loggedOutComponent, loggedInBuilder: loggedInComponent)
+        return RootViewController(playersStore: playersStore, loggedOutBuilder: loggedOutComponent, loggedInBuilder: loggedInComponent)
     }
 
     var loggedOutComponent: LoggedOutComponent {

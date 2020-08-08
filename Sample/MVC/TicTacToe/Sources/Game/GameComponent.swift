@@ -19,13 +19,13 @@ import UIKit
 
 protocol GameDependency: Dependency {
     var mutableScoreStream: MutableScoreStream { get }
-    var playersStream: PlayersStream { get }
+    var playersStore: PlayersStore { get }
 }
 
 class GameComponent: Component<GameDependency>, GameBuilder {
 
     var gameViewController: UIViewController {
-        return GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStream: dependency.playersStream, scoreSheetBuilder: scoreSheetBuilder)
+        return GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStore: dependency.playersStore, scoreSheetBuilder: scoreSheetBuilder)
     }
 
     var scoreSheetBuilder: ScoreSheetBuilder {

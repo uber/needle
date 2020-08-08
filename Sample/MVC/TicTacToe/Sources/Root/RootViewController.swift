@@ -14,26 +14,21 @@
 //  limitations under the License.
 //
 
-import RxSwift
 import UIKit
-
-private enum RootChildStates {
-    case loggedOut
-    case loggedIn
-}
 
 class RootViewController: UIViewController {
 
-    private let playersStream: PlayersStream
+    private let playersStore: PlayersStore
     private let loggedOutBuilder: LoggedOutBuilder
     private let loggedInBuilder: LoggedInBuilder
-    private var playersStreamDisposable: Disposable?
 
-    init(playersStream: PlayersStream, loggedOutBuilder: LoggedOutBuilder, loggedInBuilder: LoggedInBuilder) {
-        self.playersStream = playersStream
+    init(playersStore: PlayersStore, loggedOutBuilder: LoggedOutBuilder, loggedInBuilder: LoggedInBuilder) {
+        self.playersStore = playersStore
         self.loggedOutBuilder = loggedOutBuilder
         self.loggedInBuilder = loggedInBuilder
         super.init(nibName: nil, bundle: nil)
+        
+        self.playersStore.add(listener: self)
     }
 
     required init?(coder _: NSCoder) {
@@ -53,27 +48,11 @@ class RootViewController: UIViewController {
     }
 
     private func updateChildViewController() {
-        if playersStreamDisposable != nil {
-            return
+        if playersStore.names == nil {
+            present(viewController: loggedOutBuilder.loggedOutViewController)
+        } else  {
+            present(viewController: loggedInBuilder.loggedInViewController)
         }
-
-        playersStreamDisposable = playersStream.names
-            .map { (names: (String, String)?) in
-                names == nil ? RootChildStates.loggedOut : RootChildStates.loggedIn
-            }
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] (state: RootChildStates) in
-                guard let strongSelf = self else {
-                    return
-                }
-
-                switch state {
-                case .loggedIn:
-                    strongSelf.present(viewController: strongSelf.loggedInBuilder.loggedInViewController)
-                case .loggedOut:
-                    strongSelf.present(viewController: strongSelf.loggedOutBuilder.loggedOutViewController)
-                }
-            })
     }
 
     private func present(viewController: UIViewController) {
@@ -91,6 +70,12 @@ class RootViewController: UIViewController {
     }
 
     deinit {
-        playersStreamDisposable?.dispose()
+        playersStore.remove(listener: self)
+    }
+}
+
+extension RootViewController: PlayersStoreListener {
+    func didUpdate(names: (String, String)) {
+        updateChildViewController()
     }
 }

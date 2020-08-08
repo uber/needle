@@ -19,8 +19,8 @@ import UIKit
 
 class LoggedOutViewController: UIViewController {
 
-    init(mutablePlayersStream: MutablePlayersStream) {
-        self.mutablePlayersStream = mutablePlayersStream
+    init(mutablePlayersStore: MutablePlayersStore) {
+        self.mutablePlayersStore = mutablePlayersStore
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -38,7 +38,7 @@ class LoggedOutViewController: UIViewController {
 
     // MARK: - Private
 
-    private let mutablePlayersStream: MutablePlayersStream
+    private let mutablePlayersStore: MutablePlayersStore
     private var player1Field: UITextField?
     private var player2Field: UITextField?
 
@@ -86,6 +86,7 @@ class LoggedOutViewController: UIViewController {
         guard let player1Field = player1Field, let player2Field = player2Field else {
             return
         }
-        mutablePlayersStream.update(player1: player1Field.text, player2: player2Field.text)
+        mutablePlayersStore.update(player1: player1Field.text, player2: player2Field.text)
+        dismiss(animated: true, completion: nil)
     }
 }

@@ -18,13 +18,13 @@ import NeedleFoundation
 import UIKit
 
 protocol LoggedOutDependency: Dependency {
-    var mutablePlayersStream: MutablePlayersStream { get }
+    var mutablePlayersStore: MutablePlayersStore { get }
 }
 
 class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
 
     var loggedOutViewController: UIViewController {
-        return LoggedOutViewController(mutablePlayersStream: dependency.mutablePlayersStream)
+        return LoggedOutViewController(mutablePlayersStore: dependency.mutablePlayersStore)
     }
 }
 
