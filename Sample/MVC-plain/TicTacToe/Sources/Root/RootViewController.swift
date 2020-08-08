@@ -44,11 +44,11 @@ class RootViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        updateChildViewController()
+        updateChildViewController(names: nil)
     }
 
-    private func updateChildViewController() {
-        if playersStore.names == nil {
+    private func updateChildViewController(names: (String, String)?) {
+        if names == nil {
             present(viewController: loggedOutBuilder.loggedOutViewController)
         } else  {
             present(viewController: loggedInBuilder.loggedInViewController)
@@ -76,6 +76,6 @@ class RootViewController: UIViewController {
 
 extension RootViewController: PlayersStoreListener {
     func didUpdate(names: (String, String)) {
-        updateChildViewController()
+        updateChildViewController(names: names)
     }
 }

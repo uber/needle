@@ -15,6 +15,7 @@
 //
 
 import NeedleFoundation
+import RxSwift
 import UIKit
 
 let needleDependenciesHash : String? = nil
@@ -50,8 +51,8 @@ private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
-    var playersStore: PlayersStore {
-        return rootComponent.playersStore
+    var playersStream: PlayersStream {
+        return rootComponent.playersStream
     }
     private let loggedInComponent: LoggedInComponent
     private let rootComponent: RootComponent
@@ -82,8 +83,8 @@ private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDepend
 }
 /// ^->RootComponent->LoggedOutComponent
 private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
-    var mutablePlayersStore: MutablePlayersStore {
-        return rootComponent.mutablePlayersStore
+    var mutablePlayersStream: MutablePlayersStream {
+        return rootComponent.mutablePlayersStream
     }
     private let rootComponent: RootComponent
     init(component: NeedleFoundation.Scope) {

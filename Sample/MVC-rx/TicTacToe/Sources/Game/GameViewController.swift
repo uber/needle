@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import RxSwift
 import SnapKit
 import UIKit
 
@@ -40,7 +41,7 @@ private enum Players: Int {
 class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, ScoreSheetListener {
 
     private let mutableScoreStream: MutableScoreStream
-    private let playersStore: PlayersStore
+    private let playersStream: PlayersStream
     private let scoreSheetBuilder: ScoreSheetBuilder
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -49,10 +50,11 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         layout.itemSize = CGSize(width: cellSize, height: cellSize)
         return UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
     }()
+    private var appearanceDisposable = CompositeDisposable()
 
-    init(mutableScoreStream: MutableScoreStream, playersStore: PlayersStore, scoreSheetBuilder: ScoreSheetBuilder) {
+    init(mutableScoreStream: MutableScoreStream, playersStream: PlayersStream, scoreSheetBuilder: ScoreSheetBuilder) {
         self.mutableScoreStream = mutableScoreStream
-        self.playersStore = playersStore
+        self.playersStream = playersStream
         self.scoreSheetBuilder = scoreSheetBuilder
         super.init(nibName: nil, bundle: nil)
     }
@@ -69,6 +71,13 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         buildCollectionView()
         buildScoerButton()
         initBoard()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        appearanceDisposable.dispose()
+        appearanceDisposable = CompositeDisposable()
     }
 
     private func buildCollectionView() {
@@ -109,9 +118,19 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
 
     private func performOnPlayerNames(with handler: @escaping (String, String) -> ()) {
-        if let names = playersStore.names {
-            handler(names.0, names.1)
-        }
+        let disposable = playersStream.names
+            .take(1)
+            .flatMap { (names: (String, String)?) -> Observable<(String, String)> in
+                if let names = names {
+                    return Observable.just(names)
+                } else {
+                    return Observable.never()
+                }
+            }
+            .subscribe(onNext: { (player1Name: String, player2Name: String) in
+                handler(player1Name, player2Name)
+            })
+        _ = appearanceDisposable.insert(disposable)
     }
 
     // MARK: - High Scores

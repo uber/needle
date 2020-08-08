@@ -13,7 +13,7 @@
 		4139097520A1060300A26FF5 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097420A1060300A26FF5 /* RootViewController.swift */; };
 		4139097720A10A6D00A26FF5 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4139097620A10A6D00A26FF5 /* RxSwift.framework */; };
 		4139097920A1111900A26FF5 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097820A1111900A26FF5 /* RootComponent.swift */; };
-		4139097B20A113AE00A26FF5 /* PlayersStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097A20A113AD00A26FF5 /* PlayersStore.swift */; };
+		4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097A20A113AD00A26FF5 /* PlayersStream.swift */; };
 		4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097C20A1174700A26FF5 /* NeedleGenerated.swift */; };
 		4139098020A21F0500A26FF5 /* LoggedOutComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097F20A21F0500A26FF5 /* LoggedOutComponent.swift */; };
 		4139098220A21F8000A26FF5 /* LoggedOutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139098120A21F8000A26FF5 /* LoggedOutViewController.swift */; };
@@ -83,7 +83,7 @@
 		4139097420A1060300A26FF5 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		4139097620A10A6D00A26FF5 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		4139097820A1111900A26FF5 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
-		4139097A20A113AD00A26FF5 /* PlayersStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersStore.swift; sourceTree = "<group>"; };
+		4139097A20A113AD00A26FF5 /* PlayersStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersStream.swift; sourceTree = "<group>"; };
 		4139097C20A1174700A26FF5 /* NeedleGenerated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedleGenerated.swift; sourceTree = "<group>"; };
 		4139097F20A21F0500A26FF5 /* LoggedOutComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutComponent.swift; sourceTree = "<group>"; };
 		4139098120A21F8000A26FF5 /* LoggedOutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutViewController.swift; sourceTree = "<group>"; };
@@ -175,7 +175,7 @@
 			children = (
 				4139097420A1060300A26FF5 /* RootViewController.swift */,
 				4139097820A1111900A26FF5 /* RootComponent.swift */,
-				4139097A20A113AD00A26FF5 /* PlayersStore.swift */,
+				4139097A20A113AD00A26FF5 /* PlayersStream.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -437,7 +437,7 @@
 				4139095720A0F2BC00A26FF5 /* AppDelegate.swift in Sources */,
 				F7DA7AE220A275EF0037FF17 /* ScoreSheetViewController.swift in Sources */,
 				F7DA7AE020A275DA0037FF17 /* ScoreSheetComponent.swift in Sources */,
-				4139097B20A113AE00A26FF5 /* PlayersStore.swift in Sources */,
+				4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */,
 				4139098220A21F8000A26FF5 /* LoggedOutViewController.swift in Sources */,
 				4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */,
 				413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */,

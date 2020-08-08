@@ -17,18 +17,19 @@
 import NeedleFoundation
 import UIKit
 
-protocol ScoreSheetDependency: Dependency {
-    var scoreStream: ScoreStream { get }
+protocol LoggedOutDependency: Dependency {
+    var mutablePlayersStream: MutablePlayersStream { get }
 }
 
-class ScoreSheetComponent: Component<ScoreSheetDependency>, ScoreSheetBuilder {
+class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
 
-    var scoreSheetViewController: UIViewController {
-        return ScoreSheetViewController(scoreStream: dependency.scoreStream)
+    var loggedOutViewController: UIViewController {
+        return LoggedOutViewController(mutablePlayersStream: dependency.mutablePlayersStream)
     }
 }
 
-// Use a builder protocol to allow mocking for unit tests
-protocol ScoreSheetBuilder {
-    var scoreSheetViewController: UIViewController { get }
+// Use a builder protocol to allow mocking for unit tests. At the same time,
+// this allows LoggedOutViewController to be initialized lazily.
+protocol LoggedOutBuilder {
+    var loggedOutViewController: UIViewController { get }
 }

@@ -18,14 +18,14 @@ import NeedleFoundation
 import UIKit
 
 protocol GameDependency: Dependency {
-    var mutableScoreStream: MutableScoreStream { get }
+    var mutableScoreStore: MutableScoreStore { get }
     var playersStore: PlayersStore { get }
 }
 
 class GameComponent: Component<GameDependency>, GameBuilder {
 
     var gameViewController: UIViewController {
-        return GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStore: dependency.playersStore, scoreSheetBuilder: scoreSheetBuilder)
+        return GameViewController(mutableScoreStore: dependency.mutableScoreStore, playersStore: dependency.playersStore, scoreSheetBuilder: scoreSheetBuilder)
     }
 
     var scoreSheetBuilder: ScoreSheetBuilder {
@@ -33,8 +33,8 @@ class GameComponent: Component<GameDependency>, GameBuilder {
     }
 
     // This should not be used as the provider for GameDependency.
-    var mutableScoreStream: MutableScoreStream {
-        return ScoreStreamImpl()
+    var mutableScoreStore: MutableScoreStore {
+        return ScoreStoreImpl()
     }
 }
 
