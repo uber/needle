@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import TSCBasic
 
 /// The task that serializes a list of processed dependency providers into
 /// exportable foramt.
@@ -38,18 +39,12 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
         // Group the providers based on where the properties are coming from
         // This will allow us to extract common code for multiple depndency providers
         // into common base classes
-        var counts = [[ProcessedProperty]: [ProcessedDependencyProvider]]()
+        var counts = OrderedDictionary<[ProcessedProperty], [ProcessedDependencyProvider]>()
         for provider in providers {
             let properties = provider.processedProperties
-            counts[properties, default: []].append(provider)
+            counts[properties] = (counts[properties] ?? []) + [provider]
         }
-        let countValues = counts.values.sorted(by: { (left, right) in
-            guard let leftProvider = left.first, let rightProvider = right.first else {
-                fatalError("Dictionary not expected to contain empty arrays")
-            }
-            return leftProvider.unprocessed.pathString < rightProvider.unprocessed.pathString
-        })
-        for matchingProviders in countValues {
+        for matchingProviders in counts.values {
             result.append(contentsOf: serialize(matchingProviders))
         }
         return result
