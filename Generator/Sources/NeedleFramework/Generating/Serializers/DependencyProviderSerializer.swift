@@ -16,27 +16,16 @@
 
 import Foundation
 
-/// A serializer that produces the source code for the entire dependency
-/// provider.
+/// A serializer that produces the source code for the dependency
+/// provider. It's mostly empty as the core logic lives in the
+/// superclass
 class DependencyProviderSerializer: Serializer {
 
-    /// Initializer.
-    ///
-    /// - parameter provider: The provider to generate code for.
-    /// - parameter classNameSerializer: The serializer that produces
-    /// class name.
-    /// - parameter propertiesSerializer: The serializer that produces
-    /// dependency properties.
-    /// - parameter sourceComponentsSerializer: The serializer that produces
-    /// source component properties.
-    /// - parameter initBodySerializer: The serializer that produces
-    /// the body of the initializer.
-    init(provider: ProcessedDependencyProvider, classNameSerializer: Serializer, propertiesSerializer: Serializer, sourceComponentsSerializer: Serializer, initBodySerializer: Serializer) {
-        self.provider = provider
+    init(provider: ProcessedDependencyProvider, classNameSerializer: Serializer, baseClassSerializer: Serializer, initBodySerializer: Serializer) {
         self.classNameSerializer = classNameSerializer
-        self.propertiesSerializer = propertiesSerializer
-        self.sourceComponentsSerializer = sourceComponentsSerializer
+        self.baseClassSerializer = baseClassSerializer
         self.initBodySerializer = initBodySerializer
+        self.provider = provider
     }
 
     /// Serialize the data model and produce the entire dependency provider
@@ -44,27 +33,20 @@ class DependencyProviderSerializer: Serializer {
     ///
     /// - returns: The entire source code for the dependency provider.
     func serialize() -> String {
-        guard !provider.isEmptyDependency else {
-            return ""
-        }
-
         return """
-        /// \(provider.unprocessed.pathString)
-        private class \(classNameSerializer.serialize()): \(provider.unprocessed.dependency.name) {
-        \(propertiesSerializer.serialize())
-        \(sourceComponentsSerializer.serialize())
-            init(component: NeedleFoundation.Scope) {
-        \(initBodySerializer.serialize())
-            }
-        }\n
-        """
+/// \(provider.unprocessed.pathString)
+private class \(classNameSerializer.serialize()): \(baseClassSerializer.serialize()) {
+    init(component: NeedleFoundation.Scope) {
+        super.init(\(initBodySerializer.serialize()))
+    }
+}\n
+"""
     }
 
     // MARK: - Private
 
     private let provider: ProcessedDependencyProvider
     private let classNameSerializer: Serializer
-    private let propertiesSerializer: Serializer
-    private let sourceComponentsSerializer: Serializer
+    private let baseClassSerializer: Serializer
     private let initBodySerializer: Serializer
 }

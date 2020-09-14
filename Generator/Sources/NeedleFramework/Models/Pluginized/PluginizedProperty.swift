@@ -29,7 +29,7 @@ enum AuxillarySourceType {
 
 /// An extended data model representing a single dependency property that
 /// has gone through generation processing.
-struct PluginizedProcessedProperty {
+struct PluginizedProcessedProperty: Equatable, Hashable {
     /// The actual data of this dependency property.
     let data: ProcessedProperty
     /// If the property was found in the auxillary scope, this tells us the

@@ -40,16 +40,70 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
         XCTAssertTrue(generated!.contains("import RxSwift"))
         XCTAssertTrue(generated!.contains("import UIKit"))
         XCTAssertTrue(generated!.contains("// MARK: - Registration"))
-        XCTAssertTrue(generated!.contains("__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent\") { component in\n        return GameDependency1ab5926a977f706d3195Provider(component: component)\n    }"))
-        XCTAssertTrue(generated!.contains("__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\") { component in\n        return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)\n    }"))
-        XCTAssertTrue(generated!.contains("__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->ScoreSheetComponent\") { component in\n        return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)\n    }"))
-        XCTAssertTrue(generated!.contains("__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedOutComponent\") { component in\n        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)\n    }"))
-        XCTAssertTrue(generated!.contains("__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent\") { component in\n        return EmptyDependencyProvider(component: component)\n    }"))
-        XCTAssertTrue(generated!.contains("__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent\") { component in\n        return EmptyDependencyProvider(component: component)\n    }"))
+        XCTAssertTrue(generated!.contains("""
+    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent\") { component in
+        return GameDependency1ab5926a977f706d3195Provider(component: component)
+    }
+"""))
+        XCTAssertTrue(generated!.contains("""
+    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\") { component in
+        return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)
+    }
+"""))
+        XCTAssertTrue(generated!.contains("""
+    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->ScoreSheetComponent\") { component in
+        return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)
+    }
+"""))
+        XCTAssertTrue(generated!.contains("""
+__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedOutComponent\") { component in
+        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
+    }
+"""))
+        XCTAssertTrue(generated!.contains("""
+    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent\") { component in
+        return EmptyDependencyProvider(component: component)
+    }
+"""))
+        XCTAssertTrue(generated!.contains("""
+    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent\") { component in
+        return EmptyDependencyProvider(component: component)
+    }
+"""))
         XCTAssertTrue(generated!.contains("// MARK: - Providers"))
-        XCTAssertTrue(generated!.contains("/// ^->RootComponent->LoggedInComponent->GameComponent\nprivate class GameDependency1ab5926a977f706d3195Provider: GameDependency {\n    var mutableScoreStream: MutableScoreStream {\n        return loggedInComponent.mutableScoreStream\n    }\n    var playersStream: PlayersStream {\n        return rootComponent.playersStream\n    }\n    private let loggedInComponent: LoggedInComponent\n    private let rootComponent: RootComponent\n    init(component: NeedleFoundation.Scope) {\n        loggedInComponent = component.parent as! LoggedInComponent\n        rootComponent = component.parent.parent as! RootComponent\n    }\n}"))
-        XCTAssertTrue(generated!.contains("/// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\nprivate class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {\n    var scoreStream: ScoreStream {\n        return loggedInComponent.scoreStream\n    }\n    private let loggedInComponent: LoggedInComponent\n    init(component: NeedleFoundation.Scope) {\n        loggedInComponent = component.parent.parent as! LoggedInComponent\n    }\n}"))
-        XCTAssertTrue(generated!.contains("/// ^->RootComponent->LoggedInComponent->ScoreSheetComponent\nprivate class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency {\n    var scoreStream: ScoreStream {\n        return loggedInComponent.scoreStream\n    }\n    private let loggedInComponent: LoggedInComponent\n    init(component: NeedleFoundation.Scope) {\n        loggedInComponent = component.parent as! LoggedInComponent\n    }\n}"))
-        XCTAssertTrue(generated!.contains("/// ^->RootComponent->LoggedOutComponent\nprivate class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {\n    var mutablePlayersStream: MutablePlayersStream {\n        return rootComponent.mutablePlayersStream\n    }\n    private let rootComponent: RootComponent\n    init(component: NeedleFoundation.Scope) {\n        rootComponent = component.parent as! RootComponent\n    }\n}"))
+        XCTAssertTrue(generated!.contains("""
+private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
+    var mutableScoreStream: MutableScoreStream {
+        return loggedInComponent.mutableScoreStream
+    }
+    var playersStream: PlayersStream {
+        return rootComponent.playersStream
+    }
+    private let loggedInComponent: LoggedInComponent
+    private let rootComponent: RootComponent
+"""))
+        XCTAssertTrue(generated!.contains("""
+private class ScoreSheetDependency97f2595a691a56781aaaBaseProvider: ScoreSheetDependency {
+    var scoreStream: ScoreStream {
+        return loggedInComponent.scoreStream
+    }
+    private let loggedInComponent: LoggedInComponent
+"""))
+        XCTAssertTrue(generated!.contains("""
+/// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
+private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency97f2595a691a56781aaaBaseProvider {
+    init(component: NeedleFoundation.Scope) {
+        super.init(loggedInComponent: component.parent as! LoggedInComponent)
+    }
+}
+"""))
+        XCTAssertTrue(generated!.contains("""
+/// ^->RootComponent->LoggedOutComponent
+private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependencyacada53ea78d270efa2fBaseProvider {
+    init(component: NeedleFoundation.Scope) {
+        super.init(rootComponent: component.parent as! RootComponent)
+    }
+}
+"""))
     }
 }
