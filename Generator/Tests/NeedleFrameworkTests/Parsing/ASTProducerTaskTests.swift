@@ -14,21 +14,21 @@
 //  limitations under the License.
 //
 
-import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
+import SwiftSyntax
 
 class ASTProducerTaskTests: AbstractParserTests {
 
     func test_execute_verifyNextTask() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let astContent = try! Structure(file: File(contents: sourceContent))
+        let astContent = try! SyntaxParser.parse(sourceUrl)
 
         let task = ASTProducerTask(sourceUrl: sourceUrl, sourceContent: sourceContent)
         let result = try! task.execute()
 
-        XCTAssertEqual(result.structure, astContent)
+        XCTAssertEqual(result.sourceFileSyntax.statements.count, astContent.statements.count)
         XCTAssertEqual(result.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }

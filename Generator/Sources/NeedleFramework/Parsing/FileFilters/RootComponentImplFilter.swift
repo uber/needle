@@ -17,10 +17,6 @@
 import Foundation
 import SourceParsingFramework
 
-/// The name of the bootstrap component an application's root component
-/// must inherit from.
-let bootstrapComponentName = "BootstrapComponent"
-
 /// A filter that performs checks if the file content contains any
 /// root component class implementations.
 class RootComponentImplFilter: KeywordRegexFilter {

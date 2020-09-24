@@ -25,6 +25,6 @@ class ComponentImplFilter: KeywordRegexFilter {
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        super.init(content: content, keyword: "Component", regex: Regex.foundationGenericInheritanceRegex(forClass: "Component"))
+        super.init(content: content, keyword: componentClassName, regex: Regex.foundationGenericInheritanceRegex(forClass: componentClassName))
     }
 }

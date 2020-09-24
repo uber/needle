@@ -14,36 +14,40 @@
 //  limitations under the License.
 //
 
-import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 @testable import SourceParsingFramework
+import SwiftSyntax
 
 class DeclarationsParserTaskTests: AbstractParserTests {
 
     func test_execute_withPrivateProperties_verifyLog() {
         let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
+        let ast = AST(sourceHash: MD5(string: sourceContent),
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl),
+                      imports: imports)
 
-        let task = DeclarationsParserTask(ast: AST(sourceHash: MD5(string: "SomePluginizedCompHash"), structure: structure, imports: imports))
+        let task = DeclarationsParserTask(ast: ast)
         _ = try! task.execute()
 
-        let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
-                        "PrivateDependency (cheese: Cheese) property is fileprivate, therefore inaccessible on DI graph.",
-                        "PrivateComponent (stream: Stream) property is private, therefore inaccessible on DI graph.",
-                        "PrivateComponent (donut: Donut) property is fileprivate, therefore inaccessible on DI graph."]
+        let expected = ["PrivateDependency (candy: Candy) property is inaccessible on DI graph.",
+                        "PrivateDependency (cheese: Cheese) property is inaccessible on DI graph.",
+                        "PrivateComponent (stream: Stream) property is inaccessible on DI graph.",
+                        "PrivateComponent (donut: Donut) property is inaccessible on DI graph."]
         XCTAssertEqual(UnitTestLogger.instance.messages, expected)
     }
 
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
-
-        let task = DeclarationsParserTask(ast: AST(sourceHash: MD5(string: sourceContent), structure: structure, imports: imports))
+        let ast = AST(sourceHash: MD5(string: sourceContent),
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl),
+                      imports: imports)
+        
+        let task = DeclarationsParserTask(ast: ast)
         let node = try! task.execute()
 
         XCTAssertEqual(node.components.count, 3)

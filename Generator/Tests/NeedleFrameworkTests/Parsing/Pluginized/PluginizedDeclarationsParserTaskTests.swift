@@ -14,19 +14,21 @@
 //  limitations under the License.
 //
 
-import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
+import SwiftSyntax
 
 class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
 
     func test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
+        let ast = AST(sourceHash: MD5(string: sourceContent),
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl),
+                      imports: imports)
 
-        let task = PluginizedDeclarationsParserTask(ast: AST(sourceHash: MD5(string: sourceContent), structure: structure, imports: imports))
+        let task = PluginizedDeclarationsParserTask(ast: ast)
         let node = try! task.execute()
 
         // Regular components.

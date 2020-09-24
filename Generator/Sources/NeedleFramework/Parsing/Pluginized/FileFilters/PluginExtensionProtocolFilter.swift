@@ -25,6 +25,6 @@ class PluginExtensionProtocolFilter: KeywordRegexFilter {
     ///
     /// - parameter content: The content to be filtered.
     init(content: String) {
-        super.init(content: content, keyword: "PluginExtension", regex: Regex.foundationInheritanceRegex(forProtocol: "PluginExtension"))
+        super.init(content: content, keyword: pluginExtensionProtocolName, regex: Regex.foundationInheritanceRegex(forProtocol: pluginExtensionProtocolName))
     }
 }

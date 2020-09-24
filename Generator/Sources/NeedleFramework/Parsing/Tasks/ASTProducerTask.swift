@@ -16,8 +16,8 @@
 
 import Concurrency
 import Foundation
-import SourceKittenFramework
 import SourceParsingFramework
+import SwiftSyntax
 
 /// A task that parses a Swift source content and produces Swift AST that
 /// can then be parsed into the dependnecy graph.
@@ -38,30 +38,27 @@ class ASTProducerTask: AbstractTask<AST> {
     /// - returns: The `AST` data model.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> AST {
-        let file = File(contents: sourceContent)
-        do {
-            let structure = try Structure(file: file)
-            let imports = parseImports()
-            return AST(sourceHash: MD5(string: sourceContent), structure: structure, imports: imports)
-        } catch {
-            throw GenericError.withMessage("Failed to parse AST for source at \(sourceUrl)")
-        }
+        let syntax = try SyntaxParser.parse(sourceUrl)
+        let visitor = Visitor()
+        visitor.walk(syntax)
+        
+        return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax, imports: visitor.imports)
     }
 
     // MARK: - Private
 
     private let sourceUrl: URL
     private let sourceContent: String
+}
 
-    private func parseImports() -> [String] {
-        // Use regex since SourceKit does not have a command that parses imports.
-        let regex = Regex("\\bimport +[^\\n;]+")
-        let matches = regex.matches(in: sourceContent)
-
-        let spacesAndNewLinesSet = CharacterSet.whitespacesAndNewlines
-        return matches
-            .compactMap { (match: NSTextCheckingResult) in
-                return sourceContent.substring(with: match.range)?.trimmingCharacters(in: spacesAndNewLinesSet)
-        }
+private final class Visitor: SyntaxVisitor {
+    private(set) var imports: [String] = []
+    
+    override func visitPost(_ node: ImportDeclSyntax) {
+        let importStatement = node.importTok.text + " " +
+            node.path
+                .map { $0.name.text }
+                .joined(separator: ".")
+        imports.append(importStatement)
     }
 }

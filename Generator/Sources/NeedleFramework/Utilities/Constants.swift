@@ -18,3 +18,13 @@ import Foundation
 
 /// The name of the NeedleFoundation module.
 let needleModuleName = "NeedleFoundation"
+
+/// The name of the bootstrap component an application's root component
+/// must inherit from.
+let bootstrapComponentName = "BootstrapComponent"
+
+/// The name of the protocol that all Dependency protocols inherit from.
+let dependencyProtocolName = "Dependency"
+
+/// The name fo the class that all Component classes inherit from
+let componentClassName = "Component"
