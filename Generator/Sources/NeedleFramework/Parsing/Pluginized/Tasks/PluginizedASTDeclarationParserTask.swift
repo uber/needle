@@ -128,10 +128,8 @@ private class Visitor: BaseVisitor {
         if currentEntityNode?.typeName == currentPluginizedComponentNode?.typeName {
             
             for (i, genericArgument) in node.enumerated() {
-                var argumentName = genericArgument.argumentType.description.trimmed
-                if argumentName.contains(".") == true {
-                    argumentName = argumentName.components(separatedBy: ".").last ?? ""
-                }
+                let argumentName = genericArgument.argumentType.description.trimmed.removingModulePrefix
+                
                 switch i {
                 case 0:
                     currentPluginExtensionGenerics.dependencyProtocolName = argumentName
