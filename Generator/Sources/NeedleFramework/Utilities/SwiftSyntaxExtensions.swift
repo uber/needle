@@ -87,7 +87,7 @@ extension ExtensionDeclSyntax: EntityNode {
     /// Checks whether the extension syntax node is extending one of components within `componentNames`
     func isExtension(of componentNames: [String]) -> Bool {
         let found = componentNames.first(where: { (componentName) -> Bool in
-            typeName.contains(componentName)
+            typeName == componentName
         }) != nil
         return found
     }
