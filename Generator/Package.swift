@@ -10,14 +10,14 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-tools-support-core", .upToNextMajor(from: "0.1.5")),
         .package(url: "https://github.com/uber/swift-concurrency.git", .upToNextMajor(from: "0.6.5")),
-        .package(url: "https://github.com/uber/swift-common.git", .exact("0.3.0")),
+        .package(url: "https://github.com/uber/swift-common.git", .exact("0.4.0")),
         .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50200.0")),
     ],
     targets: [
         .target(
             name: "NeedleFramework",
             dependencies: [
-                "SwiftToolsSupport",
+                "SwiftToolsSupport-auto",
                 "Concurrency",
                 "SourceParsingFramework",
                 "SwiftSyntax",

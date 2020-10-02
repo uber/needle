@@ -41,7 +41,7 @@ extension SyntaxNodeWithModifiers {
     var isPrivate: Bool {
         modifiers?.first?.name.text == "private"
     }
-    
+
     var isFileprivate: Bool {
         modifiers?.first?.name.text == "fileprivate"
     }
@@ -51,7 +51,6 @@ extension SyntaxNodeWithModifiers {
 
 extension IdentifiedDeclSyntax {
     var typeName: String {
-        print(identifier.description.trimmed)
         return identifier.description.trimmed
     }
 }
@@ -60,7 +59,7 @@ extension ProtocolDeclSyntax: EntityNode {
     var isDependency: Bool {
         inherits(from: dependencyProtocolName)
     }
-    
+
     var isPluginExtension: Bool {
         inherits(from: pluginExtensionProtocolName)
     }
@@ -70,15 +69,15 @@ extension ClassDeclSyntax: EntityNode {
     var isComponent: Bool {
         inherits(from: componentClassName) || isRoot
     }
-    
+
     var isPluginizedComponent: Bool {
         inherits(from: pluginizedComponentClassName)
     }
-    
+
     var isNonCoreComponent: Bool {
         inherits(from: nonCoreComponentClassName)
     }
-    
+
     var isRoot: Bool {
         inherits(from: bootstrapComponentName)
     }
@@ -92,7 +91,7 @@ extension ExtensionDeclSyntax: EntityNode {
         }) != nil
         return found
     }
-    
+
     var typeName: String {
         return extendedType.description.trimmed
     }
