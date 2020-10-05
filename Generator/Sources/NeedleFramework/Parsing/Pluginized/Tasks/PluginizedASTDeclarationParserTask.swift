@@ -53,7 +53,7 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
     private let ast: AST
 }
 
-private class Visitor: BaseVisitor {
+private final class Visitor: BaseVisitor {
     private(set) var pluginExtensions: [PluginExtension] = []
     private(set) var pluginizedComponents: [PluginizedASTComponent] = []
     private(set) var nonCoreComponents: [ASTComponent] = []
@@ -63,6 +63,7 @@ private class Visitor: BaseVisitor {
     private var currentPluginExtensionGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) = ("", "", "")
     
     private let sourceHash: String
+    private var parsingClass: Bool = false
     
     init(sourceHash: String) {
         self.sourceHash = sourceHash
@@ -88,10 +89,12 @@ private class Visitor: BaseVisitor {
     
     override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
         if node.isPluginizedComponent {
+            parsingClass = true
             currentEntityNode = node
             currentPluginizedComponentNode = node
             return .visitChildren
         } else if node.isNonCoreComponent {
+            parsingClass = true
             currentEntityNode = node
             currentNonCoreComponentNode = node
             return .visitChildren
@@ -124,7 +127,13 @@ private class Visitor: BaseVisitor {
         }
     }
     
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        parsingClass = false
+        return .visitChildren
+    }
+    
     override func visitPost(_ node: GenericArgumentListSyntax) {
+        guard parsingClass else { return }
         if currentEntityNode?.typeName == currentPluginizedComponentNode?.typeName {
             
             for (i, genericArgument) in node.enumerated() {
@@ -144,5 +153,9 @@ private class Visitor: BaseVisitor {
         } else if currentEntityNode?.typeName == currentNonCoreComponentNode?.typeName {
             currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
         }
+    }
+    
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
     }
 }

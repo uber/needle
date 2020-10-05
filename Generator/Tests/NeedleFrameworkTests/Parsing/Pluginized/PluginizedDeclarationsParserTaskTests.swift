@@ -60,10 +60,10 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let my2Component = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "My2Component"
         }!
-        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "Wallet", "shared"])
+        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "MyStorage", "Wallet", "shared"])
         XCTAssertEqual(my2Component.name, "My2Component")
         XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
-        XCTAssertEqual(my2Component.properties.count, 2)
+        XCTAssertEqual(my2Component.properties.count, 3)
         let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "book" && property.type == "Book"
         }

@@ -54,6 +54,14 @@ class ASTProducerTask: AbstractTask<AST> {
 private final class Visitor: SyntaxVisitor {
     private(set) var imports: [String] = []
     
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
+    }
+
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
+    }
+    
     override func visitPost(_ node: ImportDeclSyntax) {
         let importStatement = node.importTok.text + " " +
             node.path

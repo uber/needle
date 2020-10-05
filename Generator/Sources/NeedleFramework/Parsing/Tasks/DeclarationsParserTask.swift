@@ -58,6 +58,7 @@ private final class Visitor: BaseVisitor {
     private(set) var components: [ASTComponent] = []
     
     private let sourceHash: String
+    private var parsingClass: Bool = false
     
     init(sourceHash: String) {
         self.sourceHash = sourceHash
@@ -84,11 +85,18 @@ private final class Visitor: BaseVisitor {
     
     override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
         if node.isComponent {
+            parsingClass = true
             currentEntityNode = node
             return .visitChildren
         } else {
+            parsingClass = false
             return .skipChildren
         }
+    }
+    
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        parsingClass = false
+        return .visitChildren
     }
     
     override func visitPost(_ node: ClassDeclSyntax) {
@@ -107,6 +115,12 @@ private final class Visitor: BaseVisitor {
     }
     
     override func visitPost(_ node: GenericArgumentListSyntax) {
-        currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
+        if parsingClass {
+            currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
+        }
+    }
+    
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
     }
 }

@@ -63,6 +63,14 @@ private final class Visitor: BaseVisitor {
         self.componentNames = componentNames
     }
     
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
+    }
+    
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
+    }
+    
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         if node.isExtension(of: componentNames) {
             currentEntityNode = node
@@ -79,6 +87,8 @@ private final class Visitor: BaseVisitor {
                                                            properties: propertiesDict[extensionName, default: []],
                                                            expressionCallTypeNames: Array(componentToCallExprs[extensionName, default:[]]).sorted())
             extensions.append(componentExtension)
+            propertiesDict[extensionName] = []
+            componentToCallExprs[extensionName] = []
         }
     }
 }

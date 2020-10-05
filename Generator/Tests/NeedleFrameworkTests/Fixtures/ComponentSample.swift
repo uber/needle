@@ -71,6 +71,10 @@ class My2Component: Component<My2Dependency> {
     var maybeWallet: Wallet? {
         return Wallet()
     }
+    
+    var myStore: MyStorage<MyStorageKey> {
+        return MyStorage()
+    }
 
     private var banana: Banana {
         return Banana()
