@@ -29,6 +29,5 @@ class ASTProducerTaskTests: AbstractParserTests {
         let result = try! task.execute()
 
         XCTAssertEqual(result.sourceFileSyntax.statements.count, astContent.statements.count)
-        XCTAssertEqual(result.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }

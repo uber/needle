@@ -24,6 +24,7 @@ class BaseVisitor: SyntaxVisitor {
     var propertiesDict: [String: [Property]] = [:]
     var currentEntityNode: EntityNode?
     var currentDependencyProtocol: String?
+    var imports: [String] = []
     
     override func visitPost(_ node: FunctionCallExprSyntax) {
         if let callexpr = node.calledExpression.firstToken?.text,
@@ -51,5 +52,13 @@ class BaseVisitor: SyntaxVisitor {
         }
         
         propertiesDict[currentEntityName, default: []].append(contentsOf: memberProperties)
+    }
+    
+    override func visitPost(_ node: ImportDeclSyntax) {
+        let importStatement = node.importTok.text + " " +
+            node.path
+                .map { $0.name.text }
+                .joined(separator: ".")
+        imports.append(importStatement)
     }
 }

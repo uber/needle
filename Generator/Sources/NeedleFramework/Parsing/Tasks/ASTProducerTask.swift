@@ -39,34 +39,11 @@ class ASTProducerTask: AbstractTask<AST> {
     /// - throws: Any error occurred during execution.
     override func execute() throws -> AST {
         let syntax = try SyntaxParser.parse(sourceUrl)
-        let visitor = Visitor()
-        visitor.walk(syntax)
-        
-        return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax, imports: visitor.imports)
+        return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax)
     }
 
     // MARK: - Private
 
     private let sourceUrl: URL
     private let sourceContent: String
-}
-
-private final class Visitor: SyntaxVisitor {
-    private(set) var imports: [String] = []
-    
-    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
-        return .skipChildren
-    }
-
-    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
-        return .skipChildren
-    }
-    
-    override func visitPost(_ node: ImportDeclSyntax) {
-        let importStatement = node.importTok.text + " " +
-            node.path
-                .map { $0.name.text }
-                .joined(separator: ".")
-        imports.append(importStatement)
-    }
 }

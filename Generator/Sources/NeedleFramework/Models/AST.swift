@@ -24,6 +24,4 @@ struct AST {
     let sourceHash: String
     /// Syntax representation of this source file created by SwiftSyntax
     let sourceFileSyntax: SourceFileSyntax
-    /// The import statements including the `import` keyword.
-    let imports: [String]
 }

@@ -36,18 +36,18 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
     /// - returns: Parsed `DependencyGraphNode`.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> DependencyGraphNode {
-        let (components, dependencies) = try parseSyntax()
-        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports)
+        let (components, dependencies, imports) = try parseSyntax()
+        return DependencyGraphNode(components: components, dependencies: dependencies, imports: imports)
     }
 
     // MARK: - Private
 
     private let ast: AST
     
-    private func parseSyntax() throws -> ([ASTComponent], [Dependency]) {
+    private func parseSyntax() throws -> ([ASTComponent], [Dependency], [String]) {
         let visitor = Visitor(sourceHash: ast.sourceHash)
         visitor.walk(ast.sourceFileSyntax)
-        return (visitor.components, visitor.dependencies)
+        return (visitor.components, visitor.dependencies, visitor.imports)
     }
 }
 

@@ -24,10 +24,8 @@ class DeclarationsParserTaskTests: AbstractParserTests {
     func test_execute_withPrivateProperties_verifyLog() {
         let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let imports = ["import UIKit", "import RIBs", "import Foundation"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl),
-                      imports: imports)
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
 
         let task = DeclarationsParserTask(ast: ast)
         _ = try! task.execute()
@@ -44,13 +42,15 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let sourceContent = try! String(contentsOf: sourceUrl)
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl),
-                      imports: imports)
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
         
         let task = DeclarationsParserTask(ast: ast)
         let node = try! task.execute()
 
         XCTAssertEqual(node.components.count, 3)
+        
+        // Imports
+        XCTAssertEqual(node.imports, imports)
 
         // MyComponent.
         let myComponent = node.components.first { (component: ASTComponent) -> Bool in

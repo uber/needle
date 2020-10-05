@@ -25,11 +25,13 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let sourceContent = try! String(contentsOf: sourceUrl)
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl),
-                      imports: imports)
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
 
         let task = PluginizedDeclarationsParserTask(ast: ast)
         let node = try! task.execute()
+        
+        // Imports
+        XCTAssertEqual(node.imports, imports)
 
         // Regular components.
         XCTAssertEqual(node.components.count, 3)

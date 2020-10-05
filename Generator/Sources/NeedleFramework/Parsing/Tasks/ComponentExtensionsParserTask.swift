@@ -45,7 +45,7 @@ class ComponentExtensionsParserTask: AbstractTask<ComponentExtensionNode> {
         visitor.walk(ast.sourceFileSyntax)
         extensions = visitor.extensions
         
-        return ComponentExtensionNode(extensions: extensions, imports: ast.imports)
+        return ComponentExtensionNode(extensions: extensions, imports: visitor.imports)
     }
 
     // MARK: - Private
