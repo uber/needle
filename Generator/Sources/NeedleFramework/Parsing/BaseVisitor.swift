@@ -48,7 +48,7 @@ class BaseVisitor: SyntaxVisitor {
                     return nil
             }
             if isPrivate || isFileprivate {
-                info("\(currentEntityName) (\(propertyName): \(propertyType)) property is inaccessible on DI graph.")
+                info("\(currentEntityName) (\(propertyName): \(propertyType)) property is private/fileprivate, therefore inaccessible on DI graph.")
                 return nil
             } else {
                 return Property(name: propertyName, type: propertyType)

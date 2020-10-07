@@ -30,10 +30,10 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let task = DeclarationsParserTask(ast: ast)
         _ = try! task.execute()
 
-        let expected = ["PrivateDependency (candy: Candy) property is inaccessible on DI graph.",
-                        "PrivateDependency (cheese: Cheese) property is inaccessible on DI graph.",
-                        "PrivateComponent (stream: Stream) property is inaccessible on DI graph.",
-                        "PrivateComponent (donut: Donut) property is inaccessible on DI graph."]
+        let expected = ["PrivateDependency (candy: Candy) property is private/fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateDependency (cheese: Cheese) property is private/fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateComponent (stream: Stream) property is private/fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateComponent (donut: Donut) property is private/fileprivate, therefore inaccessible on DI graph."]
         XCTAssertEqual(UnitTestLogger.instance.messages, expected)
     }
 
