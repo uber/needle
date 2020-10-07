@@ -63,7 +63,6 @@ private final class Visitor: BaseVisitor {
     private var currentPluginExtensionGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) = ("", "", "")
     
     private let sourceHash: String
-    private var parsingClass: Bool = false
     
     init(sourceHash: String) {
         self.sourceHash = sourceHash
@@ -89,12 +88,12 @@ private final class Visitor: BaseVisitor {
     
     override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
         if node.isPluginizedComponent {
-            parsingClass = true
+            isParsingComponentDeclarationLine = true
             currentEntityNode = node
             currentPluginizedComponentNode = node
             return .visitChildren
         } else if node.isNonCoreComponent {
-            parsingClass = true
+            isParsingComponentDeclarationLine = true
             currentEntityNode = node
             currentNonCoreComponentNode = node
             return .visitChildren
@@ -127,13 +126,8 @@ private final class Visitor: BaseVisitor {
         }
     }
     
-    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
-        parsingClass = false
-        return .visitChildren
-    }
-    
     override func visitPost(_ node: GenericArgumentListSyntax) {
-        guard parsingClass else { return }
+        guard isParsingComponentDeclarationLine else { return }
         if currentEntityNode?.typeName == currentPluginizedComponentNode?.typeName {
             
             for (i, genericArgument) in node.enumerated() {

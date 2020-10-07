@@ -26,6 +26,10 @@ class BaseVisitor: SyntaxVisitor {
     var currentDependencyProtocol: String?
     var imports: [String] = []
     
+    /// Whether we are parsing the line of code which declares a Component.
+    /// We need this flag to determine if the generic argument we parse later is for the Component.
+    var isParsingComponentDeclarationLine: Bool = false
+    
     override func visitPost(_ node: FunctionCallExprSyntax) {
         if let callexpr = node.calledExpression.firstToken?.text,
             let currentEntityName = currentEntityNode?.typeName {
@@ -60,5 +64,10 @@ class BaseVisitor: SyntaxVisitor {
                 .map { $0.name.text }
                 .joined(separator: ".")
         imports.append(importStatement)
+    }
+    
+    override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
+        isParsingComponentDeclarationLine = false
+        return .visitChildren
     }
 }
