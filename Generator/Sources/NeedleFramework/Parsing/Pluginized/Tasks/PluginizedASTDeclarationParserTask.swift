@@ -39,7 +39,7 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
     override func execute() throws -> PluginizedDependencyGraphNode {
         let baseTask = DeclarationsParserTask(ast: ast)
         let baseNode = try baseTask.execute()
-        let visitor = Visitor(sourceHash: ast.sourceHash)
+        let visitor = PluginizedVisitor(sourceHash: ast.sourceHash)
         visitor.walk(ast.sourceFileSyntax)
         let pluginizedComponents = visitor.pluginizedComponents
         let nonCoreComponents = visitor.nonCoreComponents
@@ -53,13 +53,13 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
     private let ast: AST
 }
 
-private final class Visitor: BaseVisitor {
+private final class PluginizedVisitor: BaseVisitor {
     private(set) var pluginExtensions: [PluginExtension] = []
     private(set) var pluginizedComponents: [PluginizedASTComponent] = []
     private(set) var nonCoreComponents: [ASTComponent] = []
     
-    private var currentPluginizedComponentNode: EntityNode?
-    private var currentNonCoreComponentNode: EntityNode?
+    private var currentPluginizedComponentName: String = ""
+    private var currentNonCoreComponentName: String = ""
     private var currentPluginExtensionGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) = ("", "", "")
     
     private let sourceHash: String
@@ -90,12 +90,12 @@ private final class Visitor: BaseVisitor {
         if node.isPluginizedComponent {
             isParsingComponentDeclarationLine = true
             currentEntityNode = node
-            currentPluginizedComponentNode = node
+            currentPluginizedComponentName = node.typeName
             return .visitChildren
         } else if node.isNonCoreComponent {
             isParsingComponentDeclarationLine = true
             currentEntityNode = node
-            currentNonCoreComponentNode = node
+            currentNonCoreComponentName = node.typeName
             return .visitChildren
         } else {
             return .skipChildren
@@ -104,7 +104,7 @@ private final class Visitor: BaseVisitor {
     
     override func visitPost(_ node: ClassDeclSyntax) {
         let componentName = node.typeName
-        if componentName == currentPluginizedComponentNode?.typeName {
+        if componentName == currentPluginizedComponentName {
             let component = ASTComponent(name: componentName,
                                          dependencyProtocolName: currentPluginExtensionGenerics.dependencyProtocolName,
                                          isRoot: node.isRoot,
@@ -115,7 +115,7 @@ private final class Visitor: BaseVisitor {
                                                              pluginExtensionType: currentPluginExtensionGenerics.pluginExtensionName,
                                                              nonCoreComponentType: currentPluginExtensionGenerics.nonCoreComponentName)
             pluginizedComponents.append(pluginizedComponent)
-        } else if componentName == currentNonCoreComponentNode?.typeName {
+        } else if componentName == currentNonCoreComponentName {
             let component = ASTComponent(name: componentName,
                                          dependencyProtocolName: currentDependencyProtocol ?? "",
                                          isRoot: false,
@@ -128,7 +128,7 @@ private final class Visitor: BaseVisitor {
     
     override func visitPost(_ node: GenericArgumentListSyntax) {
         guard isParsingComponentDeclarationLine else { return }
-        if currentEntityNode?.typeName == currentPluginizedComponentNode?.typeName {
+        if currentEntityNode?.typeName == currentPluginizedComponentName {
             
             for (i, genericArgument) in node.enumerated() {
                 let argumentName = genericArgument.argumentType.description.trimmed.removingModulePrefix
@@ -144,7 +144,7 @@ private final class Visitor: BaseVisitor {
                     warning("Found more generic arguments than expected in \(currentEntityNode?.typeName ?? "UNKNOWN")")
                 }
             }
-        } else if currentEntityNode?.typeName == currentNonCoreComponentNode?.typeName {
+        } else if currentEntityNode?.typeName == currentNonCoreComponentName {
             currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
         }
     }
