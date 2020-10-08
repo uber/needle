@@ -14,14 +14,11 @@
 //  limitations under the License.
 //
 
-import Foundation
-import SwiftSyntax
+/// The name of the protocol that all PluginExtension protocols inherit from
+let pluginExtensionProtocolName = "PluginExtension"
 
-/// A data model representing a abstract syntax tree of a Swift source
-/// file including its import statements.
-struct AST {
-    /// The  hash of the source file of this ast
-    let sourceHash: String
-    /// Syntax representation of this source file created by SwiftSyntax
-    let sourceFileSyntax: SourceFileSyntax
-}
+/// The name of the class that all PluginizedComponent classes inherit from
+let pluginizedComponentClassName = "PluginizedComponent"
+
+/// The name of the class that all NonCoreComponent classes inherit from
+let nonCoreComponentClassName = "NonCoreComponent"

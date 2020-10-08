@@ -14,20 +14,24 @@
 //  limitations under the License.
 //
 
-import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
+import SwiftSyntax
 
 class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
 
     func test_execute_withValidAndInvalidComponentsDependencies_verifyPluginizedDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
+        let ast = AST(sourceHash: MD5(string: sourceContent),
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
 
-        let task = PluginizedDeclarationsParserTask(ast: AST(sourceHash: MD5(string: sourceContent), structure: structure, imports: imports))
+        let task = PluginizedDeclarationsParserTask(ast: ast)
         let node = try! task.execute()
+        
+        // Imports
+        XCTAssertEqual(node.imports, imports)
 
         // Regular components.
         XCTAssertEqual(node.components.count, 3)
@@ -58,10 +62,10 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let my2Component = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "My2Component"
         }!
-        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "Wallet", "shared"])
+        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "MyStorage", "Wallet", "shared"])
         XCTAssertEqual(my2Component.name, "My2Component")
         XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
-        XCTAssertEqual(my2Component.properties.count, 2)
+        XCTAssertEqual(my2Component.properties.count, 3)
         let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "book" && property.type == "Book"
         }

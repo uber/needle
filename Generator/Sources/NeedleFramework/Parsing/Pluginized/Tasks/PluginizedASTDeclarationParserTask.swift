@@ -16,8 +16,8 @@
 
 import Concurrency
 import Foundation
-import SourceKittenFramework
 import SourceParsingFramework
+import SwiftSyntax
 
 /// The extended AST parser task that parses all components, dependency
 /// protocols declarations and import statements, including pluginized
@@ -39,97 +39,117 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
     override func execute() throws -> PluginizedDependencyGraphNode {
         let baseTask = DeclarationsParserTask(ast: ast)
         let baseNode = try baseTask.execute()
-        let (pluginizedComponents, nonCoreComponents, pluginExtensions) = try parsePluginizedStructures()
+        let visitor = PluginizedVisitor(sourceHash: ast.sourceHash)
+        visitor.walk(ast.sourceFileSyntax)
+        let pluginizedComponents = visitor.pluginizedComponents
+        let nonCoreComponents = visitor.nonCoreComponents
+        let pluginExtensions = visitor.pluginExtensions
+        
         return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
     }
 
     // MARK: - Private
 
     private let ast: AST
-
-    private func parsePluginizedStructures() throws -> ([PluginizedASTComponent], [ASTComponent], [PluginExtension]) {
-        var pluginizedComponents = [PluginizedASTComponent]()
-        var nonCoreComponents = [ASTComponent]()
-        var pluginExtensions = [PluginExtension]()
-
-        let substructures = ast.structure.substructures
-        for substructure in substructures {
-            if substructure.isPluginizedComponent {
-                let (dependencyProtocolName, pluginExtensionName, nonCoreComponentName) = try substructure.pluginizedGenerics()
-                let properties = try substructure.properties()
-                // Pluginized components are never root.
-                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: false, sourceHash: ast.sourceHash, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
-                pluginizedComponents.append(PluginizedASTComponent(data: component, pluginExtensionType: pluginExtensionName, nonCoreComponentType: nonCoreComponentName))
-            } else if substructure.isNonCoreComponent {
-                let dependencyProtocolName = try substructure.dependencyProtocolName(for: "NonCoreComponent")
-                let properties = try substructure.properties()
-                // Non-core components are never root.
-                let component = ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: false, sourceHash: ast.sourceHash, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames)
-                nonCoreComponents.append(component)
-            } else if substructure.isPluginExtension {
-                let properties = try substructure.properties()
-                pluginExtensions.append(PluginExtension(name: substructure.name, properties: properties))
-            }
-        }
-
-        return (pluginizedComponents, nonCoreComponents, pluginExtensions)
-    }
 }
 
-// MARK: - SourceKit AST Parsing Utilities
-
-private extension Structure {
-
-    var isPluginizedComponent: Bool {
-        let regex = Regex("^(\(needleModuleName).)?PluginizedComponent *<(.+)>")
-        return inheritedTypes.contains { (type: String) -> Bool in
-            regex.firstMatch(in: type) != nil
-        }
+private final class PluginizedVisitor: BaseVisitor {
+    private(set) var pluginExtensions: [PluginExtension] = []
+    private(set) var pluginizedComponents: [PluginizedASTComponent] = []
+    private(set) var nonCoreComponents: [ASTComponent] = []
+    
+    private var currentPluginizedComponentName: String = ""
+    private var currentNonCoreComponentName: String = ""
+    private var currentPluginExtensionGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) = ("", "", "")
+    
+    private let sourceHash: String
+    
+    init(sourceHash: String) {
+        self.sourceHash = sourceHash
     }
-
-    var isNonCoreComponent: Bool {
-        let regex = Regex("^(\(needleModuleName).)?NonCoreComponent *<(.+)>")
-        return inheritedTypes.contains { (type: String) -> Bool in
-            regex.firstMatch(in: type) != nil
-        }
-    }
-
-    var isPluginExtension: Bool {
-        return inheritedTypes.contains("PluginExtension")
-    }
-
-    func pluginizedGenerics() throws -> (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) {
-        let regex = Regex("^(\(needleModuleName).)?PluginizedComponent *<")
-        let genericsString = inheritedTypes
-            .compactMap { (type: String) -> String? in
-                if regex.firstMatch(in: type) != nil {
-                    let prefixIndex = type.firstIndex { (char: Character) -> Bool in
-                        char == "<"
-                    }
-                    if let prefixIndex = prefixIndex {
-                        let startIndex = type.index(after: prefixIndex)
-                        let endIndex = type.firstIndex { (char: Character) -> Bool in
-                            char == ">"
-                        }
-                        if let endIndex = endIndex {
-                            return String(type[startIndex ..< endIndex])
-                        }
-                    }
-                }
-                return nil
-            }
-            .first
-        if let genericsString = genericsString {
-            let generics = genericsString.split(separator: ",")
-            if generics.count < 3 {
-                throw GenericError.withMessage("\(name) as a PluginizedComponent should have 3 generic types. Instead of \(genericsString)")
-            }
-            let dependencyProtocolName = String(generics[0])
-            let pluginExtensionName = String(generics[1])
-            let nonCoreComponentName = String(generics[2])
-            return (dependencyProtocolName, pluginExtensionName, nonCoreComponentName)
+    
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        if node.isPluginExtension {
+            currentEntityNode = node
+            return .visitChildren
         } else {
-            throw GenericError.withMessage("\(name) is being parsed as a PluginizedComponent. Yet its generic types cannot be parsed. \(inheritedTypes)")
+            return .skipChildren
         }
+    }
+    
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        let protocolName = node.typeName
+        if protocolName == currentEntityNode?.typeName {
+            let pluginExtension = PluginExtension(name: protocolName,
+                                                  properties: propertiesDict[protocolName, default: []])
+            pluginExtensions.append(pluginExtension)
+        }
+    }
+    
+    override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
+        if node.isPluginizedComponent {
+            isParsingComponentDeclarationLine = true
+            currentEntityNode = node
+            currentPluginizedComponentName = node.typeName
+            return .visitChildren
+        } else if node.isNonCoreComponent {
+            isParsingComponentDeclarationLine = true
+            currentEntityNode = node
+            currentNonCoreComponentName = node.typeName
+            return .visitChildren
+        } else {
+            return .skipChildren
+        }
+    }
+    
+    override func visitPost(_ node: ClassDeclSyntax) {
+        let componentName = node.typeName
+        if componentName == currentPluginizedComponentName {
+            let component = ASTComponent(name: componentName,
+                                         dependencyProtocolName: currentPluginExtensionGenerics.dependencyProtocolName,
+                                         isRoot: node.isRoot,
+                                         sourceHash: sourceHash,
+                                         properties: propertiesDict[componentName, default: []],
+                                         expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
+            let pluginizedComponent = PluginizedASTComponent(data: component,
+                                                             pluginExtensionType: currentPluginExtensionGenerics.pluginExtensionName,
+                                                             nonCoreComponentType: currentPluginExtensionGenerics.nonCoreComponentName)
+            pluginizedComponents.append(pluginizedComponent)
+        } else if componentName == currentNonCoreComponentName {
+            let component = ASTComponent(name: componentName,
+                                         dependencyProtocolName: currentDependencyProtocol ?? "",
+                                         isRoot: false,
+                                         sourceHash: sourceHash,
+                                         properties: propertiesDict[componentName, default: []],
+                                         expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
+            nonCoreComponents.append(component)
+        }
+    }
+    
+    override func visitPost(_ node: GenericArgumentListSyntax) {
+        guard isParsingComponentDeclarationLine else { return }
+        if currentEntityNode?.typeName == currentPluginizedComponentName {
+            
+            for (i, genericArgument) in node.enumerated() {
+                let argumentName = genericArgument.argumentType.description.trimmed.removingModulePrefix
+                
+                switch i {
+                case 0:
+                    currentPluginExtensionGenerics.dependencyProtocolName = argumentName
+                case 1:
+                    currentPluginExtensionGenerics.pluginExtensionName = argumentName
+                case 2:
+                    currentPluginExtensionGenerics.nonCoreComponentName = argumentName
+                default:
+                    warning("Found more generic arguments than expected in \(currentEntityNode?.typeName ?? "UNKNOWN")")
+                }
+            }
+        } else if currentEntityNode?.typeName == currentNonCoreComponentName {
+            currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
+        }
+    }
+    
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
     }
 }

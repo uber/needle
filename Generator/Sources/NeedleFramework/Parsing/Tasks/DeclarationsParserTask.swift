@@ -16,8 +16,8 @@
 
 import Concurrency
 import Foundation
-import SourceKittenFramework
 import SourceParsingFramework
+import SwiftSyntax
 
 /// A task that parses Swift AST component and dependency declarations
 /// into dependency graph data models.
@@ -36,57 +36,83 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
     /// - returns: Parsed `DependencyGraphNode`.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> DependencyGraphNode {
-        let (components, dependencies) = try parseStructures()
-        return DependencyGraphNode(components: components, dependencies: dependencies, imports: ast.imports)
+        let (components, dependencies, imports) = try parseSyntax()
+        return DependencyGraphNode(components: components, dependencies: dependencies, imports: imports)
     }
 
     // MARK: - Private
 
     private let ast: AST
-
-    private func parseStructures() throws -> ([ASTComponent], [Dependency]) {
-        var components = [ASTComponent]()
-        var dependencies = [Dependency]()
-
-        let substructures = ast.structure.substructures
-        for substructure in substructures {
-            if substructure.isComponent {
-                let isRoot = substructure.isRoot
-                let dependencyProtocolName = isRoot ? emptyDependency.name : try substructure.dependencyProtocolName(for: "Component")
-                let properties = try substructure.properties()
-                components.append(ASTComponent(name: substructure.name, dependencyProtocolName: dependencyProtocolName, isRoot: isRoot, sourceHash: ast.sourceHash, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
-            } else if substructure.isDependencyProtocol {
-                let properties = try substructure.properties()
-                dependencies.append(Dependency(name: substructure.name, properties: properties, sourceHash: ast.sourceHash))
-            }
-        }
-        return (components, dependencies)
+    
+    private func parseSyntax() throws -> ([ASTComponent], [Dependency], [String]) {
+        let visitor = Visitor(sourceHash: ast.sourceHash)
+        visitor.walk(ast.sourceFileSyntax)
+        return (visitor.components, visitor.dependencies, visitor.imports)
     }
 }
 
-// MARK: - SourceKit AST Parsing Utilities
+// MARK: - SyntaxVisitor
 
-private extension Structure {
-
-    /// Check if this structure represents a `Component` subclass.
-    var isComponent: Bool {
-        if isRoot {
-            return true
-        }
-
-        let regex = Regex("^(\(needleModuleName).)?Component *<(.+)>")
-        return inheritedTypes.contains { (type: String) -> Bool in
-            regex.firstMatch(in: type) != nil
+private final class Visitor: BaseVisitor {
+    private(set) var dependencies: [Dependency] = []
+    private(set) var components: [ASTComponent] = []
+    
+    private let sourceHash: String
+    
+    init(sourceHash: String) {
+        self.sourceHash = sourceHash
+    }
+    
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        if node.isDependency {
+            currentEntityNode = node
+            return .visitChildren
+        } else {
+            return .skipChildren
         }
     }
-
-    /// Check if this structure represents a `Dependency` protocol.
-    var isDependencyProtocol: Bool {
-        return inheritedTypes.contains("Dependency") || inheritedTypes.contains("\(needleModuleName).Dependency")
+    
+    override func visitPost(_ node: ProtocolDeclSyntax) {
+        let protocolName = node.typeName
+        if protocolName == currentEntityNode?.typeName {
+            let dependency = Dependency(name: protocolName,
+                                        properties: propertiesDict[protocolName, default: []],
+                                        sourceHash: sourceHash)
+            dependencies.append(dependency)
+        }
     }
-
-    /// Check if this structure represents the root of a dependency graph.
-    var isRoot: Bool {
-        return inheritedTypeNames.contains(bootstrapComponentName) || inheritedTypeNames.contains("\(needleModuleName).\(bootstrapComponentName)")
+    
+    override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
+        if node.isComponent {
+            isParsingComponentDeclarationLine = true
+            currentEntityNode = node
+            return .visitChildren
+        } else {
+            return .skipChildren
+        }
+    }
+    
+    override func visitPost(_ node: ClassDeclSyntax) {
+        let componentName = node.typeName
+        if componentName == currentEntityNode?.typeName {
+            let dependencyProtocolName = node.isRoot ? emptyDependency.name : (currentDependencyProtocol ?? "")
+            
+            let component = ASTComponent(name: componentName,
+                                         dependencyProtocolName: dependencyProtocolName,
+                                         isRoot: node.isRoot,
+                                         sourceHash: sourceHash,
+                                         properties: propertiesDict[componentName, default: []],
+                                         expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
+            components.append(component)
+        }
+    }
+    
+    override func visitPost(_ node: GenericArgumentListSyntax) {
+        guard isParsingComponentDeclarationLine else {return }
+        currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
+    }
+    
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
     }
 }

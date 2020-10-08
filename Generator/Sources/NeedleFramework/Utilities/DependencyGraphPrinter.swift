@@ -49,7 +49,7 @@ class DependencyGraphPrinter {
                                withChildrenDictionary childrenDictionary: [String: [Component]],
                                atLevel level: Int,
                                usingLevelSeparator levelSeparator: String = "\t",
-                               usingComponentSuffix componentSuffix: String = "Component") {
+                               usingComponentSuffix componentSuffix: String = componentClassName) {
         let separator = String(repeating: levelSeparator, count: level)
         
         let name: String = {

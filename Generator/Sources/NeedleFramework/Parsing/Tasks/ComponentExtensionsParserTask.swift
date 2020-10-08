@@ -16,7 +16,8 @@
 
 import Concurrency
 import Foundation
-import SourceKittenFramework
+import SwiftSyntax
+import SourceParsingFramework
 
 /// A task that parses Swift AST component extensions into data models.
 class ComponentExtensionsParserTask: AbstractTask<ComponentExtensionNode> {
@@ -39,15 +40,12 @@ class ComponentExtensionsParserTask: AbstractTask<ComponentExtensionNode> {
     /// - throws: Any error occurred during execution.
     override func execute() throws -> ComponentExtensionNode {
         var extensions = [ASTComponentExtension]()
-
-        let substructures = ast.structure.substructures
-        for substructure in substructures {
-            if substructure.isExtension(of: componentNames) {
-                let properties = try substructure.properties()
-                extensions.append(ASTComponentExtension(name: substructure.name, properties: properties, expressionCallTypeNames: substructure.uniqueExpressionCallNames))
-            }
-        }
-        return ComponentExtensionNode(extensions: extensions, imports: ast.imports)
+        
+        let visitor = Visitor(componentNames: componentNames)
+        visitor.walk(ast.sourceFileSyntax)
+        extensions = visitor.extensions
+        
+        return ComponentExtensionNode(extensions: extensions, imports: visitor.imports)
     }
 
     // MARK: - Private
@@ -56,22 +54,41 @@ class ComponentExtensionsParserTask: AbstractTask<ComponentExtensionNode> {
     private let componentNames: [String]
 }
 
-// MARK: - SourceKit AST Parsing Utilities
-
-private extension Structure {
-
-    /// Check if this structure represents a `Component` extension for
-    /// a component with a name in the given list.
-    ///
-    /// - parameter componentNames: The list of component names to check.
-    /// - returns: `true` if this structure is an extension. `false`
-    /// otherwise.
-    func isExtension(of componentNames: [String]) -> Bool {
-        let type = dictionary["key.kind"] as! String
-        if type == "source.lang.swift.decl.extension" {
-            return componentNames.contains(self.name)
+private final class Visitor: BaseVisitor {
+    private(set) var extensions: [ASTComponentExtension] = []
+    
+    private let componentNames: [String]
+    
+    init(componentNames: [String]) {
+        self.componentNames = componentNames
+    }
+    
+    override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
+    }
+    
+    override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
+        return .skipChildren
+    }
+    
+    override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
+        if node.isExtension(of: componentNames) {
+            currentEntityNode = node
+            return .visitChildren
+        } else {
+            return .skipChildren
         }
-
-        return false
+    }
+    
+    override func visitPost(_ node: ExtensionDeclSyntax) {
+        let extensionName = node.typeName
+        if extensionName == currentEntityNode?.typeName {
+            let componentExtension = ASTComponentExtension(name: extensionName,
+                                                           properties: propertiesDict[extensionName, default: []],
+                                                           expressionCallTypeNames: Array(componentToCallExprs[extensionName, default:[]]).sorted())
+            extensions.append(componentExtension)
+            propertiesDict[extensionName] = []
+            componentToCallExprs[extensionName] = []
+        }
     }
 }
