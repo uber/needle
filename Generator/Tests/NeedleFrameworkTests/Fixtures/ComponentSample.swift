@@ -102,6 +102,12 @@ BExtension,    SomeNonCoreComponent
     }
 }
 
+class SimpleComponentizedBuilder: ComponentizedBuilder<Component, Dependency, (), ()> {
+}
+
+class SimpleComponentizedBuilderTwo: NeedleFoundation.ComponentizedBuilder<Component, Dependency, (), ()> {
+}
+
 protocol My2Dependency: NeedleFoundation.Dependency {
     var backPack: Pack { get }
     var maybeMoney: Dollar? { get }

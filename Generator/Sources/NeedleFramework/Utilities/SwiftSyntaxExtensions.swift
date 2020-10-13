@@ -27,9 +27,13 @@ protocol EntityNode: SyntaxNodeWithModifiers {
 extension EntityNode {
     /// Checks whether the entity inherits from a certain type with `typeName`
     func inherits(from typeName: String) -> Bool {
-        inheritanceClause?.inheritedTypeCollection.first?.typeName.tokens.contains(where: { tokenSyntax -> Bool in
-            tokenSyntax.text == typeName
-        }) == true
+        // Usually, first token is the inherited type name. But sometimes it could also be the module prefix.
+        // In that case, we need to look for the actual type name by skipping two tokens ahead.
+        var inheritanceTypeToken = inheritanceClause?.inheritedTypeCollection.first?.typeName.firstToken
+        if inheritanceTypeToken?.nextToken?.tokenKind == TokenKind.period {
+            inheritanceTypeToken = inheritanceTypeToken?.nextToken?.nextToken
+        }
+        return inheritanceTypeToken?.text == typeName
     }
 }
 
