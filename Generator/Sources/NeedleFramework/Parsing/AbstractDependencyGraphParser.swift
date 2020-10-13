@@ -30,6 +30,7 @@ enum DependencyGraphParserError: Error {
 /// The base implementation of parsing a set of Swift source files for
 /// dependency graph models.
 class AbstractDependencyGraphParser {
+    private var allFileUrls: [URL] = []
 
     /// Execute a set of tasks on the files within the given root URLs
     /// and return their execution handles.
@@ -47,17 +48,30 @@ class AbstractDependencyGraphParser {
     /// - throws: If any error occurred during execution.
     func executeAndCollectTaskHandles<ResultType>(with rootUrls: [URL], sourcesListFormatValue: String?, execution: (URL) -> SequenceExecutionHandle<ResultType>) throws -> [(SequenceExecutionHandle<ResultType>, URL)] {
         var urlHandles = [(SequenceExecutionHandle<ResultType>, URL)]()
-
+        
         // Enumerate all files and execute parsing sequences concurrently.
-        let enumerator = FileEnumerator()
-        for url in rootUrls {
-            try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
-                let taskHandle = execution(fileUrl)
-                urlHandles.append((taskHandle, fileUrl))
-            }
+        try collectFileUrlsIfNeeded(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue)
+
+        for fileUrl in allFileUrls {
+            let taskHandle = execution(fileUrl)
+            urlHandles.append((taskHandle, fileUrl))
         }
 
         return urlHandles
+    }
+    
+    private func collectFileUrlsIfNeeded(with rootUrls: [URL], sourcesListFormatValue: String?) throws {
+        guard allFileUrls.isEmpty else {
+            return
+        }
+        
+        let enumerator = FileEnumerator()
+        
+        for url in rootUrls {
+            try enumerator.enumerate(from: url, withSourcesListFormat: sourcesListFormatValue) { (fileUrl: URL) in
+                allFileUrls.append(fileUrl)
+            }
+        }
     }
 
     // MARK: - Extension Parsing
