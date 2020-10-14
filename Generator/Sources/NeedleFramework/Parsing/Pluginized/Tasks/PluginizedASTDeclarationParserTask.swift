@@ -45,7 +45,7 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
         let nonCoreComponents = visitor.nonCoreComponents
         let pluginExtensions = visitor.pluginExtensions
         
-        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
+        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: visitor.imports)
     }
 
     // MARK: - Private
@@ -68,6 +68,10 @@ private final class PluginizedVisitor: BaseVisitor {
         self.sourceHash = sourceHash
     }
     
+    override func visitPost(_ node: SourceFileSyntax) {
+        print("done")
+    }
+    
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
         if node.isPluginExtension {
             currentEntityNode = node
@@ -87,6 +91,7 @@ private final class PluginizedVisitor: BaseVisitor {
     }
     
     override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
+        print(node.typeName)
         if node.isPluginizedComponent {
             isParsingComponentDeclarationLine = true
             currentEntityNode = node

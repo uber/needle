@@ -47,11 +47,7 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
     private func parseSyntax() throws -> ([ASTComponent], [Dependency], [String]) {
         let visitor = Visitor(sourceHash: ast.sourceHash)
         visitor.walk(ast.sourceFileSyntax)
-        
-        // Only include imports if needle relevant syntax nodes were found in the file
-        let imports = visitor.currentEntityNode != nil ? visitor.imports : []
-        
-        return (visitor.components, visitor.dependencies, imports)
+        return (visitor.components, visitor.dependencies, visitor.imports)
     }
 }
 
