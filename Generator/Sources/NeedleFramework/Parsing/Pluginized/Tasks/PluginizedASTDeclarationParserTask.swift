@@ -68,10 +68,6 @@ private final class PluginizedVisitor: BaseVisitor {
         self.sourceHash = sourceHash
     }
     
-    override func visitPost(_ node: SourceFileSyntax) {
-        print("done")
-    }
-    
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
         if node.isPluginExtension {
             currentEntityNode = node
@@ -91,7 +87,6 @@ private final class PluginizedVisitor: BaseVisitor {
     }
     
     override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
-        print(node.typeName)
         if node.isPluginizedComponent {
             isParsingComponentDeclarationLine = true
             currentEntityNode = node
