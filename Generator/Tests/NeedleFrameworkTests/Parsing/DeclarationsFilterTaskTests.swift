@@ -59,34 +59,6 @@ class DeclarationsFilterTaskTests: AbstractParserTests {
         }
     }
 
-    func test_execute_nonNeedleComponent_verifyFilter() {
-        let fixturesURL = fixtureUrl(for: "NonNeedleComponent.swift")
-        let task = DeclarationsFilterTask(url: fixturesURL, exclusionSuffixes: [], exclusionPaths: [])
-
-        let result = try! task.execute()
-
-        switch result {
-        case .shouldProcess(_, _):
-            XCTFail()
-        case .skip:
-            break
-        }
-    }
-
-    func test_execute_nonInheritanceComponent_verifyFilter() {
-        let fixturesURL = fixtureUrl(for: "NonInheritanceComponent.swift")
-        let task = DeclarationsFilterTask(url: fixturesURL, exclusionSuffixes: [], exclusionPaths: [])
-
-        let result = try! task.execute()
-
-        switch result {
-        case .shouldProcess(_, _):
-            XCTFail()
-        case .skip:
-            break
-        }
-    }
-
     func test_execute_actualComponent_verifyResult() {
         let fileUrl = fixtureUrl(for: "ComponentSample.swift")
         let content = try! String(contentsOf: fileUrl)
