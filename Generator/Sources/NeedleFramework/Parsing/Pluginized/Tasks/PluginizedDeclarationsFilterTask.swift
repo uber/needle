@@ -45,19 +45,7 @@ class PluginizedDeclarationsFilterTask: BaseFileFilterTask {
     /// - returns: A set of filters to use on the given content.
     override func filters(for content: String) -> [FileFilter] {
         return [
-            BasicFilter(content: content)
+            BasicKeywordFilter(content: content)
         ]
-    }
-}
-
-class BasicFilter: FileFilter {
-    private let content: String
-    
-    init(content: String) {
-        self.content = content
-    }
-    
-    func filter() -> Bool {
-        return content.containsAny(in: ["Component", "Dependency", "PluginExtension"])
     }
 }

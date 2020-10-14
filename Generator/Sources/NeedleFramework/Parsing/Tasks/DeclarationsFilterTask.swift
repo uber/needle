@@ -44,7 +44,7 @@ class DeclarationsFilterTask: BaseFileFilterTask {
     /// - returns: A set of filters to use on the given content.
     override func filters(for content: String) -> [FileFilter] {
         return [
-            BasicFilter(content: content)
+            BasicKeywordFilter(content: content)
         ]
     }
 }
