@@ -31,7 +31,9 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let node = try! task.execute()
         
         // Imports
-        XCTAssertEqual(node.imports, imports)
+        for statement in imports {
+            XCTAssertTrue(node.imports.contains(statement))
+        }
 
         // Regular components.
         XCTAssertEqual(node.components.count, 3)
@@ -184,8 +186,5 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
             property.name == "myPluginPoint"
         }
         XCTAssertTrue(containsMyPluginPoint)
-
-        // Imports.
-        XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
     }
 }

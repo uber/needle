@@ -18,7 +18,6 @@ import Concurrency
 import Foundation
 import SourceParsingFramework
 import SwiftSyntax
-import TSCBasic
 
 /// The extended AST parser task that parses all components, dependency
 /// protocols declarations and import statements, including pluginized
@@ -46,7 +45,7 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
         let nonCoreComponents = visitor.nonCoreComponents
         let pluginExtensions = visitor.pluginExtensions
         
-        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports:  Array(OrderedSet(baseNode.imports + visitor.imports)))
+        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports:  baseNode.imports + visitor.imports)
     }
 
     // MARK: - Private
