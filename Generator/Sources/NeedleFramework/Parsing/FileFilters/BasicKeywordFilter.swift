@@ -26,6 +26,8 @@ class BasicKeywordFilter: FileFilter {
     }
     
     func filter() -> Bool {
-        return content.containsAny(in: [componentClassName, dependencyProtocolName, pluginExtensionProtocolName])
+        return content.containsAny(in: needleKeywords)
     }
 }
+
+fileprivate let needleKeywords = [componentClassName, dependencyProtocolName, pluginExtensionProtocolName]
