@@ -14,17 +14,20 @@
 //  limitations under the License.
 //
 
-import Foundation
 import SourceParsingFramework
 
-/// A filter that performs checks if the file content contains any
-/// non-core component class implementations.
-class NonCoreComponentImplFilter: KeywordRegexFilter {
-
-    /// Initializer.
-    ///
-    /// - parameter content: The content to be filtered.
+/// A filter that does a simple String contains check for Needle related protocols/classes
+/// in a file.
+class BasicKeywordFilter: FileFilter {
+    private let content: String
+    
     init(content: String) {
-        super.init(content: content, keyword: nonCoreComponentClassName, regex: Regex.foundationGenericInheritanceRegex(forClass: nonCoreComponentClassName))
+        self.content = content
+    }
+    
+    func filter() -> Bool {
+        return content.containsAny(in: needleKeywords)
     }
 }
+
+fileprivate let needleKeywords = [componentClassName, dependencyProtocolName, pluginExtensionProtocolName]

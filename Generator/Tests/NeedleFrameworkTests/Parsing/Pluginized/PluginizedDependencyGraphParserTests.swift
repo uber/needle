@@ -50,8 +50,8 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         }
 
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 16)
-        XCTAssertEqual(parserCount, 14)
+        XCTAssertEqual(producerCount, 19)
+        XCTAssertEqual(parserCount, 17)
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {

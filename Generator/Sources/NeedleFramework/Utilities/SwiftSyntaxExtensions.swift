@@ -37,6 +37,12 @@ extension EntityNode {
             return inheritedTypeSyntax?.as(MemberTypeIdentifierSyntax.self)?.name.text == typeName
         }
     }
+    
+    var inheritanceHasGenericArgument: Bool {
+        let inheritanceTypeToken = inheritanceClause?.inheritedTypeCollection.first?.typeName
+        return inheritanceTypeToken?.as(SimpleTypeIdentifierSyntax.self)?.genericArgumentClause != nil ||
+            inheritanceTypeToken?.as(MemberTypeIdentifierSyntax.self)?.genericArgumentClause != nil
+    }
 }
 
 protocol SyntaxNodeWithModifiers {
@@ -73,15 +79,15 @@ extension ProtocolDeclSyntax: EntityNode {
 
 extension ClassDeclSyntax: EntityNode {
     var isComponent: Bool {
-        inherits(from: componentClassName) || isRoot
+        (inherits(from: componentClassName) && inheritanceHasGenericArgument) || isRoot
     }
 
     var isPluginizedComponent: Bool {
-        inherits(from: pluginizedComponentClassName)
+        inherits(from: pluginizedComponentClassName) && inheritanceHasGenericArgument
     }
 
     var isNonCoreComponent: Bool {
-        inherits(from: nonCoreComponentClassName)
+        inherits(from: nonCoreComponentClassName) && inheritanceHasGenericArgument
     }
 
     var isRoot: Bool {

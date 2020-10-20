@@ -70,4 +70,10 @@ class BaseVisitor: SyntaxVisitor {
         isParsingComponentDeclarationLine = false
         return .visitChildren
     }
+    
+    override func visitPost(_ node: SourceFileSyntax) {
+        if currentEntityNode == nil {
+            imports = []
+        }
+    }
 }

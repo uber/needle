@@ -45,7 +45,7 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
         let nonCoreComponents = visitor.nonCoreComponents
         let pluginExtensions = visitor.pluginExtensions
         
-        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports: baseNode.imports)
+        return PluginizedDependencyGraphNode(pluginizedComponents: pluginizedComponents, nonCoreComponents: nonCoreComponents, pluginExtensions: pluginExtensions, components: baseNode.components, dependencies: baseNode.dependencies, imports:  baseNode.imports + visitor.imports)
     }
 
     // MARK: - Private
