@@ -59,10 +59,7 @@ class BaseVisitor: SyntaxVisitor {
     }
     
     override func visitPost(_ node: ImportDeclSyntax) {
-        let importStatement = node.importTok.text + " " +
-            node.path
-                .map { $0.name.text }
-                .joined(separator: ".")
+        let importStatement = node.withoutTrivia().description.trimmed
         imports.append(importStatement)
     }
     

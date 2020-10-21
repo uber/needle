@@ -68,7 +68,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
             XCTAssertEqual(components.count, 16)
             XCTAssertEqual(pluginizedComponents.count, 3)
-            XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility"])
+            XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility", "import protocol Audio.Recordable"])
         } catch {
             XCTFail("\(error)")
         }
