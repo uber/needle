@@ -40,7 +40,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let imports = ["import UIKit", "import RIBs", "import Foundation"]
+        let imports = ["import UIKit", "import RIBs", "import Foundation", "import protocol Audio.Recordable"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
                       sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
         
@@ -141,6 +141,6 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         XCTAssertEqual(myRComp.properties, [Property(name: "rootObj", type: "Obj")])
 
         // Imports.
-        XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
+        XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation", "import protocol Audio.Recordable"])
     }
 }

@@ -67,7 +67,7 @@ class DependencyGraphParserTests: AbstractParserTests {
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
             XCTAssertEqual(components.count, 12)
-            XCTAssertEqual(imports, ["import Foundation", "import RIBs", "import RxSwift", "import UIKit", "import Utility"])
+            XCTAssertEqual(imports, ["import Foundation", "import RIBs", "import RxSwift", "import UIKit", "import Utility", "import protocol Audio.Recordable"])
         } catch {
             XCTFail("\(error)")
         }

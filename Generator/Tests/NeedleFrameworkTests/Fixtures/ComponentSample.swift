@@ -1,5 +1,6 @@
 import UIKit
 import RIBs;    import Foundation
+import protocol Audio.Recordable
 
 protocol MyDependency: Dependency {
     var candy: Candy { get }
