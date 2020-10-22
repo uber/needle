@@ -5,6 +5,8 @@ GENERATOR_ARCHIVE_PATH=$(shell cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUI
 GENERATOR_VERSION_FOLDER_PATH=$(GENERATOR_FOLDER)/Sources/needle
 GENERATOR_VERSION_FILE_PATH=$(GENERATOR_VERSION_FOLDER_PATH)/Version.swift
 SWIFT_BUILD_FLAGS=--disable-sandbox -c release
+XCODE_PATH:=$(shell xcode-select -p)
+SWIFT_SYNTAX_DYLIB=lib_InternalSwiftSyntaxParser.dylib
 
 .PHONY: clean build install uninstall
 
@@ -31,6 +33,7 @@ publish:
 	sed -i '' "s/\(s.version.*=.*'\).*\('\)/\1$(NEW_VERSION)\2/" NeedleFoundation.podspec
 	make archive_generator
 	git add $(GENERATOR_FOLDER)/bin/needle
+	git add $(GENERATOR_FOLDER)/bin/$(SWIFT_SYNTAX_DYLIB)
 	git add $(GENERATOR_VERSION_FILE_PATH)
 	git add NeedleFoundation.podspec
 	$(eval NEW_VERSION_TAG := v$(NEW_VERSION))
@@ -44,3 +47,5 @@ publish:
 
 archive_generator: clean build
 	mv $(GENERATOR_ARCHIVE_PATH) $(GENERATOR_FOLDER)/bin/
+	cp $(XCODE_PATH)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/
+	install_name_tool -change @rpath/$(SWIFT_SYNTAX_DYLIB) @executable_path/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/needle
