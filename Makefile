@@ -41,8 +41,7 @@ publish:
 	git push origin master
 	git tag $(NEW_VERSION_TAG)
 	git push origin $(NEW_VERSION_TAG)
-	$(eval NEW_VERSION_SHA := $(shell git rev-parse $(NEW_VERSION_TAG)))
-	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(NEW_VERSION_SHA) needle
+	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(shell git rev-parse HEAD) needle
 	pod trunk push
 
 archive_generator: clean build
