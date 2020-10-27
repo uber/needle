@@ -16,6 +16,7 @@
 
 import Concurrency
 import Foundation
+import TSCBasic
 
 /// The task that serializes a list of pluginized processed dependency
 /// providers into exportable foramt.
@@ -39,10 +40,10 @@ class PluginizedDependencyProviderSerializerTask: AbstractTask<[SerializedProvid
         // Group the providers based on where the properties are coming from
         // This will allow us to extract common code for multiple depndency providers
         // into common base classes
-        var counts = [[PluginizedProcessedProperty]: [PluginizedProcessedDependencyProvider]]()
+        var counts = OrderedDictionary<[PluginizedProcessedProperty], [PluginizedProcessedDependencyProvider]>()
         for provider in providers {
             let properties = provider.processedProperties
-            counts[properties, default: []].append(provider)
+            counts[properties] = (counts[properties] ?? []) + [provider]
         }
         for (baseCount, (_, matchingProviders)) in counts.enumerated() {
             result.append(contentsOf: serialize(matchingProviders, baseCounter: baseCount))
