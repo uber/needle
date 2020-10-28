@@ -24,7 +24,7 @@ uninstall:
 	rm -f "$(BINARY_FOLDER)/needle"
 	rm -f "/usr/local/bin/needle"
 
-publish:
+release:
 	git checkout master
 	$(eval NEW_VERSION := $(filter-out $@, $(MAKECMDGOALS)))
 	@sed 's/__VERSION_NUMBER__/$(NEW_VERSION)/g' $(GENERATOR_VERSION_FOLDER_PATH)/Version.swift.template > $(GENERATOR_VERSION_FILE_PATH)
@@ -41,6 +41,8 @@ publish:
 	git push origin master
 	git tag $(NEW_VERSION_TAG)
 	git push origin $(NEW_VERSION_TAG)
+
+publish:
 	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(shell git rev-parse HEAD) needle
 	pod trunk push
 
