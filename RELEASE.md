@@ -9,7 +9,7 @@
     $ make release 0.13.0
     ```
 
-2. Run `$ make publish` to publish the release to various destinatinos (like CocoaPods and Homebrew).
+2. Run `$ make publish` to publish the release to various destinations (like CocoaPods and Homebrew).
 
 ## Create a new Github release
 After all the steps in the `Makefile` finish successfully, go to the Releases tab and create a new release.
