@@ -44,7 +44,7 @@ release:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(shell git rev-parse HEAD) needle
-	pod trunk push
+	pod trunk push --allow-warnings
 
 archive_generator: clean build
 	mv $(GENERATOR_ARCHIVE_PATH) $(GENERATOR_FOLDER)/bin/
