@@ -43,7 +43,7 @@ release:
 	git push origin $(NEW_VERSION_TAG)
 
 publish:
-	brew update && brew bump-formula-pr --tag=$(NEW_VERSION_TAG) --revision=$(shell git rev-parse HEAD) needle
+	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) needle
 	pod trunk push --allow-warnings
 
 archive_generator: clean build
