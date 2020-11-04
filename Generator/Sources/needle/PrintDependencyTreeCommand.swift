@@ -62,8 +62,7 @@ class PrintDependencyTreeCommand: AbstractCommand {
                 let concurrencyLimit = arguments.get(self.concurrencyLimit) ?? nil
                 let rootComponentName = arguments.get(self.rootComponentName) ?? "RootComponent"
 
-                let sourceKitUtilities = SourceKitUtilitiesImpl(processUtilities: ProcessUtilitiesImpl())
-                let generator = Generator(sourceKitUtilities: sourceKitUtilities)
+                let generator = Generator()
                 do {
                     try generator.printDependencyTree(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit, rootComponentName: rootComponentName)
                 } catch GenericError.withMessage(let message) {
