@@ -16,9 +16,9 @@ clean:
 build:
 	cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUILD_FLAGS)
 
-install: uninstall clean build
+install: uninstall clean build archive_generator
 	install -d "$(BINARY_FOLDER)"
-	install "$(GENERATOR_ARCHIVE_PATH)" "$(BINARY_FOLDER)"
+	install "$(GENERATOR_FOLDER)/bin/needle" "$(GENERATOR_FOLDER)/bin/$(SWIFT_SYNTAX_DYLIB)" "$(BINARY_FOLDER)"
 
 uninstall:
 	rm -f "$(BINARY_FOLDER)/needle"
