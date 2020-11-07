@@ -76,8 +76,7 @@ class GenerateCommand: AbstractCommand {
                 let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
                 let concurrencyLimit = arguments.get(self.concurrencyLimit) ?? nil
 
-                let sourceKitUtilities = SourceKitUtilitiesImpl(processUtilities: ProcessUtilitiesImpl())
-                let generator: Generator = scanPlugins ? PluginizedGenerator(sourceKitUtilities: sourceKitUtilities) : Generator(sourceKitUtilities: sourceKitUtilities)
+                let generator: Generator = scanPlugins ? PluginizedGenerator() : Generator()
                 do {
                     try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
                 } catch GenericError.withMessage(let message) {
