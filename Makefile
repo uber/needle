@@ -1,5 +1,4 @@
 BINARY_FOLDER_PREFIX?=/usr/local
-BINARY_FOLDER=$(BINARY_FOLDER_PREFIX)/bin/
 GENERATOR_FOLDER=Generator
 GENERATOR_ARCHIVE_PATH=$(shell cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/needle
 GENERATOR_VERSION_FOLDER_PATH=$(GENERATOR_FOLDER)/Sources/needle
@@ -16,12 +15,11 @@ clean:
 build:
 	cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUILD_FLAGS)
 
-install: uninstall clean build archive_generator
-	install -d "$(BINARY_FOLDER)"
-	install "$(GENERATOR_FOLDER)/bin/needle" "$(GENERATOR_FOLDER)/bin/$(SWIFT_SYNTAX_DYLIB)" "$(BINARY_FOLDER)"
+install: uninstall archive_generator
+	install_name_tool -change @executable_path/$(SWIFT_SYNTAX_DYLIB) @executable_path/../libexec/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/needle
 
 uninstall:
-	rm -f "$(BINARY_FOLDER)/needle"
+	rm -f "$(BINARY_FOLDER_PREFIX)/bin/needle"
 	rm -f "/usr/local/bin/needle"
 
 release:
@@ -46,7 +44,7 @@ publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) needle
 	pod trunk push --allow-warnings
 
-archive_generator: clean build
+archive_generator: build
 	mv $(GENERATOR_ARCHIVE_PATH) $(GENERATOR_FOLDER)/bin/
 	cp $(XCODE_PATH)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/
 	install_name_tool -change @rpath/$(SWIFT_SYNTAX_DYLIB) @executable_path/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/needle
