@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'NeedleFoundation'
-  s.version          = '0.16.2'
+  s.version          = '0.17.0'
   s.summary          = 'Compile-time safe Swift dependency injection framework with real code.'
   s.description      = 'Needle is a dependency injection (DI) system for Swift. Unlike other DI frameworks, such as Cleanse, Swinject, Needle encourages hierarchical DI structure and utilizes code generation to ensure compile-time safety. This allows us to develop our apps and make changes with confidence. If it compiles, it works. In this aspect, Needle is more similar to Android Dagger.'
 
