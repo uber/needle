@@ -14,4 +14,4 @@
 //  limitations under the License.
 //
 
-let version = "0.16.2"
+let version = "0.16.2.2"
