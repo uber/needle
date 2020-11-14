@@ -18,6 +18,8 @@ import NeedleFoundation
 import RxSwift
 import UIKit
 
+let needleDependenciesHash : String? = nil
+
 // MARK: - Registration
 
 public func registerProviderFactories() {

@@ -1,6 +1,6 @@
 # Sample App Using Needle
 
-The folder "MVC" contains the simple MVC architecture based TicTacToe app. The folder "Pluginized" contains the same TicTacToe app but built with a pluginized DI structure where the dependencies are divided into separate core and non-core trees.
+The folder "MVC-rx" contains the simple MVC architecture based TicTacToe app using the reactive approach (RxSwift) while "MVC-plain" contains its non-reactive implementation. The folder "Pluginized" contains the same TicTacToe app but built with a pluginized DI structure where the dependencies are divided into separate core and non-core trees.
 
 ## Build & Run TicTacToe
 
