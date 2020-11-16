@@ -18,6 +18,9 @@ import NeedleFoundation
 import RxSwift
 import UIKit
 
+// swiftlint:disable unused_declaration
+private let needleDependenciesHash : String? = nil
+
 // MARK: - Registration
 
 public func registerProviderFactories() {
@@ -44,8 +47,7 @@ public func registerProviderFactories() {
 
 // MARK: - Providers
 
-/// ^->RootComponent->LoggedInComponent->GameComponent
-private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
+private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
@@ -54,38 +56,50 @@ private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     }
     private let loggedInComponent: LoggedInComponent
     private let rootComponent: RootComponent
+    init(loggedInComponent: LoggedInComponent, rootComponent: RootComponent) {
+        self.loggedInComponent = loggedInComponent
+        self.rootComponent = rootComponent
+    }
+}
+/// ^->RootComponent->LoggedInComponent->GameComponent
+private class GameDependency1ab5926a977f706d3195Provider: GameDependency1ab5926a977f706d3195BaseProvider {
     init(component: NeedleFoundation.Scope) {
-        loggedInComponent = component.parent as! LoggedInComponent
-        rootComponent = component.parent.parent as! RootComponent
+        super.init(loggedInComponent: component.parent as! LoggedInComponent, rootComponent: component.parent.parent as! RootComponent)
+    }
+}
+private class ScoreSheetDependency97f2595a691a56781aaaBaseProvider: ScoreSheetDependency {
+    var scoreStream: ScoreStream {
+        return loggedInComponent.scoreStream
+    }
+    private let loggedInComponent: LoggedInComponent
+    init(loggedInComponent: LoggedInComponent) {
+        self.loggedInComponent = loggedInComponent
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent
-private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {
-    var scoreStream: ScoreStream {
-        return loggedInComponent.scoreStream
-    }
-    private let loggedInComponent: LoggedInComponent
+private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency97f2595a691a56781aaaBaseProvider {
     init(component: NeedleFoundation.Scope) {
-        loggedInComponent = component.parent.parent as! LoggedInComponent
+        super.init(loggedInComponent: component.parent.parent as! LoggedInComponent)
     }
 }
 /// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
-private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency {
-    var scoreStream: ScoreStream {
-        return loggedInComponent.scoreStream
-    }
-    private let loggedInComponent: LoggedInComponent
+private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency97f2595a691a56781aaaBaseProvider {
     init(component: NeedleFoundation.Scope) {
-        loggedInComponent = component.parent as! LoggedInComponent
+        super.init(loggedInComponent: component.parent as! LoggedInComponent)
     }
 }
-/// ^->RootComponent->LoggedOutComponent
-private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
+private class LoggedOutDependencyacada53ea78d270efa2fBaseProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
     }
     private let rootComponent: RootComponent
+    init(rootComponent: RootComponent) {
+        self.rootComponent = rootComponent
+    }
+}
+/// ^->RootComponent->LoggedOutComponent
+private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependencyacada53ea78d270efa2fBaseProvider {
     init(component: NeedleFoundation.Scope) {
-        rootComponent = component.parent as! RootComponent
+        super.init(rootComponent: component.parent as! RootComponent)
     }
 }
