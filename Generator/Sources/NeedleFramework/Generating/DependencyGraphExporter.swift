@@ -53,6 +53,11 @@ class DependencyGraphExporter {
         let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
         let fileContents = OutputSerializer(providers: providers, imports: imports, headerDocContent: headerDocContent).serialize()
+        let currentFileContents = try? String(contentsOfFile: path, encoding: .utf8)
+        guard currentFileContents != fileContents else {
+            info("Not writing the file as content is unchanged")
+            return
+        }
         try fileContents.write(toFile: path, atomically: true, encoding: .utf8)
     }
 
