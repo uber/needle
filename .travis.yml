@@ -11,19 +11,14 @@ matrix:
         - name: "NeedleGeneratorBinary"
           script: cd Generator && swift build -c release
         - name: "NeedleSampleMVCApp"
-          install: cd Sample/MVC && ../carthage.sh update --platform ios
           script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSampleMVCTests"
-          install: cd Sample/MVC && ../carthage.sh update --platform ios
           script: xcodebuild test -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedApp"
-          install: cd Sample/Pluginized && ../carthage.sh update --platform ios
           script: xcodebuild build -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedScoreSheetTests"
-          install: cd Sample/Pluginized && ../carthage.sh update --platform ios
           script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedTicTacToeCoreTests"
-          install: cd Sample/Pluginized && ../carthage.sh update --platform ios
           script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
 script:
     - fossa
