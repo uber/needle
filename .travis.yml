@@ -11,14 +11,14 @@ matrix:
         - name: "NeedleGeneratorBinary"
           script: cd Generator && swift build -c release
         - name: "NeedleSampleMVCApp"
-          script: xcodebuild build -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+          script: xcodebuild build -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSampleMVCTests"
-          script: xcodebuild test -project ../../Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+          script: xcodebuild test -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedApp"
-          script: xcodebuild build -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+          script: xcodebuild build -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedScoreSheetTests"
-          script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+          script: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleSamplePluginizedTicTacToeCoreTests"
-          script: xcodebuild test -project ../../Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
+          script: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
 script:
     - fossa
