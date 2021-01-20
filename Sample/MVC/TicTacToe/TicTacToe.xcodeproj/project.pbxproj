@@ -81,13 +81,11 @@
 		4139096020A0F2BD00A26FF5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4139096220A0F2BD00A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4139097420A1060300A26FF5 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		4139097620A10A6D00A26FF5 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		4139097820A1111900A26FF5 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
 		4139097A20A113AD00A26FF5 /* PlayersStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersStream.swift; sourceTree = "<group>"; };
 		4139097C20A1174700A26FF5 /* NeedleGenerated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedleGenerated.swift; sourceTree = "<group>"; };
 		4139097F20A21F0500A26FF5 /* LoggedOutComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutComponent.swift; sourceTree = "<group>"; };
 		4139098120A21F8000A26FF5 /* LoggedOutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutViewController.swift; sourceTree = "<group>"; };
-		4139098320A2211F00A26FF5 /* SnapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SnapKit.framework; path = ../Carthage/Build/iOS/SnapKit.framework; sourceTree = "<group>"; };
 		4139098B20A22B3900A26FF5 /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerTests.swift; sourceTree = "<group>"; };
 		4139098F20A22B3900A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,10 +95,8 @@
 		413909A320A4E58A00A26FF5 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		413909A520A4EA7300A26FF5 /* GameComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponent.swift; sourceTree = "<group>"; };
 		4140797421F808230081B8A9 /* NeedleFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NeedleFoundation.xcodeproj; path = ../../../NeedleFoundation.xcodeproj; sourceTree = "<group>"; };
-		D350106225B0C0FA000953FA /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = ../Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
 		F7DA7ADF20A275DA0037FF17 /* ScoreSheetComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetComponent.swift; sourceTree = "<group>"; };
 		F7DA7AE120A275EF0037FF17 /* ScoreSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetViewController.swift; sourceTree = "<group>"; };
-		F7DA7AE320A3BF760037FF17 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = ../Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +127,6 @@
 				4139095520A0F2BC00A26FF5 /* Sources */,
 				4139098C20A22B3900A26FF5 /* Tests */,
 				4139095420A0F2BC00A26FF5 /* Products */,
-				4139096820A0F39B00A26FF5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -159,17 +154,6 @@
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		4139096820A0F39B00A26FF5 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				D350106225B0C0FA000953FA /* RxRelay.framework */,
-				F7DA7AE320A3BF760037FF17 /* RxCocoa.framework */,
-				4139098320A2211F00A26FF5 /* SnapKit.framework */,
-				4139097620A10A6D00A26FF5 /* RxSwift.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		4139097320A105EE00A26FF5 /* Root */ = {
@@ -273,7 +257,6 @@
 				4139098720A22B3900A26FF5 /* Sources */,
 				4139098820A22B3900A26FF5 /* Frameworks */,
 				4139098920A22B3900A26FF5 /* Resources */,
-				413909A120A376D800A26FF5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -383,23 +366,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		413909A120A376D800A26FF5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
-				"$(SRCROOT)/../Carthage/Build/iOS/SnapKit.framework",
-			);
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SnapKit.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
 		41E465B6216D5A3600C9509F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -509,7 +475,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -570,7 +535,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
