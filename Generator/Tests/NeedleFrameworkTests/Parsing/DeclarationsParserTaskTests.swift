@@ -14,39 +14,43 @@
 //  limitations under the License.
 //
 
-import SourceKittenFramework
 import XCTest
 @testable import NeedleFramework
 @testable import SourceParsingFramework
+import SwiftSyntax
 
 class DeclarationsParserTaskTests: AbstractParserTests {
 
     func test_execute_withPrivateProperties_verifyLog() {
         let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
-        let imports = ["import UIKit", "import RIBs", "import Foundation"]
+        let ast = AST(sourceHash: MD5(string: sourceContent),
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
 
-        let task = DeclarationsParserTask(ast: AST(sourceHash: MD5(string: "SomePluginizedCompHash"), structure: structure, imports: imports))
+        let task = DeclarationsParserTask(ast: ast)
         _ = try! task.execute()
 
-        let expected = ["PrivateDependency (candy: Candy) property is fileprivate, therefore inaccessible on DI graph.",
-                        "PrivateDependency (cheese: Cheese) property is fileprivate, therefore inaccessible on DI graph.",
-                        "PrivateComponent (stream: Stream) property is private, therefore inaccessible on DI graph.",
-                        "PrivateComponent (donut: Donut) property is fileprivate, therefore inaccessible on DI graph."]
+        let expected = ["PrivateDependency (candy: Candy) property is private/fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateDependency (cheese: Cheese) property is private/fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateComponent (stream: Stream) property is private/fileprivate, therefore inaccessible on DI graph.",
+                        "PrivateComponent (donut: Donut) property is private/fileprivate, therefore inaccessible on DI graph."]
         XCTAssertEqual(UnitTestLogger.instance.messages, expected)
     }
 
     func test_execute_withValidAndInvalidComponentsDependencies_verifyDependencyGraphNode() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let structure = try! Structure(file: File(contents: sourceContent))
-        let imports = ["import UIKit", "import RIBs", "import Foundation"]
-
-        let task = DeclarationsParserTask(ast: AST(sourceHash: MD5(string: sourceContent), structure: structure, imports: imports))
+        let imports = ["import UIKit", "import RIBs", "import Foundation", "import protocol Audio.Recordable"]
+        let ast = AST(sourceHash: MD5(string: sourceContent),
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
+        
+        let task = DeclarationsParserTask(ast: ast)
         let node = try! task.execute()
 
         XCTAssertEqual(node.components.count, 3)
+        
+        // Imports
+        XCTAssertEqual(node.imports, imports)
 
         // MyComponent.
         let myComponent = node.components.first { (component: ASTComponent) -> Bool in
@@ -78,11 +82,11 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let my2Component = node.components.first { (component: ASTComponent) -> Bool in
             component.name == "My2Component"
         }!
-        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "Wallet", "shared"])
+        XCTAssertEqual(my2Component.expressionCallTypeNames, ["Apple", "Banana", "Book", "MyStorage", "Wallet", "shared"])
         XCTAssertEqual(my2Component.name, "My2Component")
         XCTAssertEqual(my2Component.dependencyProtocolName, "My2Dependency")
         XCTAssertFalse(my2Component.isRoot)
-        XCTAssertEqual(my2Component.properties.count, 2)
+        XCTAssertEqual(my2Component.properties.count, 3)
         let containsBook = my2Component.properties.contains { (property: Property) -> Bool in
             return property.name == "book" && property.type == "Book"
         }
@@ -137,6 +141,6 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         XCTAssertEqual(myRComp.properties, [Property(name: "rootObj", type: "Obj")])
 
         // Imports.
-        XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation"])
+        XCTAssertEqual(node.imports, ["import UIKit", "import RIBs", "import Foundation", "import protocol Audio.Recordable"])
     }
 }

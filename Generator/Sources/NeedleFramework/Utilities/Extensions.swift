@@ -55,3 +55,17 @@ extension Array {
         return Dictionary(uniqueKeysWithValues: self.map(uniqueKeysWithValues))
     }
 }
+
+extension String {
+    var trimmed: String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    var removingModulePrefix: String {
+        if contains(".") {
+            return components(separatedBy: ".").last ?? self
+        } else {
+            return self
+        }
+    }
+}

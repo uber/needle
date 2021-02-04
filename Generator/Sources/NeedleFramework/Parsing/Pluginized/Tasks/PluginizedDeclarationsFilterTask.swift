@@ -45,13 +45,7 @@ class PluginizedDeclarationsFilterTask: BaseFileFilterTask {
     /// - returns: A set of filters to use on the given content.
     override func filters(for content: String) -> [FileFilter] {
         return [
-            RootComponentImplFilter(content: content),
-            ComponentImplFilter(content: content),
-            DependencyProtocolFilter(content: content),
-            ComponentInitFilter(content: content),
-            PluginizedComponentImplFilter(content: content),
-            NonCoreComponentImplFilter(content: content),
-            PluginExtensionProtocolFilter(content: content)
+            BasicKeywordFilter(content: content)
         ]
     }
 }

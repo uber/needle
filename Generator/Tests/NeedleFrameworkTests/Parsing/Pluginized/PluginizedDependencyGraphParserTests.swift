@@ -50,8 +50,8 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         }
 
         XCTAssertEqual(filterCount, files.count)
-        XCTAssertEqual(producerCount, 16)
-        XCTAssertEqual(parserCount, 14)
+        XCTAssertEqual(producerCount, 19)
+        XCTAssertEqual(parserCount, 17)
     }
 
     func test_parse_withTaskCompleteion_verifyResults() {
@@ -68,7 +68,7 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
             XCTAssertEqual(components.count, 16)
             XCTAssertEqual(pluginizedComponents.count, 3)
-            XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility"])
+            XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility", "import protocol Audio.Recordable"])
         } catch {
             XCTFail("\(error)")
         }

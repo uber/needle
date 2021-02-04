@@ -1,5 +1,6 @@
 import UIKit
 import RIBs;    import Foundation
+import protocol Audio.Recordable
 
 protocol MyDependency: Dependency {
     var candy: Candy { get }
@@ -71,6 +72,10 @@ class My2Component: Component<My2Dependency> {
     var maybeWallet: Wallet? {
         return Wallet()
     }
+    
+    var myStore: MyStorage<MyStorageKey> {
+        return MyStorage()
+    }
 
     private var banana: Banana {
         return Banana()
@@ -97,6 +102,12 @@ BExtension,    SomeNonCoreComponent
         return LGOLEDTv()
     }
 }
+
+class SimpleComponentizedBuilder: ComponentizedBuilder<Component, Dependency, (), ()> {}
+
+class SimpleComponentizedBuilderTwo: NeedleFoundation.ComponentizedBuilder<Component, Dependency, (), ()> {}
+
+class NestedNonComponent: NeedleFoundation.Component.NonComponent<Component, Dependency> {}
 
 protocol My2Dependency: NeedleFoundation.Dependency {
     var backPack: Pack { get }

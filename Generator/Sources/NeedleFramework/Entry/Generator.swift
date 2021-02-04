@@ -22,12 +22,7 @@ import SourceParsingFramework
 public class Generator {
 
     /// Initializer.
-    ///
-    /// - parameter sourceKitUtilities: The utilities used to perform
-    /// SourceKit operations.
-    public init(sourceKitUtilities: SourceKitUtilities) {
-        self.sourceKitUtilities = sourceKitUtilities
-    }
+    public init() {}
 
     /// Parse Swift source files by recurively scanning the given directories
     /// or source files included in the given source list files, excluding
@@ -148,8 +143,6 @@ public class Generator {
         case printDIStructure(rootComponentName: String)
     }
 
-    private let sourceKitUtilities: SourceKitUtilities
-
     private func createExecutor(withName name: String, shouldTrackTaskId: Bool, concurrencyLimit: Int?) -> SequenceExecutor {
         #if DEBUG
             return ProcessInfo().environment["SINGLE_THREADED"] != nil ? ImmediateSerialSequenceExecutor() : ConcurrentSequenceExecutor(name: name, qos: .userInteractive, shouldTrackTaskId: shouldTrackTaskId, maxConcurrentTasks: concurrencyLimit)
@@ -191,19 +184,9 @@ public class Generator {
                 break
             } catch DependencyGraphParserError.timeout(let sourcePath, let taskId) {
                 retryParsingCount += 1
-                let message = "Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId). SourceKit daemon process status: \(sourceKitUtilities.isSourceKitRunning)."
+                let message = "Parsing Swift source file at \(sourcePath) timed out when executing task with ID \(taskId)."
                 if retryParsingCount >= retryParsingOnTimeoutLimit {
                     throw GenericError.withMessage(message)
-                } else {
-                    warning(message)
-                    warning("Attempt to retry parsing by killing SourceKitService.")
-                    // Killing the SourceKit process instead of issuing a SourceKit shutdown command, since the SourceKit
-                    // process is likely hung at this point.
-                    let didKill = sourceKitUtilities.killProcess()
-                    if !didKill {
-                        warning("Failed to kill SourceKitService.")
-                    }
-                    sourceKitUtilities.initialize()
                 }
             } catch {
                 throw error
