@@ -12,4 +12,18 @@ Pod::Spec.new do |s|
   s.source_files     = 'Sources/**/*.swift'
   s.ios.deployment_target = '9.0'
   s.swift_version    = '4.2'
+  s.default_subspec = 'All'
+
+  s.subspec 'All' do |sp|
+    sp.dependency 'NeedleFoundation/NeedleFoundation'
+    sp.dependency 'NeedleFoundation/NeedleFoundationTest'
+  end
+
+  s.subspec 'NeedleFoundation' do |sp|
+    sp.source_files = 'Sources/NeedleFoundation/**/*.swift'
+  end
+
+  s.subspec 'NeedleFoundationTest' do |sp|
+    sp.source_files = 'Sources/NeedleFoundationTest/**/*.swift'
+  end
 end
