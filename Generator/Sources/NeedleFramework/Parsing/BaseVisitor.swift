@@ -51,6 +51,18 @@ class BaseVisitor: SyntaxVisitor {
                 info("\(currentEntityName) (\(propertyName): \(propertyType)) property is private/fileprivate, therefore inaccessible on DI graph.")
                 return nil
             } else {
+                // See if this property has a code block associated with it (this skips the protocol memebers)
+                if let block = pattern.children.first(where: { $0.is(CodeBlockSyntax.self) }), let fullBody = block.as(CodeBlockSyntax.self) {
+                    // Make sure that the code block is a one-liner
+                    if let statement = fullBody.statements.first, fullBody.statements.count == 1 {
+                        let trimmed = statement.description.trimmingCharacters(in: .whitespacesAndNewlines)
+                        let lookFor1 = "return dependency.\(propertyName)"
+                        let lookFor2 = "dependency.\(propertyName)"
+                        if trimmed == lookFor1 || trimmed == lookFor2 {
+                            return nil
+                        }
+                    }
+                }
                 return Property(name: propertyName, type: propertyType)
             }
         }
