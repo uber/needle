@@ -115,6 +115,10 @@ class LoggedInComponent: Component {
     var gameComponent: GameComponent {
     	return GameComponent(parent: self)
     }
+
+    func scoreSheetComponent(filter: ScoreFilter? = nil) {
+        return ScoreSheetComponent(parent: self, filter: filter)
+    }
 }
 ```
 Once this tree structure has been declared in code, the needle command-line tool uses it to decide where the dependencies for a particular Scope come from. The algorithm is simple, for each item that this scope requires, we walk up the chain of parents. The **nearest parent** that is able to provide an item (we match both the name and the type of the variable declared in the dependency protocol), is the one we fetch that property from.
