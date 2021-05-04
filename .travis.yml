@@ -7,7 +7,7 @@ matrix:
         - name: "NeedleFoundationTests"
           script: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundation -destination 'platform=iOS Simulator,OS=13.2.2,name=iPhone 11'
         - name: "NeedleFoundationTests Bazel"
-          script: bazelisk test $(bazelisk query "tests(//Tests/...)")
+          script: brew install bazelisk && bazelisk test $(bazelisk query "tests(//Tests/...)")
         - name: "NeedleGeneratorTests"
           script: cd Generator && swift test -Xswiftc -DDEBUG
         - name: "NeedleGeneratorBinary"
