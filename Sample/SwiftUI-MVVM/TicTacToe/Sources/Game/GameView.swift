@@ -23,13 +23,6 @@ struct GameView<ViewModel>: View where ViewModel: GameViewModelProtocol {
                     EmptyView()
                 }
                 GridStack(rows: 3, columns: 3, spacing: 0) { row, col in
-//                    Button(" ") {
-//                        viewModel.placeCurrentPlayerMark(at: row, col: col)
-//                    }
-//                    .frame(maxWidth: .infinity)
-//                    .padding()
-//                    .background(viewModel.boardColors[row][col])
-//                    .border(Color.gray, width: 2)
                     Button(action: {
                         viewModel.placeCurrentPlayerMark(at: row, col: col)
                     }, label: {
