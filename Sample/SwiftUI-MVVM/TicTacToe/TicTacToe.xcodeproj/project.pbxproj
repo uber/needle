@@ -14,7 +14,7 @@
 		4139097B20A113AE00A26FF5 /* PlayersStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097A20A113AD00A26FF5 /* PlayersStream.swift */; };
 		4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097C20A1174700A26FF5 /* NeedleGenerated.swift */; };
 		4139098020A21F0500A26FF5 /* LoggedOutComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139097F20A21F0500A26FF5 /* LoggedOutComponent.swift */; };
-		4139098E20A22B3900A26FF5 /* RootViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */; };
+		4139098E20A22B3900A26FF5 /* RootViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139098D20A22B3900A26FF5 /* RootViewTests.swift */; };
 		4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099820A2483300A26FF5 /* LoggedInComponent.swift */; };
 		4139099B20A2489100A26FF5 /* ScoreStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4139099A20A2489100A26FF5 /* ScoreStream.swift */; };
 		413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413909A520A4EA7300A26FF5 /* GameComponent.swift */; };
@@ -90,7 +90,7 @@
 		4139097C20A1174700A26FF5 /* NeedleGenerated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedleGenerated.swift; sourceTree = "<group>"; };
 		4139097F20A21F0500A26FF5 /* LoggedOutComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutComponent.swift; sourceTree = "<group>"; };
 		4139098B20A22B3900A26FF5 /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerTests.swift; sourceTree = "<group>"; };
+		4139098D20A22B3900A26FF5 /* RootViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewTests.swift; sourceTree = "<group>"; };
 		4139098F20A22B3900A26FF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4139099820A2483300A26FF5 /* LoggedInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInComponent.swift; sourceTree = "<group>"; };
 		4139099A20A2489100A26FF5 /* ScoreStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStream.swift; sourceTree = "<group>"; };
@@ -193,7 +193,7 @@
 		4139098C20A22B3900A26FF5 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				4139098D20A22B3900A26FF5 /* RootViewControllerTests.swift */,
+				4139098D20A22B3900A26FF5 /* RootViewTests.swift */,
 				4139098F20A22B3900A26FF5 /* Info.plist */,
 			);
 			path = Tests;
@@ -428,7 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4139098E20A22B3900A26FF5 /* RootViewControllerTests.swift in Sources */,
+				4139098E20A22B3900A26FF5 /* RootViewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,13 +22,11 @@ struct RootView<ViewModel>: View where ViewModel: RootViewModelProtocol {
     let loggedInBuilder: LoggedInBuilder
 
     var body: some View {
-        NavigationView {
-            switch viewModel.state {
-            case .loggedOut:
-                loggedOutBuilder.loggedOutView
-            case .loggedIn:
-                loggedInBuilder.loggedInView
-            }
+        switch viewModel.state {
+        case .loggedOut:
+            loggedOutBuilder.loggedOutView
+        case .loggedIn:
+            loggedInBuilder.loggedInView
         }
     }
 }
