@@ -15,7 +15,7 @@
 //
 
 import NeedleFoundation
-import UIKit
+import SwiftUI
 
 class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 
@@ -23,8 +23,18 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
         return mutableScoreStream
     }
 
-    var loggedInViewController: UIViewController {
-        return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent)
+    var loggedInViewModel: LoggedInViewModel {
+        LoggedInViewModel(scoreStream: scoreStream)
+    }
+    
+    var loggedInView: AnyView {
+        AnyView(
+            LoggedInView(
+                viewModel: loggedInViewModel,
+                scoreSheetBuilder: scoreSheetComponent,
+                gameBuilder: gameComponent
+            )
+        )
     }
 
     var gameComponent: GameComponent {
@@ -37,14 +47,13 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
-// this allows LoggedInViewController to be initialized lazily.
+// this allows LoggedInView to be initialized lazily.
 protocol LoggedInBuilder {
-    var loggedInViewController: UIViewController { get }
+    var loggedInView: AnyView { get }
 }
 
 // Use extension to show parsing of component extensions.
 extension LoggedInComponent {
-
     var mutableScoreStream: MutableScoreStream {
         return shared { ScoreStreamImpl() }
     }

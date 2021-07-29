@@ -16,13 +16,6 @@ struct LoggedOutView<ViewModel>: View where ViewModel: LoggedOutViewModelProtoco
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             TextField("Player 2", text: $viewModel.player2)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-            NavigationLink(
-                destination: Text("loggedIn"),
-                tag: Screen.loggedIn.rawValue,
-                selection: $viewModel.selection
-            ) {
-                EmptyView()
-            }
             Button("Login") {
                 viewModel.login()
                 hideKeyboard()

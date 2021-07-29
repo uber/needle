@@ -15,16 +15,18 @@
 //
 
 import Foundation
-import RxSwift
+import Combine
 
 struct PlayerScore {
     let name: String
     var score: Int
 }
 
+typealias PlayersScores = (PlayerScore, PlayerScore)
+
 protocol ScoreStream {
-    var gameDidEnd: Observable<()> { get }
-    var scores: Observable<(PlayerScore, PlayerScore)> { get }
+    var gameDidEnd: AnyPublisher<(), Never> { get }
+    var scores: AnyPublisher<PlayersScores, Never> { get }
 }
 
 protocol MutableScoreStream: ScoreStream {
@@ -34,23 +36,22 @@ protocol MutableScoreStream: ScoreStream {
 
 class ScoreStreamImpl: MutableScoreStream {
 
-    private let updateSubject = PublishSubject<()>()
-    private let scoreSubject = ReplaySubject<(PlayerScore, PlayerScore)>.create(bufferSize: 1)
+    private let updateSubject = PassthroughSubject<(), Never>()
+    private let scoreSubject = ReplaySubject<PlayersScores, Never>(1)
 
     private var player1Score: PlayerScore?
     private var player2Score: PlayerScore?
 
-    var scores: Observable<(PlayerScore, PlayerScore)> {
-        return scoreSubject
-            .asObservable()
+    var scores: AnyPublisher<PlayersScores, Never> {
+        return scoreSubject.eraseToAnyPublisher()
     }
 
-    var gameDidEnd: Observable<()> {
-        return updateSubject.asObservable()
+    var gameDidEnd: AnyPublisher<(), Never> {
+        return updateSubject.eraseToAnyPublisher()
     }
 
     func updateDraw() {
-        updateSubject.onNext(())
+        updateSubject.send(())
     }
 
     func updateScore(withWinner winner: String, loser: String) {
@@ -67,7 +68,7 @@ class ScoreStreamImpl: MutableScoreStream {
             player2Score = PlayerScore(name: loser, score: 0)
         }
 
-        scoreSubject.onNext((player1Score!, player2Score!))
-        updateSubject.onNext(())
+        scoreSubject.send((player1Score!, player2Score!))
+        updateSubject.send(())
     }
 }
