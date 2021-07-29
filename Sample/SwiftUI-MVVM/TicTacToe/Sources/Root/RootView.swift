@@ -27,7 +27,7 @@ struct RootView<ViewModel>: View where ViewModel: RootViewModelProtocol {
             case .loggedOut:
                 loggedOutBuilder.loggedOutView
             case .loggedIn:
-                Text("TODO loggedIn")
+                loggedInBuilder.loggedInView
             }
         }
     }

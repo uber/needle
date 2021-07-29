@@ -15,8 +15,7 @@
 //
 
 import NeedleFoundation
-import RxSwift
-import UIKit
+import SwiftUI
 
 protocol ScoreSheetDependency: Dependency {
     var scoreStream: ScoreStream { get }
@@ -24,12 +23,22 @@ protocol ScoreSheetDependency: Dependency {
 
 class ScoreSheetComponent: Component<ScoreSheetDependency>, ScoreSheetBuilder {
 
-    var scoreSheetViewController: UIViewController {
-        return ScoreSheetViewController(scoreStream: dependency.scoreStream)
+    var scoreSheetViewModel: ScoreSheetViewModel {
+        ScoreSheetViewModel(
+            scoreStream: dependency.scoreStream
+        )
+    }
+    
+    var scoreSheetView: AnyView {
+        return AnyView(
+            ScoreSheetView(
+                viewModel: scoreSheetViewModel
+            )
+        )
     }
 }
 
 // Use a builder protocol to allow mocking for unit tests
 protocol ScoreSheetBuilder {
-    var scoreSheetViewController: UIViewController { get }
+    var scoreSheetView: AnyView { get }
 }

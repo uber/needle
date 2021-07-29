@@ -15,7 +15,7 @@
 //
 
 import NeedleFoundation
-import UIKit
+import SwiftUI
 
 protocol GameDependency: Dependency {
     var mutableScoreStream: MutableScoreStream { get }
@@ -23,24 +23,35 @@ protocol GameDependency: Dependency {
 }
 
 class GameComponent: Component<GameDependency>, GameBuilder {
-
-    var gameViewController: UIViewController {
-//        return GameViewController(mutableScoreStream: dependency.mutableScoreStream, playersStream: dependency.playersStream, scoreSheetBuilder: scoreSheetBuilder)
-        return UIViewController()
+    
+    var gameViewModel: GameViewModel {
+        GameViewModel(
+            mutableScoreStream: dependency.mutableScoreStream,
+            playersStream: dependency.playersStream
+        )
+    }
+    
+    var gameView: AnyView {
+        AnyView(
+            GameView(
+                viewModel: gameViewModel,
+                scoreSheetBuilder: scoreSheetBuilder
+            )
+        )
     }
 
     var scoreSheetBuilder: ScoreSheetBuilder {
-        return ScoreSheetComponent(parent: self)
+        ScoreSheetComponent(parent: self)
     }
 
     // This should not be used as the provider for GameDependency.
     var mutableScoreStream: MutableScoreStream {
-        return ScoreStreamImpl()
+        ScoreStreamImpl()
     }
 }
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
-// this allows GameViewController to be initialized lazily.
+// this allows GameView to be initialized lazily.
 protocol GameBuilder {
-    var gameViewController: UIViewController { get }
+    var gameView: AnyView { get }
 }

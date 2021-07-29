@@ -15,9 +15,7 @@
 //
 
 import NeedleFoundation
-import RxSwift
 import SwiftUI
-import UIKit
 
 // swiftlint:disable unused_declaration
 private let needleDependenciesHash : String? = nil
