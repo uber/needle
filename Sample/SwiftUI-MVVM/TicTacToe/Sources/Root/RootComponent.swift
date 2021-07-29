@@ -32,11 +32,13 @@ class RootComponent: BootstrapComponent {
     }
     
     var rootView: some View {
-        RootView(
-            viewModel: rootViewModel,
-            loggedOutBuilder: loggedOutComponent,
-            loggedInBuilder: loggedInComponent
-        )
+        NavigationView {
+            RootView(
+                viewModel: rootViewModel,
+                loggedOutBuilder: loggedOutComponent,
+                loggedInBuilder: loggedInComponent
+            )
+        }
     }
 
     var loggedOutComponent: LoggedOutComponent {
