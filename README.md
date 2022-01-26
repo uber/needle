@@ -96,6 +96,10 @@ Regardless of how the `NeedleFoundation` framework is integrated into your proje
 brew install needle
 ```
 
+#### Build from source
+
+As Swift and Xcode releases progress, the repository may not contain the toolchain veresion you are using. In this case, you can build the generator binary from source. Please see [Generator README](https://github.com/uber/needle/blob/master/GENERATOR.md) for details.
+
 ## [Why use dependency injection?](./WHY_DI.md)
 
 The linked document uses a somewhat real example to explain what the dependency injection pattern is, and its benefits.

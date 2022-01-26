@@ -51,6 +51,10 @@ brew install needle
 ```
 Once installed the generator binary can be executed directly as `$ needle version`.
 
+### Build from source
+
+As Swift and Xcode releases progress, the repository may not contain the toolchain veresion you are using. In this case, you can build the generator binary from source. Please see [Generator README](https://github.com/uber/needle/blob/master/GENERATOR.md) for details.
+
 ## Xcode integration
 
 Even though Needle's generator can be invoked from the commandline, it is most convenient when it's directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.

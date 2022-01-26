@@ -13,7 +13,7 @@ $ swift package update
 You can then build from the command-line:
 
 ```
-$ swift build
+$ swift build -c release
 ```
 
 Or create an Xcode project and build using the IDE:
