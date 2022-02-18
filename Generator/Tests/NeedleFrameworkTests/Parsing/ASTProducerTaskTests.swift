@@ -16,7 +16,7 @@
 
 import XCTest
 @testable import NeedleFramework
-import SwiftSyntax
+import SwiftSyntaxParser
 
 class ASTProducerTaskTests: AbstractParserTests {
 
