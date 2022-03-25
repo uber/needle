@@ -46,5 +46,5 @@ publish:
 
 archive_generator: build
 	mv $(GENERATOR_ARCHIVE_PATH) $(GENERATOR_FOLDER)/bin/
-	cp $(XCODE_PATH)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/
+	cp "$(XCODE_PATH)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/$(SWIFT_SYNTAX_DYLIB)" $(GENERATOR_FOLDER)/bin/
 	install_name_tool -change @rpath/$(SWIFT_SYNTAX_DYLIB) @executable_path/$(SWIFT_SYNTAX_DYLIB) $(GENERATOR_FOLDER)/bin/needle
