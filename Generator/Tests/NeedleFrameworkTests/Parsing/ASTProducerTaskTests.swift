@@ -16,7 +16,11 @@
 
 import XCTest
 @testable import NeedleFramework
+#if swift(>=5.6)
+import SwiftSyntaxParser
+#else
 import SwiftSyntax
+#endif
 
 class ASTProducerTaskTests: AbstractParserTests {
 
