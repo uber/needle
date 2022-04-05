@@ -56,14 +56,14 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
 
     private func serialize(_ providers: [ProcessedDependencyProvider]) -> [SerializedProvider] {
         var result = [SerializedProvider]()
-        let (baseClass, content) = serializedBase(for: providers.first!)
+        let (classNameSerializer, content) = serializedClass(for: providers.first!)
         if providers.first?.isEmptyDependency == false {
             result.append(SerializedProvider(content: content, registration: "", attributes: [:]))
         }
         for provider in providers {
             let paramsSerializer = DependencyProviderParamsSerializer(provider: provider)
-            let funcNameSerializer = DependencyProviderFuncNameSerializer(classNameSerializer: baseClass, paramsSerializer: paramsSerializer)
-            let content = serializedContent(for: provider, classNameSerializer: baseClass, paramsSerializer: paramsSerializer, funcNameSerializer: funcNameSerializer)
+            let funcNameSerializer = DependencyProviderFuncNameSerializer(classNameSerializer: classNameSerializer, paramsSerializer: paramsSerializer)
+            let content = serializedContent(for: provider, classNameSerializer: classNameSerializer, paramsSerializer: paramsSerializer, funcNameSerializer: funcNameSerializer)
             let registration = DependencyProviderRegistrationSerializer(provider: provider, factoryFuncNameSerializer: funcNameSerializer).serialize()
             let attributes = calculateAttributes(for: provider, funcNameSerializer: funcNameSerializer)
             result.append(SerializedProvider(content: content, registration: registration, attributes: attributes))
@@ -78,7 +78,7 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
         return DependencyProviderFuncSerializer(provider: provider, funcNameSerializer: funcNameSerializer, classNameSerializer: classNameSerializer, paramsSerializer: paramsSerializer).serialize()
     }
 
-    private func serializedBase(for provider: ProcessedDependencyProvider) -> (Serializer, String) {
+    private func serializedClass(for provider: ProcessedDependencyProvider) -> (Serializer, String) {
         let classNameSerializer = DependencyProviderClassNameSerializer(provider: provider)
         let propertiesSerializer = PropertiesSerializer(processedProperties: provider.processedProperties)
         let sourceComponentsSerializer = SourceComponentsSerializer(componentTypes: provider.levelMap.keys.sorted())
