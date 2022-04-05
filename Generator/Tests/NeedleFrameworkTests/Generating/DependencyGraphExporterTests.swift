@@ -50,38 +50,38 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
         XCTAssertTrue(generated.contains("import UIKit"))
         XCTAssertTrue(generated.contains("// MARK: - Registration"))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent\") { component in
-        return GameDependency1ab5926a977f706d3195Provider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent\", factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\") { component in
-        return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\", factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->ScoreSheetComponent\") { component in
-        return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->ScoreSheetComponent\", factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3)
 """))
         XCTAssertTrue(generated.contains("""
-__DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedOutComponent\") { component in
-        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedOutComponent\", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent\") { component in
-        return EmptyDependencyProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent\", factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent\") { component in
-        return EmptyDependencyProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent\", factoryEmptyDependencyProvider)
 """))
+        XCTAssertTrue(generated.contains("// MARK: - Traversal Helpers"))
+        XCTAssertTrue(generated.contains("""
+private func parent1(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent
+}
+"""))
+        XCTAssertTrue(generated.contains("""
+private func parent2(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent.parent
+}
+"""))
+        XCTAssertFalse(generated.contains("private func parent3(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {"))
         XCTAssertTrue(generated.contains("// MARK: - Providers"))
         XCTAssertTrue(generated.contains("""
-private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
+private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
@@ -92,26 +92,34 @@ private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
     private let rootComponent: RootComponent
 """))
         XCTAssertTrue(generated.contains("""
-private class ScoreSheetDependency97f2595a691a56781aaaBaseProvider: ScoreSheetDependency {
+/// ^->RootComponent->LoggedInComponent->GameComponent
+private func factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return GameDependency1ab5926a977f706d3195Provider(loggedInComponent: parent1(component) as! LoggedInComponent, rootComponent: parent2(component) as! RootComponent)
+}
+"""))
+        XCTAssertTrue(generated.contains("""
+private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
     private let loggedInComponent: LoggedInComponent
 """))
         XCTAssertTrue(generated.contains("""
+/// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent
+private func factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return ScoreSheetDependency97f2595a691a56781aaaProvider(loggedInComponent: parent2(component) as! LoggedInComponent)
+}
+"""))
+        XCTAssertTrue(generated.contains("""
 /// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
-private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency97f2595a691a56781aaaBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInComponent: component.parent as! LoggedInComponent)
-    }
+private func factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return ScoreSheetDependency97f2595a691a56781aaaProvider(loggedInComponent: parent1(component) as! LoggedInComponent)
 }
 """))
         XCTAssertTrue(generated.contains("""
 /// ^->RootComponent->LoggedOutComponent
-private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependencyacada53ea78d270efa2fBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(rootComponent: component.parent as! RootComponent)
-    }
+private func factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return LoggedOutDependencyacada53ea78d270efa2fProvider(rootComponent: parent1(component) as! RootComponent)
 }
 """))
     }

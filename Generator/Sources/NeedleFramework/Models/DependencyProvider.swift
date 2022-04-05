@@ -60,4 +60,6 @@ struct SerializedProvider {
     let content: String
     /// The dependency provider registration code.
     let registration: String
+    /// Data about the content
+    let attributes: [String: String]
 }

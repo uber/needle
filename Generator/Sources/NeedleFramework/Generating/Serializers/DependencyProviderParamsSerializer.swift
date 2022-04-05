@@ -16,39 +16,27 @@
 
 import Foundation
 
-/// A serializer that produces the initializer body code for the dependency
+/// A serializer that produces the params to pass to the dependency
 /// provider.
-class DependencyProviderBaseInitSerializer: Serializer {
+final class DependencyProviderParamsSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter provider: The provider to generate initializer body
-    /// source code for.
+    /// - parameter provider: The provider to generate params source code for.
     init(provider: ProcessedDependencyProvider) {
         self.provider = provider
     }
 
-    /// Serialize the data model and produce the initializer body code.
+    /// Serialize the data model and produce the params code.
     ///
-    /// - returns: The initializer body source code.
+    /// - returns: The params source code.
     func serialize() -> String {
-        let arguments = provider.levelMap
+        return provider.levelMap
             .sorted(by: { $0.key < $1.key })
             .map { (componentType: String, level: Int) in
-                return "\(componentType.lowercasedFirstChar()): \(componentType)"
+                return "\(componentType.lowercasedFirstChar()): parent\(level)(component) as! \(componentType)"
         }
         .joined(separator: ", ")
-        let body = provider.levelMap
-            .sorted(by: { $0.key < $1.key })
-            .map { (componentType: String, level: Int) in
-            return "        self.\(componentType.lowercasedFirstChar()) = \(componentType.lowercasedFirstChar())"
-        }
-        .joined(separator: "\n")
-        return """
-    init(\(arguments)) {
-\(body)
-    }
-"""
     }
 
     // MARK: - Private

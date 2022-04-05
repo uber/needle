@@ -18,14 +18,14 @@ import Foundation
 
 /// A serializer that produces the source code for the dependency
 /// provider. It's mostly empty as the core logic lives in the
-/// superclass
-class DependencyProviderSerializer: Serializer {
+/// class.
+class DependencyProviderFuncSerializer: Serializer {
 
-    init(provider: ProcessedDependencyProvider, classNameSerializer: Serializer, baseClassSerializer: Serializer, initBodySerializer: Serializer) {
-        self.classNameSerializer = classNameSerializer
-        self.baseClassSerializer = baseClassSerializer
-        self.initBodySerializer = initBodySerializer
+    init(provider: ProcessedDependencyProvider, funcNameSerializer: Serializer, classNameSerializer: Serializer, paramsSerializer: Serializer) {
         self.provider = provider
+        self.funcNameSerializer = funcNameSerializer
+        self.classNameSerializer = classNameSerializer
+        self.paramsSerializer = paramsSerializer
     }
 
     /// Serialize the data model and produce the entire dependency provider
@@ -35,10 +35,8 @@ class DependencyProviderSerializer: Serializer {
     func serialize() -> String {
         return """
 /// \(provider.unprocessed.pathString)
-private class \(classNameSerializer.serialize()): \(baseClassSerializer.serialize()) {
-    init(component: NeedleFoundation.Scope) {
-        super.init(\(initBodySerializer.serialize()))
-    }
+private func \(funcNameSerializer.serialize())(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return \(classNameSerializer.serialize())(\(paramsSerializer.serialize()))
 }\n
 """
     }
@@ -46,7 +44,7 @@ private class \(classNameSerializer.serialize()): \(baseClassSerializer.serializ
     // MARK: - Private
 
     private let provider: ProcessedDependencyProvider
+    private let funcNameSerializer: Serializer
     private let classNameSerializer: Serializer
-    private let baseClassSerializer: Serializer
-    private let initBodySerializer: Serializer
+    private let paramsSerializer: Serializer
 }

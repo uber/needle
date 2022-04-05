@@ -16,31 +16,35 @@
 
 import Foundation
 
-/// A serializer that produces the class name for the dependency provider.
-class DependencyProviderClassNameSerializer: Serializer {
+/// A serializer that produces the func name for the dependency provider.
+class DependencyProviderFuncNameSerializer: Serializer {
 
     /// Initializer.
     ///
-    /// - parameter provider: The provider to generate class name for.
-    init(provider: ProcessedDependencyProvider) {
-        self.provider = provider
+    /// - parameter classNameSerializer: The serializer for the class name.
+    /// - parameter paramsSerializer: The serializer for the parameters.
+    init(classNameSerializer: Serializer, paramsSerializer: Serializer) {
+        self.classNameSerializer = classNameSerializer
+        self.paramsSerializer = paramsSerializer
     }
 
-    /// Serialize the data model and produce the class name code.
+    /// Serialize the data model and produce the func name code.
     ///
-    /// - returns: The class name code.
+    /// - returns: The func name code.
     func serialize() -> String {
-        let pathId = String(provider.unprocessed.pathString.shortSHA256Value)
-        return "\(provider.unprocessed.dependency.name)\(pathId)Provider"
+        let classId = String(classNameSerializer.serialize().shortSHA256Value)
+        let paramsId = String(paramsSerializer.serialize().shortSHA256Value)
+        return "factory\(classId)\(paramsId)"
     }
 
     // MARK: - Private
 
-    private let provider: ProcessedDependencyProvider
+    private let classNameSerializer: Serializer
+    private let paramsSerializer: Serializer
 }
 
 /// A serializer that produces the class name for the dependency provider base class.
-final class DependencyProviderBaseClassNameSerializer: Serializer {
+final class DependencyProviderClassNameSerializer: Serializer {
 
     /// Initializer.
     ///
@@ -55,7 +59,7 @@ final class DependencyProviderBaseClassNameSerializer: Serializer {
     /// - returns: The class name code.
     func serialize() -> String {
         let pathId = String(provider.unprocessed.pathString.shortSHA256Value)
-        return "\(provider.unprocessed.dependency.name)\(pathId)BaseProvider"
+        return "\(provider.unprocessed.dependency.name)\(pathId)Provider"
     }
 
     // MARK: - Private

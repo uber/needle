@@ -23,24 +23,25 @@ class DependencyProviderRegistrationSerializer: Serializer {
     /// Initializer.
     ///
     /// - parameter provider: The provider to generate registration code
+    /// - parameter factoryFuncNameSerializer: The serializer to generate the factory func name
     /// for.
-    init(provider: ProcessedDependencyProvider) {
+    init(provider: ProcessedDependencyProvider, factoryFuncNameSerializer: Serializer) {
         self.provider = provider
+        self.factoryFuncNameSerializer = factoryFuncNameSerializer
     }
 
     /// Serialize the data model and produce the registration source code.
     ///
     /// - returns: The registration source code.
     func serialize() -> String {
-        let providerName = provider.isEmptyDependency ? "EmptyDependencyProvider" : DependencyProviderClassNameSerializer(provider: provider).serialize()
+        let factoryName = provider.isEmptyDependency ? "factoryEmptyDependencyProvider" : factoryFuncNameSerializer.serialize()
         return """
-        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "\(provider.unprocessed.pathString)") { component in
-            return \(providerName)(component: component)
-        }\n
+        registerProviderFactory("\(provider.unprocessed.pathString)", \(factoryName))\n
         """
     }
 
     // MARK: - Private
 
     private let provider: ProcessedDependencyProvider
+    private let factoryFuncNameSerializer: Serializer
 }

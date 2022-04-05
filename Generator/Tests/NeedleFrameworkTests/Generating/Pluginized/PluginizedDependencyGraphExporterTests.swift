@@ -52,44 +52,28 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
         XCTAssertTrue(generated.contains("private let needleDependenciesHash : String? = \"f7e65514498ad4f99ae8eb589dd36bbc\""))
         XCTAssertTrue(generated.contains("// MARK: - Registration"))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedOutComponent\") { component in
-        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedOutComponent\", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent\") { component in
-        return EmptyDependencyProvider(component: component)
-    }
+    registerProviderFactory("^->RootComponent", factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent\") { component in
-        return ScoreSheetDependencyea879b8e06763171478bProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent\", factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent\") { component in
-        return ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent\", factory3306c50e89e2421d0b0c65d055996113f3c13de1)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent\") { component in
-        return EmptyDependencyProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent\", factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent\") { component in
-        return EmptyDependencyProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent\", factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent->GameComponent\") { component in
-        return GameDependency1ab5926a977f706d3195Provider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent\", factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
 """))
         XCTAssertTrue(generated.contains("""
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: \"^->RootComponent->LoggedInComponent\") { component in
-        return EmptyDependencyProvider(component: component)
-    }
+    registerProviderFactory(\"^->RootComponent->LoggedInComponent\", factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
     __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: \"GameComponent\") { component in
@@ -101,9 +85,27 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
         return LoggedInPluginExtensionProvider(component: component)
     }
 """))
+        XCTAssertTrue(generated.contains("// MARK: - Traversal Helpers"))
+        XCTAssertTrue(generated.contains("""
+private func parent1(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent
+}
+"""))
+        XCTAssertTrue(generated.contains("""
+private func parent2(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent.parent
+}
+"""))
+        XCTAssertTrue(generated.contains("""
+private func parent3(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent.parent.parent
+}
+"""))
+        XCTAssertFalse(generated.contains("private func parent4(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {"))
+        XCTAssertTrue(generated.contains("// MARK: - Traversal Helpers"))
         XCTAssertTrue(generated.contains("// MARK: - Providers"))
         XCTAssertTrue(generated.contains("""
-private class LoggedOutDependencyacada53ea78d270efa2fBaseProvider: LoggedOutDependency {
+private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
     }
@@ -113,14 +115,12 @@ private class LoggedOutDependencyacada53ea78d270efa2fBaseProvider: LoggedOutDepe
     }
 }
 /// ^->RootComponent->LoggedOutComponent
-private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependencyacada53ea78d270efa2fBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(rootComponent: component.parent as! RootComponent)
-    }
+private func factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return LoggedOutDependencyacada53ea78d270efa2fProvider(rootComponent: parent1(component) as! RootComponent)
 }
 """))
         XCTAssertTrue(generated.contains("""
-private class ScoreSheetDependencyea879b8e06763171478bBaseProvider: ScoreSheetDependency {
+private class ScoreSheetDependencyea879b8e06763171478bProvider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return (loggedInComponent.nonCoreComponent as! LoggedInNonCoreComponent).scoreStream
     }
@@ -130,14 +130,12 @@ private class ScoreSheetDependencyea879b8e06763171478bBaseProvider: ScoreSheetDe
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent
-private class ScoreSheetDependencyea879b8e06763171478bProvider: ScoreSheetDependencyea879b8e06763171478bBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInComponent: component.parent.parent.parent as! LoggedInComponent)
-    }
+private func factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return ScoreSheetDependencyea879b8e06763171478bProvider(loggedInComponent: parent3(component) as! LoggedInComponent)
 }
 """))
         XCTAssertTrue(generated.contains("""
-private class ScoreSheetDependency6fb80fa6e1ee31d9ba11BaseProvider: ScoreSheetDependency {
+private class ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInNonCoreComponent.scoreStream
     }
@@ -147,14 +145,12 @@ private class ScoreSheetDependency6fb80fa6e1ee31d9ba11BaseProvider: ScoreSheetDe
     }
 }
 /// ^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent
-private class ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider: ScoreSheetDependency6fb80fa6e1ee31d9ba11BaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInNonCoreComponent: component.parent as! LoggedInNonCoreComponent)
-    }
+private func factory3306c50e89e2421d0b0c65d055996113f3c13de1(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider(loggedInNonCoreComponent: parent1(component) as! LoggedInNonCoreComponent)
 }
 """))
         XCTAssertTrue(generated.contains("""
-private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
+private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.pluginExtension.mutableScoreStream
     }
@@ -169,10 +165,8 @@ private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent
-private class GameDependency1ab5926a977f706d3195Provider: GameDependency1ab5926a977f706d3195BaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInComponent: component.parent as! LoggedInComponent, rootComponent: component.parent.parent as! RootComponent)
-    }
+private func factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return GameDependency1ab5926a977f706d3195Provider(loggedInComponent: parent1(component) as! LoggedInComponent, rootComponent: parent2(component) as! RootComponent)
 }
 """))
         XCTAssertTrue(generated.contains("""
