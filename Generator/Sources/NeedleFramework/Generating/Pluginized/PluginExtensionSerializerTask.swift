@@ -36,7 +36,7 @@ class PluginExtensionSerializerTask : AbstractTask<SerializedProvider> {
     override func execute() -> SerializedProvider {
         let content = PluginExtensionContentSerializer(component: component).serialize()
         let registration = PluginExtensionRegistrationSerializer(component: component).serialize()
-        return SerializedProvider(content: content, registration: registration, attributes: [:])
+        return SerializedProvider(content: content, registration: registration, attributes: ProviderAttributes())
     }
 
     // MARK: - Private

@@ -46,12 +46,12 @@ class OutputSerializer: Serializer {
 
         let providersSection = providers
             .map { (provider: SerializedProvider) in
-                if let providerMaxLevel = Int(provider.attributes["maxLevel"] ?? "0") {
+                if let providerMaxLevel = provider.attributes.maxLevel {
                     if providerMaxLevel > maxLevel {
                         maxLevel = providerMaxLevel
                     }
                 }
-                if let factoryName = provider.attributes["factoryName"] {
+                if let factoryName = provider.attributes.factoryName {
                     if registeredFactories.contains(factoryName) {
                         return ""
                     }

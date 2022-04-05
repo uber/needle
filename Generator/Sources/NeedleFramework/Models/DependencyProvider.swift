@@ -53,6 +53,15 @@ struct ProcessedDependencyProvider {
     }
 }
 
+/// Attributes about the code contained in a SerializedProvider
+struct ProviderAttributes {
+    /// How many levels up the tree the provider has to traverse to find its
+    /// dependencies
+    var maxLevel: Int? = nil
+    /// The name of any factory function in the provider's .content
+    var factoryName: String? = nil
+}
+
 /// The data model representing a fully serialized provider ready for
 /// export.
 struct SerializedProvider {
@@ -61,5 +70,5 @@ struct SerializedProvider {
     /// The dependency provider registration code.
     let registration: String
     /// Data about the content
-    let attributes: [String: String]
+    let attributes: ProviderAttributes
 }

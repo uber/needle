@@ -59,7 +59,7 @@ class PluginizedDependencyProviderSerializerTask: AbstractTask<[SerializedProvid
         var result = [SerializedProvider]()
         let (classNameSerializer, content) = serializedClass(for: providers.first!, counter: baseCounter)
         if providers.first?.data.isEmptyDependency == false {
-            result.append(SerializedProvider(content: content, registration: "", attributes: [:]))
+            result.append(SerializedProvider(content: content, registration: "", attributes: ProviderAttributes()))
         }
         for (_, provider) in providers.enumerated() {
             let paramsSerializer = DependencyProviderParamsSerializer(provider: provider.data)
@@ -89,9 +89,9 @@ class PluginizedDependencyProviderSerializerTask: AbstractTask<[SerializedProvid
         return (classNameSerializer, serializer.serialize())
     }
 
-    private func calculateAttributes(for provider: ProcessedDependencyProvider, funcNameSerializer: Serializer) -> [String: String] {
+    private func calculateAttributes(for provider: ProcessedDependencyProvider, funcNameSerializer: Serializer) -> ProviderAttributes {
         if provider.isEmptyDependency {
-            return [:]
+            return ProviderAttributes()
         }
         var maxLevel: Int = 0
         provider.levelMap.forEach { (componentType: String, level: Int) in
@@ -99,11 +99,11 @@ class PluginizedDependencyProviderSerializerTask: AbstractTask<[SerializedProvid
                 maxLevel = level
             }
         }
-        var attributes: [String: String] = [:]
+        var attributes = ProviderAttributes()
         if maxLevel > 0 {
-            attributes["maxLevel"] = String(maxLevel)
+            attributes.maxLevel = maxLevel
         }
-        attributes["factoryName"] = funcNameSerializer.serialize()
+        attributes.factoryName = funcNameSerializer.serialize()
         return attributes
     }
 }
