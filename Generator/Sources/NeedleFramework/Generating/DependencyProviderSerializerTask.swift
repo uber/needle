@@ -93,7 +93,7 @@ class DependencyProviderSerializerTask: AbstractTask<[SerializedProvider]> {
             return ProviderAttributes()
         }
         var maxLevel: Int = 0
-        provider.levelMap.forEach { (componentType: String, level: Int) in
+        for (_, level) in provider.levelMap {
             if level > maxLevel {
                 maxLevel = level
             }
