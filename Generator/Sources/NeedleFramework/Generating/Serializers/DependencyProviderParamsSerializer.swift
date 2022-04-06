@@ -14,8 +14,6 @@
 //  limitations under the License.
 //
 
-import Foundation
-
 /// A serializer that produces the params to pass to the dependency
 /// provider.
 final class DependencyProviderParamsSerializer: Serializer {
