@@ -3,7 +3,7 @@ GENERATOR_FOLDER=Generator
 GENERATOR_ARCHIVE_PATH=$(shell cd $(GENERATOR_FOLDER) && swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/needle
 GENERATOR_VERSION_FOLDER_PATH=$(GENERATOR_FOLDER)/Sources/needle
 GENERATOR_VERSION_FILE_PATH=$(GENERATOR_VERSION_FOLDER_PATH)/Version.swift
-SWIFT_BUILD_FLAGS=--disable-sandbox -c release
+SWIFT_BUILD_FLAGS=--disable-sandbox -c release --arch arm64 --arch x86_64
 XCODE_PATH:=$(shell xcode-select -p)
 SWIFT_SYNTAX_DYLIB=lib_InternalSwiftSyntaxParser.dylib
 
