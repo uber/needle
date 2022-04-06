@@ -80,8 +80,8 @@ class OutputSerializer: Serializer {
         // register the dependencies into functions around 50 lines long.
         // Through some basic testing, this seemed to produce the best results.
         let linesPerHelper = 50
-        var registrationHelperFuncs: Array<String> = []
-        let registrations: Array<String> = providers
+        var registrationHelperFuncs: [String] = []
+        let registrations: [String] = providers
             .map { (provider: SerializedProvider) in
                 provider.registration
             }
