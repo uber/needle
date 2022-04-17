@@ -100,6 +100,10 @@ brew install needle
 
 The linked document uses a somewhat real example to explain what the dependency injection pattern is, and its benefits.
 
+## Translations
+
+- [Korean](./Documents/ko_KR/README.md)
+
 ## Related projects
 
 If you like Needle, check out other related open source projects from our team:
