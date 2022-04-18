@@ -139,11 +139,11 @@ DI 트리의 루트에는 상위 component가 없기 때문에 특수한 `Bootst
 ```swift
 let rootComponent = RootComponent()
 
-class RootComponent: NeedleFoundation.RootComponent {
+class RootComponent: NeedleFoundation.BootstrapComponent {
     /// Root component code...
 }
 ```
-`RootComponent`는 `NeedleFoundation.RootComponent`에서 상속하여 의존성 프로토콜을 지정할 필요가 없습니다. DI 그래프의 루트에는 어쨌든 의존성을 획득할 부모가 없습니다.
+`RootComponent`는 `NeedleFoundation.BootstrapComponent`에서 상속하여 의존성 프로토콜을 지정할 필요가 없습니다. DI 그래프의 루트에는 어쨌든 의존성을 획득할 부모가 없습니다.
 
 `root`에는 부모가 없다는 것을 알고 있기 때문에 애플리케이션 코드에서 `RootComponent()`를 호출하여 루트 범위를 인스턴스화할 수 있습니다.
 
