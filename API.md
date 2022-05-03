@@ -115,6 +115,10 @@ class LoggedInComponent: Component {
     var gameComponent: GameComponent {
     	return GameComponent(parent: self)
     }
+
+    func scoreSheetComponent(filter: ScoreFilter? = nil) {
+        return ScoreSheetComponent(parent: self, filter: filter)
+    }
 }
 ```
 Once this tree structure has been declared in code, the needle command-line tool uses it to decide where the dependencies for a particular Scope come from. The algorithm is simple, for each item that this scope requires, we walk up the chain of parents. The **nearest parent** that is able to provide an item (we match both the name and the type of the variable declared in the dependency protocol), is the one we fetch that property from.
@@ -125,11 +129,11 @@ Since the root of a DI tree does not have a parent component, we bootstrap the r
 ```swift
 let rootComponent = RootComponent()
 
-class RootComponent: NeedleFoundation.RootComponent {
+class RootComponent: BootstrapComponent {
     /// Root component code...
 }
 ```
-Notice the `RootComponent` does not need to specify any dependency protocol by inheriting from `NeedleFoundation.RootComponent`. Root of a DI graph has no parent to acquire dependencies from anyways.
+Notice the `RootComponent` does not need to specify any dependency protocol by inheriting from `BootstrapComponent`. Root of a DI graph has no parent to acquire dependencies from anyways.
 
 Since we know `root` does not have any parents, in application code, we can simply invoke `RootComponent()` to instantiate the root scope.
 
