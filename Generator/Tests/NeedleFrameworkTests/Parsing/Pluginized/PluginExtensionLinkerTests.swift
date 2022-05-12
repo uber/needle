@@ -21,7 +21,7 @@ import XCTest
 class PluginExtensionLinkerTests: AbstractParserTests {
 
     func test_process_withComponents_verifyLinkages() {
-        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", isRoot: false, sourceHash: "SomePluginizedCompHash", properties: [], expressionCallTypeNames: [])
+        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", isRoot: false, sourceHash: "SomePluginizedCompHash", filePath: "/tmp/SomePluginizedComp.swift", properties: [], expressionCallTypeNames: [])
         let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "MyExtension", nonCoreComponentType: "Doesn't matter")
         let pluginExtension = PluginExtension(name: "MyExtension", properties: [])
 
@@ -33,7 +33,7 @@ class PluginExtensionLinkerTests: AbstractParserTests {
     }
 
     func test_process_withComponentsNoPluginExtension_verifyError() {
-        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", isRoot: false, sourceHash: "SomePluginizedCompHash", properties: [], expressionCallTypeNames: [])
+        let data = ASTComponent(name: "SomePluginizedComp", dependencyProtocolName: "Doesn't matter", isRoot: false, sourceHash: "SomePluginizedCompHash", filePath: "/tmp/SomePluginizedComp.swift", properties: [], expressionCallTypeNames: [])
         let pluginizedComp = PluginizedASTComponent(data: data, pluginExtensionType: "StuffExtension", nonCoreComponentType: "SomeComp")
 
         let linker = PluginExtensionLinker(pluginizedComponents: [pluginizedComp], pluginExtensions: [])

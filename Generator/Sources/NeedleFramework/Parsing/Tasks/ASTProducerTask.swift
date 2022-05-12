@@ -43,7 +43,7 @@ class ASTProducerTask: AbstractTask<AST> {
     /// - throws: Any error occurred during execution.
     override func execute() throws -> AST {
         let syntax = try SyntaxParser.parse(sourceUrl)
-        return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax)
+        return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax, filePath: sourceUrl.path)
     }
 
     // MARK: - Private

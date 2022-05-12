@@ -35,7 +35,7 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
 
     @available(OSX 10.12, *)
     func test_export_verifyContent() throws {
-        let (components, pluginizedComponents, imports, needleHash) = pluginizedSampleProjectParsed()
+        let (components, pluginizedComponents, imports, needleHash, allDeps) = pluginizedSampleProjectParsed()
         let executor = MockSequenceExecutor()
         let exporter = PluginizedDependencyGraphExporter()
 
@@ -202,7 +202,7 @@ private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
 
     @available(OSX 10.12, *)
     func test_export_verifyFileWriteBehavior() throws {
-        let (components, pluginizedComponents, imports, needleHash) = pluginizedSampleProjectParsed()
+        let (components, pluginizedComponents, imports, needleHash, allDeps) = pluginizedSampleProjectParsed()
         let executor = MockSequenceExecutor()
         let exporter = PluginizedDependencyGraphExporter()
         let headerDocPath = fixturesURL.deletingLastPathComponent().appendingPathComponent("HeaderDoc.txt").path

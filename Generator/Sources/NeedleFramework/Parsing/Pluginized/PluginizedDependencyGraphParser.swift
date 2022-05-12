@@ -48,7 +48,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
     /// data models and sorted import statements.
     /// - throws: `DependencyGraphParserError.timeout` if parsing a Swift
     /// source timed out.
-    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String) {
+    func parse(from rootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String] = [], excludingFilesWithPaths exclusionPaths: [String] = [], using executor: SequenceExecutor, withTimeout timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String, Set<String>) {
         // Collect data models for component and dependency declarations.
         let urlHandles: [DependencyNodeUrlSequenceHandle] = try enqueueDeclarationParsingTasks(with: rootUrls, sourcesListFormatValue: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor)
         let (pluginizedComponents, nonCoreComponents, pluginExtensions, regularComponents, dependencies, imports) = try collectDataModels(with: urlHandles, waitUpTo: timeout)
@@ -119,7 +119,7 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
 
     // MARK: - Processing
 
-    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String) {
+    private func process(pluginizedComponents: [PluginizedASTComponent], nonCoreComponents: [ASTComponent], regularComponents: [ASTComponent], with pluginExtensions: [PluginExtension], _ componentExtensions: [ASTComponentExtension], _ dependencies: [Dependency], _ imports: Set<String>, validate initsSourceUrlContents: [UrlFileContent], using executor: SequenceExecutor, with timeout: TimeInterval) throws -> ([Component], [PluginizedComponent], [String], String, Set<String>) {
         let allComponents = commonComponentModel(of: pluginizedComponents, regularComponents: nonCoreComponents + regularComponents)
         let processors: [Processor] = [
             DuplicateValidator(components: allComponents, dependencies: dependencies),
@@ -148,7 +148,10 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
         let needleVersionHash = createNeedleHash(dependencies: dependencies,
                                                     components: (regularComponents + nonCoreComponents),
                                                     pluginizedComponents: pluginizedComponents)
-        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports, needleVersionHash)
+        let inputs = createInputsSet(dependencies: dependencies,
+                                     components: (regularComponents + nonCoreComponents),
+                                     pluginizedComponents: pluginizedComponents)
+        return (valueTypeComponents, valueTypePluginizedComponents, sortedImports, needleVersionHash, inputs)
     }
 
     private func commonComponentModel(of pluginizedComponents: [PluginizedASTComponent], regularComponents: [ASTComponent]) -> [ASTComponent] {
@@ -170,6 +173,19 @@ class PluginizedDependencyGraphParser: AbstractDependencyGraphParser {
         
         return generateCumulativeHash(hashEntries: hashEntries)
     }
+
+    private func createInputsSet(dependencies: [Dependency],
+                                 components: [ASTComponent],
+                                 pluginizedComponents: [PluginizedASTComponent]) -> Set<String> {
+
+        var inputs : Set<String> = []
+        inputs.formUnion(dependencies.map({ $0.filePath }))
+        inputs.formUnion(pluginizedComponents.map({ $0.data.filePath }))
+        inputs.formUnion(components.map({ $0.filePath }))
+
+       return inputs
+    }
+
 }
 
 private typealias DependencyNodeUrlSequenceHandle = (handle: SequenceExecutionHandle<PluginizedDependencyGraphNode>, fileUrl: URL)

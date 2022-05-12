@@ -22,7 +22,7 @@ import XCTest
 class PluginizedPropertiesSerializerTests: AbstractPluginizedGeneratorTests {
 
     func test_execute_withSampleProject_verifySerialization() {
-        let (components, pluginizedComponents, _, _) = pluginizedSampleProjectParsed()
+        let (components, pluginizedComponents, _, _, _) = pluginizedSampleProjectParsed()
         for component in components {
             let providers = DependencyProviderDeclarerTask(component: component).execute()
             let processedProviders = try! PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents).execute()

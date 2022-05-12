@@ -29,7 +29,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let sourceUrl = fixtureUrl(for: "PrivateSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl), filePath: sourceUrl.path)
 
         let task = DeclarationsParserTask(ast: ast)
         _ = try! task.execute()
@@ -46,7 +46,7 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let sourceContent = try! String(contentsOf: sourceUrl)
         let imports = ["import UIKit", "import RIBs", "import Foundation", "import protocol Audio.Recordable"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl), filePath: sourceUrl.path)
         
         let task = DeclarationsParserTask(ast: ast)
         let node = try! task.execute()

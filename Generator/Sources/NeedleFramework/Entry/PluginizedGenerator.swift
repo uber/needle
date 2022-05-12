@@ -24,8 +24,19 @@ public class PluginizedGenerator: Generator {
 
     override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: TimeInterval, exportingTimeout: TimeInterval) throws {
         let parser = PluginizedDependencyGraphParser()
-        let (components, pluginizedComponents, imports, needleVersionHash) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, withTimeout: parsingTimeout)
+        let (components, pluginizedComponents, imports, needleVersionHash, inputFiles) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, withTimeout: parsingTimeout)
         let exporter = PluginizedDependencyGraphExporter()
         try exporter.export(components, pluginizedComponents, with: imports + additionalImports, to: destinationPath, using: executor, withTimeout: exportingTimeout, include: headerDocPath, needleVersionHash: needleVersionHash)
+        writeInputs(destinationPath: destinationPath, dependencyFiles: inputFiles)
+    }
+
+    private func writeInputs(destinationPath: String, dependencyFiles: Set<String>) {
+        let depsFilePath = URL(path: destinationPath).deletingPathExtension().appendingPathExtension("inputs")
+        let depsContent = dependencyFiles.sorted().joined(separator: "\n")
+        do {
+            try depsContent.write(toFile: depsFilePath.path, atomically: true, encoding: .ascii)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
 }

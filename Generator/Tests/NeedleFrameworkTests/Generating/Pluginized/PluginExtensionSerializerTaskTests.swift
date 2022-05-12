@@ -22,7 +22,7 @@ import XCTest
 class PluginExtensionSerializerTaskTests: AbstractPluginizedGeneratorTests {
 
     func test_execute_withSampleProject_verifySerialization() {
-        let (_, pluginizedComponents, _, _) = pluginizedSampleProjectParsed()
+        let (_, pluginizedComponents, _, _, _) = pluginizedSampleProjectParsed()
 
         for pluginizedComponent in pluginizedComponents {
             let provider = PluginExtensionSerializerTask(component: pluginizedComponent).execute()

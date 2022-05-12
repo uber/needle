@@ -21,8 +21,8 @@ import XCTest
 class DependencyLinkerTests: AbstractParserTests {
 
     func test_process_withComponents_verifyLinkages() {
-        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, sourceHash: "SomeCompHash", properties: [], expressionCallTypeNames: [])
-        let dependency = Dependency(name: "ItsDependency", properties: [], sourceHash: "ItsDependencyHash")
+        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, sourceHash: "SomeCompHash", filePath: "/tmp/SomeComp.swift", properties: [], expressionCallTypeNames: [])
+        let dependency = Dependency(name: "ItsDependency", properties: [], sourceHash: "ItsDependencyHash", filePath: "/tmp/ItsDependency.swift")
 
         let linker = DependencyLinker(components: [component], dependencies: [dependency])
 
@@ -32,8 +32,8 @@ class DependencyLinkerTests: AbstractParserTests {
     }
 
     func test_process_withComponentsNoDependency_verifyError() {
-        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, sourceHash: "SomeComp", properties: [], expressionCallTypeNames: [])
-        let dependency = Dependency(name: "WrongDep", properties: [], sourceHash: "WrongDepHash")
+        let component = ASTComponent(name: "SomeComp", dependencyProtocolName: "ItsDependency", isRoot: false, sourceHash: "SomeComp", filePath: "/tmp/SomeComp.swift", properties: [], expressionCallTypeNames: [])
+        let dependency = Dependency(name: "WrongDep", properties: [], sourceHash: "WrongDepHash", filePath: "/tmp/WrongDep.swift")
 
         let linker = DependencyLinker(components: [component], dependencies: [dependency])
 
