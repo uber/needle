@@ -125,7 +125,7 @@ Since the root of a DI tree does not have a parent component, we bootstrap the r
 ```swift
 let rootComponent = RootComponent()
 
-class RootComponent: NeedleFoundation.RootComponent {
+class RootComponent: NeedleFoundation.BootstrapComponent {
     /// Root component code...
 }
 ```
