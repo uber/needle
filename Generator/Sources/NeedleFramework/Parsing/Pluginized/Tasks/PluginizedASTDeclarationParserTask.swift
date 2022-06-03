@@ -39,7 +39,7 @@ class PluginizedDeclarationsParserTask: AbstractTask<PluginizedDependencyGraphNo
     override func execute() throws -> PluginizedDependencyGraphNode {
         let baseTask = DeclarationsParserTask(ast: ast)
         let baseNode = try baseTask.execute()
-        let visitor = PluginizedVisitor(sourceHash: ast.sourceHash)
+        let visitor = PluginizedVisitor(sourceHash: ast.sourceHash, filePath: ast.filePath)
         visitor.walk(ast.sourceFileSyntax)
         let pluginizedComponents = visitor.pluginizedComponents
         let nonCoreComponents = visitor.nonCoreComponents
@@ -63,9 +63,11 @@ private final class PluginizedVisitor: BaseVisitor {
     private var currentPluginExtensionGenerics: (dependencyProtocolName: String, pluginExtensionName: String, nonCoreComponentName: String) = ("", "", "")
     
     private let sourceHash: String
+    private let filePath: String
     
-    init(sourceHash: String) {
+    init(sourceHash: String, filePath: String) {
         self.sourceHash = sourceHash
+        self.filePath = filePath
     }
     
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -109,6 +111,7 @@ private final class PluginizedVisitor: BaseVisitor {
                                          dependencyProtocolName: currentPluginExtensionGenerics.dependencyProtocolName,
                                          isRoot: node.isRoot,
                                          sourceHash: sourceHash,
+                                         filePath: filePath,
                                          properties: propertiesDict[componentName, default: []],
                                          expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
             let pluginizedComponent = PluginizedASTComponent(data: component,
@@ -120,6 +123,7 @@ private final class PluginizedVisitor: BaseVisitor {
                                          dependencyProtocolName: currentDependencyProtocol ?? "",
                                          isRoot: false,
                                          sourceHash: sourceHash,
+                                         filePath: filePath,
                                          properties: propertiesDict[componentName, default: []],
                                          expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
             nonCoreComponents.append(component)

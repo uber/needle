@@ -21,7 +21,7 @@ import XCTest
 class ComponentConsolidatorTests: AbstractParserTests {
 
     func test_process_withMatchingSets_verifyResults() {
-        let components = [ASTComponent(name: "A", dependencyProtocolName: "", isRoot: false, sourceHash: "AHash", properties: [Property(name: "p1", type: "P1")], expressionCallTypeNames: ["E1"])]
+        let components = [ASTComponent(name: "A", dependencyProtocolName: "", isRoot: false, sourceHash: "AHash", filePath: "/tmp/A.swift", properties: [Property(name: "p1", type: "P1")], expressionCallTypeNames: ["E1"])]
         let componentExtensions = [ASTComponentExtension(name: "A", properties: [Property(name: "p2", type: "P2")], expressionCallTypeNames: ["E2"])]
 
         let processor = ComponentConsolidator(components: components, componentExtensions: componentExtensions)

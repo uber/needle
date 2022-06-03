@@ -25,7 +25,7 @@ class AbstractPluginizedGeneratorTests: XCTestCase {
     ///
     /// - returns: The list of component data models, pluginized component
     /// data models and sorted import statements.
-    func pluginizedSampleProjectParsed() -> ([Component], [PluginizedComponent], [String], String) {
+    func pluginizedSampleProjectParsed() -> ([Component], [PluginizedComponent], [String], String, Set<String>) {
         let parser = PluginizedDependencyGraphParser()
         let fixturesURL = sampleProjectUrl()
         let executor = MockSequenceExecutor()

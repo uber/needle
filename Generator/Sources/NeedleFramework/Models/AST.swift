@@ -24,4 +24,6 @@ struct AST {
     let sourceHash: String
     /// Syntax representation of this source file created by SwiftSyntax
     let sourceFileSyntax: SourceFileSyntax
+    /// Path to the file
+    let filePath: String
 }

@@ -45,6 +45,8 @@ class ASTComponent {
     let isRoot: Bool
     /// The  hash of the source file where this ASTComponent was declared
     let sourceHash: String
+    /// The path the source file where this ASTComponent was declared
+    let filePath: String
     /// A list of properties this component instantiates, thereby provides.
     var properties: [Property]
     /// A list of expression call type names.
@@ -63,11 +65,12 @@ class ASTComponent {
     }
 
     /// Initializer.
-    init(name: String, dependencyProtocolName: String, isRoot: Bool, sourceHash: String, properties: [Property], expressionCallTypeNames: [String]) {
+    init(name: String, dependencyProtocolName: String, isRoot: Bool, sourceHash: String, filePath: String, properties: [Property], expressionCallTypeNames: [String]) {
         self.name = name
         self.dependencyProtocolName = dependencyProtocolName
         self.isRoot = isRoot
         self.sourceHash = sourceHash
+        self.filePath = filePath
         self.properties = properties
         self.expressionCallTypeNames = expressionCallTypeNames
     }

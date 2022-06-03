@@ -21,9 +21,9 @@ import XCTest
 class DuplicateValidatorTests: XCTestCase {
     
     func test_validateComponent_noDuplicate_verifyResult() {
-        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha1Hash", properties: [], expressionCallTypeNames: [])
-        let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha2Hash", properties: [], expressionCallTypeNames: [])
-        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha3Hash", properties: [], expressionCallTypeNames: [])
+        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha1Hash", filePath: "/tmp/ha1.swift", properties: [], expressionCallTypeNames: [])
+        let comp2 = ASTComponent(name: "ha2", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha2Hash", filePath: "/tmp/ha2.swift", properties: [], expressionCallTypeNames: [])
+        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha3Hash", filePath: "/tmp/ha3.swift", properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
@@ -31,9 +31,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateComponent_withDuplicates_verifyResult() {
-        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha1Hash", properties: [], expressionCallTypeNames: [])
-        let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha1Hash", properties: [], expressionCallTypeNames: [])
-        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha3Hash", properties: [], expressionCallTypeNames: [])
+        let comp1 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha1Hash", filePath: "/tmp/ha1.swift", properties: [], expressionCallTypeNames: [])
+        let comp2 = ASTComponent(name: "ha1", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha1Hash", filePath: "/tmp/ha1.swift", properties: [], expressionCallTypeNames: [])
+        let comp3 = ASTComponent(name: "ha3", dependencyProtocolName: "dep1", isRoot: false, sourceHash: "ha3Hash", filePath: "/tmp/ha3.swift", properties: [], expressionCallTypeNames: [])
 
         let validator = DuplicateValidator(components: [comp1, comp2, comp3], dependencies: [])
 
@@ -47,9 +47,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateDependencies_noDuplicate_verifyResult() {
-        let dep1 = Dependency(name: "d1", properties: [], sourceHash: "d1Hash")
-        let dep2 = Dependency(name: "d2", properties: [], sourceHash: "d2Hash")
-        let dep3 = Dependency(name: "d3", properties: [], sourceHash: "d3Hash")
+        let dep1 = Dependency(name: "d1", properties: [], sourceHash: "d1Hash", filePath: "/tmp/d1.swift")
+        let dep2 = Dependency(name: "d2", properties: [], sourceHash: "d2Hash", filePath: "/tmp/d2.swift")
+        let dep3 = Dependency(name: "d3", properties: [], sourceHash: "d3Hash", filePath: "/tmp/d3.swift")
 
         let validator = DuplicateValidator(components: [], dependencies: [dep1, dep2, dep3])
 
@@ -57,9 +57,9 @@ class DuplicateValidatorTests: XCTestCase {
     }
 
     func test_validateDependencies_withDuplicates_verifyResult() {
-        let dep1 = Dependency(name: "d1", properties: [], sourceHash: "d1Hash")
-        let dep2 = Dependency(name: "d1", properties: [], sourceHash: "d2Hash")
-        let dep3 = Dependency(name: "d3", properties: [], sourceHash: "d3Hash")
+        let dep1 = Dependency(name: "d1", properties: [], sourceHash: "d1Hash", filePath: "/tmp/d1.swift")
+        let dep2 = Dependency(name: "d2", properties: [], sourceHash: "d2Hash", filePath: "/tmp/d2.swift")
+        let dep3 = Dependency(name: "d3", properties: [], sourceHash: "d3Hash", filePath: "/tmp/d3.swift")
 
         let validator = DuplicateValidator(components: [], dependencies: [dep1, dep2, dep3])
 

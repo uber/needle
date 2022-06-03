@@ -96,7 +96,7 @@ class ComponentInstantiationValidatorTests: AbstractParserTests {
     }
 
     private func astComponent(withName name: String) -> ASTComponent{
-        return ASTComponent(name: name, dependencyProtocolName: "", isRoot: false, sourceHash: name + "Hash", properties: [], expressionCallTypeNames: [])
+        return ASTComponent(name: name, dependencyProtocolName: "", isRoot: false, sourceHash: name + "Hash", filePath: "/tmp/\(name).swift", properties: [], expressionCallTypeNames: [])
     }
 
     private func validate(error: Error, withComponentName componentName: String) {

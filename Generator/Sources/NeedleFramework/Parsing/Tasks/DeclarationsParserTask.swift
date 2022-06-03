@@ -45,7 +45,7 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
     private let ast: AST
     
     private func parseSyntax() throws -> ([ASTComponent], [Dependency], [String]) {
-        let visitor = Visitor(sourceHash: ast.sourceHash)
+        let visitor = Visitor(sourceHash: ast.sourceHash, filePath: ast.filePath)
         visitor.walk(ast.sourceFileSyntax)
         return (visitor.components, visitor.dependencies, visitor.imports)
     }
@@ -58,9 +58,11 @@ private final class Visitor: BaseVisitor {
     private(set) var components: [ASTComponent] = []
     
     private let sourceHash: String
+    private let filePath: String
     
-    init(sourceHash: String) {
+    init(sourceHash: String, filePath: String) {
         self.sourceHash = sourceHash
+        self.filePath = filePath
     }
     
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -77,7 +79,7 @@ private final class Visitor: BaseVisitor {
         if protocolName == currentEntityNode?.typeName {
             let dependency = Dependency(name: protocolName,
                                         properties: propertiesDict[protocolName, default: []],
-                                        sourceHash: sourceHash)
+                                        sourceHash: sourceHash, filePath: filePath)
             dependencies.append(dependency)
         }
     }
@@ -101,6 +103,7 @@ private final class Visitor: BaseVisitor {
                                          dependencyProtocolName: dependencyProtocolName,
                                          isRoot: node.isRoot,
                                          sourceHash: sourceHash,
+                                         filePath: filePath,
                                          properties: propertiesDict[componentName, default: []],
                                          expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
             components.append(component)

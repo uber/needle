@@ -29,7 +29,7 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let sourceContent = try! String(contentsOf: sourceUrl)
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl))
+                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl), filePath: sourceUrl.path)
 
         let task = PluginizedDeclarationsParserTask(ast: ast)
         let node = try! task.execute()

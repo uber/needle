@@ -62,13 +62,14 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
         XCTAssertEqual(executor.executeCallCount, 0)
 
         do {
-            let (components, pluginizedComponents, imports, _) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], using: executor, withTimeout: 10)
+            let (components, pluginizedComponents, imports, _, inputs) = try parser.parse(from: [fixturesURL], withSourcesListFormat: nil, excludingFilesEndingWith: ["InvalidInits1", "InvalidInits2", "InvalidInits3", "InvalidInits4"], using: executor, withTimeout: 10)
             let childComponent = components.filter { $0.name == "MyChildComponent" }.first!
             let parentComponent = components.filter { $0.name == "MyComponent" }.first!
             XCTAssertTrue(childComponent.parents.first! == parentComponent)
             XCTAssertEqual(components.count, 16)
             XCTAssertEqual(pluginizedComponents.count, 3)
             XCTAssertEqual(imports, ["import Foundation", "import NeedleFoundation", "import RIBs", "import RxSwift", "import ScoreSheet", "import UIKit", "import Utility", "import protocol Audio.Recordable"])
+            XCTAssertEqual(try inputsUsingHeuristicsFromDir(dir: fixturesURL), inputs)
         } catch {
             XCTFail("\(error)")
         }
@@ -91,5 +92,36 @@ class PluginizedDependencyGraphParserTests: AbstractPluginizedParserTests {
                 XCTFail()
             }
         }
+    }
+
+    func inputsUsingHeuristicsFromDir(dir: URL) throws -> Set<String> {
+
+        if dir.lastPathComponent == "InvalidInits" {
+            return Set<String>()
+        }
+        let needle_input_regexes = [
+            try NSRegularExpression(pattern: "class .*:.*Component<.*>.*"),
+            try NSRegularExpression(pattern: "protocol .*: Dependency.*"),
+            try NSRegularExpression(pattern: "class .*:.*BootstrapComponent")
+        ]
+        var inputs = Set<String>()
+        for dirChild in try FileManager.default.contentsOfDirectory(atPath: dir.path) {
+            let path = dir.appendingPathComponent(dirChild)
+            var fileIsDirectory: ObjCBool = false
+            FileManager.default.fileExists(atPath: path.path, isDirectory: &fileIsDirectory)
+            if fileIsDirectory.boolValue {
+                let inputsOfChildDir = try inputsUsingHeuristicsFromDir(dir: path)
+                inputs.formUnion(inputsOfChildDir)
+            } else {
+                let fileContents = try String(contentsOfFile: path.path)
+                let range = NSRange(location: 0, length: fileContents.utf16.count)
+                for regex in needle_input_regexes {
+                    if regex.firstMatch(in: fileContents, range: range) != nil {
+                        inputs.insert(path.path)
+                    }
+                }
+            }
+        }
+        return inputs
     }
 }
