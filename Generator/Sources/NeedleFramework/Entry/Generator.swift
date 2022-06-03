@@ -61,7 +61,7 @@ public class Generator {
     /// - parameter concurrencyLimit: The maximum number of tasks to execute
     /// concurrently. `nil` if no limit is set.
     /// - throws: `GenericError`.
-    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, retryParsingOnTimeoutLimit: Int, concurrencyLimit: Int?) throws {
+    public final func generate(from sourceRootPaths: [String], withSourcesListFormat sourcesListFormatValue: String? = nil, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, shouldCollectParsingInfo: Bool, parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, retryParsingOnTimeoutLimit: Int, concurrencyLimit: Int?, emitInputsDepsFile: Bool) throws {
         let processor: ProcessorType = .generateSource(additionalImports: additionalImports, 
                                                        headerDocPath: headerDocPath, 
                                                        destinationPath: destinationPath, 
@@ -74,7 +74,8 @@ public class Generator {
                               parsingTimeout: parsingTimeout, 
                               retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, 
                               concurrencyLimit: concurrencyLimit,
-                              processorType: processor)
+                              processorType: processor,
+                              emitInputsDepsFile: emitInputsDepsFile)
     }
 
     /// Parse Swift source files by recurively scanning the given directories
@@ -124,12 +125,13 @@ public class Generator {
                               parsingTimeout: parsingTimeout, 
                               retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, 
                               concurrencyLimit: concurrencyLimit,
-                              processorType: processor)
+                              processorType: processor,
+                              emitInputsDepsFile: false)
     }
 
     // MARK: - Internal
 
-    func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: TimeInterval, exportingTimeout: TimeInterval) throws {
+    func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: TimeInterval, exportingTimeout: TimeInterval, emitInputsDepsFile: Bool) throws {
         let parser = DependencyGraphParser()
         let (components, imports) = try parser.parse(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, using: executor, withTimeout: parsingTimeout)
         let exporter = DependencyGraphExporter()
@@ -151,7 +153,7 @@ public class Generator {
         #endif
     }
 
-    private func processSourceCode(from sourceRootPaths: [String], 
+    private func processSourceCode(from sourceRootPaths: [String],
                                    withSourcesListFormat sourcesListFormatValue: String? = nil, 
                                    excludingFilesEndingWith exclusionSuffixes: [String], 
                                    excludingFilesWithPaths exclusionPaths: [String], 
@@ -159,7 +161,8 @@ public class Generator {
                                    parsingTimeout: TimeInterval,
                                    retryParsingOnTimeoutLimit: Int, 
                                    concurrencyLimit: Int?,
-                                   processorType: ProcessorType) throws {
+                                   processorType: ProcessorType,
+                                   emitInputsDepsFile: Bool) throws {
         let sourceRootUrls = sourceRootPaths.map { (path: String) -> URL in
             URL(path: path)
         }
@@ -171,7 +174,7 @@ public class Generator {
             do {
                 switch processorType {
                     case .generateSource(let additionalImports, let headerDocPath, let destinationPath, let exportingTimeout):
-                        try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor, withParsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout)
+                    try generate(from: sourceRootUrls, withSourcesListFormat: sourcesListFormatValue, excludingFilesEndingWith: exclusionSuffixes, excludingFilesWithPaths: exclusionPaths, with: additionalImports, headerDocPath, to: destinationPath, using: executor, withParsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, emitInputsDepsFile: emitInputsDepsFile)
                     case .printDIStructure(let rootComponentName):
                         try printDIStructure(from : sourceRootUrls,
                                              withSourcesListFormat: sourcesListFormatValue,

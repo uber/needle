@@ -53,6 +53,7 @@ class GenerateCommand: AbstractCommand {
         exportingTimeout = parser.add(option: "--exporting-timeout", kind: Int.self, usage: "The timeout value, in seconds, to use for waiting on exporting tasks.")
         retryParsingOnTimeoutLimit = parser.add(option: "--retry-parsing-limit", kind: Int.self, usage: "The maximum number of times parsing Swift source files should be retried in case of timeouts.")
         concurrencyLimit = parser.add(option: "--concurrency-limit", kind: Int.self, usage: "The maximum number of tasks to execute concurrently.")
+        emitInputsDepsFile = parser.add(option: "--emit-input-deps-file", kind: Bool.self, usage: "Emit a file that contains all inputs of the Needle generator invocation. This option only works if pluginized")
     }
 
     /// Execute the command.
@@ -75,10 +76,11 @@ class GenerateCommand: AbstractCommand {
                 let exportingTimeout = arguments.get(self.exportingTimeout, withDefault: defaultTimeout)
                 let retryParsingOnTimeoutLimit = arguments.get(self.retryParsingOnTimeoutLimit) ?? 0
                 let concurrencyLimit = arguments.get(self.concurrencyLimit) ?? nil
+                let emitInputsDepsFile = arguments.get(self.emitInputsDepsFile) ?? false
 
                 let generator: Generator = scanPlugins ? PluginizedGenerator() : Generator()
                 do {
-                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit)
+                    try generator.generate(from: sourceRootPaths, withSourcesListFormat: sourcesListFormat, excludingFilesEndingWith: excludeSuffixes, excludingFilesWithPaths: excludePaths, with: additionalImports, headerDocPath, to: destinationPath, shouldCollectParsingInfo: shouldCollectParsingInfo, parsingTimeout: parsingTimeout, exportingTimeout: exportingTimeout, retryParsingOnTimeoutLimit: retryParsingOnTimeoutLimit, concurrencyLimit: concurrencyLimit, emitInputsDepsFile: emitInputsDepsFile)
                 } catch GenericError.withMessage(let message) {
                     error(message)
                 } catch (let e) {
@@ -107,4 +109,5 @@ class GenerateCommand: AbstractCommand {
     private var exportingTimeout: OptionArgument<Int>!
     private var retryParsingOnTimeoutLimit: OptionArgument<Int>!
     private var concurrencyLimit: OptionArgument<Int>!
+    private var emitInputsDepsFile: OptionArgument<Bool>!
 }

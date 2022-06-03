@@ -26,7 +26,7 @@ class GeneratorTests: XCTestCase {
 
         XCTAssertEqual(generator.generateCallCount, 0)
 
-        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000, concurrencyLimit: nil)
+        try! generator.generate(from: [], excludingFilesEndingWith: [], excludingFilesWithPaths: [], with: [], nil, to: "blah", shouldCollectParsingInfo: true, parsingTimeout: 10, exportingTimeout: 10, retryParsingOnTimeoutLimit: 1000, concurrencyLimit: nil, emitInputsDepsFile: false)
 
         XCTAssertEqual(generator.generateCallCount, 1)
     }
@@ -37,7 +37,7 @@ private class MockGenerator: Generator {
     fileprivate var generateCallCount = 0
     fileprivate var generateClosure: (() throws -> ())? = nil
 
-    override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: Double, exportingTimeout: Double) throws {
+    override func generate(from sourceRootUrls: [URL], withSourcesListFormat sourcesListFormatValue: String?, excludingFilesEndingWith exclusionSuffixes: [String], excludingFilesWithPaths exclusionPaths: [String], with additionalImports: [String], _ headerDocPath: String?, to destinationPath: String, using executor: SequenceExecutor, withParsingTimeout parsingTimeout: Double, exportingTimeout: Double, emitInputsDepsFile: Bool) throws {
         generateCallCount += 1
         try generateClosure?()
     }
