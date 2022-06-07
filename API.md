@@ -85,6 +85,28 @@ protocol LoggedInDependency: Dependency {
 }
 ```
 
+## Dynamic dependencies
+Dynamic dependencies refer to dependencies that are obtained at runtime. A good example is an authenticated user object. The user object does not exist always. It only exists after the user has logged in. Assuming our app has a logged-out and a logged-in scope, this user object should only be available within the logged-in scope and its child scopes. One way to provide the authenticated user object to logged in scope via constructor injection:
+```
+class LoggedInComponent: Component {
+  let user: AuthenticatedUser
+
+  init(parent: Scope, user: AuthenticatedUser) {
+    self.user = user
+    super.init(parent: Parent)
+  }
+}
+```
+
+Then in the parent scope of the logged-in scope, we can instantiate the `LoggedInComponent` via a function instead of the usual computed `var`:
+```
+class RootComponent: Component {
+  func loggedInComponent(user: AuthenticatedUser) {
+    return LoggedInComponent(parent: self, user: user)
+  }
+}
+```
+
 # Using the Component
 
 The nice thing is that you're now ready to write and compile code even though you may not be ready to run the needle command-line code-generator tool. We've also not told the system which ancestor `Component` the `imageCache` and `networkService` are supposed to come from.
