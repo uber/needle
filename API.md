@@ -125,11 +125,11 @@ Since the root of a DI tree does not have a parent component, we bootstrap the r
 ```swift
 let rootComponent = RootComponent()
 
-class RootComponent: NeedleFoundation.RootComponent {
+class RootComponent: NeedleFoundation.BootstrapComponent {
     /// Root component code...
 }
 ```
-Notice the `RootComponent` does not need to specify any dependency protocol by inheriting from `NeedleFoundation.RootComponent`. Root of a DI graph has no parent to acquire dependencies from anyways.
+Notice the `RootComponent` does not need to specify any dependency protocol by inheriting from `NeedleFoundation.BootstrapComponent`. Root of a DI graph has no parent to acquire dependencies from anyways.
 
 Since we know `root` does not have any parents, in application code, we can simply invoke `RootComponent()` to instantiate the root scope.
 
