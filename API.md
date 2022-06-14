@@ -87,7 +87,7 @@ protocol LoggedInDependency: Dependency {
 
 ## Dynamic dependencies
 Dynamic dependencies refer to dependencies that are obtained at runtime. A good example is an authenticated user object. The user object does not exist always. It only exists after the user has logged in. Assuming our app has a logged-out and a logged-in scope, this user object should only be available within the logged-in scope and its child scopes. One way to provide the authenticated user object to logged in scope via constructor injection:
-```
+```swift
 class LoggedInComponent: Component {
   let user: AuthenticatedUser
 
@@ -99,7 +99,7 @@ class LoggedInComponent: Component {
 ```
 
 Then in the parent scope of the logged-in scope, we can instantiate the `LoggedInComponent` via a function instead of the usual computed `var`:
-```
+```swift
 class RootComponent: Component {
   func loggedInComponent(user: AuthenticatedUser) {
     return LoggedInComponent(parent: self, user: user)
