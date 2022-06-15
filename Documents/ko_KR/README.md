@@ -56,14 +56,14 @@ Needle은 `NeedleFoundation` 프레임워크와 실행 가능한 코드 제너�
 
 ### `NeedleFoundation` framework 설치
 
-#### [Carthage](https://github.com/Carthage/Carthage) 사용시
+#### [Carthage](https://github.com/Carthage/Carthage) 사용 시
 
 표준 [카르타고 설치 절차](https://github.com/Carthage/Carthage#quick-start)를 따라 `NeedleFoundation` framework를 Swift 프로젝트에 추가합니다.
 ```
 github "https://github.com/uber/needle.git" ~> VERSION_OF_NEEDLE
 ```
 
-#### [Swift Package Manager](https://github.com/apple/swift-package-manager) 사용시
+#### [Swift Package Manager](https://github.com/apple/swift-package-manager) 사용 시
 
 `NeedleFoundation` 프레임워크를 Swift 프로젝트와 통합하려면 표준 [Swift Package Manager 패키지 정의 프로세스](https://github.com/apple/swift-package-manager/blob/master/Documentation/Usage.md)를 통해 Needle을 의존성에 추가합니다.
 ```swift
@@ -79,17 +79,17 @@ targets: [
 ],
 ```
 
-#### [CocoaPods](https://github.com/CocoaPods/CocoaPods)  사용시
+#### [CocoaPods](https://github.com/CocoaPods/CocoaPods)  사용 시
 
 표준 CocoaPods 의존성 설치 절차에 따라 `NeedleFoundation` pod을 추가합니다.
 
 ### 코드 제너레이터 설치
 
-#### [Carthage](https://github.com/Carthage/Carthage) 사용시
+#### [Carthage](https://github.com/Carthage/Carthage) 사용 시
 
 만약 Carthage를 사용하여 `NeedleFoundation` 프레임워크를 통합한 경우, 해당 버전의 코드 제너레이터 실행 파일이 이미 Carthage 폴더에 다운로드 되어 있습니다. `Carthage/Checkouts/needle/Generator/bin/needle`에서 찾을 수 있습니다.
 
-#### [Homebrew](https://github.com/Homebrew/brew) 사용시
+#### [Homebrew](https://github.com/Homebrew/brew) 사용 시
 
 `NeedleFoundation` 프레임워크가 프로젝트에 통합되는 방식에 관계없이 제너레이터는 항상 [Homebrew](https://github.com/Homebrew/brew)를 통해 설치할 수 있습니다.
 ```
