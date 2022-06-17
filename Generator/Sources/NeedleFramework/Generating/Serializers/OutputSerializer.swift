@@ -132,6 +132,7 @@ class OutputSerializer: Serializer {
 
         \(registrationHelpers)
 
+        @MainActor
         public func registerProviderFactories() {
             \(registrationBody)
         }

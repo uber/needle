@@ -41,6 +41,7 @@ class PluginExtensionContentSerializer: Serializer {
         let nonCoreComponentPropertyName = component.nonCoreComponent.name.lowercasedFirstChar()
 
         return """
+        @MainActor
         /// \(component.data.name) plugin extension
         private class \(extensionClassName): \(component.pluginExtension.name) {
         \(properties)
