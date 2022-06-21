@@ -37,7 +37,7 @@ targets: [
 
 ## Basics
 
-의존성 주입(Dependency Injection, 이하 DI로 표기)을 사용하는 주요 이유는 별도의 [문서](/WHY_DI.md)에 설명되어 있습니다. 당신의 앱이 DI의 혜택을 받을 수 있는지 확실하지 않은 경우 계속하기 전에 이 내용을 읽어보십시오.
+의존성 주입(Dependency Injection, 이하 DI로 표기)을 사용하는 주요 이유는 별도의 [문서](./WHY_DI.md)에 설명되어 있습니다. 당신의 앱이 DI의 혜택을 받을 수 있는지 확실하지 않은 경우 계속하기 전에 이 내용을 읽어보십시오.
 
 ## 핵심 요소
 
@@ -70,7 +70,7 @@ class LoggedInComponent: Component<LoggedInDependency> {
 
 예제의 `shared` 구문은 저희가 (`Component` 기본 클래스 내부에서) 제공하는 유틸리티 함수로 이 `var`에 액세스할 때마다 단순하게 동일한 인스턴스를 반환합니다. (아래에 선언된 프로퍼티는 대조적으로 새로운 매번 인스턴스를 반환합니다). 이렇게 하면 이 프로퍼티의 라이프사이클이 Component의 라이프사이클에 연결됩니다.
 
-Component를 사용하여 이 component와 쌍을 이루는 `ViewController`를 구성할 수도 있습니다. 위의 예제에서 볼 수 있듯이, 이것은 `ViewController`가 프로젝트에서 DI 시스템을 사용하고 있다는 사실을 모르고도 `ViewController`가 필요로 하는 모든 의존성을 전달할 수 있도록 합니다. **"DI의 이점"** 문서에서 언급했듯이 구체적인 클래스나 구조체 대신 프로토콜을 전달하는 것이 가장 좋습니다.
+Component를 사용하여 이 component와 쌍을 이루는 `ViewController`를 구성할 수도 있습니다. 위의 예제에서 볼 수 있듯이, 이것은 `ViewController`가 프로젝트에서 DI 시스템을 사용하고 있다는 사실을 모르고도 `ViewController`가 필요로 하는 모든 의존성을 전달할 수 있도록 합니다. [**"DI의 이점"**](./WHY_DI.md) 문서에서 언급했듯이 구체적인 클래스나 구조체 대신 프로토콜을 전달하는 것이 가장 좋습니다.
 
 # Dependencies
 
