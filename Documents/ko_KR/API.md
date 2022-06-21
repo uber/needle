@@ -87,6 +87,28 @@ protocol LoggedInDependency: Dependency {
 }
 ```
 
+## Dynamic dependencies
+
+동적 의존성은 런타임에 얻은 의존성을 나타냅니다. 좋은 예는 AuthenticatedUser 객체입니다. User 객체가 항상 존재하는 것은 아닙니다. 사용자가 로그인한 후에만 존재합니다. 앱에 로그아웃 및 로그인 `Scope`가 있다고 가정하면 이 User 객체는 로그인 `Scope`와 하위 `Scope` 내에서만 사용할 수 있어야 합니다. 생성자 주입을 통해 로그인 `Scope`에 AuthenticatedUser 객체를 제공하는 한 가지 방법은 다음과 같습니다:
+ ```
+ class LoggedInComponent: Component {
+   let user: AuthenticatedUser
+   init(parent: Scope, user: AuthenticatedUser) {
+     self.user = user
+     super.init(parent: Parent)
+   }
+ }
+ ```
+
+ 그런 다음 로그인 `Scope`의 상위 `Scope`에서 일반적으로 사용하는 computed `var` 대신 메소드를 통해 `LoggedInComponent`를 인스턴스화할 수 있습니다:
+ ```
+ class RootComponent: Component {
+   func loggedInComponent(user: AuthenticatedUser) {
+     return LoggedInComponent(parent: self, user: user)
+   }
+ }
+ ```
+
 # Component 사용하기
 
 좋은 점은 Needle command-line 코드 제너레이터를 실행할 준비가 되지 않았더라도 코드를 작성하고 컴파일할 준비가 되었다는 것입니다. 우리는 또한 `imageCache`와 `networkService`가 어느 상위 `Component`에서 왔는지 시스템에 알리지 않았습니다.
