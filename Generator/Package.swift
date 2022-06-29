@@ -1,8 +1,8 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 import PackageDescription
 
 // Based on https://github.com/apple/swift-syntax#readme
-#if swift(>=5.6) && swift(<5.7)
+#if swift(>=5.6) && swift(<5.8)
 let swiftSyntaxVersion: Version = "0.50600.1"
 #elseif swift(>=5.5)
 let swiftSyntaxVersion: Version = "0.50500.0"
@@ -47,7 +47,7 @@ let package = Package(
             exclude: [
                 "Fixtures",
             ]),
-        .target(
+        .executableTarget(
             name: "needle",
             dependencies: [
                 "NeedleFramework",

@@ -26,8 +26,9 @@ class OutputSerializer: Serializer {
     /// - parameter imports: The list of import statements to include.
     /// - parameter headerDocContent: The content of the header doc to
     /// include at the top of the output file.
-    init(providers: [SerializedProvider], imports: [String], headerDocContent: String, needleVersionHash: String? = nil) {
+    init(providers: [SerializedProvider], dynamicProviders: [SerializedProvider], imports: [String], headerDocContent: String, needleVersionHash: String? = nil) {
         self.providers = providers
+        self.dynamicProviders = dynamicProviders
         self.imports = imports
         self.headerDocContent = headerDocContent
         self.needleVersionHash = needleVersionHash
@@ -61,6 +62,10 @@ class OutputSerializer: Serializer {
             }
             .joined()
 
+        let dynamicProvidersSection = dynamicProviders
+            .map { (provider: SerializedProvider) in provider.content }
+            .joined()
+    
         let traversalHelpers = (1...maxLevel).map { num in
             return """
             private func parent\(num)(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
@@ -119,8 +124,14 @@ class OutputSerializer: Serializer {
 
         // MARK: - Providers
 
+        #if !NEEDLE_DYNAMIC
+        
         \(providersSection)
-
+        #else
+        \(dynamicProvidersSection)
+        
+        #endif
+        
         private func factoryEmptyDependencyProvider(_ component: NeedleFoundation.Scope) -> AnyObject {
             return EmptyDependencyProvider(component: component)
         }
@@ -130,10 +141,15 @@ class OutputSerializer: Serializer {
             __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
         }
 
+        #if !NEEDLE_DYNAMIC
+        
         \(registrationHelpers)
-
+        #endif
+        
         public func registerProviderFactories() {
+        #if !NEEDLE_DYNAMIC
             \(registrationBody)
+        #endif
         }
 
         """
@@ -142,6 +158,7 @@ class OutputSerializer: Serializer {
     // MARK: - Private
 
     private let providers: [SerializedProvider]
+    private let dynamicProviders: [SerializedProvider]
     private let imports: [String]
     private let headerDocContent: String
     private let needleVersionHash: String?
