@@ -25,6 +25,12 @@ class BaseVisitor: SyntaxVisitor {
     var currentEntityNode: EntityNode?
     var currentDependencyProtocol: String?
     var imports: [String] = []
+
+    let filePath: String
+    
+    init(filePath: String) {
+        self.filePath = filePath
+    }
     
     /// Whether we are parsing the line of code which declares a Component.
     /// We need this flag to determine if the generic argument we parse later is for the Component.
@@ -39,9 +45,12 @@ class BaseVisitor: SyntaxVisitor {
     
     override func visitPost(_ node: VariableDeclSyntax) {
         guard let currentEntityName = currentEntityNode?.typeName else { return }
+        let isExtension = currentEntityNode is ExtensionDeclSyntax
+        let isPublic = node.isPublic || (isExtension && currentEntityNode?.isPublic == true)
         let isPrivate = node.isPrivate || currentEntityNode?.isPrivate == true
         let isFileprivate = node.isFileprivate || currentEntityNode?.isFileprivate == true
-        
+        let isInternal = !(isPublic || isPrivate || isFileprivate)
+
         let memberProperties = node.bindings.compactMap { pattern -> Property? in
             guard let propertyType = pattern.typeAnnotation?.type.description.trimmed,
                 let propertyName = pattern.firstToken?.text else {
@@ -51,7 +60,7 @@ class BaseVisitor: SyntaxVisitor {
                 info("\(currentEntityName) (\(propertyName): \(propertyType)) property is private/fileprivate, therefore inaccessible on DI graph.")
                 return nil
             } else {
-                return Property(name: propertyName, type: propertyType)
+                return Property(name: propertyName, type: propertyType, isInternal: isInternal)
             }
         }
         

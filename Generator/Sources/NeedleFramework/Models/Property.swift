@@ -23,6 +23,18 @@ struct Property: Hashable {
     let name: String
     /// The property type `String`.
     let type: String
+    /// If this properlty is internal
+    let isInternal: Bool
+    
+    init(name: String, type: String, isInternal: Bool = false) {
+        self.name = name
+        self.type = type
+        self.isInternal = isInternal
+    }
+
+    static func ==(lhs: Property, rhs: Property) -> Bool {
+        return lhs.name == rhs.name && lhs.type == rhs.type
+    }
 }
 
 /// A data model representing a single dependency property that has gone through

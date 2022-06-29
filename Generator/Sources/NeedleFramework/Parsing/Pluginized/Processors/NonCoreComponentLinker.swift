@@ -39,6 +39,9 @@ class NonCoreComponentLinker: Processor {
         var nonCoreMap = [String: ASTComponent]()
         for nonCoreComponent in nonCoreComponents {
             nonCoreMap[nonCoreComponent.name] = nonCoreComponent
+            if nonCoreComponent.isLeaf {
+                nonCoreComponent.isLeaf = false
+            }
         }
 
         for pluginizedComponent in pluginizedComponents {
@@ -46,6 +49,9 @@ class NonCoreComponentLinker: Processor {
                 throw GenericError.withMessage("Cannot find \(pluginizedComponent.data.name)'s non-core component with type name \(pluginizedComponent.nonCoreComponentType)")
             }
 
+            if pluginizedComponent.data.isLeaf {
+                pluginizedComponent.data.isLeaf = false
+            }
             pluginizedComponent.nonCoreComponent = nonCoreComponent
             nonCoreComponent.parents.append(pluginizedComponent.data)
         }
