@@ -23,7 +23,7 @@ struct Property: Hashable {
     let name: String
     /// The property type `String`.
     let type: String
-    /// If this properlty is internal
+    /// If this property is internal
     let isInternal: Bool
     
     init(name: String, type: String, isInternal: Bool = false) {
