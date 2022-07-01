@@ -49,6 +49,7 @@ final class DependencyProviderClassSerializer: Serializer {
         }
 
         return """
+        @MainActor
         private class \(classNameSerializer.serialize()): \(provider.unprocessed.dependency.name) {
         \(propertiesSerializer.serialize())
         \(sourceComponentsSerializer.serialize())

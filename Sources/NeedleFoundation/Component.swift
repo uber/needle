@@ -17,11 +17,13 @@
 import Foundation
 
 /// The base protocol of a dependency, enabling Needle's parsing process.
+@MainActor
 public protocol Dependency: AnyObject {}
 
 /// The base protocol of a DI scope. Application code should inherit
 /// from the `Component` base class, instead of using this protocol
 /// directly.
+@MainActor
 public protocol Scope: AnyObject {
     /// The path to reach this component on the dependnecy graph.
     var path: [String] { get }
@@ -35,6 +37,7 @@ public protocol Scope: AnyObject {
 /// contains a set of properties it provides to units of its scope as well
 /// as child scopes. A component instantiates child components that define
 /// child scopes.
+@MainActor
 @dynamicMemberLookup
 open class Component<DependencyType>: Scope {
 
