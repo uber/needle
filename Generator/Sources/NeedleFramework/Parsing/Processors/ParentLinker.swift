@@ -35,6 +35,7 @@ class ParentLinker: Processor {
             for typeName in component.expressionCallTypeNames {
                 if let childComponent = nameToComponent[typeName] {
                     childComponent.parents.append(component)
+                    component.isLeaf = false
                 }
             }
         }

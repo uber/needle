@@ -58,11 +58,10 @@ private final class Visitor: BaseVisitor {
     private(set) var components: [ASTComponent] = []
     
     private let sourceHash: String
-    private let filePath: String
     
     init(sourceHash: String, filePath: String) {
         self.sourceHash = sourceHash
-        self.filePath = filePath
+        super.init(filePath: filePath)
     }
     
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
