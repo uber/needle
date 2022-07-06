@@ -17,14 +17,14 @@
 import Foundation
 import SourceParsingFramework
 
-extension Regex {
+extension SourceParsingFramework.Regex {
 
     /// Creates a regular expression for any class that inherits from the
     /// NeedleFoundation module's base class with given name.
     ///
     /// - parameter className: The name of the base class to check.
     /// - returns: The regular expression.
-    static func foundationInheritanceRegex(forClass className: String) -> Regex {
+    static func foundationInheritanceRegex(forClass className: String) -> SourceParsingFramework.Regex {
         return Regex(": *(\(needleModuleName).)?\(className)")
     }
 
@@ -33,7 +33,7 @@ extension Regex {
     ///
     /// - parameter className: The name of the base generic class to check.
     /// - returns: The regular expression.
-    static func foundationGenericInheritanceRegex(forClass className: String) -> Regex {
+    static func foundationGenericInheritanceRegex(forClass className: String) -> SourceParsingFramework.Regex {
         return Regex(": *(\(needleModuleName).)?\(className) *<")
     }
 
@@ -42,7 +42,7 @@ extension Regex {
     ///
     /// - parameter className: The name of the base protocol to check.
     /// - returns: The regular expression.
-    static func foundationInheritanceRegex(forProtocol protocolName: String) -> Regex {
+    static func foundationInheritanceRegex(forProtocol protocolName: String) -> SourceParsingFramework.Regex {
         return Regex(": *(\(needleModuleName).)?\(protocolName)")
     }
 }

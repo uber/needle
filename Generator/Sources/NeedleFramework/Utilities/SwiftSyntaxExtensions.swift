@@ -50,6 +50,14 @@ protocol SyntaxNodeWithModifiers {
 }
 
 extension SyntaxNodeWithModifiers {
+    var isInternal: Bool {
+        modifiers?.first?.name.text == nil || modifiers?.first?.name.text == "internal"
+    }
+
+    var isPublic: Bool {
+        modifiers?.first?.name.text == "public"
+    }
+
     var isPrivate: Bool {
         modifiers?.first?.name.text == "private"
     }

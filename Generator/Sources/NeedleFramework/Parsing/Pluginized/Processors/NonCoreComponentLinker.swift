@@ -39,13 +39,16 @@ class NonCoreComponentLinker: Processor {
         var nonCoreMap = [String: ASTComponent]()
         for nonCoreComponent in nonCoreComponents {
             nonCoreMap[nonCoreComponent.name] = nonCoreComponent
+            // Non-core components cannot be considered leaves as the core component will be fetching items from them
+            nonCoreComponent.isLeaf = false
         }
 
         for pluginizedComponent in pluginizedComponents {
             guard let nonCoreComponent = nonCoreMap[pluginizedComponent.nonCoreComponentType] else {
                 throw GenericError.withMessage("Cannot find \(pluginizedComponent.data.name)'s non-core component with type name \(pluginizedComponent.nonCoreComponentType)")
             }
-
+            // Pluginized components cannot be considered leaves as the non-core component will be fetching items from them
+            pluginizedComponent.data.isLeaf = false
             pluginizedComponent.nonCoreComponent = nonCoreComponent
             nonCoreComponent.parents.append(pluginizedComponent.data)
         }

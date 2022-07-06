@@ -23,6 +23,8 @@ struct Component: Equatable {
     let name: String
     /// Indicates if this component is the root of a dependency graph.
     let isRoot: Bool
+    /// Indicates if this component has any children or not.
+    let isLeaf: Bool
     /// A list of properties this component instantiates, thereby provides.
     let properties: [Property]
     /// A list of parent components.
@@ -43,6 +45,8 @@ class ASTComponent {
     let dependencyProtocolName: String
     /// Indicates if this component is the root of a dependency graph.
     let isRoot: Bool
+    /// Indicates if this component has any children or not.
+    var isLeaf: Bool
     /// The  hash of the source file where this ASTComponent was declared
     let sourceHash: String
     /// The path the source file where this ASTComponent was declared
@@ -61,7 +65,7 @@ class ASTComponent {
         let parentValues = parents.map { (parent: ASTComponent) -> Component in
             parent.valueType
         }
-        return Component(name: name, isRoot: isRoot, properties: properties, parents: parentValues, dependency: dependencyProtocol!)
+        return Component(name: name, isRoot: isRoot, isLeaf: isLeaf, properties: properties, parents: parentValues, dependency: dependencyProtocol!)
     }
 
     /// Initializer.
@@ -69,6 +73,7 @@ class ASTComponent {
         self.name = name
         self.dependencyProtocolName = dependencyProtocolName
         self.isRoot = isRoot
+        self.isLeaf = true
         self.sourceHash = sourceHash
         self.filePath = filePath
         self.properties = properties

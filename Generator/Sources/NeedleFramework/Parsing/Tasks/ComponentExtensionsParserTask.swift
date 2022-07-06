@@ -41,7 +41,7 @@ class ComponentExtensionsParserTask: AbstractTask<ComponentExtensionNode> {
     override func execute() throws -> ComponentExtensionNode {
         var extensions = [ASTComponentExtension]()
         
-        let visitor = Visitor(componentNames: componentNames)
+        let visitor = Visitor(componentNames: componentNames, filePath: ast.filePath)
         visitor.walk(ast.sourceFileSyntax)
         extensions = visitor.extensions
         
@@ -59,8 +59,9 @@ private final class Visitor: BaseVisitor {
     
     private let componentNames: [String]
     
-    init(componentNames: [String]) {
+    init(componentNames: [String], filePath: String) {
         self.componentNames = componentNames
+        super.init(filePath: filePath)
     }
     
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
