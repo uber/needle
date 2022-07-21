@@ -43,6 +43,10 @@ public protocol NonCoreScope: AnyObject {
     /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     func scopeDidBecomeInactive()
+
+    #if NEEDLE_DYNAMIC
+    func check<T>(property: String) -> T?
+    #endif
 }
 
 /// The base non-core component class. All non-core components should inherit
@@ -53,7 +57,11 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreS
     ///
     /// - parameter parent: The parent component of this component.
     public required override init(parent: Scope) {
+        #if NEEDLE_DYNAMIC
+        super.init(parent: parent, nonCore: true)
+        #else
         super.init(parent: parent)
+        #endif
     }
 
     /// Indicate the corresponding core scope has become active, thereby
@@ -71,4 +79,17 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreS
     /// is paired with a `PluginizableComponent` that is bound to a lifecycle.
     /// Otherwise, this method must be explicitly invoked.
     open func scopeDidBecomeInactive() {}
+
+    #if NEEDLE_DYNAMIC
+    public func check<T>(property: String) -> T? {
+        print("CHECK NC", self, property)
+        guard let itemCloure = localTable[property] else {
+            return nil
+        }
+        guard let result = itemCloure() as? T else {
+            fatalError("Incorrect type for \(property) found in the lookup table")
+        }
+        return result
+    }
+    #endif
 }

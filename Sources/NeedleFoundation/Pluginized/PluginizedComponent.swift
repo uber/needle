@@ -23,6 +23,7 @@ import Foundation
 /// - note: A separate protocol is used to allow the consumer to declare
 /// a pluginized component generic without having to specify the nested
 /// generics.
+/// @CreateMock
 public protocol PluginizedScope: Scope {
     /// Bind the pluginized component to the given lifecycle. This ensures
     /// the associated non-core component is notified and released according
@@ -41,13 +42,57 @@ public protocol PluginizedScope: Scope {
 /// The base protocol of a plugin extension, enabling Needle's parsing process.
 public protocol PluginExtension: AnyObject {}
 
+#if NEEDLE_DYNAMIC
+
+public protocol ExtensionRegistration {
+    func registerExtensionItems()
+}
+
+@dynamicMemberLookup
+public class PluginExtensionProvider<DependencyType, PluginExtensionType, NonCoreComponent: NonCoreScope> {
+    
+    /// The parent component of this provider.
+    public let component: PluginizedComponent<DependencyType, PluginExtensionType, NonCoreComponent>
+    
+    init(component: PluginizedComponent<DependencyType, PluginExtensionType, NonCoreComponent>) {
+        self.component = component
+    }
+
+    public func find<T>(property: String) -> T {
+        // Plugin extension protocols don't allow you to "walk" up the tree, just check at the same level
+        guard let nonCore = (component.nonCoreComponent as? NonCoreScope) else {
+            fatalError("Non-core component of incorrect type: \(type(of: component.nonCoreComponent))")
+        }
+        guard let result: T = nonCore.check(property: property) else {
+            fatalError("Property \(property) not found in non-core compoenent \(nonCore)")
+        }
+        return result
+    }
+
+    public subscript<T>(dynamicMember keyPath: KeyPath<PluginExtensionType, T>) -> T {
+        guard let propertyName = component.extensionToName[keyPath] else {
+             fatalError("Cound not find \(keyPath) in lookup table")
+        }
+        print("FIND3", self, propertyName)
+        return find(property: propertyName)
+    }
+
+}
+
+#endif
+
 /// The base pluginized component class. All core components that involve
 /// plugins should inherit from this class.
 open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreComponent: NonCoreScope>: Component<DependencyType>, PluginizedScope {
 
     /// The plugin extension granting access to plugin points provided by
     /// the corresponding non-core component of this component.
+
+    #if NEEDLE_DYNAMIC
+    public private(set) var pluginExtension: PluginExtensionProvider<DependencyType, PluginExtensionType, NonCoreComponent>!
+    #else
     public private(set) var pluginExtension: PluginExtensionType!
+    #endif
 
     /// The type-erased non-core component instance. Subclasses should not
     /// directly access this property.
@@ -65,9 +110,18 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
     ///
     /// - parameter parent: The parent component of this component.
     public override init(parent: Scope) {
+        #if NEEDLE_DYNAMIC
+        super.init(parent: parent, nonCore: true)
+        releasableNonCoreComponent = NonCoreComponent(parent: self)
+        if let registerable = self as? ExtensionRegistration {
+            registerable.registerExtensionItems()
+        }
+        pluginExtension = PluginExtensionProvider(component: self)
+        #else
         super.init(parent: parent)
         releasableNonCoreComponent = NonCoreComponent(parent: self)
         pluginExtension = createPluginExtensionProvider()
+        #endif
     }
 
     /// Bind the pluginized component to the given lifecycle. This ensures
@@ -124,6 +178,35 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
         }
     }
 
+    #if NEEDLE_DYNAMIC
+    
+    public var extensionToName = [PartialKeyPath<PluginExtensionType>:String]()
+
+    override public func find<T>(property: String, skipThisLevel: Bool) -> T {
+        print("CHECK P", self, property, skipThisLevel)
+        if let itemCloure = localTable[property] {
+            guard let result = itemCloure() as? T else {
+                fatalError("Incorrect type for \(property) found lookup table")
+            }
+            return result
+        } else {
+            if let releasableNonCoreComponent = releasableNonCoreComponent, !skipThisLevel, let result: T = releasableNonCoreComponent.check(property: property) {
+                return result
+            } else {
+                return parent.find(property: property, skipThisLevel: false)
+            }
+        }
+    }
+
+    public subscript<T>(dynamicMember keyPath: KeyPath<PluginExtensionType, T>) -> T {
+        guard let propertyName = extensionToName[keyPath] else {
+             fatalError("Cound not find \(keyPath) in lookup table")
+        }
+        return find(property: propertyName, skipThisLevel: false)
+    }
+    
+    #endif
+    
     deinit {
         guard let lifecycleObserverDisposable = lifecycleObserverDisposable else {
             // This occurs with improper usages of a pluginized component. It
