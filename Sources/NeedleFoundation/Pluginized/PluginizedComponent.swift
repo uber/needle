@@ -73,7 +73,6 @@ public class PluginExtensionProvider<DependencyType, PluginExtensionType, NonCor
         guard let propertyName = component.extensionToName[keyPath] else {
              fatalError("Cound not find \(keyPath) in lookup table")
         }
-        print("FIND3", self, propertyName)
         return find(property: propertyName)
     }
 
@@ -183,7 +182,6 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
     public var extensionToName = [PartialKeyPath<PluginExtensionType>:String]()
 
     override public func find<T>(property: String, skipThisLevel: Bool) -> T {
-        print("CHECK P", self, property, skipThisLevel)
         if let itemCloure = localTable[property] {
             guard let result = itemCloure() as? T else {
                 fatalError("Incorrect type for \(property) found lookup table")

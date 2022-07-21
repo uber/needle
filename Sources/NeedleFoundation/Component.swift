@@ -67,7 +67,6 @@ public class DependencyProvider<DependencyType> {
         guard let propertyName = component.keyPathToName[keyPath] else {
              fatalError("Cound not find \(keyPath) in lookup table")
         }
-        print("FIND2", self, propertyName)
         return find(property: propertyName)
     }
 
@@ -155,7 +154,6 @@ open class Component<DependencyType>: Scope {
     }
 
     public func find<T>(property: String, skipThisLevel: Bool) -> T {
-        print("CHECK C", self, property, skipThisLevel)
         guard let itemCloure = localTable[property] else {
             return parent.find(property: property, skipThisLevel: false)
         }

@@ -82,7 +82,6 @@ open class NonCoreComponent<DependencyType>: Component<DependencyType>, NonCoreS
 
     #if NEEDLE_DYNAMIC
     public func check<T>(property: String) -> T? {
-        print("CHECK NC", self, property)
         guard let itemCloure = localTable[property] else {
             return nil
         }
