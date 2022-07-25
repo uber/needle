@@ -54,6 +54,12 @@ open class BootstrapComponent: Component<EmptyDependency> {
             fatalError("BootstrapComponent does not have a parent, do not use this property.")
         }
 
+        #if NEEDLE_DYNAMIC
+        func find<T>(property: String, skipThisLevel: Bool) -> T {
+            fatalError("Unable to find \(property) anywhere along the path to the root")
+        }
+        #endif
+        
         fileprivate init() {}
     }
 }
