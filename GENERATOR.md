@@ -8,13 +8,15 @@ Needle code generator is a command-line utility that generates Swift source code
 
 ## Compile-time safety
 
-One of the biggest advantages of Needle, over other DI frameworks, is its compile-time safety guarantees. If a dependency required by a `Component` cannot be fulfilled by any of its reachable ancestor `Component`s, the generated Swift code will fail to compile. In this case Needle's generator returns an error describing the specific unsatisfied dependency. For example, `Could not find a provider for (scoreStream: MyScoreStream) which was required by ScoreSheetDependency, along the DI branch of RootComponent->LoggedInComponent->ScoreSheetComponent.`
+One of the biggest advantages of Needle over other DI frameworks, is its compile-time safety guarantees. If a dependency required by a `Component` cannot be fulfilled by any of its reachable ancestor `Component`s, the generated Swift code will fail to compile. In this case Needle's generator returns an error describing the specific unsatisfied dependency. For example, `Could not find a provider for (scoreStream: MyScoreStream) which was required by ScoreSheetDependency, along the DI branch of RootComponent->LoggedInComponent->ScoreSheetComponent.`
 
 When integrated with Xcode, as described below, Xcode build will fail in case a dependency cannot be fulfilled. This allows a quick feedback and iteration cycle when developing features. Without running the app, developers can debug where the DI graph might be incorrect. With this guarantee, developers can write and modify DI code with confidence. If the Xcode build succeeds, the changes to DI code are correct.
 
 ## High-level algorithm overview
 
-From a very high-level, the generator runs in 5 stages. First, the generator parses all the source Swift files, written by developers, using SourceKit via [SourceKittenFramework](https://github.com/jpsim/SourceKitten). This allows the generator to produce an in-memory cache of all the `Component` nodes as well as their `Dependency` protocols that represent the vertices of the DI graph.
+From a very high-level, the generator runs in 5 stages. 
+
+First, the generator parses all the source Swift files, written by developers, using SourceKit via [SourceKitten](https://github.com/jpsim/SourceKitten) framework. This allows the generator to produce an in-memory cache of all the `Component` nodes as well as their `Dependency` protocols that represent the vertices of the DI graph.
 
 Second, the generator links together the parent-child relationships of all the `Component` nodes. It does this by looking at which `Component` instantiates which other `Component`.
 ```swift
@@ -26,11 +28,11 @@ class LoggedInComponent: Component<LoggedInDependency> {
 ```
 Needle's generator parses the above Swift code and deduces that `LoggedInComponent` is the parent of `GameComponent`.
 
-Third, for each `Component`'s dependency declared in its `Dependency` protocol, the generator traverses upwards, starting from the said `Component`, to visit all its ancestor `Component`s in search for the dependency object. A match is only found when both the property's variable name **and** its type are matched. Because the generator traverses upwards, the lowest level and therefore the closest match is always used, when viewed with the root of the DI graph at the top. This is the stage if a dependency cannot be fulfilled, the generator exists with an error described in the section above. As fulfillments are found, the generator stores the paths in memory to be used in the next stage.
+Third, for each `Component`'s dependency declared in its `Dependency` protocol, the generator traverses upwards, starting from said `Component`, to visit all its ancestor `Component`s in search for the dependency object. A match is only found when both the property's variable name **and** its type are matched. Because the generator traverses upwards, the lowest level and therefore the closest match is always used, when viewed with the root of the DI graph at the top. This is the stage where if a dependency cannot be fulfilled, the generator exits with an error described in the section above. As fulfillments are found, the generator stores the paths in memory to be used in the next stage.
 
 During the fourth stage, the generator produces a `DependencyProvider` class that conforms to the `Dependency` protocol of a `Component`, to provide the dependencies via the paths found in the previous stage. These generated classes also provide a second-level of compile-time safety. If for whatever reason the previous stage incorrectly produced a path, the generated `DependencyProvider` class will not compile since its conformance to the `Dependency` protocol would have been invalid. For each produced `DependencyProvider`, a piece of provider registration code is also generated for the DI graph path that leads to the `Component` the provider provides for. This is where the method `registerProviderFactories` is from when we discussed Needle's [API](./API.md).
 
-Finally at the fifth and last stage, all the generated `DependencyProvider` classes along with their registration code are serialized to a Swift file. This Swift file should be included in the Xcode project just like any other source file.
+Finally, at the fifth and last stage, all the generated `DependencyProvider` classes along with their registration code are serialized to a Swift file. This Swift file should be included in the Xcode project just like any other source file.
 
 ## Installation
 
@@ -53,7 +55,7 @@ Once installed the generator binary can be executed directly as `$ needle versio
 
 ## Xcode integration
 
-Even though Needle's generator can be invoked from the commandline, it is most convenient when it's directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.
+Even though Needle's generator can be invoked from the command line, it's most convenient when directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.
 
 1. Download the latest generator binary, either manually from the [Releases page](https://github.com/uber/needle/releases), or using [Carthage](https://github.com/Carthage/Carthage) or [Homebrew](https://github.com/Homebrew/brew).
 2. Add a "Run Script" phase in the application's executable target's "Build Phases" section. ![](Images/build_phases.jpeg)
