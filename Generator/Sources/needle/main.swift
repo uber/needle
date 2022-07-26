@@ -14,43 +14,21 @@
 //  limitations under the License.
 //
 
-import TSCBasic
-import CommandFramework
+import ArgumentParser
 import Foundation
 import NeedleFramework
-import SourceParsingFramework
-import TSCUtility
 
-func main() {
-    let parser = ArgumentParser(usage: "<subcommand> <options>", overview: "Needle DI code generator.")
-    let commands = initializeCommands(with: parser)
-    let inputs = Array(CommandLine.arguments.dropFirst())
-    do {
-        let args = try parser.parse(inputs)
-        execute(commands, with: parser, args)
-    } catch (let e) {
-        error("Command-line pasing error (use --help for help): \(e)")
-    }
+struct Needle: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        abstract: "Needle DI code generator",
+        subcommands: [
+            Generate.self,
+            PrintDependencyTree.self,
+            Version.self,
+        ]
+    )
+
+    static let defaultTimeout: TimeInterval = 30.0
 }
 
-private func initializeCommands(with parser: ArgumentParser) -> [Command] {
-    return [
-        VersionCommand(parser: parser),
-        GenerateCommand(parser: parser),
-        PrintDependencyTreeCommand(parser: parser)
-    ]
-}
-
-private func execute(_ commands: [Command], with parser: ArgumentParser, _ args: ArgumentParser.Result) {
-    if let subparserName = args.subparser(parser) {
-        for command in commands {
-            if subparserName == command.name {
-                command.execute(with: args)
-            }
-        }
-    } else {
-        parser.printUsage(on: stdoutStream)
-    }
-}
-
-main()
+Needle.main()

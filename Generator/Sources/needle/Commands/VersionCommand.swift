@@ -14,26 +14,13 @@
 //  limitations under the License.
 //
 
-import CommandFramework
-import Foundation
-import NeedleFramework
-import TSCUtility
+import ArgumentParser
 
 /// A command that returns the current version of the generator.
-class VersionCommand: AbstractCommand {
+struct Version: ParsableCommand {
+    static let configuration = CommandConfiguration(abstract: "The version of this generator.")
 
-    /// Initializer.
-    ///
-    /// - parameter parser: The argument parser to use.
-    init(parser: ArgumentParser) {
-        super.init(name: "version", overview: "The version of this generator.", parser: parser)
-    }
-
-    /// Execute the command.
-    ///
-    /// - parameter arguments: The command line arguments to execute the
-    /// command with.
-    override func execute(with arguments: ArgumentParser.Result) {
+    mutating func run() throws {
         print(version)
     }
 }

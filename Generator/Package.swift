@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.2
 import PackageDescription
 
 // Based on https://github.com/apple/swift-syntax#readme
@@ -15,13 +15,12 @@ let swiftSyntaxVersion: Version = "0.50200.0"
 #endif
 
 var needleDependencies: Array<Target.Dependency> = [
-    "SwiftToolsSupport-auto",
-    "Concurrency",
-    "SourceParsingFramework",
-    "SwiftSyntax",
+    .product(name: "Concurrency", package: "swift-concurrency"),
+    .product(name: "SourceParsingFramework", package: "swift-common"),
+    .product(name: "SwiftSyntax", package: "swift-syntax"),
 ]
 #if swift(>=5.6)
-needleDependencies.append("SwiftSyntaxParser")
+needleDependencies.append(.product(name: "SwiftSyntaxParser", package: "swift-syntax"))
 #endif
 
 let package = Package(
@@ -31,7 +30,7 @@ let package = Package(
         .library(name: "NeedleFramework", targets: ["NeedleFramework"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-tools-support-core", .upToNextMajor(from: "0.1.5")),
+        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMinor(from: "1.1.3")),
         .package(url: "https://github.com/uber/swift-concurrency.git", .upToNextMajor(from: "0.6.5")),
         .package(url: "https://github.com/uber/swift-common.git", .exact("0.5.0")),
         .package(url: "https://github.com/apple/swift-syntax.git", .exact(swiftSyntaxVersion)),
@@ -51,7 +50,7 @@ let package = Package(
             name: "needle",
             dependencies: [
                 "NeedleFramework",
-                "CommandFramework",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]),
     ],
     swiftLanguageVersions: [.v5]
