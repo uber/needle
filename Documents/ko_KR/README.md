@@ -4,7 +4,7 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Needle은 Swift의 의존성 주입(DI; Dependency Injection) 시스템입니다. [Cleanse](https://github.com/square/Cleanse), [Swinject](https://github.com/Swinject/Swinject)와 같은 다른 DI 프레임워크와 달리 Needle은 **계층적 DI 구조를 장려하고 코드 생성을 활용하여 컴파일 시간 안전성을 보장합니다.** 이를 통해 우리는 확시을 갖고 앱을 개발하고 코드를 변경할 수 있습니다. **컴파일이 되면 동작합니다.** 이런 면에서 Needle은 [Dagger for JVM](https://google.github.io/dagger/)과 비슷합니다.
+Needle은 Swift의 의존성 주입(DI; Dependency Injection) 시스템입니다. [Cleanse](https://github.com/square/Cleanse), [Swinject](https://github.com/Swinject/Swinject)와 같은 다른 DI 프레임워크와 달리 Needle은 **계층적 DI 구조를 장려하고 코드 생성을 활용하여 컴파일 시간 안전성을 보장합니다.** 이를 통해 우리는 확신을 갖고 앱을 개발하고 코드를 변경할 수 있습니다. **컴파일이 되면 동작합니다.** 이런 면에서 Needle은 [Dagger for JVM](https://google.github.io/dagger/)과 비슷합니다.
 
 Needle은 다음과 같은 주요 목표를 달성하는 것을 목표로 합니다.
 
