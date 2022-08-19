@@ -47,7 +47,7 @@ let package = Package(
             exclude: [
                 "Fixtures",
             ]),
-        .executableTarget(
+        .target(
             name: "needle",
             dependencies: [
                 "NeedleFramework",
