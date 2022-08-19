@@ -15,13 +15,13 @@ let swiftSyntaxVersion: Version = "0.50200.0"
 #endif
 
 var needleDependencies: Array<Target.Dependency> = [
-    "SwiftToolsSupport-auto",
-    "Concurrency",
-    "SourceParsingFramework",
-    "SwiftSyntax",
+    .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core"),
+    .product(name: "Concurrency", package: "swift-concurrency"),
+    .product(name: "SourceParsingFramework", package: "swift-common"),
+    .product(name: "SwiftSyntax", package: "swift-syntax"),
 ]
 #if swift(>=5.6)
-needleDependencies.append("SwiftSyntaxParser")
+needleDependencies.append(.product(name: "SwiftSyntaxParser", package: "swift-syntax"))
 #endif
 
 let package = Package(
@@ -47,11 +47,11 @@ let package = Package(
             exclude: [
                 "Fixtures",
             ]),
-        .target(
+        .executableTarget(
             name: "needle",
             dependencies: [
                 "NeedleFramework",
-                "CommandFramework",
+                .product(name: "CommandFramework", package: "swift-common")
             ]),
     ],
     swiftLanguageVersions: [.v5]
