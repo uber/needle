@@ -48,14 +48,17 @@ class PluginizedDependencyGraphExporter {
     func export(_ components: [Component], _ pluginizedComponents: [PluginizedComponent], with imports: [String], to path: String, using executor: SequenceExecutor, withTimeout timeout: TimeInterval, include headerDocPath: String?, needleVersionHash: String?) throws {
         // Enqueue tasks.
         let dependencyProviderHandleTuples = enqueueExportDependencyProviders(for: components, pluginizedComponents, using: executor)
+        let dynamicDependencyProviderHandleTuples = enqueueExportDynamicDependencyProviders(for: components, pluginizedComponents, using: executor)
         let pluginExtensionHandleTuples = enqueueExportPluginExtensions(for: pluginizedComponents, using: executor)
+        let dynamicpluginExtensionHandleTuples = enqueueExportDynamicPluginExtensions(for: pluginizedComponents, using: executor)
         let headerDocContentHandle = enqueueLoadHeaderDoc(from: headerDocPath, using: executor)
 
         // Wait for execution to complete.
         let serializedProviders = try awaitSerialization(using: dependencyProviderHandleTuples + pluginExtensionHandleTuples, withTimeout: timeout)
+        let serializedDynamicProviders = try awaitSerialization(using: dynamicDependencyProviderHandleTuples + dynamicpluginExtensionHandleTuples, withTimeout: timeout)
         let headerDocContent = try headerDocContentHandle?.await(withTimeout: timeout) ?? ""
 
-        let fileContents = OutputSerializer(providers: serializedProviders, imports: imports, headerDocContent: headerDocContent, needleVersionHash: needleVersionHash).serialize()
+        let fileContents = OutputSerializer(providers: serializedProviders, dynamicProviders: serializedDynamicProviders, imports: imports, headerDocContent: headerDocContent, needleVersionHash: needleVersionHash).serialize()
         let currentFileContents = try? String(contentsOfFile: path, encoding: .utf8)
         guard currentFileContents != fileContents else {
             info("Not writing the file as content is unchanged")
@@ -104,10 +107,50 @@ class PluginizedDependencyGraphExporter {
         return taskHandleTuples
     }
 
+    private func enqueueExportDynamicDependencyProviders(for components: [Component], _ pluginizedComponents: [PluginizedComponent], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<[SerializedProvider]>, String)] {
+        let pluginizedData = pluginizedComponents.map { (component: PluginizedComponent) -> Component in
+            component.data
+        }
+        let allComponents = components + pluginizedData
+
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedProvider]>, componentName: String)]()
+        for component in allComponents {
+            let initialTask = DependencyProviderDeclarerTask(component: component)
+            let taskHandle = executor.executeSequence(from: initialTask) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[SerializedProvider]> in
+                if currentTask is DependencyProviderDeclarerTask, let providers = currentResult as? [DependencyProvider] {
+                    return .continueSequence(PluginizedDependencyProviderContentTask(providers: providers, pluginizedComponents: pluginizedComponents))
+                } else if currentTask is PluginizedDependencyProviderContentTask, let processedProviders = currentResult as? [PluginizedProcessedDependencyProvider] {
+                    return .continueSequence(PluginizedDynamicDependencyProviderSerializerTask(component: component, providers: processedProviders))
+                } else if currentTask is PluginizedDynamicDependencyProviderSerializerTask, let serializedProviders = currentResult as? [SerializedProvider] {
+                    return .endOfSequence(serializedProviders)
+                } else {
+                    error("Unhandled task \(currentTask) with result \(currentResult)")
+                }
+            }
+            taskHandleTuples.append((taskHandle, component.name))
+        }
+
+        return taskHandleTuples
+    }
+
+    
     private func enqueueExportPluginExtensions(for pluginizedComponents: [PluginizedComponent], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<[SerializedProvider]>, String)] {
         var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedProvider]>, pluginExtensionName: String)]()
         for component in pluginizedComponents {
             let task = PluginExtensionSerializerTask(component: component)
+            let taskHandle = executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[SerializedProvider]> in
+                return .endOfSequence([currentResult as! SerializedProvider])
+            }
+            taskHandleTuples.append((taskHandle, component.pluginExtension.name))
+        }
+
+        return taskHandleTuples
+    }
+
+    private func enqueueExportDynamicPluginExtensions(for pluginizedComponents: [PluginizedComponent], using executor: SequenceExecutor) -> [(SequenceExecutionHandle<[SerializedProvider]>, String)] {
+        var taskHandleTuples = [(handle: SequenceExecutionHandle<[SerializedProvider]>, pluginExtensionName: String)]()
+        for component in pluginizedComponents {
+            let task = PluginExtensionDynamicSerializerTask(component: component)
             let taskHandle = executor.executeSequence(from: task) { (currentTask: Task, currentResult: Any) -> SequenceExecution<[SerializedProvider]> in
                 return .endOfSequence([currentResult as! SerializedProvider])
             }
