@@ -30,7 +30,7 @@ Needle 코드 제너레이터는 개발자가 작성한 Swift DI 코드를 구�
 
 3. `Dependency` 프로토콜에 선언된 각 `Component`의 의존성에 대해, 제너레이터는 해당 `Component`에서 시작하여 위쪽으로 이동하며 의존성 객체를 찾기 위해 모든 상위 `Component`를 방문합니다. 의존성 객체는 속성의 변수 이름 및 유형이 **모두** 일치하는 경우에만 발견됩니다. 제너레이터는 위쪽으로 이동하기 때문에 맨 위에 있는 DI 그래프의 루트에서 볼 때 가장 낮은 수준과 가장 가까운 의존성 객체가 항상 사용됩니다. 이 단계에서 의존성을 충족하는 객체를 찾을 수 없는 경우, 제너레이터는 위 섹션에서 설명한 것과 같은 형태의 오류를 반환합니다. 의존성을 충족하는 객체가 발견되면 제너레이터는 다음 단계에서 사용할 경로를 메모리에 저장합니다.
 
-4. 제너레이터는 `Component`의 `Dependency` 프로토콜을 준수하는 `DependencyProvider` 클래스를 생성하여 이전 단계에서 찾은 경로를 통해 의존성을 제공합니다. 이렇게 생성된 클래스는 두 번째 수준의 컴파일 시간 안전성도 제공합니다. 어떤 이유로든 이전 단계에서 경로가 잘못 생성된 경우, 생성된 `DependencyProvider`클래스는 `Dependency` 프로토콜 따르지 않기 때문에 컴파일되지 않습니다. 생성된 각 `DependencyProvider`에 대해 provider가 제공하는 `Component`로 연결되는 DI 그래프 경로에 대한 provider 등록 코드도 생성됩니다. 이것은 우리가 Needle의 [API](./API.md)에서 이야기하는 `registerProviderFactories` 메소드의 출처입니다.
+4. 제너레이터는 `Component`의 `Dependency` 프로토콜을 준수하는 `DependencyProvider` 클래스를 생성하여 이전 단계에서 찾은 경로를 통해 의존성을 제공합니다. 이렇게 생성된 클래스는 두 번째 수준의 컴파일 시간 안전성도 제공합니다. 어떤 이유로든 이전 단계에서 경로가 잘못 생성된 경우, 생성된 `DependencyProvider`클래스는 `Dependency` 프로토콜을 따르지 않기 때문에 컴파일되지 않습니다. 생성된 각 `DependencyProvider`에 대해 provider가 제공하는 `Component`로 연결되는 DI 그래프 경로에 대한 provider 등록 코드도 생성됩니다. 이것은 우리가 Needle의 [API](./API.md)에서 이야기하는 `registerProviderFactories` 메소드의 출처입니다.
 
 5. 생성된 모든 `DependencyProvider` 클래스는 등록 코드와 함께 Swift 파일로 생성됩니다. 이 Swift 파일은 다른 소스 파일과 마찬가지로 Xcode 프로젝트에 포함되어야 합니다.
 
