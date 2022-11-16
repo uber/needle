@@ -101,7 +101,7 @@ class OutputSerializer: Serializer {
                     .trimmingCharacters(in: .whitespacesAndNewlines)
                 let regNum = ($0 / linesPerHelper) + 1
                 registrationHelperFuncs.append("""
-                private func register\(regNum)() {
+                @inline(never) private func register\(regNum)() {
                     \(helperBody)
                 }
                 """)
