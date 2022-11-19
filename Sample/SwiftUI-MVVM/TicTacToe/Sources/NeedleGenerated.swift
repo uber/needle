@@ -20,33 +20,21 @@ import SwiftUI
 // swiftlint:disable unused_declaration
 private let needleDependenciesHash : String? = nil
 
-// MARK: - Registration
+// MARK: - Traversal Helpers
 
-public func registerProviderFactories() {
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent") { component in
-        return GameDependency1ab5926a977f706d3195Provider(component: component)
-    }
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent") { component in
-        return ScoreSheetDependency97f2595a691a56781aaaProvider(component: component)
-    }
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent->ScoreSheetComponent") { component in
-        return ScoreSheetDependencycbd7fa4bae2ee69a1926Provider(component: component)
-    }
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedOutComponent") { component in
-        return LoggedOutDependencyacada53ea78d270efa2fProvider(component: component)
-    }
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent->LoggedInComponent") { component in
-        return EmptyDependencyProvider(component: component)
-    }
-    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: "^->RootComponent") { component in
-        return EmptyDependencyProvider(component: component)
-    }
-    
+private func parent1(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent
+}
+
+private func parent2(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
+    return component.parent.parent
 }
 
 // MARK: - Providers
 
-private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
+#if !NEEDLE_DYNAMIC
+
+private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
     }
@@ -61,12 +49,10 @@ private class GameDependency1ab5926a977f706d3195BaseProvider: GameDependency {
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent
-private class GameDependency1ab5926a977f706d3195Provider: GameDependency1ab5926a977f706d3195BaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInComponent: component.parent as! LoggedInComponent, rootComponent: component.parent.parent as! RootComponent)
-    }
+private func factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return GameDependency1ab5926a977f706d3195Provider(loggedInComponent: parent1(component) as! LoggedInComponent, rootComponent: parent2(component) as! RootComponent)
 }
-private class ScoreSheetDependency97f2595a691a56781aaaBaseProvider: ScoreSheetDependency {
+private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency {
     var scoreStream: ScoreStream {
         return loggedInComponent.scoreStream
     }
@@ -76,18 +62,14 @@ private class ScoreSheetDependency97f2595a691a56781aaaBaseProvider: ScoreSheetDe
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent
-private class ScoreSheetDependency97f2595a691a56781aaaProvider: ScoreSheetDependency97f2595a691a56781aaaBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInComponent: component.parent.parent as! LoggedInComponent)
-    }
+private func factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return ScoreSheetDependency97f2595a691a56781aaaProvider(loggedInComponent: parent2(component) as! LoggedInComponent)
 }
 /// ^->RootComponent->LoggedInComponent->ScoreSheetComponent
-private class ScoreSheetDependencycbd7fa4bae2ee69a1926Provider: ScoreSheetDependency97f2595a691a56781aaaBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(loggedInComponent: component.parent as! LoggedInComponent)
-    }
+private func factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return ScoreSheetDependency97f2595a691a56781aaaProvider(loggedInComponent: parent1(component) as! LoggedInComponent)
 }
-private class LoggedOutDependencyacada53ea78d270efa2fBaseProvider: LoggedOutDependency {
+private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
     }
@@ -97,8 +79,67 @@ private class LoggedOutDependencyacada53ea78d270efa2fBaseProvider: LoggedOutDepe
     }
 }
 /// ^->RootComponent->LoggedOutComponent
-private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependencyacada53ea78d270efa2fBaseProvider {
-    init(component: NeedleFoundation.Scope) {
-        super.init(rootComponent: component.parent as! RootComponent)
+private func factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return LoggedOutDependencyacada53ea78d270efa2fProvider(rootComponent: parent1(component) as! RootComponent)
+}
+
+#else
+extension GameComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\GameDependency.mutableScoreStream] = "mutableScoreStream-MutableScoreStream"
+        keyPathToName[\GameDependency.playersStream] = "playersStream-PlayersStream"
+
     }
+}
+extension ScoreSheetComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\ScoreSheetDependency.scoreStream] = "scoreStream-ScoreStream"
+    }
+}
+extension LoggedOutComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\LoggedOutDependency.mutablePlayersStream] = "mutablePlayersStream-MutablePlayersStream"
+    }
+}
+extension LoggedInComponent: Registration {
+    public func registerItems() {
+
+
+    }
+}
+extension RootComponent: Registration {
+    public func registerItems() {
+
+
+    }
+}
+
+
+#endif
+
+private func factoryEmptyDependencyProvider(_ component: NeedleFoundation.Scope) -> AnyObject {
+    return EmptyDependencyProvider(component: component)
+}
+
+// MARK: - Registration
+private func registerProviderFactory(_ componentPath: String, _ factory: @escaping (NeedleFoundation.Scope) -> AnyObject) {
+    __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
+}
+
+#if !NEEDLE_DYNAMIC
+
+@inline(never) private func register1() {
+    registerProviderFactory("^->RootComponent->LoggedInComponent->GameComponent", factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
+    registerProviderFactory("^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent", factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1)
+    registerProviderFactory("^->RootComponent->LoggedInComponent->ScoreSheetComponent", factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3)
+    registerProviderFactory("^->RootComponent->LoggedOutComponent", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
+    registerProviderFactory("^->RootComponent->LoggedInComponent", factoryEmptyDependencyProvider)
+    registerProviderFactory("^->RootComponent", factoryEmptyDependencyProvider)
+}
+#endif
+
+public func registerProviderFactories() {
+#if !NEEDLE_DYNAMIC
+    register1()
+#endif
 }

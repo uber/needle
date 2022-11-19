@@ -142,8 +142,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				19EF7EC820C855FC005099BA /* TicTacToeIntegrations.framework in Embed Frameworks */,
-				191B41FA20C73BE80052C6CE /* ScoreSheet.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,10 +218,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D350108C25B0C576000953FA /* SnapKit in Frameworks */,
-				191B41F920C73BE80052C6CE /* ScoreSheet.framework in Frameworks */,
 				D350109525B0C5E8000953FA /* RxCocoa in Frameworks */,
 				D350109325B0C5E8000953FA /* RxSwift in Frameworks */,
-				19EF7EC720C855FC005099BA /* TicTacToeIntegrations.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

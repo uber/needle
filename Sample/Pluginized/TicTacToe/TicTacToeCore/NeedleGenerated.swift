@@ -39,6 +39,8 @@ private func parent3(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Sc
 
 // MARK: - Providers
 
+#if !NEEDLE_DYNAMIC
+
 private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependency {
     var mutablePlayersStream: MutablePlayersStream {
         return rootComponent.mutablePlayersStream
@@ -122,6 +124,66 @@ private class LoggedInPluginExtensionProvider: LoggedInPluginExtension {
     }
 }
 
+#else
+extension LoggedOutComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\LoggedOutDependency.mutablePlayersStream] = "mutablePlayersStream-MutablePlayersStream"
+    }
+}
+extension RootComponent: Registration {
+    public func registerItems() {
+
+
+    }
+}
+extension ScoreSheetComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\ScoreSheetDependency.scoreStream] = "scoreStream-ScoreStream"
+    }
+}
+extension GameNonCoreComponent: Registration {
+    public func registerItems() {
+
+        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { self.scoreSheetBuilder as Any }
+    }
+}
+extension LoggedInNonCoreComponent: Registration {
+    public func registerItems() {
+
+        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { self.scoreSheetBuilder as Any }
+        localTable["mutableScoreStream-MutableScoreStream"] = { self.mutableScoreStream as Any }
+        localTable["scoreStream-ScoreStream"] = { self.scoreStream as Any }
+    }
+}
+extension GameComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\GameDependency.mutableScoreStream] = "mutableScoreStream-MutableScoreStream"
+        keyPathToName[\GameDependency.playersStream] = "playersStream-PlayersStream"
+
+    }
+}
+extension LoggedInComponent: Registration {
+    public func registerItems() {
+
+
+    }
+}
+/// GameComponent plugin extension
+extension GameComponent: ExtensionRegistration {
+    public func registerExtensionItems() {
+        extensionToName[\GamePluginExtension.scoreSheetBuilder] = "scoreSheetBuilder-ScoreSheetBuilder"
+    }
+}
+/// LoggedInComponent plugin extension
+extension LoggedInComponent: ExtensionRegistration {
+    public func registerExtensionItems() {
+        extensionToName[\LoggedInPluginExtension.scoreSheetBuilder] = "scoreSheetBuilder-ScoreSheetBuilder"
+        extensionToName[\LoggedInPluginExtension.mutableScoreStream] = "mutableScoreStream-MutableScoreStream"
+    }
+}
+
+
+#endif
 
 private func factoryEmptyDependencyProvider(_ component: NeedleFoundation.Scope) -> AnyObject {
     return EmptyDependencyProvider(component: component)
@@ -132,7 +194,9 @@ private func registerProviderFactory(_ componentPath: String, _ factory: @escapi
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
 }
 
-private func register1() {
+#if !NEEDLE_DYNAMIC
+
+@inline(never) private func register1() {
     registerProviderFactory("^->RootComponent->LoggedOutComponent", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
     registerProviderFactory("^->RootComponent", factoryEmptyDependencyProvider)
     registerProviderFactory("^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent", factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf)
@@ -148,7 +212,10 @@ private func register1() {
         return LoggedInPluginExtensionProvider(component: component)
     }
 }
+#endif
 
 public func registerProviderFactories() {
+#if !NEEDLE_DYNAMIC
     register1()
+#endif
 }
