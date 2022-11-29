@@ -30,6 +30,7 @@ class BaseVisitor: SyntaxVisitor {
     
     init(filePath: String) {
         self.filePath = filePath
+        super.init(viewMode: .sourceAccurate)
     }
     
     /// Whether we are parsing the line of code which declares a Component.

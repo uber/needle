@@ -33,6 +33,8 @@ private func parent2(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Sc
 
 // MARK: - Providers
 
+#if !NEEDLE_DYNAMIC
+
 private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     var mutableScoreStream: MutableScoreStream {
         return loggedInComponent.mutableScoreStream
@@ -82,6 +84,39 @@ private func factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e(_ component: Needle
     return LoggedOutDependencyacada53ea78d270efa2fProvider(rootComponent: parent1(component) as! RootComponent)
 }
 
+#else
+extension GameComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\GameDependency.mutableScoreStream] = "mutableScoreStream-MutableScoreStream"
+        keyPathToName[\GameDependency.playersStream] = "playersStream-PlayersStream"
+
+    }
+}
+extension ScoreSheetComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\ScoreSheetDependency.scoreStream] = "scoreStream-ScoreStream"
+    }
+}
+extension LoggedOutComponent: Registration {
+    public func registerItems() {
+        keyPathToName[\LoggedOutDependency.mutablePlayersStream] = "mutablePlayersStream-MutablePlayersStream"
+    }
+}
+extension LoggedInComponent: Registration {
+    public func registerItems() {
+
+
+    }
+}
+extension RootComponent: Registration {
+    public func registerItems() {
+
+
+    }
+}
+
+
+#endif
 
 private func factoryEmptyDependencyProvider(_ component: NeedleFoundation.Scope) -> AnyObject {
     return EmptyDependencyProvider(component: component)
@@ -92,7 +127,9 @@ private func registerProviderFactory(_ componentPath: String, _ factory: @escapi
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
 }
 
-private func register1() {
+#if !NEEDLE_DYNAMIC
+
+@inline(never) private func register1() {
     registerProviderFactory("^->RootComponent->LoggedInComponent->GameComponent", factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
     registerProviderFactory("^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent", factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1)
     registerProviderFactory("^->RootComponent->LoggedInComponent->ScoreSheetComponent", factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3)
@@ -100,7 +137,10 @@ private func register1() {
     registerProviderFactory("^->RootComponent->LoggedInComponent", factoryEmptyDependencyProvider)
     registerProviderFactory("^->RootComponent", factoryEmptyDependencyProvider)
 }
+#endif
 
 public func registerProviderFactories() {
+#if !NEEDLE_DYNAMIC
     register1()
+#endif
 }
