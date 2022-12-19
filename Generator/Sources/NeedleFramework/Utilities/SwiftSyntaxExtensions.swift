@@ -91,7 +91,9 @@ extension ClassDeclSyntax: EntityNode {
     }
 
     var isPluginizedComponent: Bool {
-        inherits(from: pluginizedComponentClassName) && inheritanceHasGenericArgument
+        ((inherits(from: pluginizedComponentClassName)) || inherits(from: uberPluginizedComponentClassName))
+        && typeName != uberPluginizedComponentClassName
+        && inheritanceHasGenericArgument
     }
 
     var isNonCoreComponent: Bool {

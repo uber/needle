@@ -21,7 +21,7 @@ import TicTacToeIntegrations
 import UIKit
 
 // swiftlint:disable unused_declaration
-private let needleDependenciesHash : String? = "f7e65514498ad4f99ae8eb589dd36bbc"
+private let needleDependenciesHash : String? = "4b585865bab35437b0cbc60e9d74b1b1"
 
 // MARK: - Traversal Helpers
 
