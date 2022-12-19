@@ -146,6 +146,8 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
             case .inactive:
                 self.releasableNonCoreComponent?.scopeDidBecomeInactive()
             case .deinit:
+                self.scopeWillDeinit()
+                
                 // Only release the non-core component after the consumer, which should
                 // be the owner reference to the component is released. Cannot release
                 // the non-core component when the bound lifecyle is deactivated. The
@@ -156,6 +158,12 @@ open class PluginizedComponent<DependencyType, PluginExtensionType, NonCoreCompo
             }
         }
     }
+    
+    /// Indicates that the corresponding scope will deinit
+    ///
+    /// - note: This method is automatically invoked when the bound `PluginizedScopeLifecycleObservable`
+    /// enters its `deinit` state
+    open func scopeWillDeinit() {}
 
     // MARK: - Private
 
