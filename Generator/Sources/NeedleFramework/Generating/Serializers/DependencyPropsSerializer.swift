@@ -58,7 +58,7 @@ extension \(component.name): Registration {
         return properties.filter { property in
             !property.isInternal
         }.map { property in
-            return "        localTable[\"\(property.name)-\(property.type)\"] = { self.\(property.name) as Any }"
+            return "        localTable[\"\(property.name)-\(property.type)\"] = { [unowned self] in self.\(property.name) as Any }"
         }.joined(separator: "\n")
     }
 
