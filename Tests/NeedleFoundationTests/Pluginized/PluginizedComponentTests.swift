@@ -94,6 +94,27 @@ class PluginizedComponentTests: XCTestCase {
         XCTAssertNil(noncoreComponent)
         XCTAssertEqual(noncoreDeinitCallCount, 1)
     }
+    
+    func test_bindTo_verifyWillDeinit() {
+        let mockPluginizedComponent = MockPluginizedComponent()
+        let mockDisposable = MockObserverDisposable()
+        let mockLifecycle = MockPluginizedScopeLifecycleObervable(disposable: mockDisposable)
+        mockPluginizedComponent.bind(to: mockLifecycle)
+
+        XCTAssertEqual(mockPluginizedComponent.scopeWillDeinitCallCount, 0)
+
+        mockLifecycle.observer!(.active)
+
+        XCTAssertEqual(mockPluginizedComponent.scopeWillDeinitCallCount, 0)
+
+        mockLifecycle.observer!(.inactive)
+
+        XCTAssertEqual(mockPluginizedComponent.scopeWillDeinitCallCount, 0)
+
+        mockLifecycle.observer!(.deinit)
+
+        XCTAssertEqual(mockPluginizedComponent.scopeWillDeinitCallCount, 1)
+    }
 }
 
 class MockNonCoreComponent: NonCoreComponent<EmptyDependency> {
@@ -122,8 +143,14 @@ class EmptyPluginExtensionsProvider: EmptyPluginExtensions {}
 
 class MockPluginizedComponent: PluginizedComponent<EmptyDependency, EmptyPluginExtensions, MockNonCoreComponent> {
 
+    var scopeWillDeinitCallCount = 0
+    
     init() {
         super.init(parent: BootstrapComponent())
+    }
+    
+    override func scopeWillDeinit() {
+        scopeWillDeinitCallCount += 1
     }
 }
 
