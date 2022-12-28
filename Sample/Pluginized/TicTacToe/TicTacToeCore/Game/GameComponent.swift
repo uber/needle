@@ -28,7 +28,7 @@ protocol GamePluginExtension: PluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder { get }
 }
 
-class GameComponent: PluginizedComponent<GameDependency, GamePluginExtension, GameNonCoreComponent>, GameBuilder {
+class GameComponent: UberPluginizedComponent<GameDependency, GamePluginExtension, GameNonCoreComponent>, GameBuilder {
 
     var gameViewController: UIViewController {
         return shared {

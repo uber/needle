@@ -49,7 +49,7 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
         XCTAssertTrue(generated.contains("import UIKit"))
         XCTAssertTrue(generated.contains("import ScoreSheet"))
         XCTAssertTrue(generated.contains("import TicTacToeIntegrations"))
-        XCTAssertTrue(generated.contains("private let needleDependenciesHash : String? = \"f7e65514498ad4f99ae8eb589dd36bbc\""))
+        XCTAssertTrue(generated.contains("private let needleDependenciesHash : String? = \"4b585865bab35437b0cbc60e9d74b1b1\""))
         XCTAssertTrue(generated.contains("// MARK: - Registration"))
         XCTAssertTrue(generated.contains("""
     registerProviderFactory(\"^->RootComponent->LoggedOutComponent\", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)

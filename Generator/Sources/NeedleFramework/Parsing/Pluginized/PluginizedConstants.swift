@@ -20,5 +20,8 @@ let pluginExtensionProtocolName = "PluginExtension"
 /// The name of the class that all PluginizedComponent classes inherit from
 let pluginizedComponentClassName = "PluginizedComponent"
 
+/// The name of the class that all Uber PluginizedComponent classes inherit from
+let uberPluginizedComponentClassName = "UberPluginizedComponent"
+
 /// The name of the class that all NonCoreComponent classes inherit from
 let nonCoreComponentClassName = "NonCoreComponent"

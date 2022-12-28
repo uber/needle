@@ -30,6 +30,7 @@
 		413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413909A520A4EA7300A26FF5 /* GameComponent.swift */; };
 		41869A49212E288C0076C04B /* PluginizedScopeLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41869A48212E288C0076C04B /* PluginizedScopeLifecycle.swift */; };
 		41869A4B212E294F0076C04B /* ObservableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41869A4A212E294F0076C04B /* ObservableViewController.swift */; };
+		7E9E1FB42950D2B3009EF31E /* UberPluginizedComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9E1FB32950D2B3009EF31E /* UberPluginizedComponent.swift */; };
 		D350108C25B0C576000953FA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = D350108B25B0C576000953FA /* SnapKit */; };
 		D350109325B0C5E8000953FA /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D350109225B0C5E8000953FA /* RxSwift */; };
 		D350109525B0C5E8000953FA /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = D350109425B0C5E8000953FA /* RxCocoa */; };
@@ -180,6 +181,7 @@
 		41869A48212E288C0076C04B /* PluginizedScopeLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginizedScopeLifecycle.swift; sourceTree = "<group>"; };
 		41869A4A212E294F0076C04B /* ObservableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableViewController.swift; sourceTree = "<group>"; };
 		41F6882821F802A000AA3CCA /* NeedleFoundation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NeedleFoundation.xcodeproj; path = ../../../NeedleFoundation.xcodeproj; sourceTree = "<group>"; };
+		7E9E1FB32950D2B3009EF31E /* UberPluginizedComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UberPluginizedComponent.swift; sourceTree = "<group>"; };
 		F7DA7ADF20A275DA0037FF17 /* ScoreSheetComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetComponent.swift; sourceTree = "<group>"; };
 		F7DA7AE120A275EF0037FF17 /* ScoreSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSheetViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -303,6 +305,7 @@
 				4139096220A0F2BD00A26FF5 /* Info.plist */,
 				41869A48212E288C0076C04B /* PluginizedScopeLifecycle.swift */,
 				41869A4A212E294F0076C04B /* ObservableViewController.swift */,
+				7E9E1FB32950D2B3009EF31E /* UberPluginizedComponent.swift */,
 			);
 			path = TicTacToeCore;
 			sourceTree = "<group>";
@@ -696,6 +699,7 @@
 				4139099920A2483300A26FF5 /* LoggedInComponent.swift in Sources */,
 				413909A620A4EA7300A26FF5 /* GameComponent.swift in Sources */,
 				4139097D20A1174700A26FF5 /* NeedleGenerated.swift in Sources */,
+				7E9E1FB42950D2B3009EF31E /* UberPluginizedComponent.swift in Sources */,
 				4139099720A2481700A26FF5 /* LoggedInViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
