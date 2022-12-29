@@ -47,7 +47,7 @@ public protocol Scope: AnyObject {
 public class DependencyProvider<DependencyType> {
     
     /// The parent component of this provider.
-    let component: Component<DependencyType>
+    weak var component: Component<DependencyType>?
     let nonCore: Bool
 
     init(component: Component<DependencyType>, nonCore: Bool) {
@@ -56,7 +56,7 @@ public class DependencyProvider<DependencyType> {
     }
 
     public func find<T>(property: String) -> T {
-        return component.parent.find(property: property, skipThisLevel: nonCore)
+        return component!.parent.find(property: property, skipThisLevel: nonCore)
     }
 
     public subscript<T>(dynamicMember keyPath: KeyPath<DependencyType, T>) -> T {
@@ -64,7 +64,7 @@ public class DependencyProvider<DependencyType> {
     }
     
     public func lookup<T>(keyPath: KeyPath<DependencyType, T>) -> T {
-        guard let propertyName = component.keyPathToName[keyPath] else {
+        guard let propertyName = component!.keyPathToName[keyPath] else {
              fatalError("Cound not find \(keyPath) in lookup table")
         }
         return find(property: propertyName)
