@@ -61,6 +61,10 @@ class LoggedInComponent: Component<LoggedInDependency> {
         return shared { ScoreStreamImpl() }
     }
 
+    func mutableScoreStream(id: String) -> MutableScoreStream {
+        return weak(hash: id) { ScoreStreamImpl() }
+    }
+
     var loggedInViewController: UIViewController {
         return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent)
     }
@@ -68,7 +72,7 @@ class LoggedInComponent: Component<LoggedInDependency> {
 ```
 **참고:** *DI 그래프*에서 의미가 있는 항목과 `ViewController` 하위 클래스의 지역 변수일 수 있는 항목을 결정하는 것은 사용자의 몫입니다. Swift에는 'OCMock'과 같은 도구가 없기 때문에 테스트 중에 mocking하고 싶은 것은 무엇이든 프로토콜로 전달해야 합니다.
 
-예제의 `shared` 구문은 저희가 (`Component` 기본 클래스 내부에서) 제공하는 유틸리티 함수로 이 `var`에 액세스할 때마다 단순하게 동일한 인스턴스를 반환합니다. (아래에 선언된 프로퍼티는 대조적으로 새로운 매번 인스턴스를 반환합니다). 이렇게 하면 이 프로퍼티의 라이프사이클이 Component의 라이프사이클에 연결됩니다.
+예제의 `shared` 구문은 저희가 (`Component` 기본 클래스 내부에서) 제공하는 유틸리티 함수로 이 `var`에 액세스할 때마다 단순하게 동일한 인스턴스를 반환합니다. (아래에 선언된 프로퍼티는 대조적으로 새로운 매번 인스턴스를 반환합니다). 이렇게 하면 이 프로퍼티의 라이프사이클이 Component의 라이프사이클에 연결됩니다. 그리고 지정된 `hash` 인수가 동일하고 인스턴스가 어딘가에서 참조되는 한 `weak` 구성을 사용하여 동일한 인스턴스를 사용할 수 있습니다.
 
 Component를 사용하여 이 component와 쌍을 이루는 `ViewController`를 구성할 수도 있습니다. 위의 예제에서 볼 수 있듯이, 이것은 `ViewController`가 프로젝트에서 DI 시스템을 사용하고 있다는 사실을 모르고도 `ViewController`가 필요로 하는 모든 의존성을 전달할 수 있도록 합니다. **"DI의 이점"** 문서에서 언급했듯이 구체적인 클래스나 구조체 대신 프로토콜을 전달하는 것이 가장 좋습니다.
 
