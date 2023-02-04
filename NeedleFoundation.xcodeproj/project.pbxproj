@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3D35CB7C298A7FE800A374EC /* Nothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D35CB75298A7FE800A374EC /* Nothing.swift */; };
+		3D35CB80298A7FE800A374EC /* AssemblyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D35CB7B298A7FE800A374EC /* AssemblyStorage.swift */; };
 		OBJ_42 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Bootstrap.swift */; };
 		OBJ_43 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Component.swift */; };
 		OBJ_44 /* DependencyProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* DependencyProviderRegistry.swift */; };
@@ -78,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3D35CB75298A7FE800A374EC /* Nothing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nothing.swift; sourceTree = "<group>"; };
+		3D35CB7B298A7FE800A374EC /* AssemblyStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssemblyStorage.swift; sourceTree = "<group>"; };
 		"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NeedleFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTest::Product" /* NeedleFoundationTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NeedleFoundationTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTestTests::Product" /* NeedleFoundationTestTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = NeedleFoundationTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +138,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7D1A478F298E7859004832D4 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				3D35CB75298A7FE800A374EC /* Nothing.swift */,
+				3D35CB7B298A7FE800A374EC /* AssemblyStorage.swift */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
 		OBJ_11 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,6 +256,7 @@
 		OBJ_8 /* NeedleFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				7D1A478F298E7859004832D4 /* Misc */,
 				OBJ_9 /* Bootstrap.swift */,
 				OBJ_10 /* Component.swift */,
 				OBJ_11 /* Internal */,
@@ -378,7 +392,9 @@
 				OBJ_45 /* PluginExtensionProviderRegistry.swift in Sources */,
 				OBJ_46 /* NonCoreComponent.swift in Sources */,
 				OBJ_47 /* PluginizedComponent.swift in Sources */,
+				3D35CB80298A7FE800A374EC /* AssemblyStorage.swift in Sources */,
 				OBJ_48 /* PluginizedScopeLifecycle.swift in Sources */,
+				3D35CB7C298A7FE800A374EC /* Nothing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,6 +505,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundation_Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
@@ -538,6 +555,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NeedleFoundation.xcodeproj/NeedleFoundation_Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
