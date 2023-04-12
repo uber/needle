@@ -1,3 +1,4 @@
 # Xcode
 *.xcodeproj
 *.xcworkspace
+*.xcscheme
