@@ -25,6 +25,7 @@ class BaseVisitor: SyntaxVisitor {
     var currentEntityNode: EntityNode?
     var currentDependencyProtocol: String?
     var imports: [String] = []
+    var varNestingLevel = 0
 
     let filePath: String
     
@@ -44,8 +45,14 @@ class BaseVisitor: SyntaxVisitor {
         }
     }
     
+    override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
+        varNestingLevel += 1
+        return .visitChildren
+    }
+
     override func visitPost(_ node: VariableDeclSyntax) {
-        guard let currentEntityName = currentEntityNode?.typeName else { return }
+        defer { varNestingLevel -= 1 }
+        guard let currentEntityName = currentEntityNode?.typeName, varNestingLevel == 1 else { return }
         let isExtension = currentEntityNode is ExtensionDeclSyntax
         let isPublic = node.isPublic || (isExtension && currentEntityNode?.isPublic == true)
         let isPrivate = node.isPrivate || currentEntityNode?.isPrivate == true
