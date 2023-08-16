@@ -19,11 +19,11 @@ import UIKit
 
 class RootComponent: BootstrapComponent {
 
-    var playersStream: PlayersStream {
+    public var playersStream: PlayersStream {
         return mutablePlayersStream
     }
 
-    var mutablePlayersStream: MutablePlayersStream {
+    public var mutablePlayersStream: MutablePlayersStream {
         return shared { PlayersStreamImpl() }
     }
 
