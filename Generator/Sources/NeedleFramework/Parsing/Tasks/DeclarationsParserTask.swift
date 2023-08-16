@@ -97,13 +97,14 @@ private final class Visitor: BaseVisitor {
         let componentName = node.typeName
         if componentName == currentEntityNode?.typeName {
             let dependencyProtocolName = node.isRoot ? emptyDependency.name : (currentDependencyProtocol ?? "")
-            
+            // Internal properties cannot be seen by the needle generated code, so leave them out
+            let filteredProperties = propertiesDict[componentName, default: []].filter { property in !property.isInternal }
             let component = ASTComponent(name: componentName,
                                          dependencyProtocolName: dependencyProtocolName,
                                          isRoot: node.isRoot,
                                          sourceHash: sourceHash,
                                          filePath: filePath,
-                                         properties: propertiesDict[componentName, default: []],
+                                         properties: filteredProperties,
                                          expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
             components.append(component)
         }

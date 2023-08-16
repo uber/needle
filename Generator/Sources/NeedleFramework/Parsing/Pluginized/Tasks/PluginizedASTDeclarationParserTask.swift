@@ -106,24 +106,28 @@ private final class PluginizedVisitor: BaseVisitor {
     override func visitPost(_ node: ClassDeclSyntax) {
         let componentName = node.typeName
         if componentName == currentPluginizedComponentName {
+            // Internal properties cannot be seen by the needle generated code, so leave them out
+            let filteredProperties = propertiesDict[componentName, default: []].filter { property in !property.isInternal }
             let component = ASTComponent(name: componentName,
                                          dependencyProtocolName: currentPluginExtensionGenerics.dependencyProtocolName,
                                          isRoot: node.isRoot,
                                          sourceHash: sourceHash,
                                          filePath: filePath,
-                                         properties: propertiesDict[componentName, default: []],
+                                         properties: filteredProperties,
                                          expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
             let pluginizedComponent = PluginizedASTComponent(data: component,
                                                              pluginExtensionType: currentPluginExtensionGenerics.pluginExtensionName,
                                                              nonCoreComponentType: currentPluginExtensionGenerics.nonCoreComponentName)
             pluginizedComponents.append(pluginizedComponent)
         } else if componentName == currentNonCoreComponentName {
+            // Internal properties cannot be seen by the needle generated code, so leave them out
+            let filteredProperties = propertiesDict[componentName, default: []].filter { property in !property.isInternal }
             let component = ASTComponent(name: componentName,
                                          dependencyProtocolName: currentDependencyProtocol ?? "",
                                          isRoot: false,
                                          sourceHash: sourceHash,
                                          filePath: filePath,
-                                         properties: propertiesDict[componentName, default: []],
+                                         properties: filteredProperties,
                                          expressionCallTypeNames: Array(componentToCallExprs[componentName, default: []]).sorted())
             nonCoreComponents.append(component)
         }
