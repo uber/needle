@@ -19,7 +19,7 @@ import Foundation
 import SourceParsingFramework
 
 /// The generation phase entry class that executes tasks to process dependency
-/// graph components, inlcuding pluginized and non-core ones, into necessary
+/// graph components, including pluginized and non-core ones, into necessary
 /// dependency providers and their registrations, then exports the contents to
 /// the destination path.
 class PluginizedDependencyGraphExporter {
@@ -28,10 +28,10 @@ class PluginizedDependencyGraphExporter {
     /// code for the given components and pluginized components, and export
     /// the source code to the given destination path.
     ///
-    /// - parameter components: Array of Components to generate dependnecy
+    /// - parameter components: Array of Components to generate dependency
     /// providers for
     /// - parameter pluginizedComponents: Array of pluginized components to
-    /// generate plugin extensions and dependnecy providers for.
+    /// generate plugin extensions and dependency providers for.
     /// - parameter imports: The import statements.
     /// - parameter path: Path to file where we want the results written to.
     /// - parameter executor: The executor to use for concurrent computation of

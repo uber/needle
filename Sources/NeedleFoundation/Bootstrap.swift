@@ -17,7 +17,7 @@
 import Foundation
 
 /// An empty protocol that can be used for any components that require no
-/// dependencies. This can be used as the dependnecy protocol of the root
+/// dependencies. This can be used as the dependency protocol of the root
 /// component of a dependency graph.
 public protocol EmptyDependency: AnyObject {}
 
@@ -31,7 +31,7 @@ public class EmptyDependencyProvider: EmptyDependency {
     public init(component: Scope) {}
 }
 
-/// The base implementation of a component thet represents the root of
+/// The base implementation of a component that represents the root of
 /// a dependency graph. A subclass defining the root scope should
 /// inherit from this class instead of the generic `Component` class.
 ///
