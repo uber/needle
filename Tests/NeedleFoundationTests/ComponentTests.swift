@@ -40,6 +40,49 @@ class ComponentTests: XCTestCase {
         let component = TestComponent()
         XCTAssert(component.optionalShare === component.expectedOptionalShare)
     }
+
+    func test_sharedWithArgs_verifySingleInstance() {
+        let component = TestComponent()
+        let args = "args"
+        XCTAssert(component.share(args: args) === component.share(args: args), "Should have returned same shared object")
+    }
+
+    func test_sharedWithArgs_verifyDifferentInstancePerArgs() {
+        let component = TestComponent()
+        let args1 = "args1"
+        let args2 = "args2"
+        XCTAssert(component.share(args: args1) !== component.share(args: args2), "Should have returned different shared object")
+    }
+
+    func test_weakShared_verifySingleInstance() {
+        let component = TestComponent()
+        let weakShare1 = component.weakShare
+        let weakShare2 = component.weakShare
+        XCTAssert(weakShare1 === weakShare2, "Should have returned same shared object")
+    }
+
+    func test_weakReferenceOfWeakShared_deallocated() {
+        let component = TestComponent()
+        weak var weakShare = component.weakShare
+        XCTAssert(weakShare == nil, "Should have been deallocated without a strong reference")
+    }
+
+    func test_weakSharedWithSameArgs_verifySingleInstance() {
+        let component = TestComponent()
+        let args = "args"
+        let weakShare1 = component.weakShare(args: args)
+        let weakShare2 = component.weakShare(args: args)
+        XCTAssert(weakShare1 === weakShare2, "Should have returned same shared object")
+    }
+
+    func test_weakSharedWithDifferentArgs_verifyDifferentInstance() {
+        let component = TestComponent()
+        let args1 = "args1"
+        let args2 = "args2"
+        let weakShare1 = component.weakShare(args: args1)
+        let weakShare2 = component.weakShare(args: args2)
+        XCTAssert(weakShare1 !== weakShare2, "Should have been different with different arguments")
+    }
 }
 
 class TestComponent: BootstrapComponent {
@@ -60,6 +103,18 @@ class TestComponent: BootstrapComponent {
 
     fileprivate var optionalShare: ClassProtocol? {
         return shared { self.expectedOptionalShare }
+    }
+
+    func share<Arg: Hashable>(args: Arg) -> NSObject {
+        return shared(args: args) { NSObject() }
+    }
+
+    var weakShare: NSObject {
+        return weakShared { NSObject() }
+    }
+
+    func weakShare<Arg: Hashable>(args: Arg) -> NSObject {
+        return weakShared(args: args) { NSObject() }
     }
 }
 
