@@ -1,0 +1,15 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish to formula & CocoaPods
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: make publish
