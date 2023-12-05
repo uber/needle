@@ -38,3 +38,6 @@ Packages/
 Package.pins
 Package.resolved
 .build/
+
+# Bazel
+bazel-*
