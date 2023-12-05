@@ -28,23 +28,23 @@ class BaseVisitor: SyntaxVisitor {
     var varNestingLevel = 0
 
     let filePath: String
-    
+
     init(filePath: String) {
         self.filePath = filePath
         super.init(viewMode: .sourceAccurate)
     }
-    
+
     /// Whether we are parsing the line of code which declares a Component.
     /// We need this flag to determine if the generic argument we parse later is for the Component.
     var isParsingComponentDeclarationLine: Bool = false
-    
+
     override func visitPost(_ node: FunctionCallExprSyntax) {
         if let callexpr = node.calledExpression.firstToken?.text,
             let currentEntityName = currentEntityNode?.typeName {
             componentToCallExprs[currentEntityName, default: []].insert(callexpr)
         }
     }
-    
+
     override func visit(_ node: VariableDeclSyntax) -> SyntaxVisitorContinueKind {
         varNestingLevel += 1
         return .visitChildren
@@ -53,10 +53,11 @@ class BaseVisitor: SyntaxVisitor {
     override func visitPost(_ node: VariableDeclSyntax) {
         defer { varNestingLevel -= 1 }
         guard let currentEntityName = currentEntityNode?.typeName, varNestingLevel == 1 else { return }
+        guard let entityNode = node as? EntityNode else { return }
         let isExtension = currentEntityNode is ExtensionDeclSyntax
-        let isPublic = node.isPublic || (isExtension && currentEntityNode?.isPublic == true)
-        let isPrivate = node.isPrivate || currentEntityNode?.isPrivate == true
-        let isFileprivate = node.isFileprivate || currentEntityNode?.isFileprivate == true
+        let isPublic = entityNode.isPublic || (isExtension && currentEntityNode?.isPublic == true)
+        let isPrivate = entityNode.isPrivate || currentEntityNode?.isPrivate == true
+        let isFileprivate = entityNode.isFileprivate || currentEntityNode?.isFileprivate == true
         let isInternal = !(isPublic || isPrivate || isFileprivate)
 
         let memberProperties = node.bindings.compactMap { pattern -> Property? in
@@ -71,20 +72,24 @@ class BaseVisitor: SyntaxVisitor {
                 return Property(name: propertyName, type: propertyType, isInternal: isInternal)
             }
         }
-        
+
         propertiesDict[currentEntityName, default: []].append(contentsOf: memberProperties)
     }
-    
+
     override func visitPost(_ node: ImportDeclSyntax) {
-        let importStatement = node.withoutTrivia().description.trimmed
-        imports.append(importStatement)
+        #if swift(>=5.9)
+        let importStatement = node.trimmed
+        #else
+        let importStatement = node.withoutTrivia()
+        #endif
+        imports.append(importStatement.description.trimmed)
     }
-    
+
     override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
         isParsingComponentDeclarationLine = false
         return .visitChildren
     }
-    
+
     override func visitPost(_ node: SourceFileSyntax) {
         if currentEntityNode == nil {
             imports = []

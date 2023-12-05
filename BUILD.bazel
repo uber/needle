@@ -1,0 +1,57 @@
+load(
+    "@build_bazel_rules_swift//swift:swift.bzl",
+    "swift_binary",
+    "swift_library",
+)
+
+swift_library(
+    name = "NeedleFoundation",
+    srcs = glob(
+        ["Sources/NeedleFoundation/**/*.swift"],
+        allow_empty = False,
+    ),
+    module_name = "NeedleFoundation",
+    visibility = ["//visibility:public"],
+)
+
+swift_binary(
+    name = "needle",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":NeedleLib",
+    ],
+)
+
+swift_library(
+    name = "NeedleLib",
+    srcs = glob(
+        [
+            "Generator/Sources/needle/**/*.swift",
+        ],
+        allow_empty = False,
+    ),
+    copts = ["-suppress-warnings"],
+    module_name = "Needle",
+    deps = [
+        ":NeedleFramework",
+        "@SwiftToolsSupportCore//:TSCBasic",
+        "@UberSwiftCommon//:CommandFramework",
+    ],
+)
+
+swift_library(
+    name = "NeedleFramework",
+    srcs = glob(
+        [
+            "Generator/Sources/NeedleFramework/**/*.swift",
+        ],
+        allow_empty = False,
+    ),
+    copts = ["-suppress-warnings"],
+    module_name = "NeedleFramework",
+    deps = [
+        "@SwiftSyntax//:SwiftParser_opt",
+        "@UberSwiftCommon//:SourceParsingFramework",
+        "@UberSwiftConcurrency//:Concurrency",
+    ],
+)

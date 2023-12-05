@@ -17,7 +17,9 @@
 import Concurrency
 import Foundation
 import SourceParsingFramework
-#if swift(>=5.6)
+#if swift(>=5.9)
+import SwiftParser
+#elseif swift(>=5.6)
 import SwiftSyntaxParser
 #else
 import SwiftSyntax
@@ -42,7 +44,11 @@ class ASTProducerTask: AbstractTask<AST> {
     /// - returns: The `AST` data model.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> AST {
+        #if swift(>=5.9)
+        let syntax = try Parser.parse(source: sourceContent)
+        #else
         let syntax = try SyntaxParser.parse(sourceUrl)
+        #endif
         return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax, filePath: sourceUrl.path)
     }
 
