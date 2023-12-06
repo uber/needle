@@ -17,7 +17,9 @@
 import XCTest
 @testable import NeedleFramework
 @testable import SourceParsingFramework
-#if swift(>=5.6)
+#if swift(>=5.9)
+import SwiftParser
+#elseif swift(>=5.6)
 import SwiftSyntaxParser
 #else
 import SwiftSyntax
@@ -47,12 +49,12 @@ class DeclarationsParserTaskTests: AbstractParserTests {
         let imports = ["import UIKit", "import RIBs", "import Foundation", "import protocol Audio.Recordable"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
                       sourceFileSyntax: try! SyntaxParser.parse(sourceUrl), filePath: sourceUrl.path)
-        
+
         let task = DeclarationsParserTask(ast: ast)
         let node = try! task.execute()
 
         XCTAssertEqual(node.components.count, 3)
-        
+
         // Imports
         XCTAssertEqual(node.imports, imports)
 

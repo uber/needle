@@ -16,7 +16,7 @@
 
 import SwiftSyntax
 
-// MARK: - Custom-defiend Protocols
+// MARK: - Custom-defined Protocols
 
 /// An entity node is either a Protocol or Class syntax node
 protocol EntityNode: SyntaxNodeWithModifiers {
@@ -27,7 +27,7 @@ protocol EntityNode: SyntaxNodeWithModifiers {
 extension EntityNode {
     /// Checks whether the entity inherits from a certain type with `typeName`
     func inherits(from typeName: String) -> Bool {
-        
+
         let inheritedTypeSyntax = inheritanceClause?.inheritedTypeCollection.first?.typeName
         // Usually, first token is the inherited type name. But sometimes it could also be the module prefix.
         // In that case, we need to look for the actual type name by checking for `MemberTypeIdentifierSyntax`
@@ -37,7 +37,7 @@ extension EntityNode {
             return inheritedTypeSyntax?.as(MemberTypeIdentifierSyntax.self)?.name.text == typeName
         }
     }
-    
+
     var inheritanceHasGenericArgument: Bool {
         let inheritanceTypeToken = inheritanceClause?.inheritedTypeCollection.first?.typeName
         return inheritanceTypeToken?.as(SimpleTypeIdentifierSyntax.self)?.genericArgumentClause != nil ||
