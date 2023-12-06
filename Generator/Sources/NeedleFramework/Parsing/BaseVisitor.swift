@@ -53,11 +53,10 @@ class BaseVisitor: SyntaxVisitor {
     override func visitPost(_ node: VariableDeclSyntax) {
         defer { varNestingLevel -= 1 }
         guard let currentEntityName = currentEntityNode?.typeName, varNestingLevel == 1 else { return }
-        guard let entityNode = node as? EntityNode else { return }
         let isExtension = currentEntityNode is ExtensionDeclSyntax
-        let isPublic = entityNode.isPublic || (isExtension && currentEntityNode?.isPublic == true)
-        let isPrivate = entityNode.isPrivate || currentEntityNode?.isPrivate == true
-        let isFileprivate = entityNode.isFileprivate || currentEntityNode?.isFileprivate == true
+        let isPublic = node.isPublic || (isExtension && currentEntityNode?.isPublic == true)
+        let isPrivate = node.isPrivate || currentEntityNode?.isPrivate == true
+        let isFileprivate = node.isFileprivate || currentEntityNode?.isFileprivate == true
         let isInternal = !(isPublic || isPrivate || isFileprivate)
 
         let memberProperties = node.bindings.compactMap { pattern -> Property? in
