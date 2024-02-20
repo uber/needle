@@ -30,3 +30,7 @@ jobs:
         run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
       - name: "NeedleSamplePluginizedTicTacToeCoreTests"
         run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+      - name: "NeedleSampleSwiftUIMVVMApp"
+        run: xcodebuild build -project Sample/SwiftUI-MVVM/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+      - name: "NeedleSampleSwiftUIMVVMTests"
+        run: xcodebuild test -project Sample/SwiftUI-MVVM/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
