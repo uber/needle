@@ -104,13 +104,14 @@ extension LoggedOutComponent: Registration {
 extension LoggedInComponent: Registration {
     public func registerItems() {
 
-
+        localTable["scoreStream-ScoreStream"] = { [unowned self] in self.scoreStream as Any }
     }
 }
 extension RootComponent: Registration {
     public func registerItems() {
 
-
+        localTable["playersStream-PlayersStream"] = { [unowned self] in self.playersStream as Any }
+        localTable["mutablePlayersStream-MutablePlayersStream"] = { [unowned self] in self.mutablePlayersStream as Any }
     }
 }
 
