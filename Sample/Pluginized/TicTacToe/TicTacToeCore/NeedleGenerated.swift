@@ -21,18 +21,24 @@ import TicTacToeIntegrations
 import UIKit
 
 // swiftlint:disable unused_declaration
-private let needleDependenciesHash : String? = "4b585865bab35437b0cbc60e9d74b1b1"
+private let needleDependenciesHash : String? = "7d206250bd06106f1c31c7f537788c58"
 
 // MARK: - Traversal Helpers
 
+@preconcurrency
+@MainActor
 private func parent1(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
     return component.parent
 }
 
+@preconcurrency
+@MainActor
 private func parent2(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
     return component.parent.parent
 }
 
+@preconcurrency
+@MainActor
 private func parent3(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
     return component.parent.parent.parent
 }
@@ -51,6 +57,8 @@ private class LoggedOutDependencyacada53ea78d270efa2fProvider: LoggedOutDependen
     }
 }
 /// ^->RootComponent->LoggedOutComponent
+@preconcurrency
+@MainActor
 private func factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e(_ component: NeedleFoundation.Scope) -> AnyObject {
     return LoggedOutDependencyacada53ea78d270efa2fProvider(rootComponent: parent1(component) as! RootComponent)
 }
@@ -64,6 +72,8 @@ private class ScoreSheetDependencyea879b8e06763171478bProvider: ScoreSheetDepend
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent
+@preconcurrency
+@MainActor
 private func factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf(_ component: NeedleFoundation.Scope) -> AnyObject {
     return ScoreSheetDependencyea879b8e06763171478bProvider(loggedInComponent: parent3(component) as! LoggedInComponent)
 }
@@ -77,6 +87,8 @@ private class ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider: ScoreSheetDepend
     }
 }
 /// ^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent
+@preconcurrency
+@MainActor
 private func factory3306c50e89e2421d0b0c65d055996113f3c13de1(_ component: NeedleFoundation.Scope) -> AnyObject {
     return ScoreSheetDependency6fb80fa6e1ee31d9ba11Provider(loggedInNonCoreComponent: parent1(component) as! LoggedInNonCoreComponent)
 }
@@ -95,6 +107,8 @@ private class GameDependency1ab5926a977f706d3195Provider: GameDependency {
     }
 }
 /// ^->RootComponent->LoggedInComponent->GameComponent
+@preconcurrency
+@MainActor
 private func factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e(_ component: NeedleFoundation.Scope) -> AnyObject {
     return GameDependency1ab5926a977f706d3195Provider(loggedInComponent: parent1(component) as! LoggedInComponent, rootComponent: parent2(component) as! RootComponent)
 }
@@ -133,7 +147,8 @@ extension LoggedOutComponent: Registration {
 extension RootComponent: Registration {
     public func registerItems() {
 
-
+        localTable["playersStream-PlayersStream"] = { [unowned self] in self.playersStream as Any }
+        localTable["mutablePlayersStream-MutablePlayersStream"] = { [unowned self] in self.mutablePlayersStream as Any }
     }
 }
 extension ScoreSheetComponent: Registration {
@@ -144,15 +159,15 @@ extension ScoreSheetComponent: Registration {
 extension GameNonCoreComponent: Registration {
     public func registerItems() {
 
-        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { self.scoreSheetBuilder as Any }
+        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { [unowned self] in self.scoreSheetBuilder as Any }
     }
 }
 extension LoggedInNonCoreComponent: Registration {
     public func registerItems() {
 
-        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { self.scoreSheetBuilder as Any }
-        localTable["mutableScoreStream-MutableScoreStream"] = { self.mutableScoreStream as Any }
-        localTable["scoreStream-ScoreStream"] = { self.scoreStream as Any }
+        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { [unowned self] in self.scoreSheetBuilder as Any }
+        localTable["mutableScoreStream-MutableScoreStream"] = { [unowned self] in self.mutableScoreStream as Any }
+        localTable["scoreStream-ScoreStream"] = { [unowned self] in self.scoreStream as Any }
     }
 }
 extension GameComponent: Registration {
@@ -185,18 +200,25 @@ extension LoggedInComponent: ExtensionRegistration {
 
 #endif
 
+@preconcurrency
+@MainActor
 private func factoryEmptyDependencyProvider(_ component: NeedleFoundation.Scope) -> AnyObject {
     return EmptyDependencyProvider(component: component)
 }
 
 // MARK: - Registration
+@preconcurrency
+@MainActor
 private func registerProviderFactory(_ componentPath: String, _ factory: @escaping (NeedleFoundation.Scope) -> AnyObject) {
     __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
 }
 
 #if !NEEDLE_DYNAMIC
 
-@inline(never) private func register1() {
+@inline(never)
+@preconcurrency
+@MainActor
+private func register1() {
     registerProviderFactory("^->RootComponent->LoggedOutComponent", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
     registerProviderFactory("^->RootComponent", factoryEmptyDependencyProvider)
     registerProviderFactory("^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent", factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf)
@@ -214,6 +236,8 @@ private func registerProviderFactory(_ componentPath: String, _ factory: @escapi
 }
 #endif
 
+@preconcurrency
+@MainActor
 public func registerProviderFactories() {
 #if !NEEDLE_DYNAMIC
     register1()

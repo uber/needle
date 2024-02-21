@@ -18,6 +18,7 @@
 import RxSwift
 import XCTest
 
+@MainActor
 class RootViewControllerTests: XCTestCase {
 
     private var playersStream: PlayersStreamMock!

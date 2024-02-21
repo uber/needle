@@ -19,11 +19,13 @@ import ScoreSheet
 import TicTacToeIntegrations
 import UIKit
 
+@MainActor
 protocol GameDependency: Dependency {
     var mutableScoreStream: MutableScoreStream { get }
     var playersStream: PlayersStream { get }
 }
 
+@MainActor
 protocol GamePluginExtension: PluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder { get }
 }
@@ -62,6 +64,7 @@ class GameComponent: UberPluginizedComponent<GameDependency, GamePluginExtension
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows GameViewController to be initialized lazily.
+@MainActor
 protocol GameBuilder {
     var gameViewController: UIViewController { get }
 }

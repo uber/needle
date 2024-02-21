@@ -19,6 +19,7 @@ import ScoreSheet
 import TicTacToeIntegrations
 import UIKit
 
+@MainActor
 protocol LoggedInPluginExtension: PluginExtension {
     var scoreSheetBuilder: ScoreSheetBuilder { get }
     var mutableScoreStream: MutableScoreStream { get }
@@ -50,6 +51,7 @@ class LoggedInComponent: PluginizedComponent<EmptyDependency, LoggedInPluginExte
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows LoggedInViewController to be initialized lazily.
+@MainActor
 protocol LoggedInBuilder {
     var loggedInViewController: UIViewController { get }
 }

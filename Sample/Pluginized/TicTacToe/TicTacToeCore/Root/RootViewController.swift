@@ -52,6 +52,11 @@ class RootViewController: UIViewController {
         updateChildViewController()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        playersStreamDisposable?.dispose()
+    }
+
     private func updateChildViewController() {
         if playersStreamDisposable != nil {
             return
@@ -88,9 +93,5 @@ class RootViewController: UIViewController {
         } else {
             present(viewController, animated: true, completion: nil)
         }
-    }
-
-    deinit {
-        playersStreamDisposable?.dispose()
     }
 }
