@@ -98,10 +98,8 @@ class LoggedInViewController: ObservableViewController, ScoreSheetListener {
     }
 
     func done() {
-        dismiss(animated: true)
-    }
-
-    deinit {
-        gameDisposable?.dispose()
+        dismiss(animated: true) { [weak self] in
+            self?.gameDisposable?.dispose()
+        }
     }
 }

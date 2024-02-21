@@ -17,6 +17,7 @@
 import NeedleFoundation
 import SwiftUI
 
+@MainActor
 protocol LoggedOutDependency: Dependency {
     var mutablePlayersStream: MutablePlayersStream { get }
 }
@@ -28,7 +29,7 @@ class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
             mutablePlayersStream: dependency.mutablePlayersStream
         )
     }
-    
+
     var loggedOutView: AnyView {
         return AnyView(
             LoggedOutView(viewModel: loggedOutViewModel)
@@ -38,6 +39,7 @@ class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows LoggedOutView to be initialized lazily.
+@MainActor
 protocol LoggedOutBuilder {
     var loggedOutView: AnyView { get }
 }
