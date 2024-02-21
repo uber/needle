@@ -19,7 +19,7 @@ import SwiftUI
 
 class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 
-    var scoreStream: ScoreStream {
+    public var scoreStream: ScoreStream {
         return mutableScoreStream
     }
 
@@ -48,6 +48,7 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows LoggedInView to be initialized lazily.
+@MainActor
 protocol LoggedInBuilder {
     var loggedInView: AnyView { get }
 }

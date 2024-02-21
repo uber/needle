@@ -38,6 +38,7 @@ class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows LoggedInViewController to be initialized lazily.
+@MainActor
 protocol LoggedInBuilder {
     var loggedInViewController: UIViewController { get }
 }

@@ -21,7 +21,6 @@ import UIKit
 enum ViewControllerLifecycle {
     case viewDidAppear
     case viewDidDisappear
-    case `deinit`
 }
 
 /// A view controller whose lifecycle events can be observed via Rx.
@@ -47,8 +46,4 @@ class ObservableViewController: UIViewController {
     // MARK: - Private
 
     private let lifecycleSubject = ReplaySubject<ViewControllerLifecycle>.create(bufferSize: 1)
-
-    deinit {
-        lifecycleSubject.onNext(.deinit)
-    }
 }

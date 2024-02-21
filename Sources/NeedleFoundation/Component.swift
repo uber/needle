@@ -17,6 +17,8 @@
 import Foundation
 
 /// The base protocol of a dependency, enabling Needle's parsing process.
+@preconcurrency
+@MainActor
 public protocol Dependency: AnyObject {}
 
 #if NEEDLE_DYNAMIC
@@ -29,6 +31,8 @@ public protocol Registration {
 /// from the `Component` base class, instead of using this protocol
 /// directly.
 /// @CreateMock
+@preconcurrency
+@MainActor
 public protocol Scope: AnyObject {
     /// The path to reach this component on the dependnecy graph.
     var path: [String] { get }
