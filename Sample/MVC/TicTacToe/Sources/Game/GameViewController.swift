@@ -18,14 +18,10 @@ import RxSwift
 import SnapKit
 import UIKit
 
-@MainActor
-private enum Constants {
-    static let cellSize: CGFloat = UIScreen.main.bounds.width / CGFloat(colCount)
-}
-
 private let rowCount = 3
 private let colCount = 3
 private let sectionCount = 1
+@MainActor let cellSize: CGFloat = UIScreen.main.bounds.width / CGFloat(colCount)
 private let cellIdentifier = "TicTacToeCell"
 
 private enum Players: Int {
@@ -51,7 +47,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.itemSize = CGSize(width: Constants.cellSize, height: Constants.cellSize)
+        layout.itemSize = CGSize(width: cellSize, height: cellSize)
         return UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
     }()
     private var appearanceDisposable = CompositeDisposable()
@@ -91,7 +87,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.center.equalTo(self.view.snp.center)
-            maker.size.equalTo(CGSize(width: CGFloat(colCount) * Constants.cellSize, height: CGFloat(rowCount) * Constants.cellSize))
+            maker.size.equalTo(CGSize(width: CGFloat(colCount) * cellSize, height: CGFloat(rowCount) * cellSize))
         }
     }
 
