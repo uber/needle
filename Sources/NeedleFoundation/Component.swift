@@ -19,6 +19,18 @@ import Foundation
 /// The base protocol of a dependency, enabling Needle's parsing process.
 public protocol Dependency: AnyObject {}
 
+private final class Weak<T> {
+    private weak var _value: AnyObject?
+
+    fileprivate init(_ value: AnyObject? = nil) {
+        self._value = value
+    }
+
+    fileprivate var value: T? {
+        return _value as? T
+    }
+}
+
 #if NEEDLE_DYNAMIC
 public protocol Registration {
     func registerItems()
@@ -153,6 +165,45 @@ open class Component<DependencyType>: Scope {
         return instance
     }
 
+    /// Share the enclosed object as long as this instance has been referenced somewhere.
+    /// This allows this scope as well as all child scopes to share a same instance of the object.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads
+    /// as it may cause a deadlock.
+    ///
+    /// - parameter hash: The key to distinguish among same #function key.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func weak<T, Hash: Hashable>(__function: String = #function, hash: Hash = "\(#function)", _ factory: () -> T) -> T {
+        // Use function name as the key, since this is unique per component
+        // class. And also, use a value confirming to Hashable as the key as
+        // well so that you're able to get an instance whose hash value is same.
+        // At the same time, this is also 150 times faster than
+        // interpolating the type to convert to string, `"\(T.self)"`.
+        weakInstancelock.lock()
+        defer {
+            weakInstancelock.unlock()
+        }
+
+        var hasher = Hasher()
+        hasher.combine(__function)
+        hasher.combine(hash)
+        let key = hasher.finalize()
+
+        // Additional nil coalescing is needed to mitigate a Swift bug appearing
+        // in Xcode 10. see https://bugs.swift.org/browse/SR-8704. Without this
+        // measure, calling `shared` from a function that returns an optional type
+        // will always pass the check below and return nil if the instance is not
+        // initialized.
+        guard let instance = weakInstances[key]?.value as? T else {
+            let instance = factory()
+            weakInstances[key] = Weak(instance as AnyObject)
+            return instance
+        }
+
+        return instance
+    }
+
     public func find<T>(property: String, skipThisLevel: Bool) -> T {
         guard let itemCloure = localTable[property] else {
             return parent.find(property: property, skipThisLevel: false)
@@ -174,6 +225,10 @@ open class Component<DependencyType>: Scope {
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
+
+    private let weakInstancelock = NSRecursiveLock()
+    private var weakInstances: [Int: Weak] = [:]
+
     private lazy var name: String = {
         let fullyQualifiedSelfName = String(describing: self)
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
@@ -262,6 +317,45 @@ open class Component<DependencyType>: Scope {
         return instance
     }
 
+    /// Share the enclosed object as long as this instance has been referenced somewhere.
+    /// This allows this scope as well as all child scopes to share a same instance of the object.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads
+    /// as it may cause a deadlock.
+    ///
+    /// - parameter hash: The key to distinguish among same #function key.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func weak<T, Hash: Hashable>(__function: String = #function, hash: Hash = "\(#function)", _ factory: () -> T) -> T {
+        // Use function name as the key, since this is unique per component
+        // class. And also, use a value confirming to Hashable as the key as
+        // well so that you're able to get an instance whose hash value is same.
+        // At the same time, this is also 150 times faster than
+        // interpolating the type to convert to string, `"\(T.self)"`.
+        weakInstancelock.lock()
+        defer {
+            weakInstancelock.unlock()
+        }
+
+        var hasher = Hasher()
+        hasher.combine(__function)
+        hasher.combine(hash)
+        let key = hasher.finalize()
+
+        // Additional nil coalescing is needed to mitigate a Swift bug appearing
+        // in Xcode 10. see https://bugs.swift.org/browse/SR-8704. Without this
+        // measure, calling `shared` from a function that returns an optional type
+        // will always pass the check below and return nil if the instance is not
+        // initialized.
+        guard let instance = weakInstances[key]?.value as? T else {
+            let instance = factory()
+            weakInstances[key] = Weak(instance as AnyObject)
+            return instance
+        }
+
+        return instance
+    }
+
     public subscript<T>(dynamicMember keyPath: KeyPath<DependencyType, T>) -> T {
         return dependency[keyPath: keyPath]
     }
@@ -270,6 +364,10 @@ open class Component<DependencyType>: Scope {
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
+
+    private let weakInstancelock = NSRecursiveLock()
+    private var weakInstances: [Int: Weak<AnyObject>] = [:]
+
     private lazy var name: String = {
         let fullyQualifiedSelfName = String(describing: self)
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
