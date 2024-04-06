@@ -17,7 +17,11 @@
 import NeedleFoundation
 import SwiftUI
 
-class LoggedInComponent: Component<EmptyDependency>, LoggedInBuilder {
+protocol LoggedInDependency: Dependency {
+
+}
+
+class LoggedInComponent: Component<LoggedInDependency>, LoggedInBuilder {
 
     public var scoreStream: ScoreStream {
         return mutableScoreStream
