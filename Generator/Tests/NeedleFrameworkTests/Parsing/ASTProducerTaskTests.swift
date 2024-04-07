@@ -16,7 +16,9 @@
 
 import XCTest
 @testable import NeedleFramework
-#if swift(>=5.6)
+#if swift(>=5.9)
+import SwiftParser
+#elseif swift(>=5.6)
 import SwiftSyntaxParser
 #else
 import SwiftSyntax

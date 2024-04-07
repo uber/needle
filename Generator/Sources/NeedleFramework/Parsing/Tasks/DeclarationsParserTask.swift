@@ -43,7 +43,7 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
     // MARK: - Private
 
     private let ast: AST
-    
+
     private func parseSyntax() throws -> ([ASTComponent], [Dependency], [String]) {
         let visitor = Visitor(sourceHash: ast.sourceHash, filePath: ast.filePath)
         visitor.walk(ast.sourceFileSyntax)
@@ -56,14 +56,14 @@ class DeclarationsParserTask: AbstractTask<DependencyGraphNode> {
 private final class Visitor: BaseVisitor {
     private(set) var dependencies: [Dependency] = []
     private(set) var components: [ASTComponent] = []
-    
+
     private let sourceHash: String
-    
+
     init(sourceHash: String, filePath: String) {
         self.sourceHash = sourceHash
         super.init(filePath: filePath)
     }
-    
+
     override func visit(_ node: ProtocolDeclSyntax) -> SyntaxVisitorContinueKind {
         if node.isDependency {
             currentEntityNode = node
@@ -72,7 +72,7 @@ private final class Visitor: BaseVisitor {
             return .skipChildren
         }
     }
-    
+
     override func visitPost(_ node: ProtocolDeclSyntax) {
         let protocolName = node.typeName
         if protocolName == currentEntityNode?.typeName {
@@ -82,7 +82,7 @@ private final class Visitor: BaseVisitor {
             dependencies.append(dependency)
         }
     }
-    
+
     override func visit(_ node: ClassDeclSyntax) ->SyntaxVisitorContinueKind {
         if node.isComponent {
             isParsingComponentDeclarationLine = true
@@ -92,7 +92,7 @@ private final class Visitor: BaseVisitor {
             return .skipChildren
         }
     }
-    
+
     override func visitPost(_ node: ClassDeclSyntax) {
         let componentName = node.typeName
         if componentName == currentEntityNode?.typeName {
@@ -109,12 +109,12 @@ private final class Visitor: BaseVisitor {
             components.append(component)
         }
     }
-    
+
     override func visitPost(_ node: GenericArgumentListSyntax) {
         guard isParsingComponentDeclarationLine else {return }
         currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
     }
-    
+
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
         return .skipChildren
     }
