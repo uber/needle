@@ -39,7 +39,7 @@ class BaseVisitor: SyntaxVisitor {
     var isParsingComponentDeclarationLine: Bool = false
     
     override func visitPost(_ node: FunctionCallExprSyntax) {
-        if let callexpr = node.calledExpression.firstToken?.text,
+        if let callexpr = node.calledExpression.firstToken(viewMode: .sourceAccurate)?.text,
             let currentEntityName = currentEntityNode?.typeName {
             componentToCallExprs[currentEntityName, default: []].insert(callexpr)
         }
@@ -61,7 +61,7 @@ class BaseVisitor: SyntaxVisitor {
 
         let memberProperties = node.bindings.compactMap { pattern -> Property? in
             guard let propertyType = pattern.typeAnnotation?.type.description.trimmed,
-                let propertyName = pattern.firstToken?.text else {
+                let propertyName = pattern.firstToken(viewMode: .sourceAccurate)?.text else {
                     return nil
             }
             if isPrivate || isFileprivate {
@@ -76,11 +76,11 @@ class BaseVisitor: SyntaxVisitor {
     }
     
     override func visitPost(_ node: ImportDeclSyntax) {
-        let importStatement = node.withoutTrivia().description.trimmed
+        let importStatement = node.trimmed.description.trimmed
         imports.append(importStatement)
     }
     
-    override func visit(_ node: MemberDeclBlockSyntax) -> SyntaxVisitorContinueKind {
+    override func visit(_ node: MemberBlockSyntax) -> SyntaxVisitorContinueKind {
         isParsingComponentDeclarationLine = false
         return .visitChildren
     }
