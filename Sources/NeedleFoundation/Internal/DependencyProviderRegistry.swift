@@ -31,6 +31,8 @@ import Foundation
 public class __DependencyProviderRegistry {
 
     /// The singleton instance.
+    @preconcurrency
+    @MainActor
     public static let instance = __DependencyProviderRegistry()
 
     /// Register the given factory closure with given key.
