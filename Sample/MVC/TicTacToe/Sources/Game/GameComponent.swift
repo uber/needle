@@ -17,6 +17,7 @@
 import NeedleFoundation
 import UIKit
 
+@MainActor
 protocol GameDependency: Dependency {
     var mutableScoreStream: MutableScoreStream { get }
     var playersStream: PlayersStream { get }
@@ -40,6 +41,7 @@ class GameComponent: Component<GameDependency>, GameBuilder {
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows GameViewController to be initialized lazily.
+@MainActor
 protocol GameBuilder {
     var gameViewController: UIViewController { get }
 }

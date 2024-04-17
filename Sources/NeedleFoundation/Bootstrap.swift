@@ -19,6 +19,8 @@ import Foundation
 /// An empty protocol that can be used for any components that require no
 /// dependencies. This can be used as the dependnecy protocol of the root
 /// component of a dependency graph.
+@preconcurrency
+@MainActor
 public protocol EmptyDependency: AnyObject {}
 
 /// The dependency provider that conforms to `EmptyDependency`. This is

@@ -52,6 +52,7 @@ class LoggedInComponent: Component<LoggedInDependency>, LoggedInBuilder {
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows LoggedInView to be initialized lazily.
+@MainActor
 protocol LoggedInBuilder {
     var loggedInView: AnyView { get }
 }
