@@ -17,7 +17,6 @@
 import Concurrency
 import Foundation
 import SwiftSyntax
-import SourceParsingFramework
 
 /// A task that parses Swift AST component extensions into data models.
 class ComponentExtensionsParserTask: AbstractTask<ComponentExtensionNode> {

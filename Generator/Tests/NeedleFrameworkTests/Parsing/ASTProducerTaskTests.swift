@@ -16,18 +16,14 @@
 
 import XCTest
 @testable import NeedleFramework
-#if swift(>=5.6)
-import SwiftSyntaxParser
-#else
-import SwiftSyntax
-#endif
+import SwiftParser
 
 class ASTProducerTaskTests: AbstractParserTests {
 
     func test_execute_verifyNextTask() {
         let sourceUrl = fixtureUrl(for: "ComponentSample.swift")
         let sourceContent = try! String(contentsOf: sourceUrl)
-        let astContent = try! SyntaxParser.parse(sourceUrl)
+        let astContent = Parser.parse(source: sourceContent)
 
         let task = ASTProducerTask(sourceUrl: sourceUrl, sourceContent: sourceContent)
         let result = try! task.execute()

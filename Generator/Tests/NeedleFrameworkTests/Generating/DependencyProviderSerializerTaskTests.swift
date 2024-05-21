@@ -87,8 +87,8 @@ private func factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e(_ component: Needle
 
 """)
         case "^->RootComponent->LoggedInComponent":
-            XCTAssertEqual(serializedProviders[0].registration, """
-registerProviderFactory("^->RootComponent->LoggedInComponent", factoryEmptyDependencyProvider)
+            XCTAssertEqual(serializedProviders[1].registration, """
+registerProviderFactory("^->RootComponent->LoggedInComponent", factory2d08e87342cecea575b3e3b0c44298fc1c149afb)
 
 """)
         case "^->RootComponent":

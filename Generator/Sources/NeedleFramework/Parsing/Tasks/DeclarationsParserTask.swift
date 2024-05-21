@@ -112,7 +112,7 @@ private final class Visitor: BaseVisitor {
     
     override func visitPost(_ node: GenericArgumentListSyntax) {
         guard isParsingComponentDeclarationLine else {return }
-        currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
+        currentDependencyProtocol = node.first?.argument.description.trimmed.removingModulePrefix
     }
     
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {

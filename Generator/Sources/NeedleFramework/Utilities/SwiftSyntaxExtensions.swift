@@ -21,57 +21,57 @@ import SwiftSyntax
 /// An entity node is either a Protocol or Class syntax node
 protocol EntityNode: SyntaxNodeWithModifiers {
     var typeName: String { get }
-    var inheritanceClause: TypeInheritanceClauseSyntax? { get }
+    var inheritanceClause: InheritanceClauseSyntax? { get }
 }
 
 extension EntityNode {
     /// Checks whether the entity inherits from a certain type with `typeName`
     func inherits(from typeName: String) -> Bool {
         
-        let inheritedTypeSyntax = inheritanceClause?.inheritedTypeCollection.first?.typeName
+        let inheritedTypeSyntax = inheritanceClause?.inheritedTypes.first?.type
         // Usually, first token is the inherited type name. But sometimes it could also be the module prefix.
         // In that case, we need to look for the actual type name by checking for `MemberTypeIdentifierSyntax`
-        if inheritedTypeSyntax?.firstToken?.nextToken?.tokenKind != TokenKind.period {
-            return inheritedTypeSyntax?.firstToken?.text == typeName
+        if inheritedTypeSyntax?.firstToken(viewMode: .sourceAccurate)?.nextToken(viewMode: .sourceAccurate)?.tokenKind != TokenKind.period {
+            return inheritedTypeSyntax?.firstToken(viewMode: .sourceAccurate)?.text == typeName
         } else {
-            return inheritedTypeSyntax?.as(MemberTypeIdentifierSyntax.self)?.name.text == typeName
+            return inheritedTypeSyntax?.as(MemberTypeSyntax.self)?.name.text == typeName
         }
     }
     
     var inheritanceHasGenericArgument: Bool {
-        let inheritanceTypeToken = inheritanceClause?.inheritedTypeCollection.first?.typeName
-        return inheritanceTypeToken?.as(SimpleTypeIdentifierSyntax.self)?.genericArgumentClause != nil ||
-            inheritanceTypeToken?.as(MemberTypeIdentifierSyntax.self)?.genericArgumentClause != nil
+        let inheritanceTypeToken = inheritanceClause?.inheritedTypes.first?.type
+        return inheritanceTypeToken?.as(IdentifierTypeSyntax.self)?.genericArgumentClause != nil ||
+        inheritanceTypeToken?.as(MemberTypeSyntax.self)?.genericArgumentClause != nil
     }
 }
 
 protocol SyntaxNodeWithModifiers {
-    var modifiers: ModifierListSyntax? { get }
+    var modifiers: DeclModifierListSyntax { get }
 }
 
 extension SyntaxNodeWithModifiers {
     var isInternal: Bool {
-        modifiers?.first?.name.text == nil || modifiers?.first?.name.text == "internal"
+        modifiers.first?.name.text == nil || modifiers.first?.name.text == "internal"
     }
 
     var isPublic: Bool {
-        modifiers?.first?.name.text == "public"
+        modifiers.first?.name.text == "public"
     }
 
     var isPrivate: Bool {
-        modifiers?.first?.name.text == "private"
+        modifiers.first?.name.text == "private"
     }
 
     var isFileprivate: Bool {
-        modifiers?.first?.name.text == "fileprivate"
+        modifiers.first?.name.text == "fileprivate"
     }
 }
 
 // MARK: - SwiftSyntax Protocol Extensions
 
-extension IdentifiedDeclSyntax {
+extension NamedDeclSyntax {
     var typeName: String {
-        return identifier.description.trimmed
+        return name.description.trimmed
     }
 }
 

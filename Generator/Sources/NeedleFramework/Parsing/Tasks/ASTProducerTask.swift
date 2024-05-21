@@ -17,11 +17,7 @@
 import Concurrency
 import Foundation
 import SourceParsingFramework
-#if swift(>=5.6)
-import SwiftSyntaxParser
-#else
-import SwiftSyntax
-#endif
+import SwiftParser
 
 /// A task that parses a Swift source content and produces Swift AST that
 /// can then be parsed into the dependnecy graph.
@@ -42,7 +38,7 @@ class ASTProducerTask: AbstractTask<AST> {
     /// - returns: The `AST` data model.
     /// - throws: Any error occurred during execution.
     override func execute() throws -> AST {
-        let syntax = try SyntaxParser.parse(sourceUrl)
+        let syntax = try Parser.parse(source: String(contentsOf: sourceUrl))
         return AST(sourceHash: MD5(string: sourceContent), sourceFileSyntax: syntax, filePath: sourceUrl.path)
     }
 
