@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 import PackageDescription
 
 let package = Package(
@@ -11,10 +11,10 @@ let package = Package(
         .library(name: "NeedleFramework", targets: ["NeedleFramework"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-tools-support-core", .exact("0.2.7")),
+        .package(url: "https://github.com/apple/swift-tools-support-core", exact: "0.2.7"),
         .package(url: "https://github.com/uber/swift-concurrency.git", .upToNextMajor(from: "0.6.5")),
-        .package(url: "https://github.com/uber/swift-common.git", .exact("0.5.0")),
-        .package(url: "https://github.com/apple/swift-syntax.git", revision: "0e85cf7"),
+        .package(url: "https://github.com/uber/swift-common.git", exact: "0.5.0"),
+        .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMajor(from: "510.0.0")),
     ],
     targets: [
         .target(
@@ -24,7 +24,7 @@ let package = Package(
                 .product(name: "Concurrency", package: "swift-concurrency"),
                 .product(name: "SourceParsingFramework", package: "swift-common"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
+                .product(name: "SwiftParser", package: "swift-syntax"),
             ]),
         .testTarget(
             name: "NeedleFrameworkTests",

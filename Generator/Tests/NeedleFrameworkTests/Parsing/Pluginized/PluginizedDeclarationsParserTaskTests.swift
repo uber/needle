@@ -16,11 +16,7 @@
 
 import XCTest
 @testable import NeedleFramework
-#if swift(>=5.6)
-import SwiftSyntaxParser
-#else
-import SwiftSyntax
-#endif
+import SwiftParser
 
 class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
 
@@ -29,7 +25,7 @@ class PluginizedDeclarationsParserTaskTests: AbstractParserTests {
         let sourceContent = try! String(contentsOf: sourceUrl)
         let imports = ["import UIKit", "import RIBs", "import Foundation"]
         let ast = AST(sourceHash: MD5(string: sourceContent),
-                      sourceFileSyntax: try! SyntaxParser.parse(sourceUrl), filePath: sourceUrl.path)
+                      sourceFileSyntax: Parser.parse(source: sourceContent), filePath: sourceUrl.path)
 
         let task = PluginizedDeclarationsParserTask(ast: ast)
         let node = try! task.execute()
