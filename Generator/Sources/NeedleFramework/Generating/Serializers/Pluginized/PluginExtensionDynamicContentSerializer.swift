@@ -16,7 +16,7 @@
 
 import Foundation
 
-/// A serializer that produces the class definitation source code for the
+/// A serializer that produces the class definition source code for the
 /// plugin extension provider.
 class PluginExtensionDynamicContentSerializer: Serializer {
 
@@ -36,7 +36,7 @@ class PluginExtensionDynamicContentSerializer: Serializer {
         
         return """
         /// \(component.data.name) plugin extension
-        extension \(component.data.name): ExtensionRegistration {
+        extension \(component.data.name): NeedleFoundation.ExtensionRegistration {
             public func registerExtensionItems() {
         \(properties)
             }

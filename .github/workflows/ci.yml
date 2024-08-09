@@ -7,26 +7,26 @@ on:
     branches: [ master ]
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_14.1.app
+  DEVELOPER_DIR: /Applications/Xcode_15.4.app
 
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleFoundationTests"
-        run: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundation -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+        run: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundation -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
       - name: "NeedleGeneratorTests"
         run: cd Generator && swift test -Xswiftc -DDEBUG
       - name: "NeedleGeneratorBinary"
         run: cd Generator && swift build -c release
       - name: "NeedleSampleMVCApp"
-        run: xcodebuild build -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+        run: xcodebuild build -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
       - name: "NeedleSampleMVCTests"
-        run: xcodebuild test -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+        run: xcodebuild test -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
       - name: "NeedleSamplePluginizedApp"
-        run: xcodebuild build -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+        run: xcodebuild build -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
       - name: "NeedleSamplePluginizedScoreSheetTests"
-        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
       - name: "NeedleSamplePluginizedTicTacToeCoreTests"
-        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 14'
+        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
