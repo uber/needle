@@ -18,6 +18,7 @@ import NeedleFoundation
 import RxSwift
 import UIKit
 
+@MainActor
 public protocol ScoreSheetDependency: Dependency {
     var scoreStream: ScoreStream { get }
 }
@@ -30,6 +31,7 @@ public class ScoreSheetComponent: Component<ScoreSheetDependency>, ScoreSheetBui
 }
 
 // Use a builder protocol to allow mocking for unit tests
+@MainActor
 public protocol ScoreSheetBuilder {
     var scoreSheetViewController: UIViewController { get }
 }

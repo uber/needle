@@ -25,8 +25,6 @@ extension ObservableViewController: PluginizedScopeLifecycleObservable {
         let disposable = lifecycle
             .subscribe(onNext: { (event: ViewControllerLifecycle) in
                 switch event {
-                case .deinit:
-                    observer(.deinit)
                 case .viewDidAppear:
                     observer(.active)
                 case .viewDidDisappear:

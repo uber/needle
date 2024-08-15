@@ -22,7 +22,7 @@ import UIKit
 private let rowCount = 3
 private let colCount = 3
 private let sectionCount = 1
-private let cellSize: CGFloat = UIScreen.main.bounds.width / CGFloat(colCount)
+@MainActor private let cellSize: CGFloat = UIScreen.main.bounds.width / CGFloat(colCount)
 private let cellIdentifier = "TicTacToeCell"
 
 private enum Players: Int {

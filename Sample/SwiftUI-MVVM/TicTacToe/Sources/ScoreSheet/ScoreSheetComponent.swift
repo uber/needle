@@ -17,6 +17,7 @@
 import NeedleFoundation
 import SwiftUI
 
+@MainActor
 protocol ScoreSheetDependency: Dependency {
     var scoreStream: ScoreStream { get }
 }
@@ -28,7 +29,7 @@ class ScoreSheetComponent: Component<ScoreSheetDependency>, ScoreSheetBuilder {
             scoreStream: dependency.scoreStream
         )
     }
-    
+
     var scoreSheetView: AnyView {
         return AnyView(
             ScoreSheetView(
@@ -39,6 +40,7 @@ class ScoreSheetComponent: Component<ScoreSheetDependency>, ScoreSheetBuilder {
 }
 
 // Use a builder protocol to allow mocking for unit tests
+@MainActor
 protocol ScoreSheetBuilder {
     var scoreSheetView: AnyView { get }
 }

@@ -19,6 +19,7 @@ import SwiftUI
 import Combine
 import XCTest
 
+@MainActor
 class RootViewTests: XCTestCase {
 
     private var loggedOutBuilder: LoggedOutBuilderMock!

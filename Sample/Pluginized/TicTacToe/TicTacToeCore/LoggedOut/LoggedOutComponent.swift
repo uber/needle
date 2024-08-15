@@ -17,6 +17,7 @@
 import NeedleFoundation
 import UIKit
 
+@MainActor
 protocol LoggedOutDependency: Dependency {
     var mutablePlayersStream: MutablePlayersStream { get }
 }
@@ -30,6 +31,7 @@ class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutBuilder {
 
 // Use a builder protocol to allow mocking for unit tests. At the same time,
 // this allows LoggedOutViewController to be initialized lazily.
+@MainActor
 protocol LoggedOutBuilder {
     var loggedOutViewController: UIViewController { get }
 }

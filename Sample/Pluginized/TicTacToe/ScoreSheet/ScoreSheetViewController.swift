@@ -19,6 +19,7 @@ import RxSwift
 import SnapKit
 import UIKit
 
+@MainActor
 public protocol ScoreSheetListener {
     func done()
 }

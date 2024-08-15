@@ -68,6 +68,8 @@ class OutputSerializer: Serializer {
     
         let traversalHelpers = (1...maxLevel).map { num in
             return """
+            @preconcurrency
+            @MainActor
             private func parent\(num)(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Scope {
                 return component\(String(repeating: ".parent", count: num))
             }
@@ -101,7 +103,10 @@ class OutputSerializer: Serializer {
                     .trimmingCharacters(in: .whitespacesAndNewlines)
                 let regNum = ($0 / linesPerHelper) + 1
                 registrationHelperFuncs.append("""
-                @inline(never) private func register\(regNum)() {
+                @inline(never)
+                @preconcurrency
+                @MainActor
+                private func register\(regNum)() {
                     \(helperBody)
                 }
                 """)
@@ -132,11 +137,15 @@ class OutputSerializer: Serializer {
         
         #endif
         
+        @preconcurrency
+        @MainActor
         private func factoryEmptyDependencyProvider(_ component: NeedleFoundation.Scope) -> AnyObject {
             return EmptyDependencyProvider(component: component)
         }
 
         // MARK: - Registration
+        @preconcurrency
+        @MainActor
         private func registerProviderFactory(_ componentPath: String, _ factory: @escaping (NeedleFoundation.Scope) -> AnyObject) {
             __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
         }
@@ -146,6 +155,8 @@ class OutputSerializer: Serializer {
         \(registrationHelpers)
         #endif
         
+        @preconcurrency
+        @MainActor
         public func registerProviderFactories() {
         #if !NEEDLE_DYNAMIC
             \(registrationBody)
