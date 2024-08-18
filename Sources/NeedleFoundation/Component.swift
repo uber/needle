@@ -30,7 +30,7 @@ public protocol Registration {
 /// directly.
 /// @CreateMock
 public protocol Scope: AnyObject {
-    /// The path to reach this component on the dependnecy graph.
+    /// The path to reach this component on the dependency graph.
     var path: [String] { get }
 
     /// The parent of this component.
@@ -83,7 +83,7 @@ open class Component<DependencyType>: Scope {
     /// The parent of this component.
     public let parent: Scope
 
-    /// The path to reach this scope on the dependnecy graph.
+    /// The path to reach this scope on the dependency graph.
     // Use `lazy var` to avoid computing the path repeatedly. Internally,
     // this is always accessed with the `__DependencyProviderRegistry`'s lock
     // acquired.
@@ -207,7 +207,7 @@ open class Component<DependencyType>: Scope {
     /// The parent of this component.
     public let parent: Scope
 
-    /// The path to reach this scope on the dependnecy graph.
+    /// The path to reach this scope on the dependency graph.
     // Use `lazy var` to avoid computing the path repeatedly. Internally,
     // this is always accessed with the `__DependencyProviderRegistry`'s lock
     // acquired.
