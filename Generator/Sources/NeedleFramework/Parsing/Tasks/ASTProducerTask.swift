@@ -20,7 +20,7 @@ import SourceParsingFramework
 import SwiftParser
 
 /// A task that parses a Swift source content and produces Swift AST that
-/// can then be parsed into the dependnecy graph.
+/// can then be parsed into the dependency graph.
 class ASTProducerTask: AbstractTask<AST> {
 
     /// Initializer.
