@@ -24,7 +24,7 @@ import Foundation
 // Once that happens, we can declare an `open createPluginExtensionProvider`
 // method in the base pluginized component class. Generate extensions to
 // all the pluginized component subclasses that override the method to
-// instantiate the dependnecy providers.
+// instantiate the dependency providers.
 public class __PluginExtensionProviderRegistry {
 
     /// The singleton instance.

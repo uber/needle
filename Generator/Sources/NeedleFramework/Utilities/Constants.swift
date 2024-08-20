@@ -26,5 +26,5 @@ let bootstrapComponentName = "BootstrapComponent"
 /// The name of the protocol that all Dependency protocols inherit from.
 let dependencyProtocolName = "Dependency"
 
-/// The name fo the class that all Component classes inherit from
+/// The name of the class that all Component classes inherit from
 let componentClassName = "Component"
