@@ -25,7 +25,7 @@ class DependencyPropsSerializer: Serializer {
     func serialize() -> String {
         if component.isLeaf {
             return """
-extension \(component.name): Registration {
+extension \(component.name): NeedleFoundation.Registration {
     public func registerItems() {
 \(serialize(component.dependency))
     }
@@ -34,7 +34,7 @@ extension \(component.name): Registration {
 """
         } else {
             return """
-extension \(component.name): Registration {
+extension \(component.name): NeedleFoundation.Registration {
     public func registerItems() {
 \(serialize(component.dependency))
 \(serialize(component.properties))
