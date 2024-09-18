@@ -138,7 +138,7 @@ private final class PluginizedVisitor: BaseVisitor {
         if currentEntityNode?.typeName == currentPluginizedComponentName {
             
             for (i, genericArgument) in node.enumerated() {
-                let argumentName = genericArgument.argumentType.description.trimmed.removingModulePrefix
+                let argumentName = genericArgument.argument.description.trimmed.removingModulePrefix
                 
                 switch i {
                 case 0:
@@ -152,7 +152,7 @@ private final class PluginizedVisitor: BaseVisitor {
                 }
             }
         } else if currentEntityNode?.typeName == currentNonCoreComponentName {
-            currentDependencyProtocol = node.first?.argumentType.description.trimmed.removingModulePrefix
+            currentDependencyProtocol = node.first?.argument.description.trimmed.removingModulePrefix
         }
     }
     
