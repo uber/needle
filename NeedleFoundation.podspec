@@ -12,4 +12,8 @@ Pod::Spec.new do |s|
   s.source_files     = 'Sources/**/*.swift'
   s.ios.deployment_target = '9.0'
   s.swift_versions   = ['5.2', '5.3', '5.4', '5.5', '5.6']
+
+  s.subspec 'Generator' do |ss|
+    ss.source_files = 'Generator/*'
+  end
 end
