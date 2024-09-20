@@ -31,7 +31,7 @@ public class EmptyDependencyProvider: EmptyDependency {
     public init(component: Scope) {}
 }
 
-/// The base implementation of a component thet represents the root of
+/// The base implementation of a component that represents the root of
 /// a dependency graph. A subclass defining the root scope should
 /// inherit from this class instead of the generic `Component` class.
 ///
