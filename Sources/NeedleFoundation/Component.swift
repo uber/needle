@@ -130,27 +130,61 @@ open class Component<DependencyType>: Scope {
     ///
     /// - parameter factory: The closure to construct the dependency object.
     /// - returns: The dependency object instance.
-    public final func shared<T>(__function: String = #function, _ factory: () -> T) -> T {
-        // Use function name as the key, since this is unique per component
-        // class. At the same time, this is also 150 times faster than
-        // interpolating the type to convert to string, `"\(T.self)"`.
+    public final func shared<T>(__function: StaticString = #function, _ factory: () -> T) -> T {
+        return shared(__function: __function, args: Nothing(), factory)
+    }
+
+    /// Share the enclosed object as a singleton at this scope based on the `args` parameter. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads as it may cause a deadlock.
+    ///
+    /// - parameter args: A value that conforms to the `Hashable` protocol to differentiate between singleton instances.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func shared<Args: Hashable, T>(__function: StaticString = #function, args: Args, _ factory: () -> T) -> T {
         sharedInstanceLock.lock()
         defer {
             sharedInstanceLock.unlock()
         }
 
-        // Additional nil coalescing is needed to mitigate a Swift bug appearing
-        // in Xcode 10. see https://bugs.swift.org/browse/SR-8704. Without this
-        // measure, calling `shared` from a function that returns an optional type
-        // will always pass the check below and return nil if the instance is not
-        // initialized.
-        if let instance = (sharedInstances[__function] as? T?) ?? nil {
-            return instance
-        }
-        let instance = factory()
-        sharedInstances[__function] = instance
+        return storage.shared(function: __function, args: args, factory: factory)
+    }
 
-        return instance
+    /// Share the enclosed object as a weak singleton at this scope. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads as it may cause a deadlock.
+    ///
+    /// - note: This function is only applicable for reference types (classes).
+    ///
+    /// - parameter args: A value that conforms to the `Hashable` protocol to differentiate between singleton instances.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func weakShared<T: AnyObject>(__function: StaticString = #function, _ factory: () -> T) -> T {
+        return weakShared(__function: __function, args: Nothing(), factory)
+    }
+
+    /// Share the enclosed object as a weak singleton at this scope based on the `args` parameter. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads as it may cause a deadlock.
+    ///
+    /// - note: This function is only applicable for reference types (classes).
+    ///
+    /// - parameter args: A value that conforms to the `Hashable` protocol to differentiate between singleton instances.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func weakShared<Args: Hashable, T: AnyObject>(__function: StaticString = #function, args: Args, _ factory: () -> T) -> T {
+        sharedInstanceLock.lock()
+        defer {
+            sharedInstanceLock.unlock()
+        }
+
+        return storage.weakShared(function: __function, args: args, factory: factory)
     }
 
     public func find<T>(property: String, skipThisLevel: Bool) -> T {
@@ -169,11 +203,12 @@ open class Component<DependencyType>: Scope {
 
     public var localTable = [String:()->Any]()
     public var keyPathToName = [PartialKeyPath<DependencyType>:String]()
-    
+
     // MARK: - Private
 
     private let sharedInstanceLock = NSRecursiveLock()
-    private var sharedInstances = [String: Any]()
+
+    private let storage = AssemblyStorage()
     private lazy var name: String = {
         let fullyQualifiedSelfName = String(describing: self)
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
@@ -239,27 +274,61 @@ open class Component<DependencyType>: Scope {
     ///
     /// - parameter factory: The closure to construct the dependency object.
     /// - returns: The dependency object instance.
-    public final func shared<T>(__function: String = #function, _ factory: () -> T) -> T {
-        // Use function name as the key, since this is unique per component
-        // class. At the same time, this is also 150 times faster than
-        // interpolating the type to convert to string, `"\(T.self)"`.
+    public final func shared<T>(__function: StaticString = #function, _ factory: () -> T) -> T {
+        return shared(__function: __function, args: Nothing(), factory)
+    }
+
+    /// Share the enclosed object as a singleton at this scope based on the `args` parameter. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads as it may cause a deadlock.
+    ///
+    /// - parameter args: A value that conforms to the `Hashable` protocol to differentiate between singleton instances.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func shared<Args: Hashable, T>(__function: StaticString = #function, args: Args, _ factory: () -> T) -> T {
         sharedInstanceLock.lock()
         defer {
             sharedInstanceLock.unlock()
         }
 
-        // Additional nil coalescing is needed to mitigate a Swift bug appearing
-        // in Xcode 10. see https://bugs.swift.org/browse/SR-8704. Without this
-        // measure, calling `shared` from a function that returns an optional type
-        // will always pass the check below and return nil if the instance is not
-        // initialized.
-        if let instance = (sharedInstances[__function] as? T?) ?? nil {
-            return instance
-        }
-        let instance = factory()
-        sharedInstances[__function] = instance
+        return storage.shared(function: __function, args: args, factory: factory)
+    }
 
-        return instance
+    /// Share the enclosed object as a weak singleton at this scope. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads as it may cause a deadlock.
+    ///
+    /// - note: This function is only applicable for reference types (classes).
+    ///
+    /// - parameter args: A value that conforms to the `Hashable` protocol to differentiate between singleton instances.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func weakShared<T: AnyObject>(__function: StaticString = #function, _ factory: () -> T) -> T {
+        return weakShared(__function: __function, args: Nothing(), factory)
+    }
+
+    /// Share the enclosed object as a weak singleton at this scope based on the `args` parameter. This allows
+    /// this scope as well as all child scopes to share a single instance of
+    /// the object, for as long as this component lives.
+    ///
+    /// - note: Shared dependency's constructor should avoid switching threads as it may cause a deadlock.
+    ///
+    /// - note: This function is only applicable for reference types (classes).
+    ///
+    /// - parameter args: A value that conforms to the `Hashable` protocol to differentiate between singleton instances.
+    /// - parameter factory: The closure to construct the dependency object.
+    /// - returns: The dependency object instance.
+    public final func weakShared<Args: Hashable, T: AnyObject>(__function: StaticString = #function, args: Args, _ factory: () -> T) -> T {
+        sharedInstanceLock.lock()
+        defer {
+            sharedInstanceLock.unlock()
+        }
+
+        return storage.weakShared(function: __function, args: args, factory: factory)
     }
 
     public subscript<T>(dynamicMember keyPath: KeyPath<DependencyType, T>) -> T {
@@ -269,7 +338,7 @@ open class Component<DependencyType>: Scope {
     // MARK: - Private
 
     private let sharedInstanceLock = NSRecursiveLock()
-    private var sharedInstances = [String: Any]()
+    private let storage = AssemblyStorage()
     private lazy var name: String = {
         let fullyQualifiedSelfName = String(describing: self)
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
