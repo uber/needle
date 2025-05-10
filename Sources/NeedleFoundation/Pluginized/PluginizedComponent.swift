@@ -64,7 +64,7 @@ public class PluginExtensionProvider<DependencyType, PluginExtensionType, NonCor
             fatalError("Non-core component of incorrect type: \(type(of: component.nonCoreComponent))")
         }
         guard let result: T = nonCore.check(property: property) else {
-            fatalError("Property \(property) not found in non-core compoenent \(nonCore)")
+            fatalError("Property \(property) not found in non-core component \(nonCore)")
         }
         return result
     }
