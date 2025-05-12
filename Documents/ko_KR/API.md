@@ -37,7 +37,7 @@ targets: [
 
 ## Basics
 
-의존성 주입(Dependency Injection, 이하 DI로 표기)을 사용하는 주요 이유는 별도의 [문서](/WHY_DI.md)에 설명되어 있습니다. 당신의 앱이 DI의 혜택을 받을 수 있는지 확실하지 않은 경우 계속하기 전에 이 내용을 읽어보십시오.
+의존성 주입(Dependency Injection, 이하 DI로 표기)을 사용하는 주요 이유는 별도의 [문서](./WHY_DI.md)에 설명되어 있습니다. 당신의 앱이 DI의 혜택을 받을 수 있는지 확실하지 않은 경우 계속하기 전에 이 내용을 읽어보십시오.
 
 ## 핵심 요소
 
@@ -70,7 +70,7 @@ class LoggedInComponent: Component<LoggedInDependency> {
 
 예제의 `shared` 구문은 저희가 (`Component` 기본 클래스 내부에서) 제공하는 유틸리티 함수로 이 `var`에 액세스할 때마다 단순하게 동일한 인스턴스를 반환합니다. (아래에 선언된 프로퍼티는 대조적으로 새로운 매번 인스턴스를 반환합니다). 이렇게 하면 이 프로퍼티의 라이프사이클이 Component의 라이프사이클에 연결됩니다.
 
-Component를 사용하여 이 component와 쌍을 이루는 `ViewController`를 구성할 수도 있습니다. 위의 예제에서 볼 수 있듯이, 이것은 `ViewController`가 프로젝트에서 DI 시스템을 사용하고 있다는 사실을 모르고도 `ViewController`가 필요로 하는 모든 의존성을 전달할 수 있도록 합니다. **"DI의 이점"** 문서에서 언급했듯이 구체적인 클래스나 구조체 대신 프로토콜을 전달하는 것이 가장 좋습니다.
+Component를 사용하여 이 component와 쌍을 이루는 `ViewController`를 구성할 수도 있습니다. 위의 예제에서 볼 수 있듯이, 이것은 `ViewController`가 프로젝트에서 DI 시스템을 사용하고 있다는 사실을 모르고도 `ViewController`가 필요로 하는 모든 의존성을 전달할 수 있도록 합니다. [**"DI의 이점"**](./WHY_DI.md) 문서에서 언급했듯이 구체적인 클래스나 구조체 대신 프로토콜을 전달하는 것이 가장 좋습니다.
 
 # Dependencies
 
@@ -86,6 +86,28 @@ protocol LoggedInDependency: Dependency {
     var networkService: NetworkService { get }
 }
 ```
+
+## Dynamic dependencies
+
+동적 의존성은 런타임에 얻은 의존성을 나타냅니다. 좋은 예는 AuthenticatedUser 객체입니다. User 객체가 항상 존재하는 것은 아닙니다. 사용자가 로그인한 후에만 존재합니다. 앱에 로그아웃 및 로그인 `Scope`가 있다고 가정하면 이 User 객체는 로그인 `Scope`와 하위 `Scope` 내에서만 사용할 수 있어야 합니다. 생성자 주입을 통해 로그인 `Scope`에 AuthenticatedUser 객체를 제공하는 한 가지 방법은 다음과 같습니다:
+ ```
+ class LoggedInComponent: Component {
+   let user: AuthenticatedUser
+   init(parent: Scope, user: AuthenticatedUser) {
+     self.user = user
+     super.init(parent: Parent)
+   }
+ }
+ ```
+
+ 그런 다음 로그인 `Scope`의 상위 `Scope`에서 일반적으로 사용하는 computed `var` 대신 메소드를 통해 `LoggedInComponent`를 인스턴스화할 수 있습니다:
+ ```
+ class RootComponent: Component {
+   func loggedInComponent(user: AuthenticatedUser) {
+     return LoggedInComponent(parent: self, user: user)
+   }
+ }
+ ```
 
 # Component 사용하기
 
