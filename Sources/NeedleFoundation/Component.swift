@@ -133,12 +133,11 @@ open class Component<DependencyType>: Scope {
     /// - parameter factory: The closure to construct the dependency object.
     /// - returns: The dependency object instance.
     public final func shared<T>(__function: String = #function, _ factory: () -> T) -> T {
-        // Use function name as the key, since this is unique per component
-        // class. At the same time, this is also 150 times faster than
-        // interpolating the type to convert to string, `"\(T.self)"`.
-        sharedInstanceLock.lock()
+        let provider = resolve(__function)
+        
+        provider.lock.lock()
         defer {
-            sharedInstanceLock.unlock()
+            provider.lock.unlock()
         }
 
         // Additional nil coalescing is needed to mitigate a Swift bug appearing
@@ -146,13 +145,26 @@ open class Component<DependencyType>: Scope {
         // measure, calling `shared` from a function that returns an optional type
         // will always pass the check below and return nil if the instance is not
         // initialized.
-        if let instance = (sharedInstances[__function] as? T?) ?? nil {
+        if let instance = (provider.instance as? T?) ?? nil {
             return instance
         }
         let instance = factory()
-        sharedInstances[__function] = instance
-
+        provider.instance = instance
         return instance
+    }
+    
+    private func resolve(_ name: String) -> SingletonProvider {
+        sharedInstanceLock.lock()
+        defer {
+            sharedInstanceLock.unlock()
+        }
+        
+        if let provider = sharedInstances[name] {
+            return provider
+        }
+        let provider = SingletonProvider()
+        sharedInstances[name] = provider
+        return provider
     }
 
 #if NEEDLE_DYNAMIC
@@ -183,9 +195,15 @@ open class Component<DependencyType>: Scope {
 #endif
     
     // MARK: - Private
-
+    
+    private class SingletonProvider {
+        let lock = NSRecursiveLock()
+        var instance: Any?
+    }
+    
     private let sharedInstanceLock = NSRecursiveLock()
-    private var sharedInstances = [String: Any]()
+    private var sharedInstances = [String: SingletonProvider]()
+    
     private lazy var name: String = {
         let fullyQualifiedSelfName = String(describing: self)
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
@@ -204,4 +222,5 @@ open class Component<DependencyType>: Scope {
             fatalError("Dependency provider factory for \(self) returned incorrect type. Should be of type \(String(describing: DependencyType.self)). Actual type is \(String(describing: dependency))")
         }
     }
+    
 }
