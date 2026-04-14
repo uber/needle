@@ -52,28 +52,28 @@ class PluginizedDependencyGraphExporterTests: AbstractPluginizedGeneratorTests {
         XCTAssertTrue(generated.contains("private let needleDependenciesHash : String? = \"86deb40d0ec1c9fc9fd5e5e8fc17a167\""))
         XCTAssertTrue(generated.contains("// MARK: - Registration"))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedOutComponent\", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
+    registerProviderFactory(6062161635131552075, factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory("^->RootComponent", factoryEmptyDependencyProvider)
+    registerProviderFactory(-3171806194175578407, factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent->ScoreSheetComponent\", factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf)
+    registerProviderFactory(7090139472367530245, factoryb11b7d1dec7e3c9b3dca49b41e44e0ed6a6f8eaf)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent->ScoreSheetComponent\", factory3306c50e89e2421d0b0c65d055996113f3c13de1)
+    registerProviderFactory(-6719425751305065620, factory3306c50e89e2421d0b0c65d055996113f3c13de1)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent->GameNonCoreComponent\", factoryEmptyDependencyProvider)
+    registerProviderFactory(5898069836772964084, factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->LoggedInNonCoreComponent\", factoryEmptyDependencyProvider)
+    registerProviderFactory(-7553811199512117245, factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent\", factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
+    registerProviderFactory(-322842588535013842, factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent\", factoryEmptyDependencyProvider)
+    registerProviderFactory(-860435685645118366, factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("""
     __PluginExtensionProviderRegistry.instance.registerPluginExtensionProviderFactory(for: \"GameComponent\") { component in

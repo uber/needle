@@ -137,8 +137,8 @@ class OutputSerializer: Serializer {
         }
 
         // MARK: - Registration
-        private func registerProviderFactory(_ componentPath: String, _ factory: @escaping (NeedleFoundation.Scope) -> AnyObject) {
-            __DependencyProviderRegistry.instance.registerDependencyProviderFactory(for: componentPath, factory)
+        private func registerProviderFactory(_ pathHash: Int, _ factory: @escaping (NeedleFoundation.Scope) -> AnyObject) {
+            __DependencyProviderRegistry.instance.registerDependencyProviderFactory(forPathHash: pathHash, factory)
         }
 
         #if !NEEDLE_DYNAMIC

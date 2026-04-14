@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		OBJ_89 /* StableFNVHasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_90 /* StableFNVHasher.swift */; };
+		OBJ_91 /* StableFNVHasherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_92 /* StableFNVHasherTests.swift */; };
 		OBJ_42 /* Bootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Bootstrap.swift */; };
 		OBJ_43 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* Component.swift */; };
 		OBJ_44 /* DependencyProviderRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* DependencyProviderRegistry.swift */; };
@@ -78,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		OBJ_90 /* StableFNVHasher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StableFNVHasher.swift; sourceTree = "<group>"; };
+		OBJ_92 /* StableFNVHasherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StableFNVHasherTests.swift; sourceTree = "<group>"; };
 		"NeedleFoundation::NeedleFoundation::Product" /* NeedleFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NeedleFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTest::Product" /* NeedleFoundationTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NeedleFoundationTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		"NeedleFoundation::NeedleFoundationTestTests::Product" /* NeedleFoundationTestTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = NeedleFoundationTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_12 /* DependencyProviderRegistry.swift */,
+				OBJ_90 /* StableFNVHasher.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -185,6 +190,7 @@
 				OBJ_23 /* ComponentTests.swift */,
 				OBJ_24 /* DependencyProviderRegistryTests.swift */,
 				OBJ_25 /* Pluginized */,
+				OBJ_92 /* StableFNVHasherTests.swift */,
 			);
 			name = NeedleFoundationTests;
 			path = Tests/NeedleFoundationTests;
@@ -372,6 +378,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				OBJ_89 /* StableFNVHasher.swift in Sources */,
 				OBJ_42 /* Bootstrap.swift in Sources */,
 				OBJ_43 /* Component.swift in Sources */,
 				OBJ_44 /* DependencyProviderRegistry.swift in Sources */,
@@ -413,6 +420,7 @@
 				OBJ_83 /* ComponentTests.swift in Sources */,
 				OBJ_84 /* DependencyProviderRegistryTests.swift in Sources */,
 				OBJ_85 /* PluginizedComponentTests.swift in Sources */,
+				OBJ_91 /* StableFNVHasherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
