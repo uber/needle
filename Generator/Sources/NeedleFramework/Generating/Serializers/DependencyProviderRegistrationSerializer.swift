@@ -36,7 +36,7 @@ class DependencyProviderRegistrationSerializer: Serializer {
     func serialize() -> String {
         let factoryName = provider.isEmptyDependency ? "factoryEmptyDependencyProvider" : factoryFuncNameSerializer.serialize()
         return """
-        registerProviderFactory("\(provider.unprocessed.pathString)", \(factoryName))\n
+        registerProviderFactory(\(provider.unprocessed.pathHash), \(factoryName))\n
         """
     }
 

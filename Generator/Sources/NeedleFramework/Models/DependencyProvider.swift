@@ -32,6 +32,19 @@ struct DependencyProvider {
             }
             .joined(separator: "->")
     }
+
+    /// Stable FNV-1a hash of the path string. This must match the hash
+    /// computed by `StableFNVHasher` at runtime.
+    var pathHash: Int {
+        let offsetBasis: UInt64 = 0xcbf29ce484222325
+        let prime: UInt64 = 0x100000001b3
+        var hash = offsetBasis
+        for byte in pathString.utf8 {
+            hash ^= UInt64(byte)
+            hash &*= prime
+        }
+        return Int(bitPattern: UInt(hash))
+    }
 }
 
 /// The data model representing a dependency provider to be generated for a

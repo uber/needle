@@ -42,6 +42,22 @@ class DependencyProviderRegistryTests: XCTestCase {
         XCTAssertTrue(expectedProvider === actualProvider)
         XCTAssertTrue(appComponent.rootComponent.dependency === expectedProvider)
     }
+
+    func test_registerProviderFactoryForPathHash_verifyRetrievingProvider() {
+        let expectedProvider = MockRootDependencyProvider()
+
+        let path = ["^", "MockAppComponent", "MockRootComponent"]
+        let pathHash = StableFNVHasher.hash(path, separator: "->")
+        __DependencyProviderRegistry.instance.registerDependencyProviderFactory(forPathHash: pathHash) { (component: Scope) -> AnyObject in
+            return expectedProvider
+        }
+
+        let appComponent = MockAppComponent()
+        let actualProvider = __DependencyProviderRegistry.instance.dependencyProvider(for: appComponent.rootComponent)
+
+        XCTAssertTrue(expectedProvider === actualProvider)
+        XCTAssertTrue(appComponent.rootComponent.dependency === expectedProvider)
+    }
 }
 
 class MockAppComponent: BootstrapComponent {

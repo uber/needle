@@ -50,22 +50,22 @@ class DependencyGraphExporterTests: AbstractGeneratorTests {
         XCTAssertTrue(generated.contains("import UIKit"))
         XCTAssertTrue(generated.contains("// MARK: - Registration"))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent\", factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
+    registerProviderFactory(-322842588535013842, factorycf9c02c4def4e3d508816cd03d3cf415b70dfb0e)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->GameComponent->ScoreSheetComponent\", factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1)
+    registerProviderFactory(3176341359983622439, factory3f7d60e2119708f293bac0d8c882e1e0d9b5eda1)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent->ScoreSheetComponent\", factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3)
+    registerProviderFactory(-8216646763020093181, factory3f7d60e2119708f293ba0b20504d5a9e5588d7b3)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedOutComponent\", factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
+    registerProviderFactory(6062161635131552075, factory1434ff4463106e5c4f1bb3a8f24c1d289f2c0f2e)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent->LoggedInComponent\", factory2d08e87342cecea575b3e3b0c44298fc1c149afb)
+    registerProviderFactory(-860435685645118366, factory2d08e87342cecea575b3e3b0c44298fc1c149afb)
 """))
         XCTAssertTrue(generated.contains("""
-    registerProviderFactory(\"^->RootComponent\", factoryEmptyDependencyProvider)
+    registerProviderFactory(-3171806194175578407, factoryEmptyDependencyProvider)
 """))
         XCTAssertTrue(generated.contains("// MARK: - Traversal Helpers"))
         XCTAssertTrue(generated.contains("""

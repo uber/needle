@@ -31,6 +31,23 @@ public class __DependencyProviderRegistry {
     /// The singleton instance.
     public static let instance = __DependencyProviderRegistry()
 
+    /// Register the given factory closure with a pre-computed path hash.
+    ///
+    /// - note: This method is thread-safe.
+    /// - parameter pathHash: The stable hash of the component path,
+    /// computed by the Needle code generator.
+    /// - parameter dependencyProviderFactory: The closure that takes in a
+    /// component to be injected and returns a provider instance that conforms
+    /// to the component's dependency protocol.
+    public func registerDependencyProviderFactory(forPathHash pathHash: Int, _ dependencyProviderFactory: @escaping (Scope) -> AnyObject) {
+        providerFactoryLock.lock()
+        defer {
+            providerFactoryLock.unlock()
+        }
+
+        providerFactories[pathHash] = dependencyProviderFactory
+    }
+
     /// Register the given factory closure with given key.
     ///
     /// - note: This method is thread-safe.
@@ -45,7 +62,8 @@ public class __DependencyProviderRegistry {
             providerFactoryLock.unlock()
         }
 
-        providerFactories[componentPath.hashValue] = dependencyProviderFactory
+        let key = StableFNVHasher.hash(componentPath)
+        providerFactories[key] = dependencyProviderFactory
     }
 
     /// Unregister the given factory closure with given key.
@@ -58,9 +76,10 @@ public class __DependencyProviderRegistry {
         defer {
             providerFactoryLock.unlock()
         }
-        providerFactories.removeValue(forKey: componentPath.hashValue)
+        let key = StableFNVHasher.hash(componentPath)
+        providerFactories.removeValue(forKey: key)
     }
-    
+
     /// Retrieve the dependency provider for the given componentpath.
     ///
     /// - parameter componentpath: The component path that uses the returned dependency provider.
@@ -70,12 +89,13 @@ public class __DependencyProviderRegistry {
         defer {
             providerFactoryLock.unlock()
         }
-        
-        return providerFactories[componentPath.hashValue]
+
+        let key = StableFNVHasher.hash(componentPath)
+        return providerFactories[key]
     }
-    
+
     // MARK: - Internal
-    
+
     /// Retrieve the dependency provider for the given component and its parent.
     ///
     /// - parameter component: The component that uses the returned dependency provider.
@@ -86,8 +106,8 @@ public class __DependencyProviderRegistry {
             providerFactoryLock.unlock()
         }
 
-        let pathString = component.path.joined(separator: "->")
-        if let factory = providerFactories[pathString.hashValue] {
+        let key = StableFNVHasher.hash(component.path, separator: "->")
+        if let factory = providerFactories[key] {
             return factory(component)
         } else {
             // This case should never occur with properly generated Needle code.
