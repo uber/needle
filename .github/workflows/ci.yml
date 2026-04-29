@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.4.app
+  DEVELOPER_DIR: /Applications/Xcode_16.4.app
 
 jobs:
   NeedleFoundationTests:
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleFoundationTests"
-        run: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundation -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
+        run: xcodebuild test -project NeedleFoundation.xcodeproj -scheme NeedleFoundation -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16'
   NeedleGeneratorTests:
     runs-on: macos-latest
     steps:
@@ -33,28 +33,28 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleSampleMVCApp"
-        run: xcodebuild build -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
+        run: xcodebuild build -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16'
   NeedleSampleMVCTests:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleSampleMVCTests"
-        run: xcodebuild test -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
+        run: xcodebuild test -project Sample/MVC/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeTests -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16'
   NeedleSamplePluginizedApp:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleSamplePluginizedApp"
-        run: xcodebuild build -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
+        run: xcodebuild build -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToe -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16'
   NeedleSamplePluginizedScoreSheetTests:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleSamplePluginizedScoreSheetTests"
-        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
+        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme ScoreSheetTests -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16'
   NeedleSamplePluginizedTicTacToeCoreTests:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: "NeedleSamplePluginizedTicTacToeCoreTests"
-        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=17.5,name=iPhone 15'
+        run: xcodebuild test -project Sample/Pluginized/TicTacToe/TicTacToe.xcodeproj -scheme TicTacToeCoreTests -destination 'platform=iOS Simulator,OS=18.5,name=iPhone 16'
