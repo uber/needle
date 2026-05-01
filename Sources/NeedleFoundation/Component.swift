@@ -169,13 +169,21 @@ open class Component<DependencyType>: Scope {
 
     public var localTable = [String:()->Any]()
     public var keyPathToName = [PartialKeyPath<DependencyType>:String]()
-    
+
+    /// Fully qualified name of the Component, such as `"MyParentClass.EnumThatIsAComponent"`
+    ///
+    /// The default implementation uses `String(describing: self)`, which can be a bit slow. Override this
+    /// with a faster implementation (such as a hard-coded `String`) if you've identified slowness due to this property.
+    open var fullyQualifiedName: String {
+        String(describing: self)
+    }
+
     // MARK: - Private
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
     private lazy var name: String = {
-        let fullyQualifiedSelfName = String(describing: self)
+        let fullyQualifiedSelfName = fullyQualifiedName
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
         return parts.last ?? fullyQualifiedSelfName
     }()
@@ -266,12 +274,20 @@ open class Component<DependencyType>: Scope {
         return dependency[keyPath: keyPath]
     }
 
+    /// Fully qualified name of the Component, such as `"MyParentClass.EnumThatIsAComponent"`
+    ///
+    /// The default implementation uses `String(describing: self)`, which can be a bit slow. Override this
+    /// with a faster implementation (such as a hard-coded `String`) if you've identified slowness due to this property.
+    open var fullyQualifiedName: String {
+        String(describing: self)
+    }
+
     // MARK: - Private
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
     private lazy var name: String = {
-        let fullyQualifiedSelfName = String(describing: self)
+        let fullyQualifiedSelfName = fullyQualifiedName
         let parts = fullyQualifiedSelfName.components(separatedBy: ".")
         return parts.last ?? fullyQualifiedSelfName
     }()
