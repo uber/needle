@@ -174,11 +174,7 @@ open class Component<DependencyType>: Scope {
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
-    private lazy var name: String = {
-        let fullyQualifiedSelfName = String(describing: self)
-        let parts = fullyQualifiedSelfName.components(separatedBy: ".")
-        return parts.last ?? fullyQualifiedSelfName
-    }()
+    private lazy var name: String = _typeName(type(of: self), qualified: false)
 
     // TODO: Replace this with an `open` method, once Swift supports extension
     // overriding methods.
@@ -270,11 +266,7 @@ open class Component<DependencyType>: Scope {
 
     private let sharedInstanceLock = NSRecursiveLock()
     private var sharedInstances = [String: Any]()
-    private lazy var name: String = {
-        let fullyQualifiedSelfName = String(describing: self)
-        let parts = fullyQualifiedSelfName.components(separatedBy: ".")
-        return parts.last ?? fullyQualifiedSelfName
-    }()
+    private lazy var name: String = _typeName(type(of: self), qualified: false)
 
     // TODO: Replace this with an `open` method, once Swift supports extension
     // overriding methods.
