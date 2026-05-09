@@ -55,7 +55,7 @@ Once installed the generator binary can be executed directly as `$ needle versio
 
 ## Xcode integration
 
-Even though Needle's generator can be invoked from the command line, it's most convenient when directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast marjority of Swift applications use Xcode as the build system, we'll cover this here.
+Even though Needle's generator can be invoked from the command line, it's most convenient when directly integrated with the build system. At Uber we use [BUCK](https://buckbuild.com/) for CI builds and Xcode for local development. Therefore for us, Needle is integrated with BUCK. We then make Xcode invoke our BUCK Needle target for code generation. Since the vast majority of Swift applications use Xcode as the build system, we'll cover this here.
 
 1. Download the latest generator binary, either manually from the [Releases page](https://github.com/uber/needle/releases), or using [Carthage](https://github.com/Carthage/Carthage) or [Homebrew](https://github.com/Homebrew/brew).
 2. Add a "Run Script" phase in the application's executable target's "Build Phases" section. ![](Images/build_phases.jpeg)
