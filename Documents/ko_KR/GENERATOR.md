@@ -60,7 +60,7 @@ brew install needle
 Needle의 제너레이터는 명령줄에서 호출할 수 있지만 빌드 시스템과 직접 통합될 때 가장 편리합니다. Uber에서는 CI 빌드에 [BUCK](https://buckbuild.com/)를 사용하고 로컬 개발에 Xcode를 사용합니다. 따라서 우리에게 Needle은 BUCK와 통합됩니다. 그런 다음 Xcode가 코드 생성을 위해 BUCK Needle 대상을 호출하도록 합니다. 대부분의 Swift 애플리케이션이 Xcode를 빌드 시스템으로 사용하기 때문에 여기서는 이를 다룰 것입니다.
 
 1. [Releases page](https://github.com/uber/needle/releases)에서 수동으로 다운로드 혹은 [Carthage](https://github.com/Carthage/Carthage) 또는 [Homebrew](https://github.com/Homebrew/brew)를 사용하여 최신 제너레이터 바이너리를 다운로드 하십시오.
-2. Xcode에서 앱의 executable target's의 "Build Phases" 섹션의 "Run Script"를 추가합니다. ![](Images/build_phases.jpeg)
+2. Xcode에서 앱의 executable target's의 "Build Phases" 섹션의 "Run Script"를 추가합니다. ![](https://raw.githubusercontent.com/uber/needle/master/Images/build_phases.jpeg)
 3. "Shell"의 값이 `/bin/sh`으로 되어 있는지 확인합니다.
 4. 스크립트 입력란에 제너레이터를 호출하는 shell script를 추가합니다. 예를 들어 샘플 TicTacToe 앱은 다음 스크립트를 사용합니다.  
  `export SOURCEKIT_LOGGING=0 && ../Carthage/Checkouts/needle/Generator/bin/needle generate Sources/NeedleGenerated.swift Sources/ --header-doc ../../copyright_header.txt`.

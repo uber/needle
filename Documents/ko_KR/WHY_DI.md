@@ -4,9 +4,9 @@
 
 ## 설명하기 위한 다소 현실적인 예
 
-패턴을 추상적인 용어로 설명하는 대신 간단한 뷰 컨트롤러 기반 예를 사용하여 패턴을 이해해 보겠습니다. 추상적인 설명에 관심이 있으시면 Wikipedia에는 [훌륭한 기사](https://en.wikipedia.org/wiki/Dependency_injection)가 있습니다.
+패턴을 추상적인 용어로 설명하는 대신 간단한 뷰 컨트롤러 기반 예를 사용하여 패턴을 이해해 보겠습니다. 추상적인 설명에 관심이 있으시면 Wikipedia에는 [훌륭한 글](https://en.wikipedia.org/wiki/Dependency_injection)이 있습니다.
 
-서버에서 검색한 사진 세트를 표시하는 ViewController가 있는 사진 검색 앱을 개발 중이라고 가정해 보겠습니다. 이 매우 간단한 앱에는 사진을 표시하는 `PhotosViewController`와 서버에서 사진을 요청하는 로직를 캡슐화하는 `PhotosService`가 있습니다. `PhotosViewController`는 보기 로직을 구현하고 `PhotosService`는 HTTP 요청 전송 및 응답 분석 로직을 포함합니다. DI를 사용하지 않으면 `PhotosViewController`는 `init` 또는 `viewDidLoad` 메소드에서 `PhotosService`의 새 인스턴스를 인스턴스화 합니다. 그런 다음 서비스 객체를 사용하여 적합하다고 판단될 때 사진을 요청할 수 있습니다.
+서버에서 검색한 사진 세트를 표시하는 ViewController가 있는 사진 검색 앱을 개발 중이라고 가정해 보겠습니다. 이 매우 간단한 앱에는 사진을 표시하는 `PhotosViewController`와 서버에서 사진을 요청하는 로직를 캡슐화하는 `PhotosService`가 있습니다. `PhotosViewController`는 뷰 로직을 구현하고 `PhotosService`는 HTTP 요청 전송 및 응답 분석 로직을 포함합니다. DI를 사용하지 않으면 `PhotosViewController`는 `init` 또는 `viewDidLoad` 메소드에서 `PhotosService`의 새 인스턴스를 인스턴스화 합니다. 그런 다음 서비스 객체를 사용하여 적합하다고 판단될 때 사진을 요청할 수 있습니다.
 
 이제 한 번 코드를 분석해 보겠습니다. 현재 상태에서는 `PhotosViewController`와 `PhotosService`가 밀접하게 결합되어 있습니다. 여기에는 몇 가지 문제가 있습니다.
 1. `PhotosViewController`도 변경하지 않고는 `PhotosService`를 변경할 수 없습니다. 두 개의 클래스만 있으면 괜찮아 보일 수 있지만 수백 개의 클래스가 있는 실제 시나리오에서는 앱 개발 속도가 크게 느려집니다.
