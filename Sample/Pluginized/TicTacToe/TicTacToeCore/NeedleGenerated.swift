@@ -21,7 +21,7 @@ import TicTacToeIntegrations
 import UIKit
 
 // swiftlint:disable unused_declaration
-private let needleDependenciesHash : String? = "4b585865bab35437b0cbc60e9d74b1b1"
+private let needleDependenciesHash : String? = "86deb40d0ec1c9fc9fd5e5e8fc17a167"
 
 // MARK: - Traversal Helpers
 
@@ -133,7 +133,8 @@ extension LoggedOutComponent: Registration {
 extension RootComponent: Registration {
     public func registerItems() {
 
-
+        localTable["playersStream-PlayersStream"] = { [unowned self] in self.playersStream as Any }
+        localTable["mutablePlayersStream-MutablePlayersStream"] = { [unowned self] in self.mutablePlayersStream as Any }
     }
 }
 extension ScoreSheetComponent: Registration {
@@ -144,15 +145,15 @@ extension ScoreSheetComponent: Registration {
 extension GameNonCoreComponent: Registration {
     public func registerItems() {
 
-        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { self.scoreSheetBuilder as Any }
+        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { [unowned self] in self.scoreSheetBuilder as Any }
     }
 }
 extension LoggedInNonCoreComponent: Registration {
     public func registerItems() {
 
-        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { self.scoreSheetBuilder as Any }
-        localTable["mutableScoreStream-MutableScoreStream"] = { self.mutableScoreStream as Any }
-        localTable["scoreStream-ScoreStream"] = { self.scoreStream as Any }
+        localTable["scoreSheetBuilder-ScoreSheetBuilder"] = { [unowned self] in self.scoreSheetBuilder as Any }
+        localTable["mutableScoreStream-MutableScoreStream"] = { [unowned self] in self.mutableScoreStream as Any }
+        localTable["scoreStream-ScoreStream"] = { [unowned self] in self.scoreStream as Any }
     }
 }
 extension GameComponent: Registration {
