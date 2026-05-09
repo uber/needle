@@ -59,6 +59,10 @@ class LoggedInComponent: Component<LoggedInDependency> {
         return shared { ScoreStreamImpl() }
     }
 
+    func mutableScoreStream(id: String) -> MutableScoreStream {
+        return weak(hash: id) { ScoreStreamImpl() }
+    }
+
     var loggedInViewController: UIViewController {
         return LoggedInViewController(gameBuilder: gameComponent, scoreStream: scoreStream, scoreSheetBuilder: scoreSheetComponent)
     }
@@ -66,7 +70,7 @@ class LoggedInComponent: Component<LoggedInDependency> {
 ```
 **Note:** It's up to you to decide what items make sense on the *DI Graph* and which items can be just local properties in your `ViewController` subclass. Anything that you'd like to mock during a test needs to be passed in (as a protocol) as Swift lacks an `OCMock` like tool.
 
-The `shared` construct in the example is a utility function we provide (in the `Component` base class) that simply returns the same instance every time this `var` is accessed (as opposed to the one below it, which returns a new instance each time). This ties the lifecycle of this property to the lifecycle of the Component.
+The `shared` construct in the example is a utility function we provide (in the `Component` base class) that simply returns the same instance every time this `var` is accessed (as opposed to the one below it, which returns a new instance each time). This ties the lifecycle of this property to the lifecycle of the Component. And you can use the `weak` construct to use a same instance as long as a specified `hash` argument is same and the instance has been referenced somewhere.
 
 You could also use the component to construct the `ViewController` that is paired with this component. As you can see in the example above, this allows us to pass in all the dependencies that the `ViewController` needs without the `ViewController` even being aware that you're using a DI system in your project. As noted in the "Benefits of DI" document, it's best to pass in protocols instead of concrete classes or structs.
 

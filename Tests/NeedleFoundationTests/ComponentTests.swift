@@ -40,6 +40,24 @@ class ComponentTests: XCTestCase {
         let component = TestComponent()
         XCTAssert(component.optionalShare === component.expectedOptionalShare)
     }
+
+    func test_weak_veirfySingleInstance() {
+        let component = TestComponent()
+
+        let id1 = "id1"
+        let id2 = "id2"
+
+        var weak: TestClass? = component.weak(hash: id1)
+        weak?.number = 0
+        XCTAssert(weak === component.weak(hash: id1), "Should have returned same shared object")
+        XCTAssert(component.weak(hash: id1).number == 0)
+        XCTAssertFalse(component.weak(hash: id1) === component.weak(hash: id2))
+
+        weak = nil
+        weak = component.weak(hash: id1)
+        XCTAssertNotNil(weak)
+        XCTAssertNil(component.weak(hash: id1).number)
+    }
 }
 
 class TestComponent: BootstrapComponent {
@@ -61,6 +79,10 @@ class TestComponent: BootstrapComponent {
     fileprivate var optionalShare: ClassProtocol? {
         return shared { self.expectedOptionalShare }
     }
+
+    fileprivate func weak(hash: String) -> TestClass {
+        return weak(hash: hash) { TestClass() }
+    }
 }
 
 private protocol ClassProtocol: AnyObject {
@@ -69,4 +91,8 @@ private protocol ClassProtocol: AnyObject {
 
 private class ClassProtocolImpl: ClassProtocol {
 
+}
+
+private class TestClass {
+    var number: Int? = nil
 }
