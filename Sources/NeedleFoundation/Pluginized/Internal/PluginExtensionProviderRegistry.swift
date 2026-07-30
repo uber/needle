@@ -51,6 +51,7 @@ public class __PluginExtensionProviderRegistry {
         providerFactories[componentName] = pluginExtensionProviderFactory
     }
 
+    @MainActor
     func pluginExtensionProvider(`for` component: PluginizedScope) -> AnyObject {
         // Lock on `providerFactories` access.
         lock.lock()

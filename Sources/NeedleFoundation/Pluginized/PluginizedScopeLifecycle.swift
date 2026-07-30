@@ -41,6 +41,7 @@ public protocol ObserverDisposable: AnyObject {
 }
 
 /// The observable of the lifecycle events of a pluginized scope.
+@MainActor
 public protocol PluginizedScopeLifecycleObservable: AnyObject {
 
     /// Observe the lifecycle events with given observer.

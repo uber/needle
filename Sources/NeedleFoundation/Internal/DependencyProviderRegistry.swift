@@ -100,6 +100,7 @@ public class __DependencyProviderRegistry {
     ///
     /// - parameter component: The component that uses the returned dependency provider.
     /// - returns: The dependency provider for the given component.
+    @MainActor
     func dependencyProvider(`for` component: Scope) -> AnyObject {
         providerFactoryLock.lock()
         defer {

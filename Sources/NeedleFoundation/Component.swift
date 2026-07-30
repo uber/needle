@@ -29,6 +29,7 @@ public protocol Registration {
 /// from the `Component` base class, instead of using this protocol
 /// directly.
 /// @CreateMock
+@MainActor
 public protocol Scope: AnyObject {
     /// The path to reach this component on the dependency graph.
     var path: [String] { get }
@@ -43,6 +44,7 @@ public protocol Scope: AnyObject {
 
 #if NEEDLE_DYNAMIC
 
+@MainActor
 @dynamicMemberLookup
 public class DependencyProvider<DependencyType> {
     
@@ -77,6 +79,7 @@ public class DependencyProvider<DependencyType> {
 /// contains a set of properties it provides to units of its scope as well
 /// as child scopes. A component instantiates child components that define
 /// child scopes.
+@MainActor
 @dynamicMemberLookup
 open class Component<DependencyType>: Scope {
     
@@ -201,6 +204,7 @@ open class Component<DependencyType>: Scope {
 /// contains a set of properties it provides to units of its scope as well
 /// as child scopes. A component instantiates child components that define
 /// child scopes.
+@MainActor
 @dynamicMemberLookup
 open class Component<DependencyType>: Scope {
 

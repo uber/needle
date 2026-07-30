@@ -44,6 +44,7 @@ public protocol PluginExtension: AnyObject {}
 
 #if NEEDLE_DYNAMIC
 
+@MainActor
 public protocol ExtensionRegistration {
     func registerExtensionItems()
 }

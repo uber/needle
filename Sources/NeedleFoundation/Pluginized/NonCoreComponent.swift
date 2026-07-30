@@ -22,6 +22,7 @@ import Foundation
 /// - note: A separate protocol is used to allow `PluginizableComponent`
 /// to declare a non-core component generic without having to specify the
 /// dependency protocol nested generics.
+@MainActor
 public protocol NonCoreScope: AnyObject {
     /// Initializer.
     ///

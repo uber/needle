@@ -36,6 +36,7 @@ public class EmptyDependencyProvider: EmptyDependency {
 /// inherit from this class instead of the generic `Component` class.
 ///
 /// - SeeAlso: `Component`.
+@MainActor
 open class BootstrapComponent: Component<EmptyDependency> {
 
     /// Initializer.

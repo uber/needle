@@ -1,0 +1,139 @@
+Subject: [PATCH] Annotate NeedleFoundation core types with @MainActor
+
+uber/RIBs-ios#49 と同じ方針で、NeedleFoundation のコア型を @MainActor で注釈する。
+Needle の DI コンテナは実行時つねに main thread で使われているため、
+型システム上それを明示するだけの additive・ソース互換な変更。
+
+## なぜ必要か
+
+`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` のアプリでは Component サブクラスが
+暗黙に main actor 隔離される。一方スーパークラスの `init(parent:)` は nonisolated の
+ままなので、**暗黙の継承 init** に対して次が出る。
+
+    error: main actor-isolated initializer 'init(parent:)' has different actor
+           isolation from nonisolated overridden declaration
+    note: overridden declaration is here (NeedleFoundation/Component.swift:228)
+
+エラー箇所が暗黙宣言（クラス宣言の `{`）のため、**アプリ側には注釈を付ける先が無く
+回避できない**。Needle 側を @MainActor にするのが唯一の根本解決。
+
+## 適用先 / 検証
+
+- uber/needle v0.25.1
+- swift 6.1.3 で検証:
+  - `swift build`（Swift 5 モード = アプリが使う構成）: **成功**
+  - `-DNEEDLE_DYNAMIC`: **成功**
+  - Swift 6 言語モード: 9件エラーが残るが**パッチ前から存在する既存問題**（静的シングルトンの Sendable）。
+    アプリは Swift 5 モードで消費するため影響なし。
+- 実物の NeedleFoundation に対し、アプリと同じ Component 4形
+  （独自 init のみ / init 無し / override init で実処理 / BootstrapComponent）が
+  `-swift-version 6` でクリーンに通ることを確認。
+
+diff --git a/Sources/NeedleFoundation/Bootstrap.swift b/Sources/NeedleFoundation/Bootstrap.swift
+index 851f2bf..e91dba6 100644
+--- a/Sources/NeedleFoundation/Bootstrap.swift
++++ b/Sources/NeedleFoundation/Bootstrap.swift
+@@ -36,6 +36,7 @@ public class EmptyDependencyProvider: EmptyDependency {
+ /// inherit from this class instead of the generic `Component` class.
+ ///
+ /// - SeeAlso: `Component`.
++@MainActor
+ open class BootstrapComponent: Component<EmptyDependency> {
+ 
+     /// Initializer.
+diff --git a/Sources/NeedleFoundation/Component.swift b/Sources/NeedleFoundation/Component.swift
+index 1dc1128..06f4651 100644
+--- a/Sources/NeedleFoundation/Component.swift
++++ b/Sources/NeedleFoundation/Component.swift
+@@ -29,6 +29,7 @@ public protocol Registration {
+ /// from the `Component` base class, instead of using this protocol
+ /// directly.
+ /// @CreateMock
++@MainActor
+ public protocol Scope: AnyObject {
+     /// The path to reach this component on the dependency graph.
+     var path: [String] { get }
+@@ -43,6 +44,7 @@ public protocol Scope: AnyObject {
+ 
+ #if NEEDLE_DYNAMIC
+ 
++@MainActor
+ @dynamicMemberLookup
+ public class DependencyProvider<DependencyType> {
+     
+@@ -77,6 +79,7 @@ public class DependencyProvider<DependencyType> {
+ /// contains a set of properties it provides to units of its scope as well
+ /// as child scopes. A component instantiates child components that define
+ /// child scopes.
++@MainActor
+ @dynamicMemberLookup
+ open class Component<DependencyType>: Scope {
+     
+@@ -201,6 +204,7 @@ open class Component<DependencyType>: Scope {
+ /// contains a set of properties it provides to units of its scope as well
+ /// as child scopes. A component instantiates child components that define
+ /// child scopes.
++@MainActor
+ @dynamicMemberLookup
+ open class Component<DependencyType>: Scope {
+ 
+diff --git a/Sources/NeedleFoundation/Internal/DependencyProviderRegistry.swift b/Sources/NeedleFoundation/Internal/DependencyProviderRegistry.swift
+index e1c039d..d0fe02e 100644
+--- a/Sources/NeedleFoundation/Internal/DependencyProviderRegistry.swift
++++ b/Sources/NeedleFoundation/Internal/DependencyProviderRegistry.swift
+@@ -80,6 +80,7 @@ public class __DependencyProviderRegistry {
+     ///
+     /// - parameter component: The component that uses the returned dependency provider.
+     /// - returns: The dependency provider for the given component.
++    @MainActor
+     func dependencyProvider(`for` component: Scope) -> AnyObject {
+         providerFactoryLock.lock()
+         defer {
+diff --git a/Sources/NeedleFoundation/Pluginized/Internal/PluginExtensionProviderRegistry.swift b/Sources/NeedleFoundation/Pluginized/Internal/PluginExtensionProviderRegistry.swift
+index bbffd48..2aa8a64 100644
+--- a/Sources/NeedleFoundation/Pluginized/Internal/PluginExtensionProviderRegistry.swift
++++ b/Sources/NeedleFoundation/Pluginized/Internal/PluginExtensionProviderRegistry.swift
+@@ -51,6 +51,7 @@ public class __PluginExtensionProviderRegistry {
+         providerFactories[componentName] = pluginExtensionProviderFactory
+     }
+ 
++    @MainActor
+     func pluginExtensionProvider(`for` component: PluginizedScope) -> AnyObject {
+         // Lock on `providerFactories` access.
+         lock.lock()
+diff --git a/Sources/NeedleFoundation/Pluginized/NonCoreComponent.swift b/Sources/NeedleFoundation/Pluginized/NonCoreComponent.swift
+index 1c259f4..6968390 100644
+--- a/Sources/NeedleFoundation/Pluginized/NonCoreComponent.swift
++++ b/Sources/NeedleFoundation/Pluginized/NonCoreComponent.swift
+@@ -22,6 +22,7 @@ import Foundation
+ /// - note: A separate protocol is used to allow `PluginizableComponent`
+ /// to declare a non-core component generic without having to specify the
+ /// dependency protocol nested generics.
++@MainActor
+ public protocol NonCoreScope: AnyObject {
+     /// Initializer.
+     ///
+diff --git a/Sources/NeedleFoundation/Pluginized/PluginizedComponent.swift b/Sources/NeedleFoundation/Pluginized/PluginizedComponent.swift
+index 3f655c9..e8731f7 100644
+--- a/Sources/NeedleFoundation/Pluginized/PluginizedComponent.swift
++++ b/Sources/NeedleFoundation/Pluginized/PluginizedComponent.swift
+@@ -44,6 +44,7 @@ public protocol PluginExtension: AnyObject {}
+ 
+ #if NEEDLE_DYNAMIC
+ 
++@MainActor
+ public protocol ExtensionRegistration {
+     func registerExtensionItems()
+ }
+diff --git a/Sources/NeedleFoundation/Pluginized/PluginizedScopeLifecycle.swift b/Sources/NeedleFoundation/Pluginized/PluginizedScopeLifecycle.swift
+index 17ef5fa..9d2b1f3 100644
+--- a/Sources/NeedleFoundation/Pluginized/PluginizedScopeLifecycle.swift
++++ b/Sources/NeedleFoundation/Pluginized/PluginizedScopeLifecycle.swift
+@@ -41,6 +41,7 @@ public protocol ObserverDisposable: AnyObject {
+ }
+ 
+ /// The observable of the lifecycle events of a pluginized scope.
++@MainActor
+ public protocol PluginizedScopeLifecycleObservable: AnyObject {
+ 
+     /// Observe the lifecycle events with given observer.
